@@ -536,7 +536,6 @@ const languageSetup = {
 const Editor = () => {
   const [language, setLanguage] = useState<'javascript' | 'html' | 'css' | 'markdown'>('javascript')
   const [code, setCode] = useState(codeExamples.javascript)
-  const [mode, setMode] = useState<string>('normal')
   
   const bgColor = useColorModeValue('gray.800', 'gray.900')
   const headerBgColor = useColorModeValue('gray.700', 'gray.800')
@@ -544,34 +543,6 @@ const Editor = () => {
   useEffect(() => {
     setCode(codeExamples[language])
   }, [language])
-
-  // Vimモードの変更をリッスン
-  useEffect(() => {
-    const handleVimMode = (event: CustomEvent) => {
-      setMode(event.detail.mode)
-    }
-
-    window.addEventListener('vim-mode-change', handleVimMode as EventListener)
-    return () => {
-      window.removeEventListener('vim-mode-change', handleVimMode as EventListener)
-    }
-  }, [])
-
-  // Vimモードに基づいたバッジの色を設定
-  const getModeColor = () => {
-    switch (mode) {
-      case 'normal':
-        return 'blue'
-      case 'insert':
-        return 'green'
-      case 'visual':
-        return 'purple'
-      case 'replace':
-        return 'red'
-      default:
-        return 'gray'
-    }
-  }
 
   return (
     <Box h="100%" display="flex" flexDirection="column" bg={bgColor}>
@@ -606,13 +577,6 @@ const Editor = () => {
           <option value="css">CSS</option>
           <option value="markdown">Markdown</option>
         </Select>
-        
-        <HStack spacing={2}>
-          <Text fontSize="sm" color="white">モード:</Text>
-          <Badge colorScheme={getModeColor()} variant="solid" textTransform="uppercase">
-            {mode}
-          </Badge>
-        </HStack>
       </HStack>
       
       <Box flex="1" className="vim-editor" overflow="auto">
