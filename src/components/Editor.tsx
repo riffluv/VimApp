@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Box, Text, HStack, Select, Badge, useColorModeValue } from '@chakra-ui/react'
 import CodeMirror from '@uiw/react-codemirror'
 import { javascript } from '@codemirror/lang-javascript'
@@ -9,6 +9,7 @@ import { css } from '@codemirror/lang-css'
 import { markdown } from '@codemirror/lang-markdown'
 import { dracula } from '@uiw/codemirror-theme-dracula'
 import { vim } from '@replit/codemirror-vim'
+import { keymap } from '@codemirror/view'
 
 // 言語別のサンプルコード
 const codeExamples = {
@@ -536,6 +537,7 @@ const languageSetup = {
 const Editor = () => {
   const [language, setLanguage] = useState<'javascript' | 'html' | 'css' | 'markdown'>('javascript')
   const [code, setCode] = useState(codeExamples.javascript)
+  const editorRef = useRef<HTMLDivElement>(null)
   
   const bgColor = useColorModeValue('gray.800', 'gray.900')
   const headerBgColor = useColorModeValue('gray.700', 'gray.800')
@@ -543,6 +545,32 @@ const Editor = () => {
   useEffect(() => {
     setCode(codeExamples[language])
   }, [language])
+
+  // ブラウザのデフォルトショートカットを防止
+  useEffect(() => {
+    const preventDefaultKeys = (e: KeyboardEvent) => {
+      // Vimコマンドとして使用する特定のキー組み合わせを捕捉
+      if ((e.ctrlKey && ['h', 'd', 'w', 'u', 'f', 'b', 'n', 'p', 'r', 'j', 'k'].includes(e.key)) || 
+          (e.ctrlKey && e.key === '[') ||
+          (e.ctrlKey && e.key === ']')) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    const editorElement = editorRef.current
+    if (editorElement) {
+      // イベントリスナーを追加
+      editorElement.addEventListener('keydown', preventDefaultKeys, true)
+    }
+
+    // クリーンアップ
+    return () => {
+      if (editorElement) {
+        editorElement.removeEventListener('keydown', preventDefaultKeys, true)
+      }
+    }
+  }, [])
 
   return (
     <Box h="100%" display="flex" flexDirection="column" bg={bgColor}>
@@ -579,7 +607,7 @@ const Editor = () => {
         </Select>
       </HStack>
       
-      <Box flex="1" className="vim-editor" overflow="auto">
+      <Box flex="1" className="vim-editor" overflow="auto" ref={editorRef}>
         <CodeMirror
           value={code}
           onChange={setCode}
@@ -587,7 +615,10 @@ const Editor = () => {
           height="100%"
           extensions={[
             ...languageSetup[language].extensions,
-            vim()
+            vim(),
+            keymap.of([
+              // 追加のカスタムキーマップをここに追加可能
+            ])
           ]}
           basicSetup={{
             lineNumbers: true,
