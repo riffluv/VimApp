@@ -53,15 +53,8 @@ document.querySelector('.container').addEventListener('click', function() {
 `;
 
 function VimEditor() {
-  // UI強化: globals.cssの.card/.btn-accent/.shadow-lg/.rounded-xl等を活用
   const [code, setCode] = useState(sampleCode);
-  const cardClass = "card shadow-lg rounded-xl transition";
-  const btnAccentClass =
-    "btn-secondary focus-accent px-4 py-2 text-base font-mono";
-  const btnOutlineClass =
-    "bg-transparent border border-accent text-accent rounded-md px-4 py-2 font-mono focus-accent transition hover:bg-accent hover:text-white";
 
-  // 操作パネルのダミー関数
   const handleSave = useCallback(() => {
     alert("保存しました！");
   }, []);
@@ -76,7 +69,7 @@ function VimEditor() {
 
   return (
     <Box
-      bg="black"
+      bg="gray.900"
       color="white"
       height="100%"
       p={{ base: 6, md: 8 }}
@@ -84,14 +77,47 @@ function VimEditor() {
       boxShadow="lg"
       display="flex"
       flexDirection="column"
-      className={cardClass}
     >
       <HStack justify="flex-end" gap={4} mb={6}>
-        <Button onClick={handleSave} className={btnAccentClass}>
+        <Button
+          onClick={handleSave}
+          bg="orange.400"
+          color="white"
+          borderRadius="md"
+          px={4}
+          py={2}
+          fontSize="md"
+          fontFamily="mono"
+          boxShadow="md"
+          _focus={{
+            outline: "2px solid",
+            outlineColor: "cyan.400",
+            outlineOffset: "2px",
+          }}
+          _hover={{ bg: "orange.500", transform: "scale(1.04)" }}
+          transition="all 0.2s"
+        >
           <Icon as={FiSave} mr={2} />
           保存
         </Button>
-        <Button onClick={handleReset} className={btnOutlineClass}>
+        <Button
+          onClick={handleReset}
+          bg="transparent"
+          border="1px solid"
+          borderColor="cyan.400"
+          color="cyan.400"
+          borderRadius="md"
+          px={4}
+          py={2}
+          fontFamily="mono"
+          _focus={{
+            outline: "2px solid",
+            outlineColor: "cyan.400",
+            outlineOffset: "2px",
+          }}
+          _hover={{ bg: "cyan.400", color: "white" }}
+          transition="all 0.2s"
+        >
           <Icon as={FiRefreshCw} mr={2} />
           リセット
         </Button>
@@ -101,9 +127,8 @@ function VimEditor() {
         borderRadius="md"
         overflow="hidden"
         boxShadow="inner"
-        className="rounded-md shadow-lg transition"
-  width="100%"
-  overflowX="hidden"
+        width="100%"
+        overflowX="hidden"
       >
         <CodeMirror
           value={code}
@@ -116,11 +141,12 @@ function VimEditor() {
             highlightActiveLine: true,
           }}
           style={{
-            width: '100%',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
+            width: "100%",
+            background: "#18181b",
+            color: "#fff",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
           }}
-          className="break-words"
         />
       </Box>
     </Box>

@@ -23,18 +23,10 @@ const cheatSheetList: { command: string; description: string }[] = [
 ];
 
 export default function CheatSheet() {
-  // UI強化: globals.cssの.card/.shadow-lg/.rounded-xl/.btn-accent等を活用
-  const cardClass =
-    "card shadow-lg rounded-xl transition hover:scale-105 hover:border-accent";
-  // 2025バッジは不要なので削除
-  const commandClass =
-    "font-mono font-bold text-accent tracking-wide text-base md:text-lg mr-4";
-  const descClass = "text-sm md:text-base text-balance";
-
   return (
     <Box
       p={{ base: 6, md: 8 }}
-      bg="black"
+      bg="gray.900"
       color="white"
       borderRadius="xl"
       boxShadow="lg"
@@ -42,17 +34,16 @@ export default function CheatSheet() {
       display="flex"
       flexDirection="column"
       overflow="hidden"
-      className="card shadow-lg rounded-xl"
     >
       <Flex align="center" justify="center" mb={6} gap={2}>
         <Image
           src="/manabyicon.png"
           alt="manaby icon"
           h={{ base: 8, md: 10 }}
+          minW={6}
           objectFit="contain"
-          style={{ minWidth: 24 }}
         />
-        <Heading as="h2" size="xl" color="accent" m={0}>
+        <Heading as="h2" size="xl" color="cyan.400" m={0}>
           Vim Cheat Sheet
         </Heading>
       </Flex>
@@ -63,17 +54,48 @@ export default function CheatSheet() {
             p={5}
             display="flex"
             alignItems="center"
-            className={cardClass}
-            style={{ marginBottom: 4 }}
+            mb={2}
+            borderRadius="xl"
+            boxShadow="lg"
+            bg="gray.800"
+            borderWidth={1}
+            borderColor="gray.700"
+            transition="all 0.2s"
+            _hover={{ transform: "scale(1.04)", borderColor: "cyan.400" }}
           >
-            <div
-              className="badge-secondary focus-accent text-xs px-2 py-1 font-mono"
-              style={{ marginRight: 12 }}
+            <Box
+              bg="orange.400"
+              color="white"
+              borderRadius="md"
+              fontWeight="bold"
+              px={2}
+              py={1}
+              fontSize="xs"
+              mr={3}
+              boxShadow="md"
+              tabIndex={0}
+              _focus={{
+                outline: "2px solid",
+                outlineColor: "cyan.400",
+                outlineOffset: "2px",
+              }}
+              fontFamily="mono"
             >
               #{index + 1}
-            </div>
-            <span className={commandClass}>{item.command}</span>
-            <span className={descClass}>{item.description}</span>
+            </Box>
+            <Box
+              fontFamily="mono"
+              fontWeight="bold"
+              color="cyan.300"
+              fontSize={{ base: "md", md: "lg" }}
+              mr={4}
+              letterSpacing="wide"
+            >
+              {item.command}
+            </Box>
+            <Box fontSize={{ base: "sm", md: "md" }} flex={1}>
+              {item.description}
+            </Box>
           </Box>
         ))}
       </VStack>
