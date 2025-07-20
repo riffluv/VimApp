@@ -72,6 +72,7 @@ function VimEditor() {
       bg="gray.900"
       color="white"
       height="100%"
+      minHeight="0"
       p={{ base: 6, md: 8 }}
       borderRadius="xl"
       boxShadow="lg"
@@ -124,11 +125,13 @@ function VimEditor() {
       </HStack>
       <Box
         flex={1}
+        minHeight={0}
         borderRadius="md"
         overflow="hidden"
         boxShadow="inner"
         width="100%"
         overflowX="hidden"
+        display="flex"
       >
         <CodeMirror
           value={code}
@@ -142,6 +145,7 @@ function VimEditor() {
           }}
           style={{
             width: "100%",
+            height: "100%",
             background: "#18181b",
             color: "#fff",
             whiteSpace: "pre-wrap",
