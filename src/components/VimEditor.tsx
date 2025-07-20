@@ -1,11 +1,11 @@
 "use client";
 
-import { Box, Button, HStack, Icon } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { vim } from "@replit/codemirror-vim";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { useCallback, useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiCommand, FiRefreshCw, FiTerminal } from "react-icons/fi";
 
 const htmlSample = `<div class="container">
   <h1>Hello Vim!</h1>
@@ -76,7 +76,7 @@ function VimEditor() {
       color="white"
       height="100%"
       minHeight="0"
-      p={{ base: 8, md: 12 }}
+      p={{ base: 4, md: 8 }}
       borderRadius="2xl"
       boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
       display="flex"
@@ -84,77 +84,129 @@ function VimEditor() {
       borderWidth={1}
       borderColor="gray.700"
       transition="all 0.3s"
-      _hover={{ borderColor: "orange.400" }}
+      _hover={{ boxShadow: "0 12px 48px 0 rgba(0,0,0,0.8)" }}
+      position="relative"
+      overflow="hidden"
     >
-      <HStack justify="flex-end" gap={2} mb={8}>
-        {["html", "css", "js"].map((m) => (
+      {/* Editor Header with macOS-style window controls */}
+      <Flex
+        align="center"
+        px={4}
+        py={3}
+        borderBottomWidth={1}
+        borderColor="gray.800"
+        bgGradient="linear(to-r, #101012, #1a1a1c)"
+        justify="space-between"
+      >
+        <Flex align="center">
+          <Flex gap={2} mr={5}>
+            <Box w="12px" h="12px" borderRadius="full" bg="#FF5F56" />
+            <Box w="12px" h="12px" borderRadius="full" bg="#FFBD2E" />
+            <Box w="12px" h="12px" borderRadius="full" bg="#27C93F" />
+          </Flex>
+          <Flex align="center">
+            <Icon as={FiTerminal} color="orange.400" mr={2} />
+            <Text fontFamily="mono" fontWeight="medium" letterSpacing="tight">
+              {mode.toUpperCase()} Editor
+            </Text>
+          </Flex>
+        </Flex>
+
+        <HStack justify="flex-end" gap={2} spacing={0}>
+          {["html", "css", "js"].map((m) => (
+            <Button
+              key={m}
+              onClick={() => handleModeChange(m as "html" | "css" | "js")}
+              variant={mode === m ? "solid" : "ghost"}
+              bg={mode === m ? "blackAlpha.400" : "transparent"}
+              color={mode === m ? "orange.400" : "gray.400"}
+              borderRadius="md"
+              px={3}
+              py={1.5}
+              size="sm"
+              fontFamily="mono"
+              fontWeight={mode === m ? "bold" : "medium"}
+              letterSpacing="tight"
+              borderWidth={0}
+              _hover={{
+                bg: mode === m ? "blackAlpha.500" : "blackAlpha.300",
+                color: "orange.400",
+              }}
+              _active={{
+                bg: "blackAlpha.500",
+              }}
+              transition="all 0.15s"
+              mr={1}
+            >
+              {m.toUpperCase()}
+            </Button>
+          ))}
           <Button
-            key={m}
-            onClick={() => handleModeChange(m as "html" | "css" | "js")}
-            variant={mode === m ? "solid" : "outline"}
-            bg={mode === m ? "orange.400" : "transparent"}
-            color={mode === m ? "white" : "orange.400"}
-            borderRadius="full"
-            px={5}
-            py={2}
-            fontSize="md"
+            onClick={handleReset}
+            variant="ghost"
+            bg="transparent"
+            color="gray.400"
+            borderRadius="md"
+            px={3}
+            py={1.5}
+            size="sm"
             fontFamily="mono"
-            fontWeight="bold"
-            borderWidth={1}
-            borderColor={mode === m ? "orange.400" : "gray.700"}
-            boxShadow="none"
+            fontWeight="medium"
+            letterSpacing="tight"
+            borderWidth={0}
             _hover={{
-              bg: "orange.400",
-              color: "white",
-              borderColor: "orange.400",
+              bg: "blackAlpha.300",
+              color: "orange.400",
             }}
-            transition="all 0.2s"
+            _active={{
+              bg: "blackAlpha.500",
+            }}
+            transition="all 0.15s"
+            ml={2}
           >
-            {m.toUpperCase()}
+            <Icon as={FiRefreshCw} mr={1} /> Reset
           </Button>
-        ))}
-        <Button
-          onClick={handleReset}
-          variant="outline"
-          bg="transparent"
-          color="orange.400"
-          borderRadius="full"
-          px={5}
-          py={2}
-          fontSize="md"
-          fontFamily="mono"
-          fontWeight="bold"
-          borderWidth={1}
-          borderColor="gray.700"
-          boxShadow="none"
-          _hover={{
-            bg: "orange.400",
-            color: "white",
-            borderColor: "orange.400",
-          }}
-          transition="all 0.2s"
-        >
-          <Icon as={FiRefreshCw} mr={2} fontSize="lg" />
-          リセット
-        </Button>
-      </HStack>
+        </HStack>
+      </Flex>
+
+      {/* Status bar showing vim mode */}
+      <Flex
+        position="absolute"
+        bottom={0}
+        left={0}
+        right={0}
+        px={4}
+        py={1.5}
+        bg="blackAlpha.600"
+        borderTopWidth={1}
+        borderColor="gray.800"
+        zIndex={5}
+        fontSize="sm"
+        fontFamily="mono"
+        justify="space-between"
+        align="center"
+      >
+        <Flex align="center">
+          <Icon as={FiCommand} color="orange.400" mr={2} />
+          <Text color="orange.400" fontWeight="medium">
+            NORMAL
+          </Text>
+        </Flex>
+        <Text color="gray.500" fontSize="xs">
+          Press i to enter insert mode
+        </Text>
+      </Flex>
+
+      {/* Editor Area */}
       <Box
         flex={1}
         minHeight={0}
-        borderRadius="2xl"
+        borderRadius="lg"
         overflow="hidden"
-        boxShadow="0 4px 24px 0 rgba(0,0,0,0.5)"
         width="100%"
-        overflowX="hidden"
         display="flex"
-        borderWidth={2}
-        borderColor="gray.700"
-        bgGradient="linear(to-br, #222, #18181b)"
-        transition="all 0.3s"
-        _hover={{
-          boxShadow: "0 8px 32px 0 rgba(255,152,0,0.2)",
-          borderColor: "orange.400",
-        }}
+        position="relative"
+        mb={8} // Space for the status bar
       >
         <CodeMirror
           value={code}
@@ -165,6 +217,10 @@ function VimEditor() {
           basicSetup={{
             lineNumbers: true,
             highlightActiveLine: true,
+            highlightActiveLineGutter: true,
+            foldGutter: true,
+            dropCursor: true,
+            indentOnInput: true,
           }}
           style={{
             width: "100%",
