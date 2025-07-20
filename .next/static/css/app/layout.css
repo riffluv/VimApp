@@ -627,11 +627,13 @@ video {
   transition-duration: 150ms;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
   font-family: system-ui, sans-serif;
   background: #18181b;
   color: #fff;
+  overflow: hidden;
 }
 
