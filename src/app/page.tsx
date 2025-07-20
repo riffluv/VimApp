@@ -7,7 +7,7 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 export default function Home() {
   return (
     <Box minH="100vh" bg="bgDark" p={{ base: 4, md: 6, lg: 8 }}>
-      <Heading as="h1" size="2xl" textAlign="center" mb={6} color="textLight">
+      <Heading as="h1" size="2xl" textAlign="center" mb={6} color="secondary">
         Vim Practice App
       </Heading>
       <Flex

@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Box, Heading, Icon, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Icon, VStack } from "@chakra-ui/react";
 import { FaCode } from "react-icons/fa";
 
 const cheatSheetList: { command: string; description: string }[] = [
@@ -24,47 +24,48 @@ const cheatSheetList: { command: string; description: string }[] = [
 ];
 
 export default function CheatSheet() {
-  const cardBg = "gray.800";
-  const hoverBg = "gray.700";
+  // UI強化: globals.cssの.card/.shadow-lg/.rounded-xl/.btn-accent等を活用
+  const cardClass =
+    "card shadow-lg rounded-xl transition hover:scale-105 hover:border-accent";
+  const badgeClass = "badge-secondary focus-accent text-xs px-2 py-1 font-mono";
+  const commandClass =
+    "font-mono font-bold text-accent tracking-wide text-base md:text-lg mr-4";
+  const descClass = "text-sm md:text-base text-balance";
 
   return (
     <Box
-      p={{ base: 4, md: 6 }}
-      bg="gray.900"
-      color="textLight"
+      p={{ base: 6, md: 8 }}
+      bg="black"
+      color="white"
       borderRadius="xl"
       boxShadow="lg"
       height="100%"
       display="flex"
       flexDirection="column"
       overflow="hidden"
+      className="card shadow-lg rounded-xl"
     >
-      <Heading as="h2" size="xl" mb={4} textAlign="center" color="primary.300">
+      <Heading as="h2" size="xl" mb={6} textAlign="center" color="accent">
         <Icon as={FaCode} mr={2} /> Vim Cheat Sheet
-        <Badge ml={2} colorScheme="primary">
-          2025
-        </Badge>
+          <span className={badgeClass} style={{ marginLeft: 8 }}>
+            2025
+          </span>
       </Heading>
-      <VStack gap={3} overflowY="auto" flex={1} pr={2}>
+      <VStack gap={4} overflowY="auto" flex={1} pr={2}>
         {cheatSheetList.map((item, index) => (
           <Box
             key={index}
-            p={4}
-            bg={cardBg}
-            borderRadius="md"
-            boxShadow="md"
-            _hover={{ bg: hoverBg, transform: "scale(1.02)" }}
-            transition="all 0.2s"
+            p={5}
             display="flex"
             alignItems="center"
+            className={cardClass}
+            style={{ marginBottom: 4 }}
           >
-            <Badge mr={3} colorScheme="primary">
+            <span className={badgeClass} style={{ marginRight: 12 }}>
               #{index + 1}
-            </Badge>
-            <Text fontWeight="bold" fontFamily="mono" mr={4} color="accent.500">
-              {item.command}
-            </Text>
-            <Text>{item.description}</Text>
+            </span>
+            <span className={commandClass}>{item.command}</span>
+            <span className={descClass}>{item.description}</span>
           </Box>
         ))}
       </VStack>

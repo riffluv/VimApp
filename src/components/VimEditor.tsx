@@ -53,7 +53,13 @@ document.querySelector('.container').addEventListener('click', function() {
 `;
 
 function VimEditor() {
+  // UI強化: globals.cssの.card/.btn-accent/.shadow-lg/.rounded-xl等を活用
   const [code, setCode] = useState(sampleCode);
+  const cardClass = "card shadow-lg rounded-xl transition";
+  const btnAccentClass =
+    "btn-secondary focus-accent px-4 py-2 text-base font-mono";
+  const btnOutlineClass =
+    "bg-transparent border border-accent text-accent rounded-md px-4 py-2 font-mono focus-accent transition hover:bg-accent hover:text-white";
 
   // 操作パネルのダミー関数
   const handleSave = useCallback(() => {
@@ -70,26 +76,33 @@ function VimEditor() {
 
   return (
     <Box
-      bg="gray.800"
-      color="textLight"
+      bg="black"
+      color="white"
       height="100%"
-      p={{ base: 4, md: 6 }}
+      p={{ base: 6, md: 8 }}
       borderRadius="xl"
       boxShadow="lg"
       display="flex"
       flexDirection="column"
+      className={cardClass}
     >
-      <HStack justify="flex-end" gap={3} mb={4}>
-        <Button colorScheme="primary" size="md" onClick={handleSave}>
+      <HStack justify="flex-end" gap={4} mb={6}>
+        <Button onClick={handleSave} className={btnAccentClass}>
           <Icon as={FiSave} mr={2} />
           保存
         </Button>
-        <Button variant="outline" size="md" onClick={handleReset}>
+        <Button onClick={handleReset} className={btnOutlineClass}>
           <Icon as={FiRefreshCw} mr={2} />
           リセット
         </Button>
       </HStack>
-      <Box flex={1} borderRadius="md" overflow="hidden" boxShadow="inner">
+      <Box
+        flex={1}
+        borderRadius="md"
+        overflow="hidden"
+        boxShadow="inner"
+        className="rounded-md shadow-lg transition"
+      >
         <CodeMirror
           value={code}
           height="100%"
