@@ -3,7 +3,7 @@
 import { Box, Button, HStack, Icon } from "@chakra-ui/react";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { vim } from "@replit/codemirror-vim";
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { useCallback, useState } from "react";
 import { FiRefreshCw, FiSave } from "react-icons/fi";
 
@@ -102,17 +102,25 @@ function VimEditor() {
         overflow="hidden"
         boxShadow="inner"
         className="rounded-md shadow-lg transition"
+  width="100%"
+  overflowX="hidden"
       >
         <CodeMirror
           value={code}
           height="100%"
-          extensions={[vim(), oneDark]}
+          extensions={[vim(), oneDark, EditorView.lineWrapping]}
           onChange={onChange}
           theme={oneDark}
           basicSetup={{
             lineNumbers: true,
             highlightActiveLine: true,
           }}
+          style={{
+            width: '100%',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
+          className="break-words"
         />
       </Box>
     </Box>
