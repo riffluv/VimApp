@@ -1,7 +1,6 @@
 "use client";
 
-import { Box, Heading, Icon, VStack } from "@chakra-ui/react";
-import { FaCode } from "react-icons/fa";
+import { Box, Flex, Heading, Image, VStack } from "@chakra-ui/react";
 
 const cheatSheetList: { command: string; description: string }[] = [
   { command: "h / j / k / l", description: "左右上下にカーソル移動" },
@@ -27,7 +26,7 @@ export default function CheatSheet() {
   // UI強化: globals.cssの.card/.shadow-lg/.rounded-xl/.btn-accent等を活用
   const cardClass =
     "card shadow-lg rounded-xl transition hover:scale-105 hover:border-accent";
-  const badgeClass = "badge-secondary focus-accent text-xs px-2 py-1 font-mono";
+  // 2025バッジは不要なので削除
   const commandClass =
     "font-mono font-bold text-accent tracking-wide text-base md:text-lg mr-4";
   const descClass = "text-sm md:text-base text-balance";
@@ -45,12 +44,18 @@ export default function CheatSheet() {
       overflow="hidden"
       className="card shadow-lg rounded-xl"
     >
-      <Heading as="h2" size="xl" mb={6} textAlign="center" color="accent">
-        <Icon as={FaCode} mr={2} /> Vim Cheat Sheet
-          <span className={badgeClass} style={{ marginLeft: 8 }}>
-            2025
-          </span>
-      </Heading>
+      <Flex align="center" justify="center" mb={6} gap={2}>
+        <Image
+          src="/manabyicon.png"
+          alt="manaby icon"
+          h={{ base: 8, md: 10 }}
+          objectFit="contain"
+          style={{ minWidth: 24 }}
+        />
+        <Heading as="h2" size="xl" color="accent" m={0}>
+          Vim Cheat Sheet
+        </Heading>
+      </Flex>
       <VStack gap={4} overflowY="auto" flex={1} pr={2}>
         {cheatSheetList.map((item, index) => (
           <Box
@@ -61,9 +66,12 @@ export default function CheatSheet() {
             className={cardClass}
             style={{ marginBottom: 4 }}
           >
-            <span className={badgeClass} style={{ marginRight: 12 }}>
+            <div
+              className="badge-secondary focus-accent text-xs px-2 py-1 font-mono"
+              style={{ marginRight: 12 }}
+            >
               #{index + 1}
-            </span>
+            </div>
             <span className={commandClass}>{item.command}</span>
             <span className={descClass}>{item.description}</span>
           </Box>
