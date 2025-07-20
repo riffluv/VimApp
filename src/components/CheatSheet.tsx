@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, Heading, Image, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Stack } from "@chakra-ui/react";
 
 const cheatSheetList: { command: string; description: string }[] = [
   { command: "h / j / k / l", description: "左右上下にカーソル移動" },
@@ -25,80 +25,88 @@ const cheatSheetList: { command: string; description: string }[] = [
 export default function CheatSheet() {
   return (
     <Box
-      p={{ base: 6, md: 8 }}
-      bg="gray.900"
+      p={{ base: 4, md: 6 }}
+      bgGradient="linear(to-br, #18181b, #222)"
       color="white"
       borderRadius="xl"
-      boxShadow="lg"
+      boxShadow="0 4px 16px 0 rgba(0,0,0,0.5)"
       height="100%"
       display="flex"
       flexDirection="column"
       overflow="hidden"
+      borderWidth={1}
+      borderColor="gray.700"
+      transition="all 0.2s"
     >
-      <Flex align="center" justify="center" mb={6} gap={2}>
+      <Flex align="center" justify="center" mb={4} gap={2}>
         <Image
           src="/manabyicon.png"
           alt="manaby icon"
           h={{ base: 8, md: 10 }}
-          minW={6}
+          minW={8}
           objectFit="contain"
         />
-        <Heading as="h2" size="xl" color="cyan.400" m={0}>
+        <Heading
+          as="h2"
+          size="lg"
+          color="orange.400"
+          m={0}
+          fontWeight="bold"
+          letterSpacing="wide"
+        >
           Vim Cheat Sheet
         </Heading>
       </Flex>
-      <VStack gap={4} overflowY="auto" flex={1} pr={2}>
+      <Stack gap={2} overflowY="auto" flex={1} pr={1} align="stretch">
         {cheatSheetList.map((item, index) => (
           <Box
             key={index}
-            p={5}
+            py={2}
+            px={3}
             display="flex"
             alignItems="center"
-            mb={2}
-            borderRadius="xl"
-            boxShadow="lg"
-            bg="gray.800"
-            borderWidth={1}
-            borderColor="gray.700"
-            transition="all 0.2s"
-            _hover={{ transform: "scale(1.04)", borderColor: "cyan.400" }}
+            borderRadius="md"
+            borderWidth={0}
+            boxShadow="none"
+            bg="transparent"
+            transition="none"
+            mb={0}
           >
             <Box
-              bg="orange.400"
-              color="white"
-              borderRadius="md"
+              color="orange.400"
               fontWeight="bold"
-              px={2}
-              py={1}
-              fontSize="xs"
+              fontSize="sm"
               mr={3}
-              boxShadow="md"
-              tabIndex={0}
-              _focus={{
-                outline: "2px solid",
-                outlineColor: "cyan.400",
-                outlineOffset: "2px",
-              }}
               fontFamily="mono"
+              minW={10}
+              textAlign="left"
             >
               #{index + 1}
             </Box>
             <Box
               fontFamily="mono"
               fontWeight="bold"
-              color="cyan.300"
-              fontSize={{ base: "md", md: "lg" }}
+              color="orange.300"
+              fontSize="sm"
               mr={4}
               letterSpacing="wide"
+              minW={28}
+              textAlign="left"
             >
               {item.command}
             </Box>
-            <Box fontSize={{ base: "sm", md: "md" }} flex={1}>
+            <Box
+              fontSize="sm"
+              flex={1}
+              color="white"
+              fontWeight="normal"
+              textAlign="left"
+            >
               {item.description}
             </Box>
           </Box>
         ))}
-      </VStack>
+      </Stack>
     </Box>
   );
 }
