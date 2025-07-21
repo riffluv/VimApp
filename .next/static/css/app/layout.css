@@ -637,6 +637,7 @@ body {
   font-family: system-ui, sans-serif;
   background: #18181b;
   color: #fff;
-  overflow: hidden;
+  overflow: auto;
+  min-height: 100vh;
 }
 

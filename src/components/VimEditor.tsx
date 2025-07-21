@@ -1,12 +1,4 @@
-"use client";
-
-import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { vim } from "@replit/codemirror-vim";
-import CodeMirror, { EditorView } from "@uiw/react-codemirror";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
-
+// --- サンプルコード・VimTips定数 ---
 const htmlSample = `<div class="container">
   <h1>Hello Vim!</h1>
   <p>これはVim練習用のサンプルです。</p>
@@ -43,42 +35,49 @@ const vimTips = `// --- おまけ: よく使うVimコマンド ---
 // y / d : コピー・削除
 `;
 
-// モードの種類
-type VimMode = "normal" | "insert" | "visual";
-
-// モードごとの表示情報を定義
+// --- Vimモード情報・型定義 ---
+import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { vim } from "@replit/codemirror-vim";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { IconType } from "react-icons";
+import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
 const modeInfo = {
   normal: {
     text: "NORMAL",
     color: "orange.400",
-    icon: FiCommand,
+    icon: FiCommand as IconType,
     hint: "Press i to enter insert mode",
   },
   insert: {
     text: "INSERT",
     color: "green.400",
-    icon: FiEdit,
+    icon: FiEdit as IconType,
     hint: "Press Esc to return to normal mode",
   },
   visual: {
     text: "VISUAL",
     color: "purple.400",
-    icon: FiCommand,
+    icon: FiCommand as IconType,
     hint: "Select text with h,j,k,l or use y to copy",
   },
-};
-
+} as const;
+type VimMode = keyof typeof modeInfo;
 function VimEditor() {
   const [mode, setMode] = useState<"html" | "css" | "js">("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const editorViewRef = useRef<EditorView | null>(null);
 
-  // EditorViewインスタンス取得
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const handleCreateEditor = useCallback((view: EditorView) => {
     editorViewRef.current = view;
   }, []);
 
-  // 定期的にvimモードを監視
   useEffect(() => {
     const interval = setInterval(() => {
       try {
@@ -97,12 +96,10 @@ function VimEditor() {
             setVimMode(mode);
           }
         }
-      } catch (e) {
-        // 何もしない
-      }
+      } catch (e) {}
     }, 200);
     return () => clearInterval(interval);
-  }, []);
+  }, [editorViewRef]);
 
   const getSample = useCallback(() => {
     if (mode === "html") return htmlSample + vimTips;
@@ -110,14 +107,14 @@ function VimEditor() {
     return jsSample + vimTips;
   }, [mode]);
 
-  const [code, setCode] = useState(() => getSample());
+  const [code, setCode] = useState<string>(() => getSample());
 
   const handleReset = useCallback(() => {
     setCode(getSample());
-    setVimMode("normal"); // リセット時にモードもノーマルに戻す
+    setVimMode("normal");
   }, [getSample]);
 
-  const handleModeChange = useCallback((m: "html" | "css" | "js", _?: any) => {
+  const handleModeChange = useCallback((m: "html" | "css" | "js") => {
     setMode(m);
     setCode(
       m === "html"
@@ -131,60 +128,62 @@ function VimEditor() {
   const onChange = useCallback((value: string) => {
     setCode(value);
   }, []);
+  // SSR/CSR差異による高さ0問題を防ぐ
   return (
     <Box
       bgGradient="linear(to-br, #18181b, #222)"
       color="white"
       h="100%"
-      minH={0}
-      p={4}
+      p={[2, 3, 4]}
       borderRadius="2xl"
       boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
       display="flex"
-      flexDir="column"
+      flexDirection="column"
       borderWidth={1}
       borderColor="gray.700"
-      transition="all 0.3s"
+      transition="box-shadow 0.3s"
       _hover={{ boxShadow: "0 12px 48px 0 rgba(0,0,0,0.8)" }}
-      pos="relative"
+      position="relative"
       overflow="hidden"
+      flex={1}
+      minH="400px"
+      maxH="100%"
     >
-      {/* Editor Header with macOS-style window controls */}
+      {/* --- Editor Header (macOS風ウィンドウコントロール) --- */}
       <Flex
-        align="center"
-        px={4}
-        py={3}
+        alignItems="center"
+        px={[2, 4]}
+        py={[2, 3]}
         borderBottomWidth={1}
         borderColor="gray.800"
         bgGradient="linear(to-r, #101012, #1a1a1c)"
-        justify="space-between"
+        justifyContent="space-between"
       >
-        <Flex align="center">
-          <Flex gap={2} mr={5}>
+        <Flex alignItems="center">
+          <HStack gap={2} marginRight={5}>
             <Box w="12px" h="12px" borderRadius="full" bg="#FF5F56" />
             <Box w="12px" h="12px" borderRadius="full" bg="#FFBD2E" />
             <Box w="12px" h="12px" borderRadius="full" bg="#27C93F" />
-          </Flex>
-          <Flex align="center">
+          </HStack>
+          <Flex alignItems="center">
             <Icon as={FiTerminal} color="orange.400" mr={2} />
             <Text fontFamily="mono" fontWeight="medium" letterSpacing="tight">
               {mode.toUpperCase()} Editor
             </Text>
           </Flex>
         </Flex>
-
-        <HStack justify="flex-end" gap={2}>
-          {["html", "css", "js"].map((m) => (
+        <HStack justifyContent="flex-end" gap={2}>
+          {(["html", "css", "js"] as const).map((m) => (
             <Button
               key={m}
-              onClick={() => handleModeChange(m as "html" | "css" | "js")}
-              colorScheme={mode === m ? "orange" : "gray"}
+              onClick={() => handleModeChange(m)}
+              colorScheme={mode === m ? "orange" : undefined}
               bg={mode === m ? "blackAlpha.400" : "transparent"}
               color={mode === m ? "orange.400" : "gray.400"}
               borderRadius="md"
               px={3}
               py={1.5}
-              h="auto"
+              height="auto"
               fontFamily="mono"
               fontWeight={mode === m ? "bold" : "medium"}
               letterSpacing="tight"
@@ -196,7 +195,7 @@ function VimEditor() {
               _active={{
                 bg: "blackAlpha.500",
               }}
-              transition="all 0.15s"
+              transition="background 0.15s, color 0.15s"
               mr={1}
             >
               {m.toUpperCase()}
@@ -210,7 +209,7 @@ function VimEditor() {
             borderRadius="md"
             px={3}
             py={1.5}
-            h="auto"
+            height="auto"
             fontFamily="mono"
             fontWeight="medium"
             letterSpacing="tight"
@@ -222,17 +221,16 @@ function VimEditor() {
             _active={{
               bg: "blackAlpha.500",
             }}
-            transition="all 0.15s"
+            transition="background 0.15s, color 0.15s"
             ml={2}
           >
             <Icon as={FiRefreshCw} mr={1} /> Reset
           </Button>
         </HStack>
       </Flex>
-
-      {/* Status bar showing vim mode */}
+      {/* --- Vimモード表示ステータスバー --- */}
       <Flex
-        pos="absolute"
+        position="absolute"
         bottom={0}
         left={0}
         right={0}
@@ -244,10 +242,10 @@ function VimEditor() {
         zIndex={5}
         fontSize="sm"
         fontFamily="mono"
-        justify="space-between"
-        align="center"
+        justifyContent="space-between"
+        alignItems="center"
       >
-        <Flex align="center">
+        <Flex alignItems="center">
           <Icon
             as={modeInfo[vimMode].icon}
             color={modeInfo[vimMode].color}
@@ -261,47 +259,53 @@ function VimEditor() {
           {modeInfo[vimMode].hint}
         </Text>
       </Flex>
-
-      {/* Editor Area */}
+      {/* --- Editor本体エリア --- */}
       <Box
         flex={1}
-        minH={0}
+        minHeight={0}
         borderRadius="lg"
         overflow="hidden"
-        w="100%"
+        width="100%"
         display="flex"
-        pos="relative"
+        position="relative"
         mb={8}
+        height="100%"
+        maxH="100%"
       >
-        {/* CodeMirror本体はChakra UIで完全にラップできないため、style属性は最小限許容 */}
-        <CodeMirror
-          value={code}
-          height="100%"
-          extensions={[vim(), oneDark, EditorView.lineWrapping]}
-          onChange={onChange}
-          theme={oneDark}
-          basicSetup={{
-            lineNumbers: true,
-            highlightActiveLine: true,
-            highlightActiveLineGutter: true,
-            foldGutter: true,
-            dropCursor: true,
-            indentOnInput: true,
-          }}
-          style={{
-            width: "100%",
-            height: "100%",
-            background: "#18181b",
-            color: "#fff",
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            fontSize: "1.1rem",
-            fontFamily: "Fira Mono, Menlo, Monaco, Consolas, monospace",
-          }}
-          onCreateEditor={handleCreateEditor}
-        />
+        {/* SSR/CSR差異による高さ0問題を防ぐため、マウント後のみ描画 */}
+        {isMounted && (
+          <CodeMirror
+            value={code}
+            height="100%"
+            extensions={[vim(), oneDark, EditorView.lineWrapping]}
+            onChange={onChange}
+            theme={oneDark}
+            basicSetup={{
+              lineNumbers: true,
+              highlightActiveLine: true,
+              highlightActiveLineGutter: true,
+              foldGutter: true,
+              dropCursor: true,
+              indentOnInput: true,
+            }}
+            /* Chakra UIで表現できないCodeMirror固有のstyleのみstyle属性で指定 */
+            style={{
+              width: "100%", // Chakra UI Boxでwidth="100%"指定済み
+              height: "100%", // Chakra UI Boxでheight="100%"指定済み
+              minHeight: "300px", // Chakra UI BoxでminH="300px"指定済み
+              background: "#18181b", // Chakra UI bgGradientで近似指定済み
+              color: "#fff", // Chakra UI colorで指定済み
+              whiteSpace: "pre-wrap", // CodeMirrorの折返し用
+              wordBreak: "break-word", // CodeMirrorの折返し用
+              fontSize: "1.1rem", // CodeMirrorのフォントサイズ
+              fontFamily: "Fira Mono, Menlo, Monaco, Consolas, monospace", // CodeMirrorのフォント
+            }}
+            onCreateEditor={handleCreateEditor}
+          />
+        )}
       </Box>
     </Box>
   );
 }
+
 export default VimEditor;

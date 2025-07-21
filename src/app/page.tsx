@@ -18,9 +18,10 @@ export default function Home() {
   return (
     <Box
       minH="100vh"
-      bg="bgDark"
+      bg="#18181b"
       bgGradient="linear(to-b, #0a0a0b, #18181b)"
       pb={[4, 8]}
+      overflow="hidden"
     >
       {/* Header Section */}
       <Box
