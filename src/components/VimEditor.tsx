@@ -135,18 +135,18 @@ function VimEditor() {
     <Box
       bgGradient="linear(to-br, #18181b, #222)"
       color="white"
-      height="100%"
-      minHeight="0"
+      h="100%"
+      minH={0}
       p={4}
       borderRadius="2xl"
       boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
       display="flex"
-      flexDirection="column"
+      flexDir="column"
       borderWidth={1}
       borderColor="gray.700"
       transition="all 0.3s"
       _hover={{ boxShadow: "0 12px 48px 0 rgba(0,0,0,0.8)" }}
-      position="relative"
+      pos="relative"
       overflow="hidden"
     >
       {/* Editor Header with macOS-style window controls */}
@@ -232,7 +232,7 @@ function VimEditor() {
 
       {/* Status bar showing vim mode */}
       <Flex
-        position="absolute"
+        pos="absolute"
         bottom={0}
         left={0}
         right={0}
@@ -265,14 +265,15 @@ function VimEditor() {
       {/* Editor Area */}
       <Box
         flex={1}
-        minHeight={0}
+        minH={0}
         borderRadius="lg"
         overflow="hidden"
-        width="100%"
+        w="100%"
         display="flex"
-        position="relative"
+        pos="relative"
         mb={8}
       >
+        {/* CodeMirror本体はChakra UIで完全にラップできないため、style属性は最小限許容 */}
         <CodeMirror
           value={code}
           height="100%"
