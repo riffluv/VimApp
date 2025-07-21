@@ -20,7 +20,7 @@ export default function Home() {
       minH="100vh"
       bg="bgDark"
       bgGradient="linear(to-b, #0a0a0b, #18181b)"
-      pb={{ base: 4, md: 8 }}
+      pb={[4, 8]}
     >
       {/* Header Section */}
       <Box
@@ -28,7 +28,7 @@ export default function Home() {
         borderBottomWidth={1}
         borderColor="whiteAlpha.100"
         position="relative"
-        mb={{ base: 6, md: 10 }}
+        mb={[6, 10]}
         pb={4}
       >
         {/* Background gradient effect */}
@@ -51,41 +51,38 @@ export default function Home() {
           justify="space-between"
           maxW="1400px"
           mx="auto"
-          px={{ base: 4, md: 8 }}
+          px={[4, 8]}
           py={4}
         >
           <Flex align="center" gap={3}>
             <Image
               src="/manabylogo.png"
               alt="manaby logo"
-              h={{ base: 10, md: 12 }}
+              h={[10, 12]}
               objectFit="contain"
               style={{ minWidth: 60 }}
             />
             <Flex direction="column">
               <Heading
                 as="h1"
-                size={{ base: "lg", md: "xl" }}
+                fontSize={["lg", "xl"]}
                 color="orange.400"
                 fontWeight="extrabold"
                 letterSpacing="tight"
               >
                 Vim Practice App
               </Heading>
-              <Text
-                fontSize={{ base: "xs", md: "sm" }}
-                color="whiteAlpha.700"
-                mt={0.5}
-              >
+              <Text fontSize={["xs", "sm"]} color="whiteAlpha.700" mt={0.5}>
                 ブラウザ上でVimのコマンドを練習できるアプリ
               </Text>
             </Flex>
           </Flex>
 
-          <Flex gap={4} align="center" display={{ base: "none", md: "flex" }}>
+          <Flex gap={4} align="center" display={["none", "flex"]}>
             <Link
               href="https://github.com/vim/vim"
-              isExternal
+              target="_blank"
+              rel="noopener noreferrer"
               display="flex"
               alignItems="center"
               color="whiteAlpha.800"
@@ -98,7 +95,8 @@ export default function Home() {
             </Link>
             <Link
               href="https://www.vim.org/docs.php"
-              isExternal
+              target="_blank"
+              rel="noopener noreferrer"
               display="flex"
               alignItems="center"
               color="whiteAlpha.800"
@@ -115,7 +113,7 @@ export default function Home() {
         {/* Intro text */}
         <Box maxW="700px" mx="auto" textAlign="center" px={4} mt={4}>
           <Text
-            fontSize={{ base: "md", md: "lg" }}
+            fontSize={["md", "lg"]}
             fontWeight="medium"
             color="whiteAlpha.900"
             lineHeight="tall"
@@ -128,28 +126,34 @@ export default function Home() {
       </Box>
 
       {/* Main content area */}
-      <Box maxW="1400px" mx="auto" px={{ base: 4, md: 6 }}>
+      <Box maxW="1400px" mx="auto" px={[4, 6]}>
         <Flex
-          gap={{ base: 6, md: 8 }}
-          direction={{ base: "column", lg: "row" }}
-          height={{
-            base: "auto",
-            md: isMounted ? "calc(100vh - 240px)" : "auto",
-          }}
-          minHeight={{ base: "auto", md: "600px" }}
+          gap={[6, 8]}
+          direction={["column", null, "row"]}
+          height={["auto", null, "calc(100vh - 240px)"]}
+          minHeight={["auto", null, "600px"]}
           alignItems="stretch"
         >
           <Box
-            flex={{ base: "auto", lg: "1" }}
-            minW={{ lg: "380px" }}
-            height={{ base: "450px", lg: "auto" }}
+            flex={["auto", null, "1"]}
+            minW={["0", null, "380px"]}
+            maxW={["100%", null, "700px"]}
+            height={["450px", null, "100%"]}
+            w={["100%", null, "auto"]}
+            alignSelf="flex-start"
+            transition="max-width 0.2s"
+            display="flex"
+            flexDir="column"
           >
-            <CheatSheet />
+            <Box
+              flex={1}
+              height={["auto", null, "100%"]}
+              overflowY={["visible", null, "auto"]}
+            >
+              <CheatSheet />
+            </Box>
           </Box>
-          <Box
-            flex={{ base: "auto", lg: "2" }}
-            height={{ base: "600px", lg: "auto" }}
-          >
+          <Box flex={["auto", null, "2"]} height={["600px", null, "100%"]}>
             <VimEditor />
           </Box>
         </Flex>
