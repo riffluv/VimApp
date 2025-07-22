@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Badge,
+  Accordion,
   Box,
   Flex,
   Heading,
@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import {
   FiBookOpen,
+  FiChevronDown,
   FiCommand,
   FiCornerDownRight,
   FiCpu,
@@ -19,6 +20,7 @@ import {
   FiSearch,
 } from "react-icons/fi";
 
+// Command interface and data
 interface Command {
   command: string;
   description: string;
@@ -26,6 +28,7 @@ interface Command {
 }
 
 const cheatSheetList: Command[] = [
+  // (The command list remains the same)
   {
     command: "h / j / k / l",
     description: "左右上下にカーソル移動",
@@ -81,27 +84,51 @@ const cheatSheetList: Command[] = [
   { command: "y / d", description: "コピー・削除", category: "editing" },
 ];
 
-const CategoryIcons = {
-  navigation: FiCornerDownRight,
-  editing: FiEdit2,
-  search: FiSearch,
-  basic: FiCommand,
-  advanced: FiCpu,
-};
+// Group commands by category
+const groupedCommands = cheatSheetList.reduce((acc, command) => {
+  if (!acc[command.category]) {
+    acc[command.category] = [];
+  }
+  acc[command.category].push(command);
+  return acc;
+}, {} as Record<Command["category"], Command[]>);
 
-const CategoryColors = {
-  navigation: "blue.400",
-  editing: "green.400",
-  search: "purple.400",
-  basic: "orange.400",
-  advanced: "pink.400",
+// Category metadata
+const CategoryInfo = {
+  basic: {
+    icon: FiCommand,
+    color: "orange.400",
+    title: "基本操作",
+  },
+  navigation: {
+    icon: FiCornerDownRight,
+    color: "blue.400",
+    title: "カーソル移動",
+  },
+  editing: {
+    icon: FiEdit2,
+    color: "green.400",
+    title: "編集",
+  },
+  search: {
+    icon: FiSearch,
+    color: "purple.400",
+    title: "検索と置換",
+  },
+  advanced: {
+    icon: FiCpu,
+    color: "pink.400",
+    title: "高度なコマンド",
+  },
 };
 
 export default function CheatSheet() {
   return (
     <Box
-      p={{ base: 0, md: 0 }}
-      bgGradient="linear(to-br, #18181b, #222)"
+      p={0}
+      bgGradient="to-br"
+      gradientFrom="#18181b"
+      gradientTo="#222"
       color="white"
       borderRadius="2xl"
       boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
@@ -120,9 +147,10 @@ export default function CheatSheet() {
         px={6}
         py={4}
         borderBottomWidth={1}
-        borderColor="gray.800"
-        bgGradient="linear(to-r, #101012, #1a1a1c)"
-        mb={0}
+        borderColor="primary.700"
+        bgGradient="to-r"
+        gradientFrom="primary.900"
+        gradientTo="primary.800"
       >
         <Flex align="center" gap={3}>
           <Image
@@ -136,11 +164,9 @@ export default function CheatSheet() {
             <Heading
               as="h2"
               size="md"
-              color="orange.400"
-              m={0}
+              color="secondary.400"
               fontWeight="bold"
               letterSpacing="tight"
-              lineHeight="1.2"
             >
               Vim Cheat Sheet
             </Heading>
@@ -151,49 +177,7 @@ export default function CheatSheet() {
         </Flex>
       </Flex>
 
-      {/* Categories */}
-      <Flex
-        px={4}
-        py={3}
-        borderBottomWidth={1}
-        borderColor="gray.800"
-        bg="blackAlpha.300"
-        overflowX="auto"
-        flexWrap="nowrap"
-        gap={2}
-        css={{
-          "&::-webkit-scrollbar": { height: "4px" },
-          "&::-webkit-scrollbar-thumb": { background: "#333" },
-        }}
-      >
-        {Object.entries(CategoryIcons).map(([category, IconComponent]) => (
-          <Badge
-            key={category}
-            bg={`${
-              category === "basic"
-                ? CategoryColors[category as keyof typeof CategoryColors]
-                : "blackAlpha.400"
-            }`}
-            color={`${
-              category === "basic"
-                ? "white"
-                : CategoryColors[category as keyof typeof CategoryColors]
-            }`}
-            borderRadius="md"
-            px={2.5}
-            py={1}
-            display="flex"
-            alignItems="center"
-            fontSize="xs"
-            fontWeight="medium"
-          >
-            <Icon as={IconComponent} mr={1} fontSize="11px" />
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </Badge>
-        ))}
-      </Flex>
-
-      {/* Command List */}
+      {/* Command List (Accordion) */}
       <Box
         overflowY="auto"
         flex={1}
@@ -203,67 +187,89 @@ export default function CheatSheet() {
         }}
         p={2}
       >
-        <Stack gap={0} align="stretch">
-          {cheatSheetList.map((item, index) => (
-            <Flex
-              key={index}
-              py={2}
-              px={3}
-              alignItems="center"
-              borderRadius="md"
-              transition="all 0.15s"
-              _hover={{
-                bg: "blackAlpha.400",
-              }}
-              my={0.5}
-              role="group"
-            >
-              <Box
-                color="whiteAlpha.600"
-                fontWeight="medium"
-                fontSize="xs"
-                mr={2}
-                fontFamily="mono"
-                minW={5}
-                textAlign="center"
+        <Accordion.Root multiple defaultValue={["basic", "navigation"]}>
+          {Object.entries(groupedCommands).map(([category, commands]) => {
+            const catInfo = CategoryInfo[category as keyof typeof CategoryInfo];
+            return (
+              <Accordion.Item
+                key={category}
+                value={category}
+                border="none"
+                mb={2}
               >
-                {index + 1}
-              </Box>
-
-              <Icon
-                as={CategoryIcons[item.category]}
-                color={CategoryColors[item.category]}
-                mr={2}
-                fontSize="sm"
-              />
-
-              <Box
-                fontFamily="mono"
-                fontWeight="semibold"
-                color="orange.300"
-                fontSize="sm"
-                mr={3}
-                letterSpacing="tight"
-                minW={{ base: "auto", md: 28 }}
-                textAlign="left"
-                _groupHover={{ color: "orange.400" }}
-              >
-                {item.command}
-              </Box>
-
-              <Box
-                fontSize="sm"
-                flex={1}
-                color="whiteAlpha.800"
-                fontWeight="normal"
-                textAlign="left"
-                _groupHover={{ color: "white" }}
-              >
-                {item.description}
-              </Box>
-            </Flex>
-          ))}
-        </Stack>
+                <Accordion.ItemTrigger
+                  bg="blackAlpha.300"
+                  borderRadius="lg"
+                  _hover={{ bg: "blackAlpha.400" }}
+                  py={3}
+                  px={4}
+                >
+                  <Flex align="center" flex="1" textAlign="left">
+                    <Icon
+                      as={catInfo.icon}
+                      color={catInfo.color}
+                      mr={3}
+                      fontSize="lg"
+                    />
+                    <Text fontWeight="bold" color="whiteAlpha.900">
+                      {catInfo.title}
+                    </Text>
+                  </Flex>
+                  <Accordion.ItemIndicator>
+                    <Icon
+                      as={FiChevronDown}
+                      color="whiteAlpha.700"
+                      transition="transform 0.2s"
+                      _open={{ transform: "rotate(180deg)" }}
+                    />
+                  </Accordion.ItemIndicator>
+                </Accordion.ItemTrigger>
+                <Accordion.ItemContent>
+                  <Accordion.ItemBody pb={2} pt={2} px={1}>
+                    <Stack gap={0} align="stretch">
+                      {commands.map((item, index) => (
+                        <Flex
+                          key={index}
+                          py={2}
+                          px={3}
+                          alignItems="center"
+                          borderRadius="md"
+                          transition="all 0.15s"
+                          _hover={{ bg: "blackAlpha.400" }}
+                          role="group"
+                        >
+                          <Box
+                            fontFamily="mono"
+                            fontWeight="semibold"
+                            color="secondary.300"
+                            fontSize="sm"
+                            mr={4}
+                            letterSpacing="tight"
+                            minW={{ base: "auto", md: 28 }}
+                            textAlign="left"
+                            _groupHover={{ color: "secondary.400" }}
+                          >
+                            {item.command}
+                          </Box>
+                          <Box
+                            fontSize="sm"
+                            flex={1}
+                            color="whiteAlpha.800"
+                            fontWeight="normal"
+                            textAlign="left"
+                            _groupHover={{ color: "white" }}
+                          >
+                            {item.description}
+                          </Box>
+                        </Flex>
+                      ))}
+                    </Stack>
+                  </Accordion.ItemBody>
+                </Accordion.ItemContent>
+              </Accordion.Item>
+            );
+          })}
+        </Accordion.Root>
       </Box>
 
       {/* Footer */}
@@ -271,7 +277,7 @@ export default function CheatSheet() {
         px={4}
         py={2}
         borderTopWidth={1}
-        borderColor="gray.800"
+        borderColor="primary.700"
         bg="blackAlpha.400"
         fontSize="xs"
         color="gray.500"

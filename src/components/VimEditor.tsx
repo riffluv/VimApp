@@ -155,8 +155,8 @@ function VimEditor() {
         px={[2, 4]}
         py={[2, 3]}
         borderBottomWidth={1}
-        borderColor="gray.800"
-        bgGradient="linear(to-r, #101012, #1a1a1c)"
+        borderColor="primary.700"
+        bgGradient="linear(to-r, primary.900, primary.800)"
         justifyContent="space-between"
       >
         <Flex alignItems="center">
@@ -166,7 +166,7 @@ function VimEditor() {
             <Box w="12px" h="12px" borderRadius="full" bg="#27C93F" />
           </HStack>
           <Flex alignItems="center">
-            <Icon as={FiTerminal} color="orange.400" mr={2} />
+            <Icon as={FiTerminal} color="secondary.400" mr={2} />
             <Text fontFamily="mono" fontWeight="medium" letterSpacing="tight">
               {mode.toUpperCase()} Editor
             </Text>
@@ -177,9 +177,9 @@ function VimEditor() {
             <Button
               key={m}
               onClick={() => handleModeChange(m)}
-              colorScheme={mode === m ? "orange" : undefined}
+              colorScheme={mode === m ? "orange" : "gray"}
               bg={mode === m ? "blackAlpha.400" : "transparent"}
-              color={mode === m ? "orange.400" : "gray.400"}
+              color={mode === m ? "secondary.400" : "gray.400"}
               borderRadius="md"
               px={3}
               py={1.5}
@@ -190,7 +190,7 @@ function VimEditor() {
               borderWidth={0}
               _hover={{
                 bg: mode === m ? "blackAlpha.500" : "blackAlpha.300",
-                color: "orange.400",
+                color: "secondary.400",
               }}
               _active={{
                 bg: "blackAlpha.500",
@@ -216,7 +216,7 @@ function VimEditor() {
             borderWidth={0}
             _hover={{
               bg: "blackAlpha.300",
-              color: "orange.400",
+              color: "secondary.400",
             }}
             _active={{
               bg: "blackAlpha.500",
@@ -238,7 +238,7 @@ function VimEditor() {
         py={1.5}
         bg="blackAlpha.600"
         borderTopWidth={1}
-        borderColor="gray.800"
+        borderColor="primary.700"
         zIndex={5}
         fontSize="sm"
         fontFamily="mono"

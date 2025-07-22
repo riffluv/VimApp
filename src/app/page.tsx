@@ -27,7 +27,7 @@ export default function Home() {
       <Box
         as="header"
         borderBottomWidth={1}
-        borderColor="whiteAlpha.100"
+        borderColor="primary.700"
         position="relative"
         mb={[6, 10]}
         pb={4}
@@ -41,7 +41,7 @@ export default function Home() {
           w="100%"
           maxW="1200px"
           h="full"
-          bgGradient="radial(circle at top center, orange.900 0%, transparent 70%)"
+          bgGradient="radial(circle at top center, secondary.900 0%, transparent 70%)"
           opacity={0.15}
           pointerEvents="none"
         />
@@ -67,7 +67,7 @@ export default function Home() {
               <Heading
                 as="h1"
                 fontSize={["lg", "xl"]}
-                color="orange.400"
+                color="secondary.400"
                 fontWeight="extrabold"
                 letterSpacing="tight"
               >
@@ -88,7 +88,7 @@ export default function Home() {
               alignItems="center"
               color="whiteAlpha.800"
               fontSize="sm"
-              _hover={{ color: "orange.400" }}
+              _hover={{ color: "secondary.400" }}
               transition="all 0.2s"
             >
               <Icon as={FiGithub} mr={1.5} />
@@ -102,7 +102,7 @@ export default function Home() {
               alignItems="center"
               color="whiteAlpha.800"
               fontSize="sm"
-              _hover={{ color: "orange.400" }}
+              _hover={{ color: "secondary.400" }}
               transition="all 0.2s"
             >
               <Icon as={FiExternalLink} mr={1.5} />
@@ -167,7 +167,7 @@ export default function Home() {
           py={6}
           mt={6}
           borderTopWidth={1}
-          borderColor="whiteAlpha.100"
+          borderColor="primary.700"
           color="whiteAlpha.600"
           fontSize="sm"
         >

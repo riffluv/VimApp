@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Vim Practice App",
   description: "Vim Practice App for beginners",
+  icons: {
+    icon: "/manabyicon.png",
+  },
 };
 
 export default function RootLayout({
