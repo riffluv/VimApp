@@ -1,3 +1,16 @@
+# Vim コマンド未対応・制限一覧（CodeMirror Vim 拡張 @replit/codemirror-vim 2025 年 7 月調査）
+
+一部 Vim コマンドは CodeMirror Vim 拡張で未対応・制限・バグがあります。下記に主な注意点をまとめます。
+
+- 複数回数指定のテキストオブジェクト（例: v2a[、v8a[）は正しく動作しない（Issue #229）
+- fold 系コマンド（zc, zo, zm, zr 等）は未対応
+- %（括弧ジャンプ）は一部未対応（Issue #234）
+- IME/日本語キーボードでの挙動にバグ報告あり（Issue #153）
+- タグオブジェクト（cat, cit 等）は HTML/XML モードでのみ有効
+- 一部 Ex コマンドやマクロ、Undo 系（U）なども未対応・制限あり
+
+基本的な移動・編集・ヤンク・削除・置換・検索・ビジュアルモード等はほぼ全て動作しますが、上記の特殊コマンドや複雑な操作は制限があります。最新情報は GitHub Issue（https://github.com/replit/codemirror-vim/issues）を参照してください。
+
 # CSS ベストプラクティス 2025 (vimapp プロジェクト)
 
 このドキュメントは、`vimapp`プロジェクトにおける CSS/スタイリングのコーディング規約とベストプラクティスを定義します。
@@ -15,6 +28,22 @@ CSS の記述は、原則として Chakra UI が提供する**スタイル Props
   Hello World
 </Box>
 ```
+
+---
+
+## 7. Vim コマンド互換性に関する注意（CodeMirror Vim 拡張）
+
+本プロジェクトの Vim エディタは、CodeMirror の Vim 拡張（@replit/codemirror-vim）を利用しています。
+しかし、現状の CodeMirror Vim 拡張は本家 Vim と完全同等のコマンド互換性はありません。
+
+特に、cit/cat 等のテキストオブジェクトコマンドや複数回数指定（例: v2a[）は未対応、または挙動が異なる場合があります。
+（詳細は[公式 Issue](https://github.com/replit/codemirror-vim/issues/229)等を参照）
+
+**Vim コマンドの練習用途としては十分ですが、厳密な Vim 互換を求める場合は注意してください。**
+
+今後のアップデートや独自拡張で改善される可能性はありますが、現状は一部コマンドが未対応・バグありです。
+
+---
 
 **[NG] 避けるべき例:**
 

@@ -55,31 +55,33 @@ export default function Home() {
             alignItems="center"
             color="whiteAlpha.800"
             fontSize="sm"
-            _hover={{ color: "orange.300" }}
+            _hover={{ color: "orange.300", textDecoration: "underline" }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{ outline: "none" }}
             px={3}
             py={2}
             borderRadius="md"
-            bg="blackAlpha.300"
           >
             <Icon as={FiGithub} mr={1} />
             GitHub
           </Link>
           <Link
-            href="https://www.vim.org/docs.php"
+            href="https://vim.rtorr.com/lang/ja"
             target="_blank"
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
             color="whiteAlpha.800"
             fontSize="sm"
-            _hover={{ color: "orange.300" }}
+            _hover={{ color: "orange.300", textDecoration: "underline" }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{ outline: "none" }}
             px={3}
             py={2}
             borderRadius="md"
-            bg="blackAlpha.300"
           >
             <Icon as={FiExternalLink} mr={1} />
-            Docs
+            Vimチートシート
           </Link>
         </Flex>
       </Flex>

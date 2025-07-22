@@ -15,7 +15,6 @@ import {
   FiBookOpen,
   FiChevronDown,
   FiCommand,
-  FiCornerDownRight,
   FiCpu,
   FiEdit2,
   FiSearch,
@@ -28,64 +27,193 @@ const MotionFlex = motion(Flex);
 interface Command {
   command: string;
   description: string;
-  category: "navigation" | "editing" | "search" | "basic" | "advanced";
+  category: "normal" | "insert" | "visual" | "practical";
 }
 
+// 初心者・ウェブ制作者向け厳選コマンド
 const cheatSheetList: Command[] = [
-  // (The command list remains the same)
-  {
-    command: "h / j / k / l",
-    description: "左右上下にカーソル移動",
-    category: "navigation",
-  },
-  {
-    command: "w / b / e",
-    description: "単語単位で移動（次/前/末尾）",
-    category: "navigation",
-  },
-  {
-    command: "0 / $ / ^",
-    description: "行頭・行末・最初の非空白文字へ",
-    category: "navigation",
-  },
-  {
-    command: "gg / G",
-    description: "ファイル先頭・末尾へ移動",
-    category: "navigation",
-  },
-  {
-    command: "i / a / o / O",
-    description: "挿入モード（位置/新規行）",
-    category: "basic",
-  },
-  {
-    command: "x",
-    description: "カーソル位置の文字を削除",
-    category: "editing",
-  },
-  { command: "dd", description: "現在の行を削除", category: "editing" },
+  // ノーマルモード（基本操作・移動・編集）
+  // ノーマルモード（基本操作・移動・編集）
+  { command: "h", description: "左に移動", category: "normal" },
+  { command: "j", description: "下に移動", category: "normal" },
+  { command: "k", description: "上に移動", category: "normal" },
+  { command: "l", description: "右に移動", category: "normal" },
+  { command: "w", description: "次の単語の先頭に移動", category: "normal" },
+  { command: "b", description: "前の単語の先頭に移動", category: "normal" },
+  { command: "e", description: "次の単語の末尾に移動", category: "normal" },
+  { command: "0", description: "行頭に移動", category: "normal" },
+  { command: "$", description: "行末に移動", category: "normal" },
+  { command: "^", description: "最初の非空白文字に移動", category: "normal" },
+  { command: "gg", description: "ファイル先頭へ移動", category: "normal" },
+  { command: "G", description: "ファイル末尾へ移動", category: "normal" },
+  { command: ":w", description: "保存", category: "normal" },
+  { command: ":q", description: "終了", category: "normal" },
+  { command: ":wq", description: "保存して終了", category: "normal" },
+  { command: ":q!", description: "強制終了（保存せず）", category: "normal" },
+  { command: "x", description: "カーソル位置の文字を削除", category: "normal" },
+  { command: "dd", description: "現在の行を削除", category: "normal" },
+  { command: "dw", description: "次の単語まで削除", category: "normal" },
+  { command: "d$", description: "行末まで削除", category: "normal" },
   {
     command: "yy",
     description: "現在の行をコピー（ヤンク）",
-    category: "editing",
+    category: "normal",
   },
-  { command: "p / P", description: "貼り付け（後/前）", category: "editing" },
-  { command: "u / Ctrl+r", description: "アンドゥ・リドゥ", category: "basic" },
   {
-    command: "cw / cc / c$",
-    description: "単語・行・行末まで変更",
-    category: "advanced",
+    command: "yw",
+    description: "次の単語までコピー（ヤンク）",
+    category: "normal",
   },
-  { command: ".", description: "直前の操作を繰り返し", category: "advanced" },
-  { command: "/pattern", description: "パターンを検索", category: "search" },
-  { command: "n / N", description: "次・前の検索結果へ", category: "search" },
+  {
+    command: "y$",
+    description: "行末までコピー（ヤンク）",
+    category: "normal",
+  },
+  { command: "p", description: "貼り付け（後）", category: "normal" },
+  { command: "P", description: "貼り付け（前）", category: "normal" },
+  { command: "u", description: "アンドゥ（元に戻す）", category: "normal" },
+  { command: "Ctrl+r", description: "リドゥ（やり直し）", category: "normal" },
+  { command: ".", description: "直前の操作を繰り返し", category: "normal" },
+  { command: "/pattern", description: "パターンを検索", category: "normal" },
+  { command: "n", description: "次の検索結果へ", category: "normal" },
+  { command: "N", description: "前の検索結果へ", category: "normal" },
   {
     command: ":%s/old/new/g",
     description: "全てのoldをnewに置換",
-    category: "search",
+    category: "normal",
   },
-  { command: "v / V", description: "選択開始（文字/行）", category: "basic" },
-  { command: "y / d", description: "コピー・削除", category: "editing" },
+  // インサートモード
+  {
+    command: "i",
+    description: "カーソル位置で挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "I",
+    description: "行頭で挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "a",
+    description: "カーソルの次の位置で挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "A",
+    description: "行末で挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "o",
+    description: "下に新しい行を作って挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "O",
+    description: "上に新しい行を作って挿入モードに入る",
+    category: "insert",
+  },
+  {
+    command: "Esc",
+    description: "ノーマルモードに戻る",
+    category: "insert",
+  },
+  {
+    command: "Ctrl+h / Ctrl+w",
+    description: "挿入モード中に文字/単語消去",
+    category: "insert",
+  },
+  // ビジュアルモード
+  // ビジュアルモード
+  {
+    command: "v",
+    description: "文字単位で選択開始（ビジュアルモード）",
+    category: "visual",
+  },
+  {
+    command: "V",
+    description: "行単位で選択開始（ビジュアルモード）",
+    category: "visual",
+  },
+  {
+    command: "Ctrl+v",
+    description: "矩形選択開始（ビジュアルモード）",
+    category: "visual",
+  },
+  {
+    command: "y",
+    description: "選択範囲をコピー（ヤンク）",
+    category: "visual",
+  },
+  { command: "d", description: "選択範囲を削除", category: "visual" },
+  { command: ">", description: "選択範囲を右にインデント", category: "visual" },
+  { command: "<", description: "選択範囲を左にインデント", category: "visual" },
+  { command: "Esc", description: "ノーマルモードに戻る", category: "visual" },
+  // 実務で役立つコマンド（応用・便利技）
+  // 実務で役立つコマンド（応用・便利技）
+  {
+    command: "ciw",
+    description: "単語全体を変更（消去して挿入）",
+    category: "practical",
+  },
+  {
+    command: "cw",
+    description: "単語末尾まで変更（消去して挿入）",
+    category: "practical",
+  },
+  {
+    command: "cc",
+    description: "行全体を変更（消去して挿入）",
+    category: "practical",
+  },
+  {
+    command: "c$",
+    description: "カーソル位置から行末まで変更（消去して挿入）",
+    category: "practical",
+  },
+  {
+    command: ":tabnew",
+    description: "新しいタブを開く",
+    category: "practical",
+  },
+  { command: "gt", description: "次のタブに移動", category: "practical" },
+  { command: "gT", description: "前のタブに移動", category: "practical" },
+  {
+    command: ":sp",
+    description: "ウィンドウを水平分割",
+    category: "practical",
+  },
+  {
+    command: ":vs",
+    description: "ウィンドウを垂直分割",
+    category: "practical",
+  },
+  { command: "Ctrl+ws", description: "ウィンドウ分割", category: "practical" },
+  {
+    command: "Ctrl+wv",
+    description: "ウィンドウ垂直分割",
+    category: "practical",
+  },
+  {
+    command: "Ctrl+ww",
+    description: "ウィンドウ切り替え",
+    category: "practical",
+  },
+  {
+    command: ":reg",
+    description: "レジスタの内容を表示",
+    category: "practical",
+  },
+  {
+    command: '"+y',
+    description: "選択範囲をクリップボードにコピー",
+    category: "practical",
+  },
+  {
+    command: '"+p',
+    description: "クリップボードからペースト",
+    category: "practical",
+  },
 ];
 
 // Group commands by category
@@ -97,32 +225,34 @@ const groupedCommands = cheatSheetList.reduce((acc, command) => {
   return acc;
 }, {} as Record<Command["category"], Command[]>);
 
-// Category metadata
+// Category metadata（見た目・アイコンは現状維持）
 const CategoryInfo = {
-  basic: {
+  normal: {
     icon: FiCommand,
     color: "orange.400",
-    title: "基本操作",
+    title: "ノーマルモード（基本操作）",
+    description:
+      "Escで入る。移動・編集・コマンド実行の基本。Vimの中心となるモードです。",
   },
-  navigation: {
-    icon: FiCornerDownRight,
-    color: "blue.400",
-    title: "カーソル移動",
-  },
-  editing: {
+  insert: {
     icon: FiEdit2,
     color: "green.400",
-    title: "編集",
+    title: "インサートモード（テキスト入力）",
+    description:
+      "i/a/o等で入る。テキスト入力専用。Escでノーマルモードに戻ります。",
   },
-  search: {
-    icon: FiSearch,
-    color: "purple.400",
-    title: "検索と置換",
-  },
-  advanced: {
+  visual: {
     icon: FiCpu,
     color: "pink.400",
-    title: "高度なコマンド",
+    title: "ビジュアルモード（範囲選択）",
+    description:
+      "v/V/Ctrl+vで入る。範囲選択・コピー・削除・インデント等に使います。Escで終了。",
+  },
+  practical: {
+    icon: FiSearch,
+    color: "purple.400",
+    title: "実務で役立つコマンド（応用）",
+    description: "現場でよく使う便利技。慣れてきたら活用しましょう。",
   },
 };
 
@@ -424,7 +554,13 @@ export default function CheatSheet() {
         }}
       >
         <Icon as={FiBookOpen} mr={1.5} />
-        <Text>Vim を練習して速度と効率を向上させよう</Text>
+        <Text>
+          Vim を練習して速度と効率を向上させよう
+          <br />
+          <Box as="span" color="orange.300" fontWeight="bold">
+            ※一部コマンドはWebエディタの仕様上未対応です、ごめんね。
+          </Box>
+        </Text>
       </MotionFlex>
     </MotionBox>
   );

@@ -322,11 +322,8 @@ function VimEditor() {
               bg: "blackAlpha.500",
               transform: "translateY(0)",
             }}
-            _focus={{
-              outline: "2px solid",
-              outlineColor: "purple.400",
-              outlineOffset: "2px",
-            }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{ outline: "none" }}
             transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             ml={2}
             aria-label="エディターの内容をリセット"
@@ -419,7 +416,28 @@ function VimEditor() {
             <CodeMirror
               value={code}
               height="100%"
-              extensions={[vim(), oneDark, EditorView.lineWrapping]}
+              extensions={[
+                vim(),
+                oneDark,
+                EditorView.lineWrapping,
+                EditorView.domEventHandlers({
+                  keydown: (event: KeyboardEvent, view: EditorView) => {
+                    // Vimモード時のみ標準ショートカットを無効化
+                    if (vimMode === "normal" || vimMode === "visual") {
+                      if (
+                        (event.ctrlKey || event.metaKey) &&
+                        ["a", "z", "x", "c", "v", "f", "s"].includes(
+                          event.key.toLowerCase()
+                        )
+                      ) {
+                        event.preventDefault();
+                        return true;
+                      }
+                    }
+                    return false;
+                  },
+                }),
+              ]}
               onChange={onChange}
               theme={oneDark}
               basicSetup={{
