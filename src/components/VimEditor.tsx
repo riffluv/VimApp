@@ -40,9 +40,14 @@ import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { vim } from "@replit/codemirror-vim";
 import CodeMirror, { EditorView } from "@uiw/react-codemirror";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
+
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
+const MotionText = motion(Text);
 const modeInfo = {
   normal: {
     text: "NORMAL",
@@ -73,6 +78,38 @@ function VimEditor() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // アニメーション用のvariants
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+      },
+    },
+  };
+
+  const modeIndicatorVariants = {
+    hidden: { opacity: 0, x: -15, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 0.3,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: 15,
+      scale: 0.9,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
 
   const handleCreateEditor = useCallback((view: EditorView) => {
     editorViewRef.current = view;
@@ -130,27 +167,43 @@ function VimEditor() {
   }, []);
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
-    <Box
-      bgGradient="linear(to-br, #18181b, #222)"
-      color="white"
-      h="100%"
-      p={[2, 3, 4]}
+    <MotionBox
+      bgGradient="gradient.primary"
+      color="text.primary"
+      p={{ base: 2, md: 4 }}
       borderRadius="2xl"
-      boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
+      boxShadow="glass"
       display="flex"
       flexDirection="column"
       borderWidth={1}
-      borderColor="gray.700"
-      transition="box-shadow 0.3s"
-      _hover={{ boxShadow: "0 12px 48px 0 rgba(0,0,0,0.8)" }}
+      borderColor="border.primary"
       position="relative"
       overflow="hidden"
       flex={1}
-      minH="400px"
-      maxH="100%"
+      minH={{ base: "400px", md: "520px", lg: "600px" }}
+      maxH={{ base: "520px", md: "640px", lg: "700px" }}
+      h={{ base: "440px", md: "600px", lg: "680px" }}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      _before={{
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "gradient.glass",
+        borderRadius: "inherit",
+        pointerEvents: "none",
+      }}
+      _hover={{
+        boxShadow: "glass-hover",
+        transform: "translateY(-1px)",
+      }}
     >
       {/* --- Editor Header (macOS風ウィンドウコントロール) --- */}
-      <Flex
+      <MotionFlex
         alignItems="center"
         px={[2, 4]}
         py={[2, 3]}
@@ -158,18 +211,39 @@ function VimEditor() {
         borderColor="primary.700"
         bgGradient="linear(to-r, primary.900, primary.800)"
         justifyContent="space-between"
+        position="relative"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background:
+            "linear-gradient(90deg, rgba(255,152,0,0.08) 0%, transparent 50%, rgba(255,152,0,0.03) 100%)",
+          pointerEvents: "none",
+        }}
       >
         <Flex alignItems="center">
           <HStack gap={2} marginRight={5}>
-            <Box w="12px" h="12px" borderRadius="full" bg="#FF5F56" />
-            <Box w="12px" h="12px" borderRadius="full" bg="#FFBD2E" />
-            <Box w="12px" h="12px" borderRadius="full" bg="#27C93F" />
+            <Box w={3} h={3} borderRadius="full" bg="red.400" />
+            <Box w={3} h={3} borderRadius="full" bg="yellow.400" />
+            <Box w={3} h={3} borderRadius="full" bg="green.400" />
           </HStack>
           <Flex alignItems="center">
             <Icon as={FiTerminal} color="secondary.400" mr={2} />
-            <Text fontFamily="mono" fontWeight="medium" letterSpacing="tight">
+            <MotionText
+              fontFamily="mono"
+              fontWeight="medium"
+              letterSpacing="tight"
+              color="white"
+              key={mode}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               {mode.toUpperCase()} Editor
-            </Text>
+            </MotionText>
           </Flex>
         </Flex>
         <HStack justifyContent="flex-end" gap={2}>
@@ -178,7 +252,11 @@ function VimEditor() {
               key={m}
               onClick={() => handleModeChange(m)}
               colorScheme={mode === m ? "orange" : "gray"}
-              bg={mode === m ? "blackAlpha.400" : "transparent"}
+              bg={
+                mode === m
+                  ? "linear-gradient(135deg, rgba(255,152,0,0.2), rgba(255,152,0,0.1))"
+                  : "transparent"
+              }
               color={mode === m ? "secondary.400" : "gray.400"}
               borderRadius="md"
               px={3}
@@ -187,16 +265,36 @@ function VimEditor() {
               fontFamily="mono"
               fontWeight={mode === m ? "bold" : "medium"}
               letterSpacing="tight"
-              borderWidth={0}
+              borderWidth={mode === m ? 1 : 0}
+              borderColor={mode === m ? "secondary.800" : "transparent"}
               _hover={{
-                bg: mode === m ? "blackAlpha.500" : "blackAlpha.300",
+                bg:
+                  mode === m
+                    ? "linear-gradient(135deg, rgba(255,152,0,0.3), rgba(255,152,0,0.15))"
+                    : "blackAlpha.300",
                 color: "secondary.400",
+                transform: "translateY(-1px)",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
               }}
               _active={{
                 bg: "blackAlpha.500",
+                transform: "translateY(0)",
               }}
-              transition="background 0.15s, color 0.15s"
+              _focus={{
+                outline: "none",
+                boxShadow: "none",
+              }}
+              _focusVisible={{
+                outline: "2px solid",
+                outlineColor: "secondary.400",
+                outlineOffset: "2px",
+                boxShadow: "0 0 0 2px rgba(255,152,0,0.3)",
+                borderColor: mode === m ? "secondary.800" : "transparent",
+              }}
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               mr={1}
+              aria-label={`${m.toUpperCase()}エディターモードに切り替え`}
+              aria-pressed={mode === m}
             >
               {m.toUpperCase()}
             </Button>
@@ -215,28 +313,37 @@ function VimEditor() {
             letterSpacing="tight"
             borderWidth={0}
             _hover={{
-              bg: "blackAlpha.300",
-              color: "secondary.400",
+              bg: "linear-gradient(135deg, rgba(128,90,213,0.2), rgba(128,90,213,0.1))",
+              color: "purple.400",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
             }}
             _active={{
               bg: "blackAlpha.500",
+              transform: "translateY(0)",
             }}
-            transition="background 0.15s, color 0.15s"
+            _focus={{
+              outline: "2px solid",
+              outlineColor: "purple.400",
+              outlineOffset: "2px",
+            }}
+            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             ml={2}
+            aria-label="エディターの内容をリセット"
           >
             <Icon as={FiRefreshCw} mr={1} /> Reset
           </Button>
         </HStack>
-      </Flex>
+      </MotionFlex>
       {/* --- Vimモード表示ステータスバー --- */}
-      <Flex
+      <MotionFlex
         position="absolute"
         bottom={0}
         left={0}
         right={0}
         px={4}
         py={1.5}
-        bg="blackAlpha.600"
+        bg="linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6))"
         borderTopWidth={1}
         borderColor="primary.700"
         zIndex={5}
@@ -244,21 +351,46 @@ function VimEditor() {
         fontFamily="mono"
         justifyContent="space-between"
         alignItems="center"
+        backdropFilter="blur(10px)"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent, ${modeInfo[vimMode].color}, transparent)`,
+          opacity: 0.6,
+        }}
       >
-        <Flex alignItems="center">
-          <Icon
-            as={modeInfo[vimMode].icon}
-            color={modeInfo[vimMode].color}
-            mr={2}
-          />
-          <Text color={modeInfo[vimMode].color} fontWeight="medium">
-            {modeInfo[vimMode].text}
-          </Text>
-        </Flex>
+        <AnimatePresence mode="wait">
+          <MotionFlex
+            alignItems="center"
+            key={vimMode}
+            variants={modeIndicatorVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <Icon
+              as={modeInfo[vimMode].icon}
+              color={modeInfo[vimMode].color}
+              mr={2}
+            />
+            <MotionText
+              color={modeInfo[vimMode].color}
+              fontWeight="medium"
+              fontSize="sm"
+              textShadow={`0 0 8px ${modeInfo[vimMode].color}40`}
+            >
+              {modeInfo[vimMode].text}
+            </MotionText>
+          </MotionFlex>
+        </AnimatePresence>
         <Text color="gray.500" fontSize="xs">
           {modeInfo[vimMode].hint}
         </Text>
-      </Flex>
+      </MotionFlex>
       {/* --- Editor本体エリア --- */}
       <Box
         flex={1}
@@ -274,37 +406,50 @@ function VimEditor() {
       >
         {/* SSR/CSR差異による高さ0問題を防ぐため、マウント後のみ描画 */}
         {isMounted && (
-          <CodeMirror
-            value={code}
-            height="100%"
-            extensions={[vim(), oneDark, EditorView.lineWrapping]}
-            onChange={onChange}
-            theme={oneDark}
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLine: true,
-              highlightActiveLineGutter: true,
-              foldGutter: true,
-              dropCursor: true,
-              indentOnInput: true,
-            }}
-            /* Chakra UIで表現できないCodeMirror固有のstyleのみstyle属性で指定 */
-            style={{
-              width: "100%", // Chakra UI Boxでwidth="100%"指定済み
-              height: "100%", // Chakra UI Boxでheight="100%"指定済み
-              minHeight: "300px", // Chakra UI BoxでminH="300px"指定済み
-              background: "#18181b", // Chakra UI bgGradientで近似指定済み
-              color: "#fff", // Chakra UI colorで指定済み
-              whiteSpace: "pre-wrap", // CodeMirrorの折返し用
-              wordBreak: "break-word", // CodeMirrorの折返し用
-              fontSize: "1.1rem", // CodeMirrorのフォントサイズ
-              fontFamily: "Fira Mono, Menlo, Monaco, Consolas, monospace", // CodeMirrorのフォント
-            }}
-            onCreateEditor={handleCreateEditor}
-          />
+          <Box
+            w="100%"
+            h="100%"
+            maxH={{ base: "340px", md: "480px", lg: "560px" }}
+            minH={{ base: "220px", md: "320px" }}
+            overflowY="auto"
+            borderRadius="md"
+            bg="transparent"
+            boxShadow="none"
+          >
+            <CodeMirror
+              value={code}
+              height="100%"
+              extensions={[vim(), oneDark, EditorView.lineWrapping]}
+              onChange={onChange}
+              theme={oneDark}
+              basicSetup={{
+                lineNumbers: true,
+                highlightActiveLine: true,
+                highlightActiveLineGutter: true,
+                foldGutter: true,
+                dropCursor: true,
+                indentOnInput: true,
+              }}
+              style={{
+                width: "100%",
+                height: "100%",
+                minHeight: "220px",
+                maxHeight: "560px",
+                background: "#18181b", // CodeMirror本体はChakra UIで制御不可のため最小限残す
+                color: "#fff",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                fontSize: "1.1rem",
+                fontFamily:
+                  "Fira Code, SF Mono, Monaco, Inconsolata, Roboto Mono, monospace",
+                overflowY: "auto",
+              }}
+              onCreateEditor={handleCreateEditor}
+            />
+          </Box>
         )}
       </Box>
-    </Box>
+    </MotionBox>
   );
 }
 

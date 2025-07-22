@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import {
   FiBookOpen,
   FiChevronDown,
@@ -19,6 +20,9 @@ import {
   FiEdit2,
   FiSearch,
 } from "react-icons/fi";
+
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
 
 // Command interface and data
 interface Command {
@@ -123,48 +127,120 @@ const CategoryInfo = {
 };
 
 export default function CheatSheet() {
+  // アニメーション用の variants
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+      },
+    },
+  };
   return (
-    <Box
+    <MotionBox
       p={0}
-      bgGradient="to-br"
-      gradientFrom="#18181b"
-      gradientTo="#222"
+      bgGradient="linear(to-br, gray.900, gray.800)"
       color="white"
       borderRadius="2xl"
-      boxShadow="0 8px 32px 0 rgba(0,0,0,0.7)"
-      height="100%"
+      boxShadow="lg"
+      minH={{ base: "400px", md: "520px", lg: "600px" }}
+      maxH={{ base: "520px", md: "640px", lg: "700px" }}
+      h={{ base: "440px", md: "600px", lg: "680px" }}
       display="flex"
       flexDirection="column"
       overflow="hidden"
       borderWidth={1}
       borderColor="gray.700"
-      transition="all 0.3s"
-      _hover={{ boxShadow: "0 12px 48px 0 rgba(0,0,0,0.8)" }}
+      position="relative"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      _before={{
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background:
+          "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(0,0,0,0.1) 100%)",
+        borderRadius: "inherit",
+        pointerEvents: "none",
+      }}
+      _after={{
+        content: '""',
+        position: "absolute",
+        top: "1px",
+        left: "1px",
+        right: "1px",
+        bottom: "1px",
+        background:
+          "linear-gradient(145deg, rgba(0,0,0,0.2), rgba(255,255,255,0.05))",
+        borderRadius: "calc(1rem - 1px)",
+        pointerEvents: "none",
+        zIndex: -1,
+      }}
+      _hover={{
+        boxShadow: "2xl",
+        transform: "translateY(-2px)",
+      }}
     >
       {/* Header */}
-      <Flex
+      <MotionFlex
         align="center"
         px={6}
         py={4}
         borderBottomWidth={1}
-        borderColor="primary.700"
-        bgGradient="to-r"
-        gradientFrom="primary.900"
-        gradientTo="primary.800"
+        borderColor="orange.700"
+        bgGradient="linear(to-r, orange.900, orange.800)"
+        position="relative"
+        variants={itemVariants}
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background:
+            "linear-gradient(90deg, rgba(255,152,0,0.1) 0%, rgba(255,152,0,0.05) 50%, transparent 100%)",
+          pointerEvents: "none",
+        }}
       >
         <Flex align="center" gap={3}>
-          <Image
-            src="/manabyicon.png"
-            alt="manaby icon"
-            h={{ base: 8, md: 8 }}
-            minW={8}
-            objectFit="contain"
-          />
+          <MotionBox
+            whileHover={{ scale: 1.1, rotate: 10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Image
+              src="/manabyicon.png"
+              alt="manaby icon"
+              h={{ base: 8, md: 8 }}
+              minW={8}
+              objectFit="contain"
+              filter="auto"
+              dropShadow="md"
+            />
+          </MotionBox>
           <Flex direction="column">
             <Heading
               as="h2"
               size="md"
-              color="secondary.400"
+              color="orange.400"
               fontWeight="bold"
               letterSpacing="tight"
             >
@@ -175,19 +251,32 @@ export default function CheatSheet() {
             </Text>
           </Flex>
         </Flex>
-      </Flex>
+      </MotionFlex>
 
       {/* Command List (Accordion) */}
-      <Box
+      <MotionBox
         overflowY="auto"
         flex={1}
         css={{
           "&::-webkit-scrollbar": { width: "4px" },
-          "&::-webkit-scrollbar-thumb": { background: "#333" },
+          "&::-webkit-scrollbar-thumb": {
+            background: "linear-gradient(to bottom, #F6AD55, #DD6B20)",
+            borderRadius: "2px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "rgba(0,0,0,0.2)",
+          },
         }}
         p={2}
+        variants={itemVariants}
+        role="region"
+        aria-label="Vim コマンドリスト"
       >
-        <Accordion.Root multiple defaultValue={["basic", "navigation"]}>
+        <Accordion.Root
+          multiple
+          defaultValue={["basic", "navigation"]}
+          aria-label="Vim コマンドカテゴリー"
+        >
           {Object.entries(groupedCommands).map(([category, commands]) => {
             const catInfo = CategoryInfo[category as keyof typeof CategoryInfo];
             return (
@@ -198,11 +287,36 @@ export default function CheatSheet() {
                 mb={2}
               >
                 <Accordion.ItemTrigger
-                  bg="blackAlpha.300"
+                  bgGradient={`linear(to-r, blackAlpha.700, ${catInfo.color}10)`}
                   borderRadius="lg"
-                  _hover={{ bg: "blackAlpha.400" }}
+                  _hover={{
+                    bgGradient: `linear(to-r, blackAlpha.800, ${catInfo.color}20)`,
+                    transform: "translateY(-1px)",
+                    boxShadow: "md",
+                  }}
+                  _focus={{
+                    outline: "2px solid",
+                    outlineColor: "secondary.400",
+                    outlineOffset: "2px",
+                  }}
                   py={3}
                   px={4}
+                  transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                  position="relative"
+                  role="button"
+                  aria-expanded="false"
+                  aria-describedby={`commands-${category}`}
+                  _before={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `linear-gradient(135deg, ${catInfo.color}10 0%, transparent 50%)`,
+                    borderRadius: "inherit",
+                    pointerEvents: "none",
+                  }}
                 >
                   <Flex align="center" flex="1" textAlign="left">
                     <Icon
@@ -225,8 +339,13 @@ export default function CheatSheet() {
                   </Accordion.ItemIndicator>
                 </Accordion.ItemTrigger>
                 <Accordion.ItemContent>
-                  <Accordion.ItemBody pb={2} pt={2} px={1}>
-                    <Stack gap={0} align="stretch">
+                  <Accordion.ItemBody
+                    pb={2}
+                    pt={2}
+                    px={1}
+                    id={`commands-${category}`}
+                  >
+                    <Stack gap={0} align="stretch" role="list">
                       {commands.map((item, index) => (
                         <Flex
                           key={index}
@@ -237,6 +356,14 @@ export default function CheatSheet() {
                           transition="all 0.15s"
                           _hover={{ bg: "blackAlpha.400" }}
                           role="group"
+                          tabIndex={0}
+                          _focus={{
+                            outline: "2px solid",
+                            outlineColor: "secondary.400",
+                            outlineOffset: "1px",
+                          }}
+                          cursor="pointer"
+                          aria-label={`コマンド: ${item.command} - ${item.description}`}
                         >
                           <Box
                             fontFamily="mono"
@@ -270,23 +397,35 @@ export default function CheatSheet() {
             );
           })}
         </Accordion.Root>
-      </Box>
+      </MotionBox>
 
       {/* Footer */}
-      <Flex
+      <MotionFlex
         px={4}
         py={2}
         borderTopWidth={1}
-        borderColor="primary.700"
+        borderColor="orange.700"
         bg="blackAlpha.400"
         fontSize="xs"
         color="gray.500"
         align="center"
         justify="center"
+        variants={itemVariants}
+        position="relative"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background:
+            "linear-gradient(90deg, transparent, orange.400, transparent)",
+        }}
       >
         <Icon as={FiBookOpen} mr={1.5} />
         <Text>Vim を練習して速度と効率を向上させよう</Text>
-      </Flex>
-    </Box>
+      </MotionFlex>
+    </MotionBox>
   );
 }

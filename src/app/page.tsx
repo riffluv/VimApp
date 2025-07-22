@@ -3,178 +3,119 @@
 import CheatSheet from "@/components/CheatSheet";
 import VimEditor from "@/components/VimEditor";
 import { Box, Flex, Heading, Icon, Image, Link, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { FiCode, FiExternalLink, FiGithub } from "react-icons/fi";
+import { motion } from "framer-motion";
+import { FiExternalLink, FiGithub } from "react-icons/fi";
+
+const MotionBox = motion(Box);
 
 export default function Home() {
-  // Handle hydration
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Set mounted state after hydration to prevent layout shifts
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   return (
-    <Box
-      minH="100vh"
-      bg="#18181b"
-      bgGradient="linear(to-b, #0a0a0b, #18181b)"
-      pb={[4, 8]}
-      overflow="hidden"
-    >
-      {/* Header Section */}
-      <Box
+    <Box bg="#18181b" minH="100vh" w="100%">
+      {/* Header */}
+      <Flex
         as="header"
+        align="center"
+        justify="space-between"
+        px={{ base: 3, md: 8 }}
+        py={{ base: 4, md: 6 }}
         borderBottomWidth={1}
-        borderColor="primary.700"
-        position="relative"
-        mb={[6, 10]}
-        pb={4}
+        borderColor="gray.700"
+        mb={{ base: 4, md: 8 }}
+        gap={4}
       >
-        {/* Background gradient effect */}
-        <Box
-          position="absolute"
-          top={0}
-          left="50%"
-          transform="translateX(-50%)"
-          w="100%"
-          maxW="1200px"
-          h="full"
-          bgGradient="radial(circle at top center, secondary.900 0%, transparent 70%)"
-          opacity={0.15}
-          pointerEvents="none"
-        />
-
-        <Flex
-          as="nav"
-          align="center"
-          justify="space-between"
-          maxW="1400px"
-          mx="auto"
-          px={[4, 8]}
-          py={4}
-        >
-          <Flex align="center" gap={3}>
-            <Image
-              src="/manabylogo.png"
-              alt="manaby logo"
-              h={[10, 12]}
-              objectFit="contain"
-              style={{ minWidth: 60 }}
-            />
-            <Flex direction="column">
-              <Heading
-                as="h1"
-                fontSize={["lg", "xl"]}
-                color="secondary.400"
-                fontWeight="extrabold"
-                letterSpacing="tight"
-              >
-                Vim Practice App
-              </Heading>
-              <Text fontSize={["xs", "sm"]} color="whiteAlpha.700" mt={0.5}>
-                ブラウザ上でVimのコマンドを練習できるアプリ
-              </Text>
-            </Flex>
-          </Flex>
-
-          <Flex gap={4} align="center" display={["none", "flex"]}>
-            <Link
-              href="https://github.com/vim/vim"
-              target="_blank"
-              rel="noopener noreferrer"
-              display="flex"
-              alignItems="center"
-              color="whiteAlpha.800"
-              fontSize="sm"
-              _hover={{ color: "secondary.400" }}
-              transition="all 0.2s"
+        <Flex align="center" gap={3}>
+          <Image
+            src="/manabylogo.png"
+            alt="manaby logo"
+            h={[8, 10]}
+            w="auto"
+            objectFit="contain"
+          />
+          <Box>
+            <Heading
+              as="h1"
+              fontSize={["lg", "xl"]}
+              color="orange.300"
+              fontWeight="bold"
+              letterSpacing="tight"
             >
-              <Icon as={FiGithub} mr={1.5} />
-              GitHub
-            </Link>
-            <Link
-              href="https://www.vim.org/docs.php"
-              target="_blank"
-              rel="noopener noreferrer"
-              display="flex"
-              alignItems="center"
-              color="whiteAlpha.800"
-              fontSize="sm"
-              _hover={{ color: "secondary.400" }}
-              transition="all 0.2s"
-            >
-              <Icon as={FiExternalLink} mr={1.5} />
-              Documentation
-            </Link>
-          </Flex>
+              Vim Practice App
+            </Heading>
+            <Text fontSize={["xs", "sm"]} color="whiteAlpha.700" mt={0.5}>
+              ブラウザ上でVimのコマンドを練習できるアプリ
+            </Text>
+          </Box>
         </Flex>
-
-        {/* Intro text */}
-        <Box maxW="700px" mx="auto" textAlign="center" px={4} mt={4}>
-          <Text
-            fontSize={["md", "lg"]}
-            fontWeight="medium"
-            color="whiteAlpha.900"
-            lineHeight="tall"
-          >
-            Vim
-            は最も強力なテキストエディタの一つで、効率的なコーディングのために習得する価値があります。
-            このアプリで基本的なコマンドを練習しましょう！
-          </Text>
-        </Box>
-      </Box>
-
-      {/* Main content area */}
-      <Box maxW="1400px" mx="auto" px={[4, 6]}>
-        <Flex
-          gap={[6, 8]}
-          direction={["column", null, "row"]}
-          height={["auto", null, "calc(100vh - 240px)"]}
-          minHeight={["auto", null, "600px"]}
-          alignItems="stretch"
-        >
-          <Box
-            flex={["auto", null, "1"]}
-            minW={["0", null, "380px"]}
-            maxW={["100%", null, "700px"]}
-            height={["450px", null, "100%"]}
-            w={["100%", null, "auto"]}
-            alignSelf="flex-start"
-            transition="max-width 0.2s"
+        <Flex gap={3} align="center" display={{ base: "none", md: "flex" }}>
+          <Link
+            href="https://github.com/vim/vim"
+            target="_blank"
+            rel="noopener noreferrer"
             display="flex"
-            flexDir="column"
+            alignItems="center"
+            color="whiteAlpha.800"
+            fontSize="sm"
+            _hover={{ color: "orange.300" }}
+            px={3}
+            py={2}
+            borderRadius="md"
+            bg="blackAlpha.300"
           >
-            <Box
-              flex={1}
-              height={["auto", null, "100%"]}
-              overflowY={["visible", null, "auto"]}
-            >
-              <CheatSheet />
-            </Box>
-          </Box>
-          <Box flex={["auto", null, "2"]} height={["600px", null, "100%"]}>
-            <VimEditor />
-          </Box>
+            <Icon as={FiGithub} mr={1} />
+            GitHub
+          </Link>
+          <Link
+            href="https://www.vim.org/docs.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            display="flex"
+            alignItems="center"
+            color="whiteAlpha.800"
+            fontSize="sm"
+            _hover={{ color: "orange.300" }}
+            px={3}
+            py={2}
+            borderRadius="md"
+            bg="blackAlpha.300"
+          >
+            <Icon as={FiExternalLink} mr={1} />
+            Docs
+          </Link>
         </Flex>
+      </Flex>
 
-        {/* Footer */}
-        <Flex
-          as="footer"
-          justify="center"
-          align="center"
-          py={6}
-          mt={6}
-          borderTopWidth={1}
-          borderColor="primary.700"
-          color="whiteAlpha.600"
-          fontSize="sm"
+      {/* Main Content */}
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        align="flex-start"
+        justify="flex-start"
+        w="100%"
+        px={{ base: 2, md: 6 }}
+        py={0}
+        gap={{ base: 4, md: 8 }}
+      >
+        <MotionBox
+          flex={{ base: "none", md: "0 0 320px" }}
+          w={{ base: "100%", md: "320px" }}
+          minH="320px"
+          mb={{ base: 4, md: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <Icon as={FiCode} mr={2} />
-          <Text>Created with Chakra UI • © 2025 Vim Practice App</Text>
-        </Flex>
-      </Box>
+          <CheatSheet />
+        </MotionBox>
+        <MotionBox
+          flex="1 1 0%"
+          w="100%"
+          minH="360px"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <VimEditor />
+        </MotionBox>
+      </Flex>
     </Box>
   );
 }
