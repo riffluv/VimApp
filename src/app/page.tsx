@@ -1,10 +1,13 @@
 "use client";
 
 import CheatSheet from "@/components/CheatSheet";
-import VimEditor from "@/components/VimEditor";
 import { Box, Flex, Heading, Icon, Image, Link, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
+const VimEditor = dynamic(() => import("@/components/VimEditor"), {
+  ssr: false,
+});
 
 const MotionBox = motion(Box);
 

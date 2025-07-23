@@ -585,7 +585,7 @@ function VimEditor() {
                 border: "none",
                 background: "white",
               }}
-              sandbox="allow-scripts allow-same-origin"
+              sandbox="allow-scripts allow-same-origin allow-modals"
             />
           </Box>
         )}
