@@ -144,27 +144,74 @@ function VimEditor() {
     return jsSample + vimTips;
   }, [mode]);
 
-  const [code, setCode] = useState<string>(() => getSample());
+  const [html, setHtml] = useState<string>(htmlSample);
+  const [css, setCss] = useState<string>(cssSample);
+  const [js, setJs] = useState<string>(jsSample);
+  const [code, setCode] = useState<string>(htmlSample + vimTips);
+  const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const handleReset = useCallback(() => {
-    setCode(getSample());
-    setVimMode("normal");
-  }, [getSample]);
-
-  const handleModeChange = useCallback((m: "html" | "css" | "js") => {
-    setMode(m);
+    setHtml(htmlSample);
+    setCss(cssSample);
+    setJs(jsSample);
     setCode(
-      m === "html"
+      mode === "html"
         ? htmlSample + vimTips
-        : m === "css"
+        : mode === "css"
         ? cssSample + vimTips
         : jsSample + vimTips
     );
-  }, []);
+    setVimMode("normal");
+    setShowPreview(false);
+  }, [mode]);
 
-  const onChange = useCallback((value: string) => {
-    setCode(value);
-  }, []);
+  const handleModeChange = useCallback(
+    (m: "html" | "css" | "js") => {
+      // 現在の内容を保存
+      if (mode === "html") setHtml(code.replace(vimTips, ""));
+      if (mode === "css") setCss(code.replace(vimTips, ""));
+      if (mode === "js") setJs(code.replace(vimTips, ""));
+      // モード切り替え
+      setMode(m);
+      // 切り替え先の内容を表示
+      if (m === "html") setCode(html + vimTips);
+      else if (m === "css") setCode(css + vimTips);
+      else setCode(js + vimTips);
+      setShowPreview(false);
+    },
+    [mode, code, html, css, js]
+  );
+  // プレビュー用HTML生成（最新のhtml, css, js内容を合成）
+  const previewSrcDoc = `
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Preview</title>
+      <style>
+      ${css}
+      </style>
+    </head>
+    <body>
+      ${html}
+      <script>
+      ${js}
+      </script>
+    </body>
+    </html>
+  `;
+
+  const onChange = useCallback(
+    (value: string) => {
+      setCode(value);
+      // 編集内容を保存
+      if (mode === "html") setHtml(value.replace(vimTips, ""));
+      if (mode === "css") setCss(value.replace(vimTips, ""));
+      if (mode === "js") setJs(value.replace(vimTips, ""));
+    },
+    [mode]
+  );
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
     <MotionBox
@@ -247,6 +294,43 @@ function VimEditor() {
           </Flex>
         </Flex>
         <HStack justifyContent="flex-end" gap={2}>
+          <Button
+            onClick={() => setShowPreview((prev) => !prev)}
+            colorScheme={showPreview ? "purple" : "gray"}
+            bg={
+              showPreview
+                ? "linear-gradient(135deg, rgba(128,90,213,0.2), rgba(128,90,213,0.1))"
+                : "transparent"
+            }
+            color={showPreview ? "purple.400" : "gray.400"}
+            borderRadius="md"
+            px={3}
+            py={1.5}
+            height="auto"
+            fontFamily="mono"
+            fontWeight={showPreview ? "bold" : "medium"}
+            letterSpacing="tight"
+            borderWidth={showPreview ? 1 : 0}
+            borderColor={showPreview ? "purple.800" : "transparent"}
+            _hover={{
+              bg: "linear-gradient(135deg, rgba(128,90,213,0.3), rgba(128,90,213,0.15))",
+              color: "purple.400",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+            }}
+            _active={{
+              bg: "blackAlpha.500",
+              transform: "translateY(0)",
+            }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{ outline: "none" }}
+            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            mr={1}
+            aria-label="プレビュー表示切り替え"
+            aria-pressed={showPreview}
+          >
+            Preview
+          </Button>
           {(["html", "css", "js"] as const).map((m) => (
             <Button
               key={m}
@@ -388,7 +472,7 @@ function VimEditor() {
           {modeInfo[vimMode].hint}
         </Text>
       </MotionFlex>
-      {/* --- Editor本体エリア --- */}
+      {/* --- Editor本体エリア or プレビュー --- */}
       <Box
         flex={1}
         minHeight={0}
@@ -402,7 +486,7 @@ function VimEditor() {
         maxH="100%"
       >
         {/* SSR/CSR差異による高さ0問題を防ぐため、マウント後のみ描画 */}
-        {isMounted && (
+        {isMounted && !showPreview && (
           <Box
             w="100%"
             h="100%"
@@ -463,6 +547,31 @@ function VimEditor() {
                 overflowY: "auto",
               }}
               onCreateEditor={handleCreateEditor}
+            />
+          </Box>
+        )}
+        {isMounted && showPreview && (
+          <Box
+            w="100%"
+            h="100%"
+            maxH={{ base: "340px", md: "480px", lg: "560px" }}
+            minH={{ base: "220px", md: "320px" }}
+            overflowY="auto"
+            borderRadius="md"
+            bg="white"
+            boxShadow="md"
+            position="relative"
+          >
+            <iframe
+              title="Preview"
+              srcDoc={previewSrcDoc}
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+                background: "white",
+              }}
+              sandbox="allow-scripts allow-same-origin"
             />
           </Box>
         )}
