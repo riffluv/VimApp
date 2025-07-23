@@ -1,21 +1,9 @@
-// --- サンプルコード・VimTips定数 ---
-const htmlSample = `<div class="container">
+// --- サンプルコード＋コメント（tips）一体化管理オブジェクト ---
+const defaultSamples = {
+  html: `<div class="container">
   <h1>Hello Vim!</h1>
   <p>これはVim練習用のサンプルです。</p>
-</div>
-`;
-const cssSample = `.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: #f5f5f5;
-}
-`;
-const jsSample = `document.querySelector('.container').addEventListener('click', function() {
-  alert('Vimで編集してみよう！');
-});
-`;
-const vimTips = `// --- おまけ: よく使うVimコマンド ---
+// --- おまけ: よく使うVimコマンド ---
 // h / j / k / l : 左右上下にカーソル移動
 // w / b / e : 単語単位で移動
 // 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
@@ -33,17 +21,65 @@ const vimTips = `// --- おまけ: よく使うVimコマンド ---
 // :%s/old/new/g : 置換
 // v / V : 選択開始
 // y / d : コピー・削除
-`;
+</div>
+`,
+  css: `.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f5f5f5;
+  // --- おまけ: よく使うVimコマンド ---
+  // h / j / k / l : 左右上下にカーソル移動
+  // w / b / e : 単語単位で移動
+  // 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
+  // gg / G : ファイル先頭・末尾へ移動
+  // i / a / o / O : 挿入モード
+  // x : 文字削除
+  // dd : 行削除
+  // yy : 行コピー
+  // p / P : 貼り付け
+  // u / Ctrl+r : アンドゥ・リドゥ
+  // cw / cc / c$ : 単語・行・行末まで変更
+  // . : 直前の操作を繰り返し
+  // /pattern : 検索
+  // n / N : 次・前の検索結果へ
+  // :%s/old/new/g : 置換
+  // v / V : 選択開始
+  // y / d : コピー・削除
+}
+`,
+  js: `document.querySelector('.container').addEventListener('click', function() {
+  alert('Vimで編集してみよう！');
+  // --- おまけ: よく使うVimコマンド ---
+  // h / j / k / l : 左右上下にカーソル移動
+  // w / b / e : 単語単位で移動
+  // 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
+  // gg / G : ファイル先頭・末尾へ移動
+  // i / a / o / O : 挿入モード
+  // x : 文字削除
+  // dd : 行削除
+  // yy : 行コピー
+  // p / P : 貼り付け
+  // u / Ctrl+r : アンドゥ・リドゥ
+  // cw / cc / c$ : 単語・行・行末まで変更
+  // . : 直前の操作を繰り返し
+  // /pattern : 検索
+  // n / N : 次・前の検索結果へ
+  // :%s/old/new/g : 置換
+  // v / V : 選択開始
+  // y / d : コピー・削除
+});
+`,
+};
 
 // --- Vimモード情報・型定義 ---
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
-import CodeMirror from "@uiw/react-codemirror";
-// vim importは下で1箇所だけ
 import { oneDark } from "@codemirror/theme-one-dark";
-import { vim } from "@replit/codemirror-vim";
+import { getCM, vim } from "@replit/codemirror-vim";
+import CodeMirror from "@uiw/react-codemirror";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useState } from "react";
 import type { IconType } from "react-icons";
@@ -127,56 +163,70 @@ function VimEditor() {
     }
   }
 
-  const [html, setHtml] = useState<string>(htmlSample);
-  const [css, setCss] = useState<string>(cssSample);
-  const [js, setJs] = useState<string>(jsSample);
-  const [code, setCode] = useState<string>(htmlSample + vimTips);
+  // サンプル＋コメント一体化管理
+  const [samples, setSamples] = useState(() => {
+    try {
+      const saved = localStorage.getItem("vimapp_samples");
+      return saved ? JSON.parse(saved) : defaultSamples;
+    } catch {
+      return defaultSamples;
+    }
+  });
+  const [code, setCode] = useState<string>(samples[mode]);
 
   // 初回レンダリング時に必ずhtmlSample+vimTipsで初期化
   // editor初期化・Vimモード監視はonUpdate/onChangeで十分
   // Vimモード監視（@uiw/react-codemirrorのonUpdateで判定）
   // Vimモード判定はonChangeで常にnormalに戻す（insertはVim拡張で自動）
-  const onUpdate = useCallback((_viewUpdate: any) => {}, []);
+  // VimモードをonUpdateで取得し、表示を切り替える
+  const onUpdate = useCallback((viewUpdate: any) => {
+    try {
+      let nextVimMode: VimMode = "normal";
+      if (viewUpdate?.view) {
+        const cm = getCM(viewUpdate.view);
+        if (cm && cm.state && cm.state.vim && cm.state.vim.mode) {
+          const vimModeRaw = cm.state.vim.mode;
+          if (vimModeRaw === "insert") nextVimMode = "insert";
+          else if (vimModeRaw === "visual") nextVimMode = "visual";
+          else nextVimMode = "normal";
+        }
+      }
+      setVimMode(nextVimMode);
+    } catch (e) {
+      setVimMode("normal");
+    }
+  }, []);
 
   const getSample = useCallback(() => {
-    if (mode === "html") return htmlSample + vimTips;
-    if (mode === "css") return cssSample + vimTips;
-    return jsSample + vimTips;
-  }, [mode]);
+    return samples[mode];
+  }, [mode, samples]);
 
   // 上記で宣言済みなので重複削除
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const handleReset = useCallback(() => {
-    setHtml(htmlSample);
-    setCss(cssSample);
-    setJs(jsSample);
-    setCode(
-      mode === "html"
-        ? htmlSample + vimTips
-        : mode === "css"
-        ? cssSample + vimTips
-        : jsSample + vimTips
-    );
+    // 現在のエディタのみリセット（コメント含め一体化）
+    const newSamples = { ...samples };
+    newSamples[mode] = defaultSamples[mode];
+    setSamples(newSamples);
+    setCode(newSamples[mode]);
     setVimMode("normal");
     setShowPreview(false);
-  }, [mode]);
+    localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
+  }, [mode, samples]);
 
   const handleModeChange = useCallback(
     (m: "html" | "css" | "js") => {
       // 現在の内容を保存
-      if (mode === "html") setHtml(code.replace(vimTips, ""));
-      if (mode === "css") setCss(code.replace(vimTips, ""));
-      if (mode === "js") setJs(code.replace(vimTips, ""));
-      // モード切り替え
+      const newSamples = { ...samples };
+      newSamples[mode] = code;
+      setSamples(newSamples);
       setMode(m);
-      // 切り替え先の内容を表示
-      if (m === "html") setCode(html + vimTips);
-      else if (m === "css") setCode(css + vimTips);
-      else setCode(js + vimTips);
+      setCode(newSamples[m]);
       setShowPreview(false);
+      localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
     },
-    [mode, code, html, css, js]
+    [mode, code, samples]
   );
   // プレビュー用HTML生成（最新のhtml, css, js内容を合成）
   const previewSrcDoc = `
@@ -187,13 +237,16 @@ function VimEditor() {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Preview</title>
       <style>
-      ${css}
+      ${samples.css}
       </style>
     </head>
     <body>
-      ${html}
+      ${samples.html
+        .split("\n")
+        .filter((line: string) => !line.trim().startsWith("//"))
+        .join("\n")}
       <script>
-      ${js}
+      ${samples.js}
       </script>
     </body>
     </html>
@@ -202,12 +255,13 @@ function VimEditor() {
   const onChange = useCallback(
     (value: string) => {
       setCode(value);
-      // 編集内容を保存
-      if (mode === "html") setHtml(value.replace(vimTips, ""));
-      if (mode === "css") setCss(value.replace(vimTips, ""));
-      if (mode === "js") setJs(value.replace(vimTips, ""));
+      // プログラム＋コメントを一体化して保存
+      let newSamples = { ...samples };
+      newSamples[mode] = value;
+      setSamples(newSamples);
+      localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
     },
-    [mode]
+    [mode, samples]
   );
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
