@@ -37,11 +37,15 @@ const vimTips = `// --- おまけ: よく使うVimコマンド ---
 
 // --- Vimモード情報・型定義 ---
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { css as cssLang } from "@codemirror/lang-css";
+import { html as htmlLang } from "@codemirror/lang-html";
+import { javascript as jsLang } from "@codemirror/lang-javascript";
+import CodeMirror from "@uiw/react-codemirror";
+// vim importは下で1箇所だけ
 import { oneDark } from "@codemirror/theme-one-dark";
 import { vim } from "@replit/codemirror-vim";
-import CodeMirror, { EditorView } from "@uiw/react-codemirror";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import type { IconType } from "react-icons";
 import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
 
@@ -72,12 +76,10 @@ type VimMode = keyof typeof modeInfo;
 function VimEditor() {
   const [mode, setMode] = useState<"html" | "css" | "js">("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-  const editorViewRef = useRef<EditorView | null>(null);
+  // SSR/CSR差異によるeditor描画遅延対策: isMounted判定を廃止
+  // editorRef, viewRefは不要
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // isMounted判定を廃止
 
   // アニメーション用のvariants
   const containerVariants = {
@@ -111,32 +113,30 @@ function VimEditor() {
     },
   };
 
-  const handleCreateEditor = useCallback((view: EditorView) => {
-    editorViewRef.current = view;
-  }, []);
+  // 言語拡張取得（@uiw/react-codemirror用）
+  function getExtensions() {
+    switch (mode) {
+      case "html":
+        return [htmlLang(), vim(), oneDark];
+      case "css":
+        return [cssLang(), vim(), oneDark];
+      case "js":
+        return [jsLang(), vim(), oneDark];
+      default:
+        return [vim(), oneDark];
+    }
+  }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      try {
-        const { getCM } = require("@replit/codemirror-vim");
-        const view = editorViewRef.current;
-        if (view) {
-          const cm = getCM(view);
-          if (cm && cm.state && cm.state.vim) {
-            const vimState = cm.state.vim;
-            let mode: VimMode = "normal";
-            if (vimState.insertMode) {
-              mode = "insert";
-            } else if (vimState.visualMode) {
-              mode = "visual";
-            }
-            setVimMode(mode);
-          }
-        }
-      } catch (e) {}
-    }, 200);
-    return () => clearInterval(interval);
-  }, [editorViewRef]);
+  const [html, setHtml] = useState<string>(htmlSample);
+  const [css, setCss] = useState<string>(cssSample);
+  const [js, setJs] = useState<string>(jsSample);
+  const [code, setCode] = useState<string>(htmlSample + vimTips);
+
+  // 初回レンダリング時に必ずhtmlSample+vimTipsで初期化
+  // editor初期化・Vimモード監視はonUpdate/onChangeで十分
+  // Vimモード監視（@uiw/react-codemirrorのonUpdateで判定）
+  // Vimモード判定はonChangeで常にnormalに戻す（insertはVim拡張で自動）
+  const onUpdate = useCallback((_viewUpdate: any) => {}, []);
 
   const getSample = useCallback(() => {
     if (mode === "html") return htmlSample + vimTips;
@@ -144,10 +144,7 @@ function VimEditor() {
     return jsSample + vimTips;
   }, [mode]);
 
-  const [html, setHtml] = useState<string>(htmlSample);
-  const [css, setCss] = useState<string>(cssSample);
-  const [js, setJs] = useState<string>(jsSample);
-  const [code, setCode] = useState<string>(htmlSample + vimTips);
+  // 上記で宣言済みなので重複削除
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
   const handleReset = useCallback(() => {
@@ -486,7 +483,7 @@ function VimEditor() {
         maxH="100%"
       >
         {/* SSR/CSR差異による高さ0問題を防ぐため、マウント後のみ描画 */}
-        {isMounted && !showPreview && (
+        {!showPreview && (
           <Box
             w="100%"
             h="100%"
@@ -496,61 +493,24 @@ function VimEditor() {
             borderRadius="md"
             bg="transparent"
             boxShadow="none"
+            style={{
+              height: "100%",
+              fontSize: "16px",
+              outline: "none",
+            }}
           >
             <CodeMirror
               value={code}
               height="100%"
-              extensions={[
-                vim(),
-                oneDark,
-                EditorView.lineWrapping,
-                EditorView.domEventHandlers({
-                  keydown: (event: KeyboardEvent, view: EditorView) => {
-                    // Vimモード時のみ標準ショートカットを無効化
-                    if (vimMode === "normal" || vimMode === "visual") {
-                      if (
-                        (event.ctrlKey || event.metaKey) &&
-                        ["a", "z", "x", "c", "v", "f", "s"].includes(
-                          event.key.toLowerCase()
-                        )
-                      ) {
-                        event.preventDefault();
-                        return true;
-                      }
-                    }
-                    return false;
-                  },
-                }),
-              ]}
-              onChange={onChange}
+              extensions={getExtensions()}
               theme={oneDark}
-              basicSetup={{
-                lineNumbers: true,
-                highlightActiveLine: true,
-                highlightActiveLineGutter: true,
-                foldGutter: true,
-                dropCursor: true,
-                indentOnInput: true,
-              }}
-              style={{
-                width: "100%",
-                height: "100%",
-                minHeight: "220px",
-                maxHeight: "560px",
-                background: "#18181b", // CodeMirror本体はChakra UIで制御不可のため最小限残す
-                color: "#fff",
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-                fontSize: "1.1rem",
-                fontFamily:
-                  "Fira Code, SF Mono, Monaco, Inconsolata, Roboto Mono, monospace",
-                overflowY: "auto",
-              }}
-              onCreateEditor={handleCreateEditor}
+              onChange={onChange}
+              onUpdate={onUpdate}
+              style={{ fontSize: "16px", background: "transparent" }}
             />
           </Box>
         )}
-        {isMounted && showPreview && (
+        {showPreview && (
           <Box
             w="100%"
             h="100%"
