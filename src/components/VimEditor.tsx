@@ -13,7 +13,7 @@ import {
 import { getCM, vim } from "@replit/codemirror-vim";
 import CodeMirror from "@uiw/react-codemirror";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { IconType } from "react-icons";
 import {
@@ -252,40 +252,41 @@ const modeInfo = {
     hint: "Select text with h,j,k,l or use y to copy",
   },
 } as const;
+
 function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   const [mode, setMode] = useState<EditorMode>("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [showCodePenMode, setShowCodePenMode] = useState<boolean>(false);
+  const [docs, setDocs] = useState<DocsState>(defaultSamples);
 
-  // 統一されたドキュメント状態 - 通常モードとCodePenモードで共有
-  const [docs, setDocs] = useState<DocsState>(() => {
+  // localStorageからの初期化・マイグレーションはuseEffectで行う
+  // setStateはレンダー中に呼ばない
+  useEffect(() => {
     try {
-      // 新しい統一されたキーから読み込み
       const saved = localStorage.getItem("vimapp_shared_docs");
       if (saved) {
-        return JSON.parse(saved);
+        setDocs(JSON.parse(saved));
+        return;
       }
-
-      // 旧データが存在する場合はマイグレーション
       const oldSamples = localStorage.getItem("vimapp_samples");
       if (oldSamples) {
         console.log("Migrating old localStorage data to unified format");
         const oldData = JSON.parse(oldSamples);
-        // 新しいキーに保存
         localStorage.setItem("vimapp_shared_docs", JSON.stringify(oldData));
-        // 旧キーを削除
         localStorage.removeItem("vimapp_samples");
         localStorage.removeItem("vimapp_codepen_samples");
-        return oldData;
+        setDocs(oldData);
+        return;
       }
-
-      return defaultSamples;
+      // 何もなければdefaultSamples
+      setDocs(defaultSamples);
     } catch (error) {
       console.warn("Failed to load saved docs from localStorage:", error);
-      return defaultSamples;
+      setDocs(defaultSamples);
     }
-  });
+    // eslint-disable-next-line
+  }, []);
 
   // 各モードの拡張機能を個別にメモ化（独立したhistory付き）
   const htmlExtensions = useMemo(() => getExtensions("html"), []);
@@ -839,7 +840,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   border: "none",
                   background: "white",
                 }}
-                sandbox="allow-scripts allow-same-origin allow-modals"
+                sandbox={
+                  process.env.NODE_ENV === "development"
+                    ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
+                    : "allow-scripts allow-same-origin allow-modals"
+                }
               />
             </Box>
 
@@ -1122,7 +1127,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     border: "none",
                     background: "white",
                   }}
-                  sandbox="allow-scripts allow-same-origin allow-modals"
+                  sandbox={
+                    process.env.NODE_ENV === "development"
+                      ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
+                      : "allow-scripts allow-same-origin allow-modals"
+                  }
                 />
               </Box>
             )}
