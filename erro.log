@@ -4,6 +4,6 @@ content.js:1 Uncaught (in promise) The message port closed before a response was
 hydration-error-info.js:63 ./node_modules/@chakra-ui/next-js/dist/esm/link.mjs
 Attempted import error: 'useStyleConfig' is not exported from '@chakra-ui/react' (imported as 'useStyleConfig').
 console.error @ hydration-error-info.js:63
-hydration-error-info.js:63 ./node_modules/@chakra-ui/next-js/dist/esm/link.mjs
+hydration-error-info.js: 63 ./node_modules/@chakra-ui/next-js/dist/esm/link.mjs
 Attempted import error: 'omitThemingProps' is not exported from '@chakra-ui/react' (imported as 'omitThemingProps').
 console.error @ hydration-error-info.js:63

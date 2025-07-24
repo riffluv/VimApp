@@ -1,34 +1,92 @@
-// 拡張取得関数（CodeMirror用）
-function getExtensions(mode: "html" | "css" | "js") {
-  switch (mode) {
-    case "html":
-      return [
-        htmlLang(),
-        vim(),
-        abbreviationTracker(),
-        keymap.of([
-          { key: "Ctrl-e", run: expandAbbreviation },
-          { key: "Cmd-e", run: expandAbbreviation },
-        ]),
-        oneDark,
-      ];
-    case "css":
-      return [
-        cssLang(),
-        vim(),
-        abbreviationTracker(),
-        keymap.of([
-          { key: "Ctrl-e", run: expandAbbreviation },
-          { key: "Cmd-e", run: expandAbbreviation },
-        ]),
-        oneDark,
-      ];
-    case "js":
-      return [jsLang(), vim(), oneDark];
-    default:
-      return [vim(), oneDark];
+import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { history } from "@codemirror/commands";
+import { css as cssLang } from "@codemirror/lang-css";
+import { html as htmlLang } from "@codemirror/lang-html";
+import { javascript as jsLang } from "@codemirror/lang-javascript";
+import { Prec } from "@codemirror/state";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { keymap } from "@codemirror/view";
+import {
+  abbreviationTracker,
+  expandAbbreviation,
+} from "@emmetio/codemirror6-plugin";
+import { getCM, vim } from "@replit/codemirror-vim";
+import CodeMirror from "@uiw/react-codemirror";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useMemo, useState } from "react";
+
+import type { IconType } from "react-icons";
+import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
+
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
+const MotionText = motion.create(Text);
+
+// 共通のキーマップ設定
+const commonKeymap = keymap.of([
+  { key: "Ctrl-e", run: expandAbbreviation },
+  { key: "Cmd-e", run: expandAbbreviation },
+]);
+
+// Emmet設定を言語ごとに定義
+const emmetConfigs = {
+  html: {
+    autocompleteTab: true,
+    config: {
+      markup: {
+        options: {
+          "markup.attributes": {
+            href: "https://",
+            src: "/",
+          },
+        },
+      },
+    },
+  },
+  css: {
+    autocompleteTab: true,
+    config: {
+      stylesheet: {
+        options: {
+          "stylesheet.strictMatch": true,
+        },
+      },
+    },
+  },
+} as const;
+
+// 言語固有の拡張機能マップ
+const languageExtensions = {
+  html: htmlLang(),
+  css: cssLang(),
+  js: jsLang(),
+} as const;
+
+// 拡張取得関数（CodeMirror用）- 各モードごとに独立したhistory付き
+const getExtensions = (mode: EditorMode) => {
+  const baseExtensions = [
+    languageExtensions[mode],
+    history(), // 各モードが独立したhistoryを持つ
+    vim(),
+    commonKeymap,
+    oneDark,
+  ];
+
+  // EmmetサポートがあるモードのみEmmetを追加
+  if (mode === "html" || mode === "css") {
+    const emmetExtension = Prec.high(abbreviationTracker(emmetConfigs[mode]));
+    return [
+      languageExtensions[mode],
+      history(), // 各モードが独立したhistoryを持つ
+      emmetExtension,
+      vim(),
+      commonKeymap,
+      oneDark,
+    ];
   }
-}
+
+  return baseExtensions;
+};
 // アニメーション用のvariants（再定義）
 const containerVariants = {
   hidden: { opacity: 0, scale: 0.98 },
@@ -133,28 +191,17 @@ const defaultSamples = {
 `,
 };
 
+// --- 型定義 ---
+type EditorMode = "html" | "css" | "js";
+type VimMode = keyof typeof modeInfo;
+
+interface DocsState {
+  html: string;
+  css: string;
+  js: string;
+}
+
 // --- Vimモード情報・型定義 ---
-import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
-import { css as cssLang } from "@codemirror/lang-css";
-import { html as htmlLang } from "@codemirror/lang-html";
-import { javascript as jsLang } from "@codemirror/lang-javascript";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { keymap } from "@codemirror/view";
-import {
-  abbreviationTracker,
-  expandAbbreviation,
-} from "@emmetio/codemirror6-plugin";
-import { getCM, vim } from "@replit/codemirror-vim";
-import CodeMirror from "@uiw/react-codemirror";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useState } from "react";
-
-import type { IconType } from "react-icons";
-import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
-
-const MotionBox = motion.create(Box);
-const MotionFlex = motion.create(Flex);
-const MotionText = motion.create(Text);
 const modeInfo = {
   normal: {
     text: "NORMAL",
@@ -175,136 +222,124 @@ const modeInfo = {
     hint: "Select text with h,j,k,l or use y to copy",
   },
 } as const;
-type VimMode = keyof typeof modeInfo;
 function VimEditor() {
-  const [mode, setMode] = useState<"html" | "css" | "js">("html");
+  const [mode, setMode] = useState<EditorMode>("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
   const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  // 各モードごとにdoc（内容）を保存
-  const [docs, setDocs] = useState<{ html: string; css: string; js: string }>(() => {
+  // 各モードごとにdoc（内容）を保存 - 初期化最適化
+  const [docs, setDocs] = useState<DocsState>(() => {
     try {
       const saved = localStorage.getItem("vimapp_samples");
       return saved ? JSON.parse(saved) : defaultSamples;
-    } catch {
-      return defaultSamples;
-    }
-  });
-  const [samples, setSamples] = useState(() => {
-    try {
-      const saved = localStorage.getItem("vimapp_samples");
-      return saved ? JSON.parse(saved) : defaultSamples;
-    } catch {
+    } catch (error) {
+      console.warn("Failed to load saved samples from localStorage:", error);
       return defaultSamples;
     }
   });
 
-  // Editor拡張取得関数（変更なし）
-  function getExtensions(mode: "html" | "css" | "js") {
+  // 各モードの拡張機能を個別にメモ化（独立したhistory付き）
+  const htmlExtensions = useMemo(() => getExtensions("html"), []);
+  const cssExtensions = useMemo(() => getExtensions("css"), []);
+  const jsExtensions = useMemo(() => getExtensions("js"), []);
+
+  // 現在のモードに応じた拡張を返す
+  const getCurrentExtensions = useCallback(() => {
     switch (mode) {
       case "html":
-        return [
-          htmlLang(),
-          vim(),
-          abbreviationTracker(),
-          keymap.of([
-            { key: "Ctrl-e", run: expandAbbreviation },
-            { key: "Cmd-e", run: expandAbbreviation },
-          ]),
-          oneDark,
-        ];
+        return htmlExtensions;
       case "css":
-        return [
-          cssLang(),
-          vim(),
-          abbreviationTracker(),
-          keymap.of([
-            { key: "Ctrl-e", run: expandAbbreviation },
-            { key: "Cmd-e", run: expandAbbreviation },
-          ]),
-          oneDark,
-        ];
+        return cssExtensions;
       case "js":
-        return [jsLang(), vim(), oneDark];
+        return jsExtensions;
       default:
-        return [vim(), oneDark];
+        return htmlExtensions;
     }
-  }
+  }, [mode, htmlExtensions, cssExtensions, jsExtensions]);
 
-  // 初期化: localStorageからdocを復元（docsのuseState初期値で済むので不要）
-
-  // モード切り替え
-  const handleModeChange = useCallback((m: "html" | "css" | "js") => {
-    setMode(m);
-    setShowPreview(false);
-    setVimMode("normal");
-  }, []);
-
-  // doc更新（onChange）
-  const handleEditorChange = useCallback(
-    (value: string) => {
-      setDocs((prev) => {
-        const updated = { ...prev, [mode]: value };
-        localStorage.setItem("vimapp_samples", JSON.stringify(updated));
-        return updated;
-      });
+  // モード切り替え - 最適化版
+  const handleModeChange = useCallback(
+    (newMode: EditorMode) => {
+      if (newMode === mode) return; // 同じモードの場合は何もしない
+      setMode(newMode);
+      setShowPreview(false);
+      setVimMode("normal");
     },
     [mode]
   );
 
-  // Vimモード監視
+  // Vimモード監視 - エラーハンドリング強化
   const onUpdate = useCallback((viewUpdate: any) => {
     try {
       let nextVimMode: VimMode = "normal";
+
       if (viewUpdate?.view) {
         const cm = getCM(viewUpdate.view);
-        if (cm && cm.state && cm.state.vim && cm.state.vim.mode) {
+        if (cm?.state?.vim?.mode) {
           const vimModeRaw = cm.state.vim.mode;
-          if (vimModeRaw === "insert") nextVimMode = "insert";
-          else if (vimModeRaw === "visual") nextVimMode = "visual";
-          else nextVimMode = "normal";
+          switch (vimModeRaw) {
+            case "insert":
+              nextVimMode = "insert";
+              break;
+            case "visual":
+              nextVimMode = "visual";
+              break;
+            default:
+              nextVimMode = "normal";
+              break;
+          }
         }
       }
+
       setVimMode(nextVimMode);
-    } catch (e) {
+    } catch (error) {
+      console.warn("Error updating vim mode:", error);
       setVimMode("normal");
     }
   }, []);
 
-  // リセット
+  // リセット - 最適化版
   const handleReset = useCallback(() => {
+    const defaultContent = defaultSamples[mode];
     setDocs((prev) => {
-      const updated = { ...prev, [mode]: defaultSamples[mode] };
-      localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+      const updated = { ...prev, [mode]: defaultContent };
+      try {
+        localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+      } catch (error) {
+        console.warn("Failed to save reset state to localStorage:", error);
+      }
       return updated;
     });
     setVimMode("normal");
     setShowPreview(false);
   }, [mode]);
 
-  // プレビュー用HTML生成
-  const previewSrcDoc = `
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Preview</title>
-      <style>
-      ${samples.css}
-      </style>
-    </head>
-    <body>
-      ${samples.html
-        .split("\n")
-        .filter((line: string) => !line.trim().startsWith("//"))
-        .join("\n")}
-      <script>
-      ${samples.js}
-      </script>
-    </body>
-    </html>
-  `;
+  // プレビュー用HTML生成 - useMemoで最適化
+  const previewSrcDoc = useMemo(() => {
+    const cleanHtml = docs.html
+      .split("\n")
+      .filter((line: string) => !line.trim().startsWith("//"))
+      .join("\n");
+
+    return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview</title>
+  <style>${docs.css}</style>
+</head>
+<body>
+  ${cleanHtml}
+  <script>${docs.js}</script>
+</body>
+</html>`;
+  }, [docs.css, docs.html, docs.js]);
+
+  // プレビュー切り替え - 最適化版
+  const handlePreviewToggle = useCallback(() => {
+    setShowPreview((prev) => !prev);
+  }, []);
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
     <MotionBox
@@ -388,7 +423,7 @@ function VimEditor() {
         </Flex>
         <HStack justifyContent="flex-end" gap={2}>
           <Button
-            onClick={() => setShowPreview((prev) => !prev)}
+            onClick={handlePreviewToggle}
             colorScheme={showPreview ? "purple" : "gray"}
             bg={
               showPreview
@@ -578,7 +613,7 @@ function VimEditor() {
         height="100%"
         maxH="100%"
       >
-        {/* SSR/CSR差異による高さ0問題を防ぐため、マウント後のみ描画 */}
+        {/* 各モード専用のCodeMirrorインスタンス - 完全に独立したundo履歴 */}
         {!showPreview && (
           <Box
             w="100%"
@@ -595,30 +630,140 @@ function VimEditor() {
               outline: "none",
             }}
           >
-            {/* 各モードごとにCodeMirrorインスタンスを分離 */}
-            {(["html", "css", "js"] as const).map((m) => (
-              <Box key={m} style={{ display: mode === m ? "block" : "none", height: "100%" }}>
-                <CodeMirror
-                  value={docs[m]}
-                  height="100%"
-                  extensions={getExtensions(m)}
-                  theme={oneDark}
-                  onChange={(value) => {
-                    setDocs((prev) => {
-                      const updated = { ...prev, [m]: value };
-                      localStorage.setItem("vimapp_samples", JSON.stringify(updated));
-                      return updated;
-                    });
-                  }}
-                  onUpdate={onUpdate}
-                  style={{
-                    height: "100%",
-                    fontSize: "16px",
-                    background: "transparent",
-                  }}
-                />
-              </Box>
-            ))}
+            {/* HTMLモード専用エディタ */}
+            {mode === "html" && (
+              <CodeMirror
+                key="html-editor"
+                value={docs.html}
+                height="100%"
+                extensions={htmlExtensions}
+                theme={oneDark}
+                onChange={(value) => {
+                  setDocs((prev) => {
+                    const updated = { ...prev, html: value };
+                    try {
+                      localStorage.setItem(
+                        "vimapp_samples",
+                        JSON.stringify(updated)
+                      );
+                    } catch (error) {
+                      console.warn("Failed to save to localStorage:", error);
+                    }
+                    return updated;
+                  });
+                }}
+                onUpdate={onUpdate}
+                basicSetup={{
+                  lineNumbers: true,
+                  foldGutter: true,
+                  dropCursor: false,
+                  allowMultipleSelections: false,
+                  indentOnInput: true,
+                  bracketMatching: true,
+                  closeBrackets: true,
+                  autocompletion: true,
+                  searchKeymap: true,
+                  historyKeymap: true,
+                  foldKeymap: true,
+                  completionKeymap: true,
+                }}
+                style={{
+                  height: "100%",
+                  fontSize: "16px",
+                  background: "transparent",
+                }}
+              />
+            )}
+
+            {/* CSSモード専用エディタ */}
+            {mode === "css" && (
+              <CodeMirror
+                key="css-editor"
+                value={docs.css}
+                height="100%"
+                extensions={cssExtensions}
+                theme={oneDark}
+                onChange={(value) => {
+                  setDocs((prev) => {
+                    const updated = { ...prev, css: value };
+                    try {
+                      localStorage.setItem(
+                        "vimapp_samples",
+                        JSON.stringify(updated)
+                      );
+                    } catch (error) {
+                      console.warn("Failed to save to localStorage:", error);
+                    }
+                    return updated;
+                  });
+                }}
+                onUpdate={onUpdate}
+                basicSetup={{
+                  lineNumbers: true,
+                  foldGutter: true,
+                  dropCursor: false,
+                  allowMultipleSelections: false,
+                  indentOnInput: true,
+                  bracketMatching: true,
+                  closeBrackets: true,
+                  autocompletion: true,
+                  searchKeymap: true,
+                  historyKeymap: true,
+                  foldKeymap: true,
+                  completionKeymap: true,
+                }}
+                style={{
+                  height: "100%",
+                  fontSize: "16px",
+                  background: "transparent",
+                }}
+              />
+            )}
+
+            {/* JSモード専用エディタ */}
+            {mode === "js" && (
+              <CodeMirror
+                key="js-editor"
+                value={docs.js}
+                height="100%"
+                extensions={jsExtensions}
+                theme={oneDark}
+                onChange={(value) => {
+                  setDocs((prev) => {
+                    const updated = { ...prev, js: value };
+                    try {
+                      localStorage.setItem(
+                        "vimapp_samples",
+                        JSON.stringify(updated)
+                      );
+                    } catch (error) {
+                      console.warn("Failed to save to localStorage:", error);
+                    }
+                    return updated;
+                  });
+                }}
+                onUpdate={onUpdate}
+                basicSetup={{
+                  lineNumbers: true,
+                  foldGutter: true,
+                  dropCursor: false,
+                  allowMultipleSelections: false,
+                  indentOnInput: true,
+                  bracketMatching: true,
+                  closeBrackets: true,
+                  autocompletion: true,
+                  searchKeymap: true,
+                  historyKeymap: true,
+                  foldKeymap: true,
+                  completionKeymap: true,
+                }}
+                style={{
+                  height: "100%",
+                  fontSize: "16px",
+                  background: "transparent",
+                }}
+              />
+            )}
           </Box>
         )}
         {showPreview && (
