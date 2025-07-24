@@ -16,7 +16,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useMemo, useState } from "react";
 
 import type { IconType } from "react-icons";
-import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
+import {
+  FiBookOpen,
+  FiCommand,
+  FiEdit,
+  FiRefreshCw,
+  FiTerminal,
+} from "react-icons/fi";
 
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
@@ -117,6 +123,26 @@ const modeIndicatorVariants = {
     },
   },
 };
+// --- サンプルコード（CodePenモード用：チートシート除去版） ---
+const codePenSamples = {
+  html: `<div class="container">
+  <h1>Hello Vim!</h1>
+  <p>これはVim練習用のサンプルです。</p>
+</div>
+`,
+  css: `.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f5f5f5;
+}
+`,
+  js: `document.querySelector('.container').addEventListener('click', function() {
+  alert('Vimで編集してみよう！');
+});
+`,
+};
+
 // --- サンプルコード＋コメント（tips）一体化管理オブジェクト ---
 const defaultSamples = {
   html: `<div class="container">
@@ -201,6 +227,10 @@ interface DocsState {
   js: string;
 }
 
+interface VimEditorProps {
+  onCodePenModeChange?: (isCodePenMode: boolean) => void;
+}
+
 // --- Vimモード情報・型定義 ---
 const modeInfo = {
   normal: {
@@ -222,10 +252,25 @@ const modeInfo = {
     hint: "Select text with h,j,k,l or use y to copy",
   },
 } as const;
-function VimEditor() {
+function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   const [mode, setMode] = useState<EditorMode>("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
   const [showPreview, setShowPreview] = useState<boolean>(false);
+  const [showCodePenMode, setShowCodePenMode] = useState<boolean>(false);
+
+  // CodePenモード用ドキュメント状態（チートシート除去）
+  const [codePenDocs, setCodePenDocs] = useState<DocsState>(() => {
+    try {
+      const saved = localStorage.getItem("vimapp_codepen_samples");
+      return saved ? JSON.parse(saved) : codePenSamples;
+    } catch (error) {
+      console.warn(
+        "Failed to load saved CodePen samples from localStorage:",
+        error
+      );
+      return codePenSamples;
+    }
+  });
 
   // 各モードごとにdoc（内容）を保存 - 初期化最適化
   const [docs, setDocs] = useState<DocsState>(() => {
@@ -264,6 +309,17 @@ function VimEditor() {
     setMode(newMode);
   }, []);
 
+  // CodePenモード切り替え - 最適化版
+  const handleCodePenToggle = useCallback(() => {
+    setShowCodePenMode((prev) => {
+      const newValue = !prev;
+      // 親コンポーネントに状態を通知
+      onCodePenModeChange?.(newValue);
+      return newValue;
+    });
+    setShowPreview(false); // CodePenモード時はPreviewボタンは無効化
+  }, [onCodePenModeChange]);
+
   // Vimモード監視 - エラーハンドリング強化
   const onUpdate = useCallback((viewUpdate: any) => {
     try {
@@ -296,19 +352,43 @@ function VimEditor() {
 
   // リセット - 最適化版
   const handleReset = useCallback(() => {
-    const defaultContent = defaultSamples[mode];
-    setDocs((prev) => {
-      const updated = { ...prev, [mode]: defaultContent };
-      try {
-        localStorage.setItem("vimapp_samples", JSON.stringify(updated));
-      } catch (error) {
-        console.warn("Failed to save reset state to localStorage:", error);
-      }
-      return updated;
-    });
+    if (showCodePenMode) {
+      // CodePenモード時はクリーンなサンプルをリセット
+      const defaultContent = codePenSamples[mode];
+      setCodePenDocs((prev) => {
+        const updated = { ...prev, [mode]: defaultContent };
+        try {
+          localStorage.setItem(
+            "vimapp_codepen_samples",
+            JSON.stringify(updated)
+          );
+        } catch (error) {
+          console.warn("Failed to save reset state to localStorage:", error);
+        }
+        return updated;
+      });
+    } else {
+      // 通常モード時はチートシート付きサンプルをリセット
+      const defaultContent = defaultSamples[mode];
+      setDocs((prev) => {
+        const updated = { ...prev, [mode]: defaultContent };
+        try {
+          localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+        } catch (error) {
+          console.warn("Failed to save reset state to localStorage:", error);
+        }
+        return updated;
+      });
+    }
     setVimMode("normal");
     setShowPreview(false);
-  }, [mode]);
+
+    // CodePenモードもリセット
+    if (showCodePenMode) {
+      setShowCodePenMode(false);
+      onCodePenModeChange?.(false);
+    }
+  }, [mode, showCodePenMode, onCodePenModeChange]);
 
   // プレビュー用HTML生成 - useMemoで最適化
   const previewSrcDoc = useMemo(() => {
@@ -331,6 +411,24 @@ function VimEditor() {
 </body>
 </html>`;
   }, [docs.css, docs.html, docs.js]);
+
+  // CodePenモード用HTML生成 - チートシート除去版
+  const codePenSrcDoc = useMemo(() => {
+    // CodePenモードでは専用のクリーンなドキュメントを使用
+    return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodePen Preview</title>
+  <style>${codePenDocs.css}</style>
+</head>
+<body>
+  ${codePenDocs.html}
+  <script>${codePenDocs.js}</script>
+</body>
+</html>`;
+  }, [codePenDocs.css, codePenDocs.html, codePenDocs.js]);
 
   // プレビュー切り替え - 最適化版
   const handlePreviewToggle = useCallback(() => {
@@ -418,8 +516,49 @@ function VimEditor() {
           </Flex>
         </Flex>
         <HStack justifyContent="flex-end" gap={2}>
+          {/* CodePenモードボタン */}
+          <Button
+            onClick={handleCodePenToggle}
+            colorScheme={showCodePenMode ? "teal" : "gray"}
+            bg={
+              showCodePenMode
+                ? "linear-gradient(135deg, rgba(56,178,172,0.2), rgba(56,178,172,0.1))"
+                : "transparent"
+            }
+            color={showCodePenMode ? "teal.400" : "gray.400"}
+            borderRadius="md"
+            px={3}
+            py={1.5}
+            height="auto"
+            fontFamily="mono"
+            fontWeight={showCodePenMode ? "bold" : "medium"}
+            letterSpacing="tight"
+            borderWidth={showCodePenMode ? 1 : 0}
+            borderColor={showCodePenMode ? "teal.800" : "transparent"}
+            _hover={{
+              bg: "linear-gradient(135deg, rgba(56,178,172,0.3), rgba(56,178,172,0.15))",
+              color: "teal.400",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+            }}
+            _active={{
+              bg: "blackAlpha.500",
+              transform: "translateY(0)",
+            }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{ outline: "none" }}
+            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            mr={1}
+            aria-label="CodePenモード切り替え"
+            aria-pressed={showCodePenMode}
+          >
+            <Icon as={FiBookOpen} mr={1} /> CodePen
+          </Button>
+
+          {/* Previewボタン - CodePenモード時は無効化 */}
           <Button
             onClick={handlePreviewToggle}
+            disabled={showCodePenMode}
             colorScheme={showPreview ? "purple" : "gray"}
             bg={
               showPreview
@@ -437,10 +576,12 @@ function VimEditor() {
             borderWidth={showPreview ? 1 : 0}
             borderColor={showPreview ? "purple.800" : "transparent"}
             _hover={{
-              bg: "linear-gradient(135deg, rgba(128,90,213,0.3), rgba(128,90,213,0.15))",
-              color: "purple.400",
-              transform: "translateY(-1px)",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+              bg: showCodePenMode
+                ? "transparent"
+                : "linear-gradient(135deg, rgba(128,90,213,0.3), rgba(128,90,213,0.15))",
+              color: showCodePenMode ? "gray.400" : "purple.400",
+              transform: showCodePenMode ? "none" : "translateY(-1px)",
+              boxShadow: showCodePenMode ? "none" : "0 4px 8px rgba(0,0,0,0.3)",
             }}
             _active={{
               bg: "blackAlpha.500",
@@ -452,6 +593,7 @@ function VimEditor() {
             mr={1}
             aria-label="プレビュー表示切り替え"
             aria-pressed={showPreview}
+            opacity={showCodePenMode ? 0.5 : 1}
           >
             Preview
           </Button>
@@ -596,7 +738,7 @@ function VimEditor() {
           {modeInfo[vimMode].hint}
         </Text>
       </MotionFlex>
-      {/* --- Editor本体エリア or プレビュー --- */}
+      {/* --- Editor本体エリア or プレビュー or CodePenモード --- */}
       <Box
         flex={1}
         minHeight={0}
@@ -610,183 +752,371 @@ function VimEditor() {
         maxH="100%"
         justifyContent="center"
       >
-        {/* 各モード専用のCodeMirrorインスタンス - 完全に独立したundo履歴 */}
-        {!showPreview && (
-          <Box
+        {/* CodePenモード: 左右分割レイアウト */}
+        {showCodePenMode ? (
+          <Flex
             w="100%"
             h="100%"
-            maxH={{ base: "340px", md: "480px", lg: "560px" }}
-            minH={{ base: "220px", md: "320px" }}
-            overflowY="auto"
-            borderRadius="md"
-            bg="transparent"
-            boxShadow="none"
-            style={{
-              height: "100%",
-              fontSize: "16px",
-              outline: "none",
-            }}
+            direction={{ base: "column", lg: "row" }}
+            gap={2}
           >
-            {/* HTMLモード専用エディタ */}
-            {mode === "html" && (
-              <CodeMirror
-                key="html-editor"
-                value={docs.html}
-                height="100%"
-                extensions={htmlExtensions}
-                theme={oneDark}
-                onChange={(value) => {
-                  setDocs((prev) => {
-                    const updated = { ...prev, html: value };
-                    try {
-                      localStorage.setItem(
-                        "vimapp_samples",
-                        JSON.stringify(updated)
-                      );
-                    } catch (error) {
-                      console.warn("Failed to save to localStorage:", error);
-                    }
-                    return updated;
-                  });
-                }}
-                onUpdate={onUpdate}
-                basicSetup={{
-                  lineNumbers: true,
-                  foldGutter: true,
-                  dropCursor: false,
-                  allowMultipleSelections: false,
-                  indentOnInput: true,
-                  bracketMatching: true,
-                  closeBrackets: true,
-                  autocompletion: true,
-                  searchKeymap: true,
-                  historyKeymap: true,
-                  foldKeymap: true,
-                  completionKeymap: true,
-                }}
+            {/* 左側: プレビュー */}
+            <Box
+              flex={1}
+              minH={{ base: "200px", lg: "auto" }}
+              borderRadius="md"
+              bg="white"
+              boxShadow="lg"
+              overflow="hidden"
+            >
+              <iframe
+                title="CodePen Preview"
+                srcDoc={codePenSrcDoc}
                 style={{
+                  width: "100%",
                   height: "100%",
-                  fontSize: "16px",
-                  background: "transparent",
+                  border: "none",
+                  background: "white",
                 }}
+                sandbox="allow-scripts allow-same-origin allow-modals"
               />
-            )}
+            </Box>
 
-            {/* CSSモード専用エディタ */}
-            {mode === "css" && (
-              <CodeMirror
-                key="css-editor"
-                value={docs.css}
-                height="100%"
-                extensions={cssExtensions}
-                theme={oneDark}
-                onChange={(value) => {
-                  setDocs((prev) => {
-                    const updated = { ...prev, css: value };
-                    try {
-                      localStorage.setItem(
-                        "vimapp_samples",
-                        JSON.stringify(updated)
-                      );
-                    } catch (error) {
-                      console.warn("Failed to save to localStorage:", error);
-                    }
-                    return updated;
-                  });
-                }}
-                onUpdate={onUpdate}
-                basicSetup={{
-                  lineNumbers: true,
-                  foldGutter: true,
-                  dropCursor: false,
-                  allowMultipleSelections: false,
-                  indentOnInput: true,
-                  bracketMatching: true,
-                  closeBrackets: true,
-                  autocompletion: true,
-                  searchKeymap: true,
-                  historyKeymap: true,
-                  foldKeymap: true,
-                  completionKeymap: true,
-                }}
-                style={{
-                  height: "100%",
-                  fontSize: "16px",
-                  background: "transparent",
-                }}
-              />
-            )}
+            {/* 右側: エディター */}
+            <Box
+              flex={1}
+              minH={{ base: "200px", lg: "auto" }}
+              borderRadius="md"
+              bg="transparent"
+              overflow="hidden"
+            >
+              {/* HTMLモード専用エディタ */}
+              {mode === "html" && (
+                <CodeMirror
+                  key="html-editor-codepen"
+                  value={codePenDocs.html}
+                  height="100%"
+                  extensions={htmlExtensions}
+                  theme={oneDark}
+                  onChange={(value) => {
+                    setCodePenDocs((prev) => {
+                      const updated = { ...prev, html: value };
+                      try {
+                        localStorage.setItem(
+                          "vimapp_codepen_samples",
+                          JSON.stringify(updated)
+                        );
+                      } catch (error) {
+                        console.warn("Failed to save to localStorage:", error);
+                      }
+                      return updated;
+                    });
+                  }}
+                  onUpdate={onUpdate}
+                  basicSetup={{
+                    lineNumbers: true,
+                    foldGutter: true,
+                    dropCursor: false,
+                    allowMultipleSelections: false,
+                    indentOnInput: true,
+                    bracketMatching: true,
+                    closeBrackets: true,
+                    autocompletion: true,
+                    searchKeymap: true,
+                    historyKeymap: true,
+                    foldKeymap: true,
+                    completionKeymap: true,
+                  }}
+                  style={{
+                    height: "100%",
+                    fontSize: "16px",
+                    background: "transparent",
+                  }}
+                />
+              )}
 
-            {/* JSモード専用エディタ */}
-            {mode === "js" && (
-              <CodeMirror
-                key="js-editor"
-                value={docs.js}
-                height="100%"
-                extensions={jsExtensions}
-                theme={oneDark}
-                onChange={(value) => {
-                  setDocs((prev) => {
-                    const updated = { ...prev, js: value };
-                    try {
-                      localStorage.setItem(
-                        "vimapp_samples",
-                        JSON.stringify(updated)
-                      );
-                    } catch (error) {
-                      console.warn("Failed to save to localStorage:", error);
-                    }
-                    return updated;
-                  });
-                }}
-                onUpdate={onUpdate}
-                basicSetup={{
-                  lineNumbers: true,
-                  foldGutter: true,
-                  dropCursor: false,
-                  allowMultipleSelections: false,
-                  indentOnInput: true,
-                  bracketMatching: true,
-                  closeBrackets: true,
-                  autocompletion: true,
-                  searchKeymap: true,
-                  historyKeymap: true,
-                  foldKeymap: true,
-                  completionKeymap: true,
-                }}
+              {/* CSSモード専用エディタ */}
+              {mode === "css" && (
+                <CodeMirror
+                  key="css-editor-codepen"
+                  value={codePenDocs.css}
+                  height="100%"
+                  extensions={cssExtensions}
+                  theme={oneDark}
+                  onChange={(value) => {
+                    setCodePenDocs((prev) => {
+                      const updated = { ...prev, css: value };
+                      try {
+                        localStorage.setItem(
+                          "vimapp_codepen_samples",
+                          JSON.stringify(updated)
+                        );
+                      } catch (error) {
+                        console.warn("Failed to save to localStorage:", error);
+                      }
+                      return updated;
+                    });
+                  }}
+                  onUpdate={onUpdate}
+                  basicSetup={{
+                    lineNumbers: true,
+                    foldGutter: true,
+                    dropCursor: false,
+                    allowMultipleSelections: false,
+                    indentOnInput: true,
+                    bracketMatching: true,
+                    closeBrackets: true,
+                    autocompletion: true,
+                    searchKeymap: true,
+                    historyKeymap: true,
+                    foldKeymap: true,
+                    completionKeymap: true,
+                  }}
+                  style={{
+                    height: "100%",
+                    fontSize: "16px",
+                    background: "transparent",
+                  }}
+                />
+              )}
+
+              {/* JSモード専用エディタ */}
+              {mode === "js" && (
+                <CodeMirror
+                  key="js-editor-codepen"
+                  value={codePenDocs.js}
+                  height="100%"
+                  extensions={jsExtensions}
+                  theme={oneDark}
+                  onChange={(value) => {
+                    setCodePenDocs((prev) => {
+                      const updated = { ...prev, js: value };
+                      try {
+                        localStorage.setItem(
+                          "vimapp_codepen_samples",
+                          JSON.stringify(updated)
+                        );
+                      } catch (error) {
+                        console.warn("Failed to save to localStorage:", error);
+                      }
+                      return updated;
+                    });
+                  }}
+                  onUpdate={onUpdate}
+                  basicSetup={{
+                    lineNumbers: true,
+                    foldGutter: true,
+                    dropCursor: false,
+                    allowMultipleSelections: false,
+                    indentOnInput: true,
+                    bracketMatching: true,
+                    closeBrackets: true,
+                    autocompletion: true,
+                    searchKeymap: true,
+                    historyKeymap: true,
+                    foldKeymap: true,
+                    completionKeymap: true,
+                  }}
+                  style={{
+                    height: "100%",
+                    fontSize: "16px",
+                    background: "transparent",
+                  }}
+                />
+              )}
+            </Box>
+          </Flex>
+        ) : (
+          /* 通常モード: Vimエディター or プレビュー */
+          <>
+            {/* 各モード専用のCodeMirrorインスタンス - 完全に独立したundo履歴 */}
+            {!showPreview && (
+              <Box
+                w="100%"
+                h="100%"
+                maxH={{ base: "340px", md: "480px", lg: "560px" }}
+                minH={{ base: "220px", md: "320px" }}
+                overflowY="auto"
+                borderRadius="md"
+                bg="transparent"
+                boxShadow="none"
                 style={{
                   height: "100%",
                   fontSize: "16px",
-                  background: "transparent",
+                  outline: "none",
                 }}
-              />
+              >
+                {/* HTMLモード専用エディタ */}
+                {mode === "html" && (
+                  <CodeMirror
+                    key="html-editor"
+                    value={docs.html}
+                    height="100%"
+                    extensions={htmlExtensions}
+                    theme={oneDark}
+                    onChange={(value) => {
+                      setDocs((prev) => {
+                        const updated = { ...prev, html: value };
+                        try {
+                          localStorage.setItem(
+                            "vimapp_samples",
+                            JSON.stringify(updated)
+                          );
+                        } catch (error) {
+                          console.warn(
+                            "Failed to save to localStorage:",
+                            error
+                          );
+                        }
+                        return updated;
+                      });
+                    }}
+                    onUpdate={onUpdate}
+                    basicSetup={{
+                      lineNumbers: true,
+                      foldGutter: true,
+                      dropCursor: false,
+                      allowMultipleSelections: false,
+                      indentOnInput: true,
+                      bracketMatching: true,
+                      closeBrackets: true,
+                      autocompletion: true,
+                      searchKeymap: true,
+                      historyKeymap: true,
+                      foldKeymap: true,
+                      completionKeymap: true,
+                    }}
+                    style={{
+                      height: "100%",
+                      fontSize: "16px",
+                      background: "transparent",
+                    }}
+                  />
+                )}
+
+                {/* CSSモード専用エディタ */}
+                {mode === "css" && (
+                  <CodeMirror
+                    key="css-editor"
+                    value={docs.css}
+                    height="100%"
+                    extensions={cssExtensions}
+                    theme={oneDark}
+                    onChange={(value) => {
+                      setDocs((prev) => {
+                        const updated = { ...prev, css: value };
+                        try {
+                          localStorage.setItem(
+                            "vimapp_samples",
+                            JSON.stringify(updated)
+                          );
+                        } catch (error) {
+                          console.warn(
+                            "Failed to save to localStorage:",
+                            error
+                          );
+                        }
+                        return updated;
+                      });
+                    }}
+                    onUpdate={onUpdate}
+                    basicSetup={{
+                      lineNumbers: true,
+                      foldGutter: true,
+                      dropCursor: false,
+                      allowMultipleSelections: false,
+                      indentOnInput: true,
+                      bracketMatching: true,
+                      closeBrackets: true,
+                      autocompletion: true,
+                      searchKeymap: true,
+                      historyKeymap: true,
+                      foldKeymap: true,
+                      completionKeymap: true,
+                    }}
+                    style={{
+                      height: "100%",
+                      fontSize: "16px",
+                      background: "transparent",
+                    }}
+                  />
+                )}
+
+                {/* JSモード専用エディタ */}
+                {mode === "js" && (
+                  <CodeMirror
+                    key="js-editor"
+                    value={docs.js}
+                    height="100%"
+                    extensions={jsExtensions}
+                    theme={oneDark}
+                    onChange={(value) => {
+                      setDocs((prev) => {
+                        const updated = { ...prev, js: value };
+                        try {
+                          localStorage.setItem(
+                            "vimapp_samples",
+                            JSON.stringify(updated)
+                          );
+                        } catch (error) {
+                          console.warn(
+                            "Failed to save to localStorage:",
+                            error
+                          );
+                        }
+                        return updated;
+                      });
+                    }}
+                    onUpdate={onUpdate}
+                    basicSetup={{
+                      lineNumbers: true,
+                      foldGutter: true,
+                      dropCursor: false,
+                      allowMultipleSelections: false,
+                      indentOnInput: true,
+                      bracketMatching: true,
+                      closeBrackets: true,
+                      autocompletion: true,
+                      searchKeymap: true,
+                      historyKeymap: true,
+                      foldKeymap: true,
+                      completionKeymap: true,
+                    }}
+                    style={{
+                      height: "100%",
+                      fontSize: "16px",
+                      background: "transparent",
+                    }}
+                  />
+                )}
+              </Box>
             )}
-          </Box>
-        )}
-        {showPreview && (
-          <Box
-            w="100%"
-            h="100%"
-            maxH={{ base: "340px", md: "480px", lg: "560px" }}
-            minH={{ base: "220px", md: "320px" }}
-            overflowY="auto"
-            borderRadius="md"
-            bg="white"
-            boxShadow="xl"
-            position="relative"
-          >
-            <iframe
-              title="Preview"
-              srcDoc={previewSrcDoc}
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "none",
-                background: "white",
-              }}
-              sandbox="allow-scripts allow-same-origin allow-modals"
-            />
-          </Box>
+            {showPreview && (
+              <Box
+                w="100%"
+                h="100%"
+                maxH={{ base: "340px", md: "480px", lg: "560px" }}
+                minH={{ base: "220px", md: "320px" }}
+                overflowY="auto"
+                borderRadius="md"
+                bg="white"
+                boxShadow="xl"
+                position="relative"
+              >
+                <iframe
+                  title="Preview"
+                  srcDoc={previewSrcDoc}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    background: "white",
+                  }}
+                  sandbox="allow-scripts allow-same-origin allow-modals"
+                />
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </MotionBox>
