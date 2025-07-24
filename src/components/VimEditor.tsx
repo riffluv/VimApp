@@ -608,6 +608,7 @@ function VimEditor() {
         mb={8}
         height="100%"
         maxH="100%"
+        justifyContent="center"
       >
         {/* 各モード専用のCodeMirrorインスタンス - 完全に独立したundo履歴 */}
         {!showPreview && (
@@ -771,7 +772,7 @@ function VimEditor() {
             overflowY="auto"
             borderRadius="md"
             bg="white"
-            boxShadow="md"
+            boxShadow="xl"
             position="relative"
           >
             <iframe

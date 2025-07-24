@@ -93,11 +93,13 @@ export default function Home() {
       <Flex
         direction={{ base: "column", md: "row" }}
         align="flex-start"
-        justify="flex-start"
+        justify={{ base: "flex-start", md: "center" }}
         w="100%"
         px={{ base: 2, md: 6 }}
         py={0}
         gap={{ base: 4, md: 8 }}
+        maxW={{ base: "100%", md: "1440px" }}
+        mx="auto"
       >
         <MotionBox
           flex={{ base: "none", md: "0 0 320px" }}
@@ -114,6 +116,7 @@ export default function Home() {
           flex="1 1 0%"
           w="100%"
           minH="360px"
+          maxW={{ base: "100%", md: "700px", lg: "800px" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
