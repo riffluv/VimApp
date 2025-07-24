@@ -1,3 +1,64 @@
+// 拡張取得関数（CodeMirror用）
+function getExtensions(mode: "html" | "css" | "js") {
+  switch (mode) {
+    case "html":
+      return [
+        htmlLang(),
+        vim(),
+        abbreviationTracker(),
+        keymap.of([
+          { key: "Ctrl-e", run: expandAbbreviation },
+          { key: "Cmd-e", run: expandAbbreviation },
+        ]),
+        oneDark,
+      ];
+    case "css":
+      return [
+        cssLang(),
+        vim(),
+        abbreviationTracker(),
+        keymap.of([
+          { key: "Ctrl-e", run: expandAbbreviation },
+          { key: "Cmd-e", run: expandAbbreviation },
+        ]),
+        oneDark,
+      ];
+    case "js":
+      return [jsLang(), vim(), oneDark];
+    default:
+      return [vim(), oneDark];
+  }
+}
+// アニメーション用のvariants（再定義）
+const containerVariants = {
+  hidden: { opacity: 0, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
+const modeIndicatorVariants = {
+  hidden: { opacity: 0, x: -15, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.3,
+    },
+  },
+  exit: {
+    opacity: 0,
+    x: 15,
+    scale: 0.9,
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
 // --- サンプルコード＋コメント（tips）一体化管理オブジェクト ---
 const defaultSamples = {
   html: `<div class="container">
@@ -78,10 +139,16 @@ import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { keymap } from "@codemirror/view";
+import {
+  abbreviationTracker,
+  expandAbbreviation,
+} from "@emmetio/codemirror6-plugin";
 import { getCM, vim } from "@replit/codemirror-vim";
 import CodeMirror from "@uiw/react-codemirror";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useState } from "react";
+
 import type { IconType } from "react-icons";
 import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
 
@@ -112,58 +179,17 @@ type VimMode = keyof typeof modeInfo;
 function VimEditor() {
   const [mode, setMode] = useState<"html" | "css" | "js">("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
-  // SSR/CSR差異によるeditor描画遅延対策: isMounted判定を廃止
-  // editorRef, viewRefは不要
+  const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  // isMounted判定を廃止
-
-  // アニメーション用のvariants
-  const containerVariants = {
-    hidden: { opacity: 0, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.4,
-      },
-    },
-  };
-
-  const modeIndicatorVariants = {
-    hidden: { opacity: 0, x: -15, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: {
-        duration: 0.3,
-      },
-    },
-    exit: {
-      opacity: 0,
-      x: 15,
-      scale: 0.9,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
-  // 言語拡張取得（@uiw/react-codemirror用）
-  function getExtensions() {
-    switch (mode) {
-      case "html":
-        return [htmlLang(), vim(), oneDark];
-      case "css":
-        return [cssLang(), vim(), oneDark];
-      case "js":
-        return [jsLang(), vim(), oneDark];
-      default:
-        return [vim(), oneDark];
+  // 各モードごとにdoc（内容）を保存
+  const [docs, setDocs] = useState<{ html: string; css: string; js: string }>(() => {
+    try {
+      const saved = localStorage.getItem("vimapp_samples");
+      return saved ? JSON.parse(saved) : defaultSamples;
+    } catch {
+      return defaultSamples;
     }
-  }
-
-  // サンプル＋コメント一体化管理
+  });
   const [samples, setSamples] = useState(() => {
     try {
       const saved = localStorage.getItem("vimapp_samples");
@@ -172,13 +198,61 @@ function VimEditor() {
       return defaultSamples;
     }
   });
-  const [code, setCode] = useState<string>(samples[mode]);
 
-  // 初回レンダリング時に必ずhtmlSample+vimTipsで初期化
-  // editor初期化・Vimモード監視はonUpdate/onChangeで十分
-  // Vimモード監視（@uiw/react-codemirrorのonUpdateで判定）
-  // Vimモード判定はonChangeで常にnormalに戻す（insertはVim拡張で自動）
-  // VimモードをonUpdateで取得し、表示を切り替える
+  // Editor拡張取得関数（変更なし）
+  function getExtensions(mode: "html" | "css" | "js") {
+    switch (mode) {
+      case "html":
+        return [
+          htmlLang(),
+          vim(),
+          abbreviationTracker(),
+          keymap.of([
+            { key: "Ctrl-e", run: expandAbbreviation },
+            { key: "Cmd-e", run: expandAbbreviation },
+          ]),
+          oneDark,
+        ];
+      case "css":
+        return [
+          cssLang(),
+          vim(),
+          abbreviationTracker(),
+          keymap.of([
+            { key: "Ctrl-e", run: expandAbbreviation },
+            { key: "Cmd-e", run: expandAbbreviation },
+          ]),
+          oneDark,
+        ];
+      case "js":
+        return [jsLang(), vim(), oneDark];
+      default:
+        return [vim(), oneDark];
+    }
+  }
+
+  // 初期化: localStorageからdocを復元（docsのuseState初期値で済むので不要）
+
+  // モード切り替え
+  const handleModeChange = useCallback((m: "html" | "css" | "js") => {
+    setMode(m);
+    setShowPreview(false);
+    setVimMode("normal");
+  }, []);
+
+  // doc更新（onChange）
+  const handleEditorChange = useCallback(
+    (value: string) => {
+      setDocs((prev) => {
+        const updated = { ...prev, [mode]: value };
+        localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+        return updated;
+      });
+    },
+    [mode]
+  );
+
+  // Vimモード監視
   const onUpdate = useCallback((viewUpdate: any) => {
     try {
       let nextVimMode: VimMode = "normal";
@@ -197,38 +271,18 @@ function VimEditor() {
     }
   }, []);
 
-  const getSample = useCallback(() => {
-    return samples[mode];
-  }, [mode, samples]);
-
-  // 上記で宣言済みなので重複削除
-  const [showPreview, setShowPreview] = useState<boolean>(false);
-
+  // リセット
   const handleReset = useCallback(() => {
-    // 現在のエディタのみリセット（コメント含め一体化）
-    const newSamples = { ...samples };
-    newSamples[mode] = defaultSamples[mode];
-    setSamples(newSamples);
-    setCode(newSamples[mode]);
+    setDocs((prev) => {
+      const updated = { ...prev, [mode]: defaultSamples[mode] };
+      localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+      return updated;
+    });
     setVimMode("normal");
     setShowPreview(false);
-    localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
-  }, [mode, samples]);
+  }, [mode]);
 
-  const handleModeChange = useCallback(
-    (m: "html" | "css" | "js") => {
-      // 現在の内容を保存
-      const newSamples = { ...samples };
-      newSamples[mode] = code;
-      setSamples(newSamples);
-      setMode(m);
-      setCode(newSamples[m]);
-      setShowPreview(false);
-      localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
-    },
-    [mode, code, samples]
-  );
-  // プレビュー用HTML生成（最新のhtml, css, js内容を合成）
+  // プレビュー用HTML生成
   const previewSrcDoc = `
     <!DOCTYPE html>
     <html lang="ja">
@@ -251,18 +305,6 @@ function VimEditor() {
     </body>
     </html>
   `;
-
-  const onChange = useCallback(
-    (value: string) => {
-      setCode(value);
-      // プログラム＋コメントを一体化して保存
-      let newSamples = { ...samples };
-      newSamples[mode] = value;
-      setSamples(newSamples);
-      localStorage.setItem("vimapp_samples", JSON.stringify(newSamples));
-    },
-    [mode, samples]
-  );
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
     <MotionBox
@@ -553,15 +595,30 @@ function VimEditor() {
               outline: "none",
             }}
           >
-            <CodeMirror
-              value={code}
-              height="100%"
-              extensions={getExtensions()}
-              theme={oneDark}
-              onChange={onChange}
-              onUpdate={onUpdate}
-              style={{ fontSize: "16px", background: "transparent" }}
-            />
+            {/* 各モードごとにCodeMirrorインスタンスを分離 */}
+            {(["html", "css", "js"] as const).map((m) => (
+              <Box key={m} style={{ display: mode === m ? "block" : "none", height: "100%" }}>
+                <CodeMirror
+                  value={docs[m]}
+                  height="100%"
+                  extensions={getExtensions(m)}
+                  theme={oneDark}
+                  onChange={(value) => {
+                    setDocs((prev) => {
+                      const updated = { ...prev, [m]: value };
+                      localStorage.setItem("vimapp_samples", JSON.stringify(updated));
+                      return updated;
+                    });
+                  }}
+                  onUpdate={onUpdate}
+                  style={{
+                    height: "100%",
+                    fontSize: "16px",
+                    background: "transparent",
+                  }}
+                />
+              </Box>
+            ))}
           </Box>
         )}
         {showPreview && (
