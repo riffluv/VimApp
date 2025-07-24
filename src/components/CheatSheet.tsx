@@ -373,6 +373,11 @@ export default function CheatSheet() {
               color="orange.400"
               fontWeight="bold"
               letterSpacing="tight"
+              fontFamily="'Nunito', 'Quicksand', sans-serif"
+              style={{
+                borderRadius: "0.25rem",
+                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+              }}
             >
               Vim Cheat Sheet
             </Heading>
