@@ -258,27 +258,31 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [showCodePenMode, setShowCodePenMode] = useState<boolean>(false);
 
-  // CodePenモード用ドキュメント状態（チートシート除去）
-  const [codePenDocs, setCodePenDocs] = useState<DocsState>(() => {
-    try {
-      const saved = localStorage.getItem("vimapp_codepen_samples");
-      return saved ? JSON.parse(saved) : codePenSamples;
-    } catch (error) {
-      console.warn(
-        "Failed to load saved CodePen samples from localStorage:",
-        error
-      );
-      return codePenSamples;
-    }
-  });
-
-  // 各モードごとにdoc（内容）を保存 - 初期化最適化
+  // 統一されたドキュメント状態 - 通常モードとCodePenモードで共有
   const [docs, setDocs] = useState<DocsState>(() => {
     try {
-      const saved = localStorage.getItem("vimapp_samples");
-      return saved ? JSON.parse(saved) : defaultSamples;
+      // 新しい統一されたキーから読み込み
+      const saved = localStorage.getItem("vimapp_shared_docs");
+      if (saved) {
+        return JSON.parse(saved);
+      }
+
+      // 旧データが存在する場合はマイグレーション
+      const oldSamples = localStorage.getItem("vimapp_samples");
+      if (oldSamples) {
+        console.log("Migrating old localStorage data to unified format");
+        const oldData = JSON.parse(oldSamples);
+        // 新しいキーに保存
+        localStorage.setItem("vimapp_shared_docs", JSON.stringify(oldData));
+        // 旧キーを削除
+        localStorage.removeItem("vimapp_samples");
+        localStorage.removeItem("vimapp_codepen_samples");
+        return oldData;
+      }
+
+      return defaultSamples;
     } catch (error) {
-      console.warn("Failed to load saved samples from localStorage:", error);
+      console.warn("Failed to load saved docs from localStorage:", error);
       return defaultSamples;
     }
   });
@@ -301,6 +305,33 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         return htmlExtensions;
     }
   }, [mode, htmlExtensions, cssExtensions, jsExtensions]);
+
+  // CodePen表示用にコメントを除去したクリーンなコードを生成
+  const getCleanCode = useCallback((code: string) => {
+    return code
+      .split("\n")
+      .filter((line: string) => !line.trim().startsWith("//"))
+      .join("\n");
+  }, []);
+
+  // CodePen表示用のクリーンなドキュメント状態
+  const cleanDocs = useMemo(
+    () => ({
+      html: getCleanCode(docs.html),
+      css: getCleanCode(docs.css),
+      js: getCleanCode(docs.js),
+    }),
+    [docs, getCleanCode]
+  );
+
+  // 統一されたlocalStorage保存関数
+  const saveDocsToStorage = useCallback((updatedDocs: DocsState) => {
+    try {
+      localStorage.setItem("vimapp_shared_docs", JSON.stringify(updatedDocs));
+    } catch (error) {
+      console.warn("Failed to save docs to localStorage:", error);
+    }
+  }, []);
 
   // モード切り替え - ベストプラクティス: どのモードボタンを押しても必ずエディター画面に戻す
   const handleModeChange = useCallback((newMode: EditorMode) => {
@@ -350,36 +381,16 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     }
   }, []);
 
-  // リセット - 最適化版
+  // リセット - 統一されたデータ管理版
   const handleReset = useCallback(() => {
-    if (showCodePenMode) {
-      // CodePenモード時はクリーンなサンプルをリセット
-      const defaultContent = codePenSamples[mode];
-      setCodePenDocs((prev) => {
-        const updated = { ...prev, [mode]: defaultContent };
-        try {
-          localStorage.setItem(
-            "vimapp_codepen_samples",
-            JSON.stringify(updated)
-          );
-        } catch (error) {
-          console.warn("Failed to save reset state to localStorage:", error);
-        }
-        return updated;
-      });
-    } else {
-      // 通常モード時はチートシート付きサンプルをリセット
-      const defaultContent = defaultSamples[mode];
-      setDocs((prev) => {
-        const updated = { ...prev, [mode]: defaultContent };
-        try {
-          localStorage.setItem("vimapp_samples", JSON.stringify(updated));
-        } catch (error) {
-          console.warn("Failed to save reset state to localStorage:", error);
-        }
-        return updated;
-      });
-    }
+    // モードに関係なく、デフォルトサンプルで統一リセット
+    const defaultContent = defaultSamples[mode];
+    setDocs((prev) => {
+      const updated = { ...prev, [mode]: defaultContent };
+      saveDocsToStorage(updated);
+      return updated;
+    });
+
     setVimMode("normal");
     setShowPreview(false);
 
@@ -388,14 +399,25 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       setShowCodePenMode(false);
       onCodePenModeChange?.(false);
     }
-  }, [mode, showCodePenMode, onCodePenModeChange]);
+  }, [mode, showCodePenMode, onCodePenModeChange, saveDocsToStorage]);
+
+  // 全エディターリセット
+  const handleResetAll = useCallback(() => {
+    setDocs(defaultSamples);
+    saveDocsToStorage(defaultSamples);
+    setVimMode("normal");
+    setShowPreview(false);
+
+    // CodePenモードもリセット
+    if (showCodePenMode) {
+      setShowCodePenMode(false);
+      onCodePenModeChange?.(false);
+    }
+  }, [showCodePenMode, onCodePenModeChange, saveDocsToStorage]);
 
   // プレビュー用HTML生成 - useMemoで最適化
   const previewSrcDoc = useMemo(() => {
-    const cleanHtml = docs.html
-      .split("\n")
-      .filter((line: string) => !line.trim().startsWith("//"))
-      .join("\n");
+    const cleanHtml = getCleanCode(docs.html);
 
     return `<!DOCTYPE html>
 <html lang="ja">
@@ -410,25 +432,24 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   <script>${docs.js}</script>
 </body>
 </html>`;
-  }, [docs.css, docs.html, docs.js]);
+  }, [docs.css, docs.html, docs.js, getCleanCode]);
 
-  // CodePenモード用HTML生成 - チートシート除去版
+  // CodePenモード用HTML生成 - 統一されたcleanDocsを使用
   const codePenSrcDoc = useMemo(() => {
-    // CodePenモードでは専用のクリーンなドキュメントを使用
     return `<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodePen Preview</title>
-  <style>${codePenDocs.css}</style>
+  <style>${cleanDocs.css}</style>
 </head>
 <body>
-  ${codePenDocs.html}
-  <script>${codePenDocs.js}</script>
+  ${cleanDocs.html}
+  <script>${cleanDocs.js}</script>
 </body>
 </html>`;
-  }, [codePenDocs.css, codePenDocs.html, codePenDocs.js]);
+  }, [cleanDocs]);
 
   // プレビュー切り替え - 最適化版
   const handlePreviewToggle = useCallback(() => {
@@ -662,6 +683,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             fontWeight="medium"
             letterSpacing="tight"
             borderWidth={0}
+            position="relative"
             _hover={{
               bg: "linear-gradient(135deg, rgba(128,90,213,0.2), rgba(128,90,213,0.1))",
               color: "purple.400",
@@ -669,16 +691,38 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
             }}
             _active={{
-              bg: "blackAlpha.500",
-              transform: "translateY(0)",
+              bg: "linear-gradient(135deg, rgba(128,90,213,0.3), rgba(128,90,213,0.2))",
+              color: "purple.500",
+              transform: "translateY(2px)",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.5) inset",
+              _after: {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: "md",
+                background: "rgba(0,0,0,0.1)",
+              },
             }}
             _focus={{ outline: "none" }}
-            _focusVisible={{ outline: "none" }}
-            transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            _focusVisible={{
+              outline: "2px solid",
+              outlineColor: "purple.400",
+              outlineOffset: "2px",
+            }}
+            transition="all 0.12s cubic-bezier(0.2, 0, 0.1, 1)"
             ml={2}
             aria-label="エディターの内容をリセット"
           >
-            <Icon as={FiRefreshCw} mr={1} /> Reset
+            <Icon
+              as={FiRefreshCw}
+              mr={1}
+              transition="transform 0.2s ease"
+              _groupHover={{ transform: "rotate(30deg)" }}
+            />{" "}
+            Reset
           </Button>
         </HStack>
       </MotionFlex>
@@ -734,9 +778,38 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             </MotionText>
           </MotionFlex>
         </AnimatePresence>
-        <Text color="gray.500" fontSize="xs">
-          {modeInfo[vimMode].hint}
-        </Text>
+        <Flex alignItems="center" gap={3}>
+          <Text color="gray.500" fontSize="xs">
+            {modeInfo[vimMode].hint}
+          </Text>
+          <Button
+            onClick={handleResetAll}
+            colorScheme="red"
+            variant="ghost"
+            size="xs"
+            height="20px"
+            width="20px"
+            p={0}
+            minW="auto"
+            borderRadius="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            position="relative"
+            _hover={{
+              bg: "rgba(255,100,100,0.2)",
+              color: "red.300",
+            }}
+            _active={{
+              bg: "rgba(255,100,100,0.3)",
+              transform: "scale(0.9)",
+            }}
+            title="全エディターリセット"
+            aria-label="すべてのエディターの内容をリセット"
+          >
+            <Icon as={FiRefreshCw} boxSize="12px" />
+          </Button>
+        </Flex>
       </MotionFlex>
       {/* --- Editor本体エリア or プレビュー or CodePenモード --- */}
       <Box
@@ -794,21 +867,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               {mode === "html" && (
                 <CodeMirror
                   key="html-editor-codepen"
-                  value={codePenDocs.html}
+                  value={docs.html}
                   height="100%"
                   extensions={htmlExtensions}
                   theme={oneDark}
                   onChange={(value) => {
-                    setCodePenDocs((prev) => {
+                    setDocs((prev) => {
                       const updated = { ...prev, html: value };
-                      try {
-                        localStorage.setItem(
-                          "vimapp_codepen_samples",
-                          JSON.stringify(updated)
-                        );
-                      } catch (error) {
-                        console.warn("Failed to save to localStorage:", error);
-                      }
+                      saveDocsToStorage(updated);
                       return updated;
                     });
                   }}
@@ -839,21 +905,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               {mode === "css" && (
                 <CodeMirror
                   key="css-editor-codepen"
-                  value={codePenDocs.css}
+                  value={docs.css}
                   height="100%"
                   extensions={cssExtensions}
                   theme={oneDark}
                   onChange={(value) => {
-                    setCodePenDocs((prev) => {
+                    setDocs((prev) => {
                       const updated = { ...prev, css: value };
-                      try {
-                        localStorage.setItem(
-                          "vimapp_codepen_samples",
-                          JSON.stringify(updated)
-                        );
-                      } catch (error) {
-                        console.warn("Failed to save to localStorage:", error);
-                      }
+                      saveDocsToStorage(updated);
                       return updated;
                     });
                   }}
@@ -884,21 +943,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               {mode === "js" && (
                 <CodeMirror
                   key="js-editor-codepen"
-                  value={codePenDocs.js}
+                  value={docs.js}
                   height="100%"
                   extensions={jsExtensions}
                   theme={oneDark}
                   onChange={(value) => {
-                    setCodePenDocs((prev) => {
+                    setDocs((prev) => {
                       const updated = { ...prev, js: value };
-                      try {
-                        localStorage.setItem(
-                          "vimapp_codepen_samples",
-                          JSON.stringify(updated)
-                        );
-                      } catch (error) {
-                        console.warn("Failed to save to localStorage:", error);
-                      }
+                      saveDocsToStorage(updated);
                       return updated;
                     });
                   }}
@@ -957,17 +1009,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     onChange={(value) => {
                       setDocs((prev) => {
                         const updated = { ...prev, html: value };
-                        try {
-                          localStorage.setItem(
-                            "vimapp_samples",
-                            JSON.stringify(updated)
-                          );
-                        } catch (error) {
-                          console.warn(
-                            "Failed to save to localStorage:",
-                            error
-                          );
-                        }
+                        saveDocsToStorage(updated);
                         return updated;
                       });
                     }}
@@ -1005,17 +1047,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     onChange={(value) => {
                       setDocs((prev) => {
                         const updated = { ...prev, css: value };
-                        try {
-                          localStorage.setItem(
-                            "vimapp_samples",
-                            JSON.stringify(updated)
-                          );
-                        } catch (error) {
-                          console.warn(
-                            "Failed to save to localStorage:",
-                            error
-                          );
-                        }
+                        saveDocsToStorage(updated);
                         return updated;
                       });
                     }}
@@ -1053,17 +1085,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     onChange={(value) => {
                       setDocs((prev) => {
                         const updated = { ...prev, js: value };
-                        try {
-                          localStorage.setItem(
-                            "vimapp_samples",
-                            JSON.stringify(updated)
-                          );
-                        } catch (error) {
-                          console.warn(
-                            "Failed to save to localStorage:",
-                            error
-                          );
-                        }
+                        saveDocsToStorage(updated);
                         return updated;
                       });
                     }}

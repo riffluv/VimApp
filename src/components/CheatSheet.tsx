@@ -553,7 +553,18 @@ export default function CheatSheet() {
             "linear-gradient(90deg, transparent, orange.400, transparent)",
         }}
       >
-        <Icon as={FiBookOpen} mr={1.5} />
+        <Icon
+          as={FiBookOpen}
+          mr={1.5}
+          color="orange.400"
+          boxSize="16px"
+          filter="drop-shadow(0 1px 2px rgba(0,0,0,0.5))"
+          transition="transform 0.2s ease, color 0.2s ease"
+          _hover={{
+            color: "orange.300",
+            transform: "scale(1.1)",
+          }}
+        />
         <Text>
           Vim を練習して速度と効率を向上させよう
           <br />
