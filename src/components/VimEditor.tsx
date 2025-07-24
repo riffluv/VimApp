@@ -381,39 +381,25 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     }
   }, []);
 
-  // リセット - 統一されたデータ管理版
+  // リセット - データのみ変更し画面状態は維持
   const handleReset = useCallback(() => {
-    // モードに関係なく、デフォルトサンプルで統一リセット
     const defaultContent = defaultSamples[mode];
     setDocs((prev) => {
       const updated = { ...prev, [mode]: defaultContent };
       saveDocsToStorage(updated);
       return updated;
     });
-
     setVimMode("normal");
-    setShowPreview(false);
+    // 画面状態は維持（setShowPreview, setShowCodePenModeは呼ばない）
+  }, [mode, saveDocsToStorage]);
 
-    // CodePenモードもリセット
-    if (showCodePenMode) {
-      setShowCodePenMode(false);
-      onCodePenModeChange?.(false);
-    }
-  }, [mode, showCodePenMode, onCodePenModeChange, saveDocsToStorage]);
-
-  // 全エディターリセット
+  // 全エディターリセット（画面状態は維持）
   const handleResetAll = useCallback(() => {
     setDocs(defaultSamples);
     saveDocsToStorage(defaultSamples);
     setVimMode("normal");
-    setShowPreview(false);
-
-    // CodePenモードもリセット
-    if (showCodePenMode) {
-      setShowCodePenMode(false);
-      onCodePenModeChange?.(false);
-    }
-  }, [showCodePenMode, onCodePenModeChange, saveDocsToStorage]);
+    // 画面状態は維持（setShowPreview, setShowCodePenModeは呼ばない）
+  }, [saveDocsToStorage]);
 
   // プレビュー用HTML生成 - useMemoで最適化
   const previewSrcDoc = useMemo(() => {
@@ -782,33 +768,35 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           <Text color="gray.500" fontSize="xs">
             {modeInfo[vimMode].hint}
           </Text>
-          <Button
-            onClick={handleResetAll}
-            colorScheme="red"
-            variant="ghost"
-            size="xs"
-            height="20px"
-            width="20px"
-            p={0}
-            minW="auto"
-            borderRadius="full"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            position="relative"
-            _hover={{
-              bg: "rgba(255,100,100,0.2)",
-              color: "red.300",
-            }}
-            _active={{
-              bg: "rgba(255,100,100,0.3)",
-              transform: "scale(0.9)",
-            }}
-            title="全エディターリセット"
-            aria-label="すべてのエディターの内容をリセット"
-          >
-            <Icon as={FiRefreshCw} boxSize="12px" />
-          </Button>
+          {!showPreview && (
+            <Button
+              onClick={handleResetAll}
+              colorScheme="red"
+              variant="ghost"
+              size="xs"
+              height="20px"
+              width="20px"
+              p={0}
+              minW="auto"
+              borderRadius="full"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              position="relative"
+              _hover={{
+                bg: "rgba(255,100,100,0.2)",
+                color: "red.300",
+              }}
+              _active={{
+                bg: "rgba(255,100,100,0.3)",
+                transform: "scale(0.9)",
+              }}
+              title="全エディターリセット"
+              aria-label="すべてのエディターの内容をリセット"
+            >
+              <Icon as={FiRefreshCw} boxSize="12px" />
+            </Button>
+          )}
         </Flex>
       </MotionFlex>
       {/* --- Editor本体エリア or プレビュー or CodePenモード --- */}
