@@ -20,8 +20,8 @@ import {
   FiSearch,
 } from "react-icons/fi";
 
-const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
 
 // Command interface and data
 interface Command {

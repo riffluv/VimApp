@@ -85,9 +85,9 @@ import { useCallback, useState } from "react";
 import type { IconType } from "react-icons";
 import { FiCommand, FiEdit, FiRefreshCw, FiTerminal } from "react-icons/fi";
 
-const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
-const MotionText = motion(Text);
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
+const MotionText = motion.create(Text);
 const modeInfo = {
   normal: {
     text: "NORMAL",

@@ -9,7 +9,7 @@ const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ssr: false,
 });
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 export default function Home() {
   return (
