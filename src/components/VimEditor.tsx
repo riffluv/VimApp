@@ -257,16 +257,12 @@ function VimEditor() {
     }
   }, [mode, htmlExtensions, cssExtensions, jsExtensions]);
 
-  // モード切り替え - 最適化版
-  const handleModeChange = useCallback(
-    (newMode: EditorMode) => {
-      if (newMode === mode) return; // 同じモードの場合は何もしない
-      setMode(newMode);
-      setShowPreview(false);
-      setVimMode("normal");
-    },
-    [mode]
-  );
+  // モード切り替え - ベストプラクティス: どのモードボタンを押しても必ずエディター画面に戻す
+  const handleModeChange = useCallback((newMode: EditorMode) => {
+    setShowPreview(false); // プレビュー解除（同じモードでも必ず解除）
+    setVimMode("normal");
+    setMode(newMode);
+  }, []);
 
   // Vimモード監視 - エラーハンドリング強化
   const onUpdate = useCallback((viewUpdate: any) => {
