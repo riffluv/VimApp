@@ -1,9 +1,50 @@
+<!--
+  Vimヒント: Vimは3つのモードを使い分けて編集します。
+  - Normalモード: 移動・編集の基本。ESCで入る。hjklで移動、ddで行削除、yyでコピーなど。
+  - Insertモード: 文字入力。iやaで入る。ESCでNormalに戻る。
+  - Visualモード: 選択。vで文字単位、Vで行単位、Ctrl+vで矩形選択。
+  
+  まずはNormal/Insert/Visualの切り替えを体で覚えましょう。
+  
+  ---
+  【初心者向け: 最初に覚えるべき操作】
+  - i: カーソル位置で挿入開始
+  - a: カーソルの次で挿入開始
+  - ESC: ノーマルモードに戻る
+  - h/j/k/l: 左/下/上/右に移動
+  - x: 1文字削除
+  - dd: 行削除
+  - yy: 行コピー
+  - p: 貼り付け
+  - u: アンドゥ
+  - :w: 保存, :q: 終了, :wq: 保存して終了
+  
+  ---
+  【Visualモード/検索/置換/実務Tips】
+  - v/V/Ctrl+v: 選択開始
+  - /pattern: 検索, n/N: 次/前へ
+  - :%s/old/new/g: 置換
+  - ci": "の中身を変更, ciw: 単語を変更, cit: タグの中身を変更
+  - .: 直前の操作を繰り返し
+  - gg/G: ファイル先頭/末尾へ
+  - :e ファイル名: 別ファイルを開く
+  - :split/:vsplit: ウィンドウ分割
+  - :tabnew: 新しいタブ
+  
+  ---
+  【段階的に: HTML編集でよく使うVimコマンド例】
+  - cit: タグの中身を一発で編集
+  - dit: タグの中身を削除
+  - >/<: インデント調整
+  - %: 対応する括弧やタグにジャンプ
+-->
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
+  <!-- Vimヒント: headタグ内でiやAで挿入、ci"で属性値編集、citでタグ中身編集 -->
   <meta charset="UTF-8" />
-  <title>manabytype II</title>
+  <title>manavim</title>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
@@ -11,12 +52,15 @@
 </head>
 
 <body>
+  <!-- Vimヒント: o/Oで新しい行を挿入。タグごとにcit/ditで編集・削除。%でタグ対応ジャンプ。 -->
   <div id="tsparticles"></div>
   <div class="overlay"></div>
   <div class="container">
+    <!-- Vimヒント: ciwでクラス名変更、citでタグ中身編集。Visualモードで複数行選択も便利。 -->
     <div class="title-main">VIMQUEST</div>
     <div class="title-sub">III</div>
     <div class="menu">
+      <!-- Vimヒント: j/kで上下移動、ciwでテキスト変更、yy/pで複製。 -->
       <div class="menu-item">START GAME</div>
       <div class="menu-item">SELECT MODE</div>
       <div class="menu-item">RANKING</div>
@@ -25,6 +69,7 @@
     <div class="selected-mode" id="selectedMode">Mode: Vim</div>
   </div>
   <div class="copyright">
+    <!-- Vimヒント: Aで行末編集、ciwで年号変更、ditでタグ中身削除。 -->
     &copy;2025 manaby Omiya Studio. All rights reserved.
   </div>
   <div class="version">App Ver. 1.01</div>
