@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"app\\\\page.tsx -> @/components/VimEditor\":{\"id\":\"app\\\\page.tsx -> @/components/VimEditor\",\"files\":[\"static/chunks/_app-pages-browser_src_components_VimEditor_tsx.js\"]}}"
