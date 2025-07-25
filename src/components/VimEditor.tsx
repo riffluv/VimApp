@@ -143,79 +143,8 @@ const codePenSamples = {
 `,
 };
 
-// --- サンプルコード＋コメント（tips）一体化管理オブジェクト ---
-const defaultSamples = {
-  html: `<div class="container">
-  <h1>Hello Vim!</h1>
-  <p>これはVim練習用のサンプルです。</p>
-// --- おまけ: よく使うVimコマンド ---
-// h / j / k / l : 左右上下にカーソル移動
-// w / b / e : 単語単位で移動
-// 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
-// gg / G : ファイル先頭・末尾へ移動
-// i / a / o / O : 挿入モード
-// x : 文字削除
-// dd : 行削除
-// yy : 行コピー
-// p / P : 貼り付け
-// u / Ctrl+r : アンドゥ・リドゥ
-// cw / cc / c$ : 単語・行・行末まで変更
-// . : 直前の操作を繰り返し
-// /pattern : 検索
-// n / N : 次・前の検索結果へ
-// :%s/old/new/g : 置換
-// v / V : 選択開始
-// y / d : コピー・削除
-</div>
-`,
-  css: `.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: #f5f5f5;
-  // --- おまけ: よく使うVimコマンド ---
-  // h / j / k / l : 左右上下にカーソル移動
-  // w / b / e : 単語単位で移動
-  // 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
-  // gg / G : ファイル先頭・末尾へ移動
-  // i / a / o / O : 挿入モード
-  // x : 文字削除
-  // dd : 行削除
-  // yy : 行コピー
-  // p / P : 貼り付け
-  // u / Ctrl+r : アンドゥ・リドゥ
-  // cw / cc / c$ : 単語・行・行末まで変更
-  // . : 直前の操作を繰り返し
-  // /pattern : 検索
-  // n / N : 次・前の検索結果へ
-  // :%s/old/new/g : 置換
-  // v / V : 選択開始
-  // y / d : コピー・削除
-}
-`,
-  js: `document.querySelector('.container').addEventListener('click', function() {
-  alert('Vimで編集してみよう！');
-  // --- おまけ: よく使うVimコマンド ---
-  // h / j / k / l : 左右上下にカーソル移動
-  // w / b / e : 単語単位で移動
-  // 0 / $ / ^ : 行頭・行末・最初の非空白文字へ
-  // gg / G : ファイル先頭・末尾へ移動
-  // i / a / o / O : 挿入モード
-  // x : 文字削除
-  // dd : 行削除
-  // yy : 行コピー
-  // p / P : 貼り付け
-  // u / Ctrl+r : アンドゥ・リドゥ
-  // cw / cc / c$ : 単語・行・行末まで変更
-  // . : 直前の操作を繰り返し
-  // /pattern : 検索
-  // n / N : 次・前の検索結果へ
-  // :%s/old/new/g : 置換
-  // v / V : 選択開始
-  // y / d : コピー・削除
-});
-`,
-};
+// 空の初期値
+const emptyDocs = { html: "", css: "", js: "" };
 
 // --- 型定義 ---
 type EditorMode = "html" | "css" | "js";
@@ -258,10 +187,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   const [vimMode, setVimMode] = useState<VimMode>("normal");
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [showCodePenMode, setShowCodePenMode] = useState<boolean>(false);
-  const [docs, setDocs] = useState<DocsState>(defaultSamples);
+  const [docs, setDocs] = useState<DocsState>(emptyDocs);
 
   // localStorageからの初期化・マイグレーションはuseEffectで行う
-  // setStateはレンダー中に呼ばない
   useEffect(() => {
     try {
       const saved = localStorage.getItem("vimapp_shared_docs");
@@ -269,23 +197,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         setDocs(JSON.parse(saved));
         return;
       }
-      const oldSamples = localStorage.getItem("vimapp_samples");
-      if (oldSamples) {
-        console.log("Migrating old localStorage data to unified format");
-        const oldData = JSON.parse(oldSamples);
-        localStorage.setItem("vimapp_shared_docs", JSON.stringify(oldData));
-        localStorage.removeItem("vimapp_samples");
-        localStorage.removeItem("vimapp_codepen_samples");
-        setDocs(oldData);
-        return;
-      }
-      // 何もなければdefaultSamples
-      setDocs(defaultSamples);
+      // 旧データがあれば削除
+      localStorage.removeItem("vimapp_samples");
+      localStorage.removeItem("vimapp_codepen_samples");
+      setDocs(emptyDocs);
     } catch (error) {
       console.warn("Failed to load saved docs from localStorage:", error);
-      setDocs(defaultSamples);
+      setDocs(emptyDocs);
     }
-    // eslint-disable-next-line
   }, []);
 
   // 各モードの拡張機能を個別にメモ化（独立したhistory付き）
@@ -382,24 +301,21 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     }
   }, []);
 
-  // リセット - データのみ変更し画面状態は維持
+  // リセット - データのみ変更し画面状態は維持（空に戻す）
   const handleReset = useCallback(() => {
-    const defaultContent = defaultSamples[mode];
     setDocs((prev) => {
-      const updated = { ...prev, [mode]: defaultContent };
+      const updated = { ...prev, [mode]: "" };
       saveDocsToStorage(updated);
       return updated;
     });
     setVimMode("normal");
-    // 画面状態は維持（setShowPreview, setShowCodePenModeは呼ばない）
   }, [mode, saveDocsToStorage]);
 
-  // 全エディターリセット（画面状態は維持）
+  // 全エディターリセット（空に戻す）
   const handleResetAll = useCallback(() => {
-    setDocs(defaultSamples);
-    saveDocsToStorage(defaultSamples);
+    setDocs(emptyDocs);
+    saveDocsToStorage(emptyDocs);
     setVimMode("normal");
-    // 画面状態は維持（setShowPreview, setShowCodePenModeは呼ばない）
   }, [saveDocsToStorage]);
 
   // プレビュー用HTML生成 - useMemoで最適化

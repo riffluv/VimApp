@@ -1,8 +1,12 @@
 {
   "app\\page.tsx -> @/components/VimEditor": {
-    "id": "app\\page.tsx -> @/components/VimEditor",
+    "id": 4871,
     "files": [
-      "static/chunks/_app-pages-browser_src_components_VimEditor_tsx.js"
+      "static/chunks/990fed2d.9657fb4220f1c806.js",
+      "static/chunks/840db79d.575cca6c941e98fd.js",
+      "static/chunks/363642f4.182cdd7e74d57442.js",
+      "static/chunks/146.044c1ed1ae601bf8.js",
+      "static/chunks/871.90eefdded42f8cd5.js"
     ]
   }
 }
