@@ -108,8 +108,8 @@ body {
 /* Vimヒント: Shift+v で行選択モードになります - 複数行を選択してコピーや削除ができます */
 .menu-item:hover,
 .menu-item.active {
-  color: #ff4444;
-  text-shadow: 0 0 8px rgba(255, 100, 100, 0.5);
+  color: #ff8800;
+  text-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
 }
 
 /* Vimヒント: Ctrl+v で矩形選択モードになります - 複数行の同じ位置を一度に編集できます */
