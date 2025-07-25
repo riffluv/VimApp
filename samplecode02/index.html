@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!-- 【Vim基礎】Vimには3つの基本モードがあります：Normal（移動・編集）、Insert（文字入力）、Visual（選択） -->
+<html lang="ja">
+
+<head>
+  <!-- 【Normal Mode】ESCキーでNormalモードに戻れます。これが基本の状態です -->
+  <meta charset="UTF-8" />
+  <!-- 【移動の基本】h(左) j(下) k(上) l(右) でカーソル移動 - 矢印キーより効率的！ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 【単語移動】w で次の単語へ、b で前の単語へ移動できます -->
+  <title>VIM QUEST</title>
+  <!-- 【行移動】0 で行頭、$ で行末に移動。数字を覚えよう！ -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet" />
+  <!-- 【Insert Mode】i でカーソル位置に挿入、a でカーソルの次に挿入 -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 【行の挿入】o で下に新しい行、O で上に新しい行を作成 -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <!-- 【行末挿入】A で行末に移動して挿入モード - セミコロン追加に便利！ -->
+  <script src="script.js" defer></script>
+  <!-- 【ファイル移動】gg でファイル先頭、G でファイル末尾に移動 -->
+</head>
+
+<body>
+  <!-- 【削除の基本】x で1文字削除、dd で1行削除 -->
+  <div id="tsparticles"></div>
+
+  <!-- 【コピー&ペースト】yy で行をコピー、p でペースト -->
+  <div class="container">
+    <!-- 【Visual Mode】v で文字選択、V で行選択、Ctrl+v で矩形選択 -->
+    <div class="title">
+      <!-- 【検索】/文字 で検索、n で次へ、N で前へ -->
+      <h1>VIM QUEST</h1>
+    </div>
+
+    <!-- 【置換】:s/古い/新しい/ で置換、:%s/古い/新しい/g で全体置換 -->
+    <div class="menu">
+      <!-- 【タグ編集】cit でタグ内容を変更 - HTMLタグの中身を素早く編集！ -->
+      <div class="menu-item active" data-mode="continue">Continue</div>
+      <!-- 【属性編集】ci" で""内を変更 - 属性値の編集に便利 -->
+      <div class="menu-item" data-mode="new">New Game</div>
+      <!-- 【単語変更】ciw で単語を変更 - クラス名やID名の変更に -->
+      <div class="menu-item" data-mode="load">Load Game</div>
+      <!-- 【括弧編集】ci( で()内を変更 - 関数の引数編集に便利 -->
+      <div class="menu-item" data-mode="config">Config</div>
+    </div>
+
+    <!-- 【実務テク】. で直前の操作を繰り返し - 同じ編集を複数箇所に！ -->
+    <div class="footer">
+      <!-- 【ジャンプ】% で対応する括弧に移動 - HTMLタグの開始・終了を確認 -->
+      <div class="copyright">© 2025 manaby Omiya Studio. All rights reserved.</div>
+      <!-- 【保存・終了】:w で保存、:q で終了、:wq で保存して終了 -->
+      <div class="version">Version 1.02</div>
+    </div>
+  </div>
+  <!-- 【アンドゥ・リドゥ】u で取り消し、Ctrl+r でやり直し -->
+</body>
+
+</html>
