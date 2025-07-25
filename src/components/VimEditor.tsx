@@ -222,8 +222,6 @@ body {
   line-height: 1.5;
   color: #ccc;
   overflow: hidden;
-  background: url("Final-Fantasy-XVI10252023-112844-78523.jpg") center center /
-    cover no-repeat fixed;
   background-color: #000;
 }
 
@@ -735,8 +733,6 @@ body {
   line-height: 1.5;
   color: #ccc;
   overflow: hidden;
-  background: url("Final-Fantasy-XVI10252023-112844-78523.jpg") center center /
-    cover no-repeat fixed;
   background-color: #000;
 }
 

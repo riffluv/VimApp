@@ -1,4 +1,4 @@
-/* Vimヒント: CSSファイルでは、よく移動と編集を繰り返します。ノーマルモードとインサートモードの切り替えに慣れましょう */
+/* //vimtips レベル3: ciw(単語を変更)、ci"(""内を変更)、/(検索)、n/N(次/前の検索結果) */
 *,
 *::before,
 *::after {
@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-/* Vimヒント: f文字 で現在行の「文字」まで移動できます。例えば fm で m まで移動 */
+/* //vimtips レベル3: :%s/old/new/g(全置換)、v(文字選択)、V(行選択)、Ctrl+v(矩形選択) */
 html,
 body {
   width: 100%;
@@ -17,12 +17,10 @@ body {
   line-height: 1.5;
   color: #ccc;
   overflow: hidden;
-  background: url("Final-Fantasy-XVI10252023-112844-78523.jpg") center center /
-    cover no-repeat fixed;
   background-color: #000;
 }
 
-/* Vimヒント: ciw で単語を削除して挿入モードになります (change inner word) - プロパティ名の変更に便利です */
+/* //vimtips レベル4: >>(インデント追加)、<<(インデント削除)、=(自動インデント)、%(対応括弧移動) */
 #tsparticles {
   position: absolute;
   width: 100%;
@@ -30,20 +28,18 @@ body {
   z-index: 0;
 }
 
-/* Vimヒント: ci" で"の中身を削除して挿入モードになります - 値の変更に便利です */
+/* //vimtips レベル4: cit(タグ内変更)、dit(タグ内削除)、ci{({}内変更)、da{({}含めて削除) */
 .overlay {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0.3),
-    rgba(0, 0, 0, 0.85)
-  );
+  background: radial-gradient(ellipse at center,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.85));
   z-index: 0;
 }
 
-/* Vimヒント: % で対応する括弧に移動します - CSSの括弧の対応を確認するのに便利です */
+/* //vimtips レベル5: .(直前操作繰り返し)、qa(マクロ記録開始)、@a(マクロ実行)、:bn/:bp(バッファ切替) */
 .container {
   position: relative;
   z-index: 1;
@@ -57,7 +53,7 @@ body {
   animation: fadeIn 2s ease;
 }
 
-/* Vimヒント: . で直前のコマンドを繰り返します - 同じ編集を複数箇所に適用するのに便利です */
+/* //vimtips レベル5: Ctrl+w w(ウィンドウ切替)、:split/:vsplit(画面分割)、:tabnew(新タブ)、gg=G(全体インデント) */
 .title-main {
   font-size: clamp(2.2rem, 7vw, 4.5rem);
   color: #fff;
@@ -69,7 +65,6 @@ body {
   margin-bottom: 35px;
 }
 
-/* Vimヒント: cit でタグの中身を変更します (change inner tag) - HTMLタグ内のテキスト変更に便利です */
 .title-sub {
   font-size: clamp(1.5rem, 5.5vw, 4rem);
   color: #ddd;
@@ -80,13 +75,11 @@ body {
   text-align: center;
 }
 
-/* Vimヒント: A で行末に移動して挿入モードに入ります - セミコロンを追加するのに便利です */
 .title-sub::before,
 .title-sub::after {
   display: none;
 }
 
-/* Vimヒント: /{検索語} で検索できます - 特定のプロパティやセレクタを探すのに便利です */
 .menu {
   display: flex;
   flex-direction: column;
@@ -95,7 +88,6 @@ body {
   animation: fadeUp 2s ease-in-out;
 }
 
-/* Vimヒント: n で次の検索結果に移動、N で前の検索結果に移動します */
 .menu-item {
   font-size: clamp(1rem, 2.8vw, 1.4rem);
   color: #ccc;
@@ -105,14 +97,12 @@ body {
   padding: 0.1em 0.5em;
 }
 
-/* Vimヒント: Shift+v で行選択モードになります - 複数行を選択してコピーや削除ができます */
 .menu-item:hover,
 .menu-item.active {
   color: #ff8800;
   text-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
 }
 
-/* Vimヒント: Ctrl+v で矩形選択モードになります - 複数行の同じ位置を一度に編集できます */
 .version,
 .copyright {
   position: absolute;
@@ -121,17 +111,14 @@ body {
   bottom: 15px;
 }
 
-/* Vimヒント: gg=G でファイル全体のインデントを整形します - コードを綺麗に整えるのに便利です */
 .version {
   right: 20px;
 }
 
-/* Vimヒント: :s/old/new/ で現在行の最初の「old」を「new」に置換します */
 .copyright {
   left: 20px;
 }
 
-/* Vimヒント: :%s/old/new/g でファイル全体の「old」をすべて「new」に置換します - 一括置換に便利です */
 .selected-mode {
   margin-top: 1.2em;
   font-size: clamp(0.8rem, 2vw, 1rem);
@@ -139,14 +126,12 @@ body {
   font-style: italic;
 }
 
-/* Vimヒント: zz でカーソル行を画面中央に表示します - 長いCSSファイルを編集するときに便利です */
 /* レスポンシブ: 画面幅600px以下でさらに調整 */
 @media (max-width: 600px) {
   .container {
     padding: 0 0.5em;
   }
 
-  /* Vimヒント: { } で段落単位で移動できます - CSSのブロック間を素早く移動できます */
   .title-main {
     font-size: clamp(1.2rem, 10vw, 2.5rem);
     letter-spacing: 0.08em;
@@ -186,7 +171,6 @@ body {
   }
 }
 
-/* Vimヒント: :split でウィンドウを水平分割、:vsplit で垂直分割できます - 複数のCSSファイルを同時に編集できます */
 .mode-select-screen {
   position: fixed;
   top: 0;
@@ -204,13 +188,11 @@ body {
   backdrop-filter: blur(8px);
 }
 
-/* Vimヒント: Ctrl+w w でウィンドウ間を移動します - 分割したウィンドウ間を素早く切り替えられます */
 .mode-select-screen.active {
   display: flex;
   opacity: 1;
 }
 
-/* Vimヒント: dap で段落を削除します (delete around paragraph) - CSSのブロック全体を削除するのに便利です */
 .mode-card {
   font-size: 1.4rem;
   color: #eee;
@@ -224,7 +206,6 @@ body {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
 }
 
-/* Vimヒント: yap で段落をコピーします (yank around paragraph) - CSSのブロック全体をコピーするのに便利です */
 .mode-card:hover,
 .mode-card.selected {
   color: #fff;
@@ -233,7 +214,6 @@ body {
   transform: scale(1.03);
 }
 
-/* Vimヒント: :set number で行番号を表示します - 大きなCSSファイルでの位置確認に便利です */
 .back-button {
   margin-top: 1.5rem;
   background: none;
@@ -246,14 +226,12 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Vimヒント: :set relativenumber で相対行番号を表示します - 現在行からの相対的な行数がわかります */
 .back-button:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.04);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
 
-/* Vimヒント: :e ファイル名 で別のファイルを開きます - HTMLとCSSを素早く切り替えられます */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -266,7 +244,6 @@ body {
   }
 }
 
-/* Vimヒント: :tabnew ファイル名 で新しいタブでファイルを開きます - 複数のファイルをタブで管理できます */
 @keyframes fadeUp {
   0% {
     opacity: 0;
