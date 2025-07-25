@@ -307,6 +307,15 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     setVimMode("normal");
   }, [saveDocsToStorage]);
 
+  // サンプル挿入（現在のモードのみ）
+  const handleInsertSample = useCallback(() => {
+    setDocs((prev) => {
+      const updated = { ...prev, [mode]: "" };
+      saveDocsToStorage(updated);
+      return updated;
+    });
+  }, [mode, saveDocsToStorage]);
+
   // プレビュー用HTML生成 - useMemoで最適化
   const previewSrcDoc = useMemo(() => {
     const cleanHtml = getCleanCode(docs.html);
@@ -562,6 +571,45 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               {m.toUpperCase()}
             </Button>
           ))}
+          <Button
+            onClick={handleInsertSample}
+            colorScheme="teal"
+            bg="transparent"
+            color="teal.400"
+            borderRadius="md"
+            px={3}
+            py={1.5}
+            height="auto"
+            fontFamily="mono"
+            fontWeight="medium"
+            letterSpacing="tight"
+            borderWidth={0}
+            position="relative"
+            _hover={{
+              bg: "linear-gradient(135deg, rgba(56,178,172,0.2), rgba(56,178,172,0.1))",
+              color: "teal.300",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            }}
+            _active={{
+              bg: "linear-gradient(135deg, rgba(56,178,172,0.3), rgba(56,178,172,0.2))",
+              color: "teal.500",
+              transform: "translateY(2px)",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.2) inset",
+            }}
+            _focus={{ outline: "none" }}
+            _focusVisible={{
+              outline: "2px solid",
+              outlineColor: "teal.400",
+              outlineOffset: "2px",
+            }}
+            transition="all 0.12s cubic-bezier(0.2, 0, 0.1, 1)"
+            ml={2}
+            aria-label="サンプルコードを挿入"
+          >
+            <Icon as={FiBookOpen} mr={1} />
+            サンプル挿入
+          </Button>
           <Button
             onClick={handleReset}
             colorScheme="gray"
