@@ -1,58 +1,33 @@
 <!DOCTYPE html>
-<!-- Vimヒント: Vimには「モード」があります。主に「ノーマルモード」(移動・編集)と「挿入モード」(文字入力)があります -->
 <html lang="ja">
-  <head>
-    <!-- Vimヒント: h,j,k,l キーでカーソル移動できます (左,下,上,右) -->
-    <meta charset="UTF-8" />
-    <!-- Vimヒント: i キーで「挿入モード」に入り文字を入力できます -->
-    <title>manabytype II</title>
-    <!-- Vimヒント: ESC キーで「ノーマルモード」に戻ります -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Vimヒント: x キーでカーソル位置の文字を削除できます -->
-    <link rel="stylesheet" href="styles.css" />
-    <!-- Vimヒント: dd キーでカーソル行を削除できます -->
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
-    <!-- Vimヒント: yy キーでカーソル行をコピーできます -->
-    <script src="script.js" defer></script>
-    <!-- Vimヒント: p キーでコピーした内容を貼り付けできます -->
-  </head>
 
-  <body>
-    <!-- Vimヒント: gg キーでファイルの先頭に移動します -->
-    <div id="tsparticles"></div>
-    <!-- Vimヒント: G キーでファイルの末尾に移動します -->
-    <div class="overlay"></div>
-    <!-- Vimヒント: 0 キーで行の先頭に移動します -->
-    <div class="container">
-      <!-- Vimヒント: $ キーで行の末尾に移動します -->
-      <div class="title-main">VIMQUEST</div>
-      <!-- Vimヒント: w キーで次の単語の先頭に移動します -->
-      <div class="title-sub">III</div>
-      <!-- Vimヒント: b キーで前の単語の先頭に移動します -->
-      <div class="menu">
-        <!-- Vimヒント: a キーでカーソルの後ろに文字を挿入します -->
-        <div class="menu-item">START GAME</div>
-        <!-- Vimヒント: A キーで行末に文字を挿入します -->
-        <div class="menu-item">SELECT MODE</div>
-        <!-- Vimヒント: o キーでカーソル行の下に新しい行を挿入します -->
-        <div class="menu-item">RANKING</div>
-        <!-- Vimヒント: O キーでカーソル行の上に新しい行を挿入します -->
-        <div class="menu-item">SYSTEM</div>
-      </div>
-      <!-- Vimヒント: u キーで直前の操作を取り消します -->
-      <div class="selected-mode" id="selectedMode">Mode: Vim</div>
-    </div>
-    <!-- Vimヒント: Ctrl+r キーで取り消した操作をやり直します -->
+<head>
+  <meta charset="UTF-8" />
+  <title>manabytype II</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <script src="script.js" defer></script>
+</head>
 
-    <!-- Vimヒント: v キーで「ビジュアルモード」に入り、テキストを選択できます -->
-    <div class="copyright">
-      &copy;2025 manaby Omiya Studio. All rights reserved.
+<body>
+  <div id="tsparticles"></div>
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="title-main">VIMQUEST</div>
+    <div class="title-sub">III</div>
+    <div class="menu">
+      <div class="menu-item">START GAME</div>
+      <div class="menu-item">SELECT MODE</div>
+      <div class="menu-item">RANKING</div>
+      <div class="menu-item">SYSTEM</div>
     </div>
-    <!-- Vimヒント: V キーで行単位の「ビジュアルモード」に入ります -->
-    <div class="version">App Ver. 1.01</div>
-    <!-- Vimヒント: :w で保存、:q で終了、:wq で保存して終了します -->
-  </body>
+    <div class="selected-mode" id="selectedMode">Mode: Vim</div>
+  </div>
+  <div class="copyright">
+    &copy;2025 manaby Omiya Studio. All rights reserved.
+  </div>
+  <div class="version">App Ver. 1.01</div>
+</body>
+
 </html>
