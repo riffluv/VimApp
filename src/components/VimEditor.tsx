@@ -13,7 +13,7 @@ import {
 import { getCM, vim } from "@replit/codemirror-vim";
 import CodeMirror from "@uiw/react-codemirror";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { IconType } from "react-icons";
 import {
@@ -69,17 +69,8 @@ const languageExtensions = {
 } as const;
 
 // 拡張取得関数（CodeMirror用）- 各モードごとに独立したhistory付き
+// ベストプラクティス: Vim拡張を必ず先頭に、drawSelectionも追加。他のkeymapやbasicSetupは使わない。
 const getExtensions = (mode: EditorMode) => {
-  // Vim拡張を必ず先頭に追加し、drawSelectionも追加
-  const baseExtensions = [
-    vim(),
-    drawSelection(),
-    languageExtensions[mode],
-    history(),
-    commonKeymap,
-    oneDark,
-  ];
-
   if (mode === "html" || mode === "css") {
     const emmetExtension = Prec.high(abbreviationTracker(emmetConfigs[mode]));
     return [
@@ -88,11 +79,10 @@ const getExtensions = (mode: EditorMode) => {
       languageExtensions[mode],
       history(),
       emmetExtension,
-      commonKeymap,
       oneDark,
     ];
   }
-  return baseExtensions;
+  return [vim(), drawSelection(), languageExtensions[mode], history(), oneDark];
 };
 // アニメーション用のvariants（再定義）
 const containerVariants = {
@@ -1183,6 +1173,8 @@ const modeInfo = {
 } as const;
 
 function VimEditor({ onCodePenModeChange }: VimEditorProps) {
+  // CodeMirrorエディタへのref
+  const editorRef = useRef<any>(null);
   const [mode, setMode] = useState<EditorMode>("html");
   const [vimMode, setVimMode] = useState<VimMode>("normal");
   const [showPreview, setShowPreview] = useState<boolean>(false);
@@ -1256,6 +1248,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     setShowPreview(false); // プレビュー解除（同じモードでも必ず解除）
     setVimMode("normal");
     setMode(newMode);
+    // 少し遅延してエディタにフォーカス（Reactの再描画後）
+    setTimeout(() => {
+      if (editorRef.current && editorRef.current.view) {
+        editorRef.current.view.focus();
+      }
+    }, 0);
   }, []);
 
   // CodePenモード切り替え - 最適化版
@@ -1909,6 +1907,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 {mode === "html" && (
                   <CodeMirror
                     key="html-editor"
+                    ref={editorRef}
                     value={docs.html}
                     height="100%"
                     extensions={htmlExtensions}
@@ -1921,13 +1920,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
-                    onKeyDown={(event) => {
-                      // Vim矩形選択(Ctrl+V)などのVimコマンドを優先
-                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
-                        event.preventDefault();
-                      }
-                    }}
-                    // basicSetupは外す
                     style={{
                       height: "100%",
                       fontSize: "16px",
@@ -1940,6 +1932,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 {mode === "css" && (
                   <CodeMirror
                     key="css-editor"
+                    ref={editorRef}
                     value={docs.css}
                     height="100%"
                     extensions={cssExtensions}
@@ -1952,25 +1945,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
-                    onKeyDown={(event) => {
-                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
-                        event.preventDefault();
-                      }
-                    }}
-                    basicSetup={{
-                      lineNumbers: true,
-                      foldGutter: true,
-                      dropCursor: false,
-                      allowMultipleSelections: false,
-                      indentOnInput: true,
-                      bracketMatching: true,
-                      closeBrackets: true,
-                      autocompletion: true,
-                      searchKeymap: true,
-                      historyKeymap: true,
-                      foldKeymap: true,
-                      completionKeymap: true,
-                    }}
                     style={{
                       height: "100%",
                       fontSize: "16px",
@@ -1983,6 +1957,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 {mode === "js" && (
                   <CodeMirror
                     key="js-editor"
+                    ref={editorRef}
                     value={docs.js}
                     height="100%"
                     extensions={jsExtensions}
@@ -1995,25 +1970,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
-                    onKeyDown={(event) => {
-                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
-                        event.preventDefault();
-                      }
-                    }}
-                    basicSetup={{
-                      lineNumbers: true,
-                      foldGutter: true,
-                      dropCursor: false,
-                      allowMultipleSelections: false,
-                      indentOnInput: true,
-                      bracketMatching: true,
-                      closeBrackets: true,
-                      autocompletion: true,
-                      searchKeymap: true,
-                      historyKeymap: true,
-                      foldKeymap: true,
-                      completionKeymap: true,
-                    }}
                     style={{
                       height: "100%",
                       fontSize: "16px",
@@ -2023,35 +1979,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 )}
               </Box>
             )}
-            {showPreview && (
-              <Box
-                w="100%"
-                h="100%"
-                maxH={{ base: "340px", md: "480px", lg: "560px" }}
-                minH={{ base: "220px", md: "320px" }}
-                overflowY="auto"
-                borderRadius="md"
-                bg="white"
-                boxShadow="xl"
-                position="relative"
-              >
-                <iframe
-                  title="Preview"
-                  srcDoc={previewSrcDoc}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
-                    background: "white",
-                  }}
-                  sandbox={
-                    process.env.NODE_ENV === "development"
-                      ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
-                      : "allow-scripts allow-same-origin allow-modals"
-                  }
-                />
-              </Box>
-            )}
+            {/* モード切替ボタン群は本来ヘッダー内HStackでmapしているので、ここは削除して閉じタグを正しくする */}
           </>
         )}
       </Box>
