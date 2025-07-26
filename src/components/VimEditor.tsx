@@ -5,7 +5,7 @@ import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { keymap } from "@codemirror/view";
+import { drawSelection, keymap } from "@codemirror/view";
 import {
   abbreviationTracker,
   expandAbbreviation,
@@ -70,27 +70,28 @@ const languageExtensions = {
 
 // 拡張取得関数（CodeMirror用）- 各モードごとに独立したhistory付き
 const getExtensions = (mode: EditorMode) => {
+  // Vim拡張を必ず先頭に追加し、drawSelectionも追加
   const baseExtensions = [
-    languageExtensions[mode],
-    history(), // 各モードが独立したhistoryを持つ
     vim(),
+    drawSelection(),
+    languageExtensions[mode],
+    history(),
     commonKeymap,
     oneDark,
   ];
 
-  // EmmetサポートがあるモードのみEmmetを追加
   if (mode === "html" || mode === "css") {
     const emmetExtension = Prec.high(abbreviationTracker(emmetConfigs[mode]));
     return [
-      languageExtensions[mode],
-      history(), // 各モードが独立したhistoryを持つ
-      emmetExtension,
       vim(),
+      drawSelection(),
+      languageExtensions[mode],
+      history(),
+      emmetExtension,
       commonKeymap,
       oneDark,
     ];
   }
-
   return baseExtensions;
 };
 // アニメーション用のvariants（再定義）
@@ -1920,20 +1921,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
-                    basicSetup={{
-                      lineNumbers: true,
-                      foldGutter: true,
-                      dropCursor: false,
-                      allowMultipleSelections: false,
-                      indentOnInput: true,
-                      bracketMatching: true,
-                      closeBrackets: true,
-                      autocompletion: true,
-                      searchKeymap: true,
-                      historyKeymap: true,
-                      foldKeymap: true,
-                      completionKeymap: true,
+                    onKeyDown={(event) => {
+                      // Vim矩形選択(Ctrl+V)などのVimコマンドを優先
+                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
+                        event.preventDefault();
+                      }
                     }}
+                    // basicSetupは外す
                     style={{
                       height: "100%",
                       fontSize: "16px",
@@ -1958,6 +1952,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
+                    onKeyDown={(event) => {
+                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
+                        event.preventDefault();
+                      }
+                    }}
                     basicSetup={{
                       lineNumbers: true,
                       foldGutter: true,
@@ -1996,6 +1995,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                       });
                     }}
                     onUpdate={onUpdate}
+                    onKeyDown={(event) => {
+                      if (event.ctrlKey && event.key.toLowerCase() === "v") {
+                        event.preventDefault();
+                      }
+                    }}
                     basicSetup={{
                       lineNumbers: true,
                       foldGutter: true,
