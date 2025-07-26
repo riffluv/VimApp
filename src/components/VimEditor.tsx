@@ -23,6 +23,7 @@ import {
   FiRefreshCw,
   FiTerminal,
 } from "react-icons/fi";
+import { GiBroom } from "react-icons/gi";
 
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
@@ -1298,7 +1299,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   }, []);
 
   // リセット - データのみ変更し画面状態は維持（空に戻す）
-  const handleReset = useCallback(() => {
+
+  // 現在のエディタのみクリア
+  const handleClear = useCallback(() => {
     setDocs((prev) => {
       const updated = { ...prev, [mode]: "" };
       saveDocsToStorage(updated);
@@ -1308,10 +1311,18 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   }, [mode, saveDocsToStorage]);
 
   // 全エディターリセット（空に戻す）
+
+  // 全サンプル初期化（確認ダイアログ付き）
   const handleResetAll = useCallback(() => {
-    setDocs(emptyDocs);
-    saveDocsToStorage(emptyDocs);
-    setVimMode("normal");
+    if (
+      window.confirm(
+        "本当に全てのサンプルを初期状態に戻しますか？\nこの操作は元に戻せません。"
+      )
+    ) {
+      setDocs(emptyDocs);
+      saveDocsToStorage(emptyDocs);
+      setVimMode("normal");
+    }
   }, [saveDocsToStorage]);
 
   // プレビュー用HTML生成 - useMemoで最適化
@@ -1570,7 +1581,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             </Button>
           ))}
           <Button
-            onClick={handleReset}
+            onClick={handleClear}
             colorScheme="gray"
             bg="transparent"
             color="gray.400"
@@ -1613,15 +1624,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             }}
             transition="all 0.12s cubic-bezier(0.2, 0, 0.1, 1)"
             ml={2}
-            aria-label="エディターの内容をリセット"
+            aria-label="このエディタの内容をクリア"
+            title="このエディタの内容だけを消去します"
           >
-            <Icon
-              as={FiRefreshCw}
-              mr={1}
-              transition="transform 0.2s ease"
-              _groupHover={{ transform: "rotate(30deg)" }}
-            />{" "}
-            Reset
+            <Icon as={GiBroom} mr={1} />
+            Clear
           </Button>
         </HStack>
       </MotionFlex>
@@ -1685,29 +1692,43 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             <Button
               onClick={handleResetAll}
               colorScheme="red"
-              variant="ghost"
-              size="xs"
-              height="20px"
-              width="20px"
-              p={0}
+              variant="solid"
+              size="sm"
+              height="28px"
               minW="auto"
-              borderRadius="full"
+              borderRadius="md"
               display="flex"
               alignItems="center"
               justifyContent="center"
               position="relative"
+              px={3}
+              py={1.5}
+              fontFamily="mono"
+              fontWeight="bold"
+              letterSpacing="tight"
               _hover={{
-                bg: "rgba(255,100,100,0.2)",
-                color: "red.300",
+                bg: "red.400",
+                color: "white",
+                boxShadow: "0 4px 8px rgba(255,0,0,0.15)",
               }}
               _active={{
-                bg: "rgba(255,100,100,0.3)",
-                transform: "scale(0.9)",
+                bg: "red.600",
+                color: "white",
+                transform: "scale(0.98)",
               }}
-              title="全エディターリセット"
-              aria-label="すべてのエディターの内容をリセット"
+              _focus={{ outline: "none" }}
+              _focusVisible={{
+                outline: "2px solid",
+                outlineColor: "red.400",
+                outlineOffset: "2px",
+              }}
+              transition="all 0.12s cubic-bezier(0.2, 0, 0.1, 1)"
+              ml={2}
+              aria-label="全てのサンプルを初期状態に戻す"
+              title="全てのサンプルを初期状態に戻します"
             >
-              <Icon as={FiRefreshCw} boxSize="12px" />
+              <Icon as={FiRefreshCw} boxSize="16px" mr={1} />
+              Reset All
             </Button>
           )}
         </Flex>
