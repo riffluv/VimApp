@@ -24,7 +24,7 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
   return acc;
 }, {} as Record<CommandCategory, Command[]>);
 
-export default function CheatSheet({}: CheatSheetProps) {
+export default function CheatSheet({ }: CheatSheetProps) {
   return (
     <Box
       p={0}

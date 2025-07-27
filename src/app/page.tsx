@@ -1,6 +1,7 @@
 "use client";
 
 import CheatSheet from "@/components/CheatSheet";
+import { Tooltip } from "@/components/Tooltip";
 import {
   Box,
   Button,
@@ -11,7 +12,6 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import { Tooltip } from "@/components/Tooltip";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -35,9 +35,9 @@ export default function Home() {
   };
 
   return (
-    <Box 
-      bg="primary.900" 
-      minH="100vh" 
+    <Box
+      bg="primary.900"
+      minH="100vh"
       w="100%"
       position="relative"
       _before={{
@@ -47,7 +47,8 @@ export default function Home() {
         left: 0,
         right: 0,
         bottom: 0,
-        bgGradient: "radial-gradient(ellipse at top, rgba(255,152,0,0.03) 0%, transparent 50%)",
+        bgGradient:
+          "radial-gradient(ellipse at top, rgba(255,152,0,0.03) 0%, transparent 50%)",
         pointerEvents: "none",
         zIndex: 0,
       }}
@@ -122,10 +123,10 @@ export default function Home() {
             fontSize="sm"
             fontWeight="500"
             transition="all 0.2s ease"
-            _hover={{ 
-              color: "secondary.400", 
+            _hover={{
+              color: "secondary.400",
               textDecoration: "none",
-              transform: "translateY(-1px)"
+              transform: "translateY(-1px)",
             }}
             _focus={{ outline: "none" }}
             _focusVisible={{ outline: "none" }}
@@ -150,10 +151,10 @@ export default function Home() {
             fontSize="sm"
             fontWeight="500"
             transition="all 0.2s ease"
-            _hover={{ 
-              color: "secondary.400", 
+            _hover={{
+              color: "secondary.400",
               textDecoration: "none",
-              transform: "translateY(-1px)"
+              transform: "translateY(-1px)",
             }}
             _focus={{ outline: "none" }}
             _focusVisible={{ outline: "none" }}
@@ -192,7 +193,11 @@ export default function Home() {
             mb={{ base: 2, md: 0 }}
           >
             <Tooltip
-              content={showCheatSheet ? "チートシートを非表示に！" : "チートシートを表示する"}
+              content={
+                showCheatSheet
+                  ? "チートシートを非表示に！"
+                  : "チートシートを表示する"
+              }
               showArrow
               portalled
               contentProps={{
@@ -206,7 +211,11 @@ export default function Home() {
             >
               <Button
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-                bg={showCheatSheet ? "rgba(255,152,0,0.15)" : "rgba(255,152,0,0.08)"}
+                bg={
+                  showCheatSheet
+                    ? "rgba(255,152,0,0.15)"
+                    : "rgba(255,152,0,0.08)"
+                }
                 color={showCheatSheet ? "secondary.300" : "secondary.500"}
                 borderRadius="xl"
                 p={3}
@@ -214,7 +223,9 @@ export default function Home() {
                 height="48px"
                 minW="48px"
                 border="1px solid"
-                borderColor={showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"}
+                borderColor={
+                  showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"
+                }
                 backdropFilter="blur(10px)"
                 position="relative"
                 _hover={{
@@ -242,7 +253,7 @@ export default function Home() {
                   right: 0,
                   bottom: 0,
                   borderRadius: "inherit",
-                  bg: showCheatSheet 
+                  bg: showCheatSheet
                     ? "linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.05))"
                     : "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
                   pointerEvents: "none",

@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
-import { Tooltip } from "./Tooltip";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,6 +8,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
+import { Tooltip } from "./Tooltip";
 
 import { VIM_MODE_INFO } from "@/constants";
 import {
@@ -280,7 +280,19 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             <FiBookOpen style={{ marginRight: "4px" }} />
             CodePen
           </Button>
-          <Tooltip content="現在のコードをクリア" showArrow portalled contentProps={{ fontSize: "sm", bg: "gray.700", color: "white", borderRadius: "md", px: 3, py: 2 }}>
+          <Tooltip
+            content="現在のコードをクリア"
+            showArrow
+            portalled
+            contentProps={{
+              fontSize: "sm",
+              bg: "gray.700",
+              color: "white",
+              borderRadius: "md",
+              px: 3,
+              py: 2,
+            }}
+          >
             <Button
               size="sm"
               variant="ghost"
@@ -299,7 +311,19 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               <GiBroom />
             </Button>
           </Tooltip>
-          <Tooltip content="全てリセット（初期状態に戻す）" showArrow portalled contentProps={{ fontSize: "sm", bg: "gray.700", color: "white", borderRadius: "md", px: 3, py: 2 }}>
+          <Tooltip
+            content="全てリセット（初期状態に戻す）"
+            showArrow
+            portalled
+            contentProps={{
+              fontSize: "sm",
+              bg: "gray.700",
+              color: "white",
+              borderRadius: "md",
+              px: 3,
+              py: 2,
+            }}
+          >
             <Button
               size="sm"
               variant="ghost"

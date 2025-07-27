@@ -3,12 +3,12 @@
  */
 
 import type {
-  CategoryInfo,
-  Command,
-  CommandCategory,
-  DocsState,
-  StorageKeys,
-  VimModeInfo,
+    CategoryInfo,
+    Command,
+    CommandCategory,
+    DocsState,
+    StorageKeys,
+    VimModeInfo,
 } from "@/types/editor";
 import { FiCommand, FiCpu, FiEdit2, FiSearch } from "react-icons/fi";
 
@@ -44,138 +44,84 @@ export const CATEGORY_INFO: Record<CommandCategory, CategoryInfo> = {
   basic: {
     icon: FiEdit2,
     color: "green.400",
-    title: "基本操作（まずはここから）",
+    title: "1. 基本の移動（まずはここから！）",
     description:
-      "Vimを使うために最低限必要なコマンド。これだけでも十分使えます。",
+      "マウスを使わずにカーソルを動かす基本。hjklを覚えればVimの第一歩！",
   },
   movement: {
     icon: FiCommand,
     color: "blue.400",
-    title: "移動コマンド（効率アップ）",
-    description: "マウスを使わずにカーソルを素早く移動。慣れると手放せません。",
+    title: "2. 文字入力と編集の基本",
+    description: "文字を入力したり、削除したり。Vimの基本的な編集操作を覚えよう。",
   },
   editing: {
     icon: FiCpu,
     color: "purple.400",
-    title: "編集コマンド（削除・コピー・貼り付け）",
-    description: "テキストの削除、コピー、貼り付けを効率的に行うコマンド。",
+    title: "3. コピー・貼り付け・検索",
+    description: "効率的な編集のためのコピペと検索。実用性がぐっと上がります。",
   },
   webdev: {
     icon: FiSearch,
     color: "orange.400",
-    title: "ウェブ制作で便利なコマンド",
-    description: "HTML/CSS/JS編集で特に役立つ実践的なコマンド。慣れたら挑戦！",
+    title: "4. 実務で使える便利技",
+    description: "HTML/CSS/JS編集で威力を発揮する実践的なコマンド集。",
   },
 };
 
-// 初心者ウェブ制作者向け厳選コマンド
+// 初心者ウェブ制作者向け厳選コマンド（段階的学習用）
 export const CHEAT_SHEET_COMMANDS: Command[] = [
-  // 基本操作（最初に覚える必須コマンド）
-  {
-    command: "i",
-    description: "カーソル位置で文字入力開始",
-    category: "basic",
-  },
-  {
-    command: "a",
-    description: "カーソルの次で文字入力開始",
-    category: "basic",
-  },
-  {
-    command: "o",
-    description: "下に新しい行を作って入力開始",
-    category: "basic",
-  },
-  {
-    command: "O",
-    description: "上に新しい行を作って入力開始",
-    category: "basic",
-  },
-  { command: "Esc", description: "ノーマルモードに戻る", category: "basic" },
-  { command: "u", description: "元に戻す（アンドゥ）", category: "basic" },
-  { command: "Ctrl+r", description: "やり直し（リドゥ）", category: "basic" },
+  // 1. 基本の移動（まずはここから！）
+  { command: "h", description: "← 左に移動", category: "basic" },
+  { command: "j", description: "↓ 下に移動", category: "basic" },
+  { command: "k", description: "↑ 上に移動", category: "basic" },
+  { command: "l", description: "→ 右に移動", category: "basic" },
+  { command: "w", description: "次の単語の先頭へ", category: "basic" },
+  { command: "b", description: "前の単語の先頭へ", category: "basic" },
+  { command: "0", description: "行の最初へ", category: "basic" },
+  { command: "$", description: "行の最後へ", category: "basic" },
+  { command: "gg", description: "ファイルの最初へ", category: "basic" },
+  { command: "G", description: "ファイルの最後へ", category: "basic" },
 
-  // 移動コマンド（効率的なカーソル移動）
-  { command: "h", description: "左に移動", category: "movement" },
-  { command: "j", description: "下に移動", category: "movement" },
-  { command: "k", description: "上に移動", category: "movement" },
-  { command: "l", description: "右に移動", category: "movement" },
-  { command: "w", description: "次の単語の先頭に移動", category: "movement" },
-  { command: "b", description: "前の単語の先頭に移動", category: "movement" },
-  { command: "0", description: "行頭に移動", category: "movement" },
-  { command: "$", description: "行末に移動", category: "movement" },
-  { command: "gg", description: "ファイル先頭に移動", category: "movement" },
-  { command: "G", description: "ファイル末尾に移動", category: "movement" },
-  { command: "/text", description: "textを検索", category: "movement" },
-  { command: "n", description: "次の検索結果に移動", category: "movement" },
-  { command: "N", description: "前の検索結果に移動", category: "movement" },
+  // 2. 文字入力と編集の基本
+  { command: "i", description: "カーソル位置で入力開始", category: "movement" },
+  { command: "a", description: "カーソルの次で入力開始", category: "movement" },
+  { command: "o", description: "下に新しい行を作って入力", category: "movement" },
+  { command: "O", description: "上に新しい行を作って入力", category: "movement" },
+  { command: "A", description: "行末で入力開始", category: "movement" },
+  { command: "I", description: "行頭で入力開始", category: "movement" },
+  { command: "Esc", description: "ノーマルモードに戻る", category: "movement" },
+  { command: "x", description: "1文字削除", category: "movement" },
+  { command: "dd", description: "1行削除", category: "movement" },
+  { command: "u", description: "元に戻す（取り消し）", category: "movement" },
+  { command: "Ctrl+r", description: "やり直し", category: "movement" },
 
-  // 編集コマンド（削除・コピー・貼り付け）
-  {
-    command: "x",
-    description: "カーソル位置の文字を削除",
-    category: "editing",
-  },
-  { command: "dd", description: "現在の行を削除", category: "editing" },
-  { command: "dw", description: "次の単語まで削除", category: "editing" },
-  { command: "d$", description: "行末まで削除", category: "editing" },
-  { command: "yy", description: "現在の行をコピー", category: "editing" },
-  { command: "yw", description: "次の単語までコピー", category: "editing" },
+  // 3. コピー・貼り付け・検索
+  { command: "yy", description: "1行コピー", category: "editing" },
+  { command: "yw", description: "単語をコピー", category: "editing" },
   { command: "p", description: "カーソル後に貼り付け", category: "editing" },
   { command: "P", description: "カーソル前に貼り付け", category: "editing" },
-  { command: "v", description: "文字単位で選択開始", category: "editing" },
-  { command: "V", description: "行単位で選択開始", category: "editing" },
-  {
-    command: ">",
-    description: "選択範囲を右にインデント",
-    category: "editing",
-  },
-  {
-    command: "<",
-    description: "選択範囲を左にインデント",
-    category: "editing",
-  },
+  { command: "v", description: "文字選択モード", category: "editing" },
+  { command: "V", description: "行選択モード", category: "editing" },
+  { command: "y", description: "選択範囲をコピー", category: "editing" },
+  { command: "d", description: "選択範囲を削除", category: "editing" },
+  { command: "/text", description: "textを検索", category: "editing" },
+  { command: "n", description: "次の検索結果へ", category: "editing" },
+  { command: "N", description: "前の検索結果へ", category: "editing" },
   { command: ".", description: "直前の操作を繰り返し", category: "editing" },
 
-  // ウェブ制作で特に便利なコマンド
-  {
-    command: "ciw",
-    description: "単語を変更（クラス名・変数名に便利）",
-    category: "webdev",
-  },
-  {
-    command: 'ci"',
-    description: '"の中身を変更（文字列編集に便利）',
-    category: "webdev",
-  },
-  {
-    command: "ci'",
-    description: "'の中身を変更（文字列編集に便利）",
-    category: "webdev",
-  },
+  // 4. 実務で使える便利技
+  { command: "ciw", description: "単語を変更（クラス名等）", category: "webdev" },
+  { command: 'ci"', description: '"の中身を変更', category: "webdev" },
+  { command: "ci'", description: "'の中身を変更", category: "webdev" },
+  { command: "ci(", description: "()の中身を変更", category: "webdev" },
   { command: "cit", description: "HTMLタグの中身を変更", category: "webdev" },
   { command: "dit", description: "HTMLタグの中身を削除", category: "webdev" },
-  {
-    command: "A",
-    description: "行末で入力開始（;追加に便利）",
-    category: "webdev",
-  },
-  {
-    command: "I",
-    description: "行頭で入力開始（コメント追加に便利）",
-    category: "webdev",
-  },
   { command: "cc", description: "行全体を変更", category: "webdev" },
-  {
-    command: "Ctrl+v",
-    description: "矩形選択（複数行同時編集）",
-    category: "webdev",
-  },
-  {
-    command: ":%s/old/new/g",
-    description: "全体置換（リファクタリングに便利）",
-    category: "webdev",
-  },
+  { command: ">>", description: "行を右にインデント", category: "webdev" },
+  { command: "<<", description: "行を左にインデント", category: "webdev" },
+  { command: "Ctrl+v", description: "矩形選択（複数行編集）", category: "webdev" },
+  { command: ":%s/old/new/g", description: "全体置換", category: "webdev" },
+  { command: "%", description: "対応する括弧へジャンプ", category: "webdev" },
 ];
 
 // デフォルトドキュメント内容
