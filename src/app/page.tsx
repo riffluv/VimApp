@@ -2,15 +2,16 @@
 
 import CheatSheet from "@/components/CheatSheet";
 import {
-    Box,
-    Button,
-    Flex,
-    Heading,
-    Icon,
-    Image,
-    Link,
-    Text,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Icon,
+  Image,
+  Link,
+  Text,
 } from "@chakra-ui/react";
+import { Tooltip } from "@/components/Tooltip";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -190,57 +191,66 @@ export default function Home() {
             mr={{ base: 0, md: 4 }}
             mb={{ base: 2, md: 0 }}
           >
-            <Button
-              onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-              bg={showCheatSheet ? "rgba(255,152,0,0.15)" : "rgba(255,152,0,0.08)"}
-              color={showCheatSheet ? "secondary.300" : "secondary.500"}
-              borderRadius="xl"
-              p={3}
-              width="48px"
-              height="48px"
-              minW="48px"
-              border="1px solid"
-              borderColor={showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"}
-              backdropFilter="blur(10px)"
-              position="relative"
-              _hover={{
-                bg: "rgba(255,152,0,0.2)",
-                color: "secondary.200",
-                transform: "translateY(-2px)",
-                boxShadow: "0 8px 25px rgba(255,152,0,0.3)",
-                borderColor: "secondary.400",
-              }}
-              _active={{
-                transform: "translateY(0)",
-                boxShadow: "0 4px 15px rgba(255,152,0,0.2)",
-              }}
-              _focus={{ outline: "none" }}
-              _focusVisible={{ outline: "none" }}
-              transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-              aria-label={
-                showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
-              }
-              title={
-                showCheatSheet
-                  ? "チートシートを非表示にしてエディターを広く使う"
-                  : "チートシートを表示する"
-              }
-              _before={{
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                borderRadius: "inherit",
-                bg: showCheatSheet 
-                  ? "linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.05))"
-                  : "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
-                pointerEvents: "none",
+            <Tooltip
+              content={showCheatSheet ? "チートシートを非表示に！" : "チートシートを表示する"}
+              showArrow
+              portalled
+              contentProps={{
+                fontSize: "sm",
+                bg: "gray.700",
+                color: "white",
+                borderRadius: "md",
+                px: 3,
+                py: 2,
               }}
             >
-              <Icon as={FiBook} fontSize="20px" />
-            </Button>
+              <Button
+                onClick={() => handleCheatSheetToggle(!showCheatSheet)}
+                bg={showCheatSheet ? "rgba(255,152,0,0.15)" : "rgba(255,152,0,0.08)"}
+                color={showCheatSheet ? "secondary.300" : "secondary.500"}
+                borderRadius="xl"
+                p={3}
+                width="48px"
+                height="48px"
+                minW="48px"
+                border="1px solid"
+                borderColor={showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"}
+                backdropFilter="blur(10px)"
+                position="relative"
+                _hover={{
+                  bg: "rgba(255,152,0,0.2)",
+                  color: "secondary.200",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 25px rgba(255,152,0,0.3)",
+                  borderColor: "secondary.400",
+                }}
+                _active={{
+                  transform: "translateY(0)",
+                  boxShadow: "0 4px 15px rgba(255,152,0,0.2)",
+                }}
+                _focus={{ outline: "none" }}
+                _focusVisible={{ outline: "none" }}
+                transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                aria-label={
+                  showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
+                }
+                _before={{
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: "inherit",
+                  bg: showCheatSheet 
+                    ? "linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.05))"
+                    : "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
+                  pointerEvents: "none",
+                }}
+              >
+                <Icon as={FiBook} fontSize="20px" />
+              </Button>
+            </Tooltip>
           </Flex>
         )}
 

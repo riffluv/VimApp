@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Tooltip } from "./Tooltip";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { AnimatePresence, motion } from "framer-motion";
@@ -192,7 +193,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 Vim Editor
               </Text>
               <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
-                {mode}.{mode === "js" ? "js" : mode === "css" ? "css" : "html"}
+                {mode === "html"
+                  ? "index.html"
+                  : mode === "css"
+                  ? "style.css"
+                  : "script.js"}
               </Text>
             </Box>
           </Flex>
@@ -275,41 +280,45 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             <FiBookOpen style={{ marginRight: "4px" }} />
             CodePen
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            bg="gray.700"
-            color="gray.300"
-            border="1px solid"
-            borderColor="gray.600"
-            onClick={() => clearDoc(mode)}
-            _hover={{
-              bg: "gray.600",
-            }}
-            fontSize="xs"
-            fontWeight="600"
-            px={2}
-          >
-            <GiBroom />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            bg="gray.700"
-            color="orange.400"
-            border="1px solid"
-            borderColor="gray.600"
-            onClick={handleResetAllWithConfirm}
-            _hover={{
-              bg: "gray.600",
-            }}
-            fontSize="xs"
-            fontWeight="600"
-            px={3}
-          >
-            <FiRefreshCw style={{ marginRight: "4px" }} />
-            Reset
-          </Button>
+          <Tooltip content="現在のコードをクリア" showArrow portalled contentProps={{ fontSize: "sm", bg: "gray.700", color: "white", borderRadius: "md", px: 3, py: 2 }}>
+            <Button
+              size="sm"
+              variant="ghost"
+              bg="gray.700"
+              color="gray.300"
+              border="1px solid"
+              borderColor="gray.600"
+              onClick={() => clearDoc(mode)}
+              _hover={{
+                bg: "gray.600",
+              }}
+              fontSize="xs"
+              fontWeight="600"
+              px={2}
+            >
+              <GiBroom />
+            </Button>
+          </Tooltip>
+          <Tooltip content="全てリセット（初期状態に戻す）" showArrow portalled contentProps={{ fontSize: "sm", bg: "gray.700", color: "white", borderRadius: "md", px: 3, py: 2 }}>
+            <Button
+              size="sm"
+              variant="ghost"
+              bg="gray.700"
+              color="orange.400"
+              border="1px solid"
+              borderColor="gray.600"
+              onClick={handleResetAllWithConfirm}
+              _hover={{
+                bg: "gray.600",
+              }}
+              fontSize="xs"
+              fontWeight="600"
+              px={3}
+            >
+              <FiRefreshCw style={{ marginRight: "4px" }} />
+              Reset
+            </Button>
+          </Tooltip>
         </HStack>
       </MotionFlex>
 
@@ -402,7 +411,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               style={{
                 fontSize: "14px",
                 height: "100%",
-                backgroundColor: "#1a1a1a", // gray.900相当
+                backgroundColor: "#2d3748", // gray.800相当 - チートシートのコマンド背景と同じ
                 fontFamily:
                   "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
               }}
@@ -440,7 +449,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             style={{
               fontSize: "14px",
               height: "100%",
-              backgroundColor: "#1a1a1a", // gray.900相当
+              backgroundColor: "#2d3748", // gray.800相当 - チートシートのコマンド背景と同じ
               fontFamily:
                 "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
             }}
