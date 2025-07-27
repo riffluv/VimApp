@@ -6,29 +6,29 @@ const customTheme = createSystem(defaultConfig, {
       colors: {
         // Rich Black (Primary) - より深みのあるブラック
         primary: {
-          50: { value: "#f7f7f8" },
-          100: { value: "#eeeef0" },
-          200: { value: "#d7d7dc" },
-          300: { value: "#b8b8c1" },
-          400: { value: "#8b8b96" },
-          500: { value: "#6a6a75" },
-          600: { value: "#55555e" },
-          700: { value: "#45454d" },
-          800: { value: "#18181b" }, // Rich Black
-          900: { value: "#0a0a0b" }, // Deeper Black
-          950: { value: "#050507" }, // Ultra Deep Black
+          50: { value: "#f8f8f9" },
+          100: { value: "#f0f0f2" },
+          200: { value: "#e1e1e6" },
+          300: { value: "#c4c4cc" },
+          400: { value: "#a1a1aa" },
+          500: { value: "#71717a" },
+          600: { value: "#52525b" },
+          700: { value: "#3f3f46" },
+          800: { value: "#18181b" }, // Rich Black - メイン
+          900: { value: "#0f0f10" }, // Deeper Black
+          950: { value: "#09090b" }, // Ultra Deep Black
         },
         // Orange (Secondary) - より洗練されたオレンジ
         secondary: {
           50: { value: "#fffbf0" },
-          100: { value: "#fef3e2" },
-          200: { value: "#fde4c0" },
-          300: { value: "#fbd28e" },
-          400: { value: "#f8b85a" },
+          100: { value: "#fef4e6" },
+          200: { value: "#fde6c7" },
+          300: { value: "#fbd49a" },
+          400: { value: "#f9c066" }, // ライトオレンジ
           500: { value: "#ff9800" }, // メインオレンジ
-          600: { value: "#f57c00" },
-          700: { value: "#ef6c00" },
-          800: { value: "#e65100" },
+          600: { value: "#f57c00" }, // ダークオレンジ
+          700: { value: "#e65100" },
+          800: { value: "#d84315" },
           900: { value: "#bf360c" },
           950: { value: "#8d2600" },
         },

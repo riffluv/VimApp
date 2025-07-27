@@ -7,8 +7,8 @@ import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { drawSelection, keymap } from "@codemirror/view";
 import {
-  abbreviationTracker,
-  expandAbbreviation,
+    abbreviationTracker,
+    expandAbbreviation,
 } from "@emmetio/codemirror6-plugin";
 import { getCM, vim } from "@replit/codemirror-vim";
 import CodeMirror from "@uiw/react-codemirror";
@@ -17,11 +17,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { IconType } from "react-icons";
 import {
-  FiBookOpen,
-  FiCommand,
-  FiEdit,
-  FiRefreshCw,
-  FiTerminal,
+    FiBookOpen,
+    FiCommand,
+    FiEdit,
+    FiRefreshCw,
+    FiTerminal,
 } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 
@@ -1155,7 +1155,7 @@ interface VimEditorProps {
 const modeInfo = {
   normal: {
     text: "NORMAL",
-    color: "orange.400",
+    color: "secondary.400",
     icon: FiCommand as IconType,
     hint: "Press i to enter insert mode",
   },
@@ -1479,15 +1479,15 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   // SSR/CSR差異による高さ0問題を防ぐ
   return (
     <MotionBox
-      bgGradient="gradient.primary"
-      color="text.primary"
+      bg="rgba(24, 24, 27, 0.95)"
+      color="gray.100"
       p={{ base: 2, md: 4 }}
       borderRadius="2xl"
-      boxShadow="glass"
+      boxShadow="0 20px 40px rgba(0,0,0,0.4)"
       display="flex"
       flexDirection="column"
-      borderWidth={1}
-      borderColor="border.primary"
+      border="1px solid"
+      borderColor="rgba(255,152,0,0.2)"
       position="relative"
       overflow="hidden"
       flex={1}
@@ -1497,6 +1497,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
+      backdropFilter="blur(20px)"
       _before={{
         content: '""',
         position: "absolute",
@@ -1504,14 +1505,16 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         left: 0,
         right: 0,
         bottom: 0,
-        background: "gradient.glass",
+        background: "linear-gradient(145deg, rgba(255,152,0,0.08) 0%, rgba(255,152,0,0.02) 50%, rgba(0,0,0,0.3) 100%)",
         borderRadius: "inherit",
         pointerEvents: "none",
       }}
       _hover={{
-        boxShadow: "glass-hover",
+        boxShadow: "0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,152,0,0.3)",
         transform: "translateY(-1px)",
+        borderColor: "rgba(255,152,0,0.3)",
       }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
     >
       {/* --- Editor Header (macOS風ウィンドウコントロール) --- */}
       <MotionFlex

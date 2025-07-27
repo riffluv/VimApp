@@ -2,14 +2,14 @@
 
 import CheatSheet from "@/components/CheatSheet";
 import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Icon,
-  Image,
-  Link,
-  Text,
+    Box,
+    Button,
+    Flex,
+    Heading,
+    Icon,
+    Image,
+    Link,
+    Text,
 } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -34,7 +34,23 @@ export default function Home() {
   };
 
   return (
-    <Box bg="gray.900" minH="100vh" w="100%">
+    <Box 
+      bg="primary.900" 
+      minH="100vh" 
+      w="100%"
+      position="relative"
+      _before={{
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        bgGradient: "radial-gradient(ellipse at top, rgba(255,152,0,0.03) 0%, transparent 50%)",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}
+    >
       {/* Header */}
       <Flex
         as="header"
@@ -43,9 +59,23 @@ export default function Home() {
         px={{ base: 3, md: 8 }}
         py={{ base: 4, md: 6 }}
         borderBottomWidth={1}
-        borderColor="gray.700"
+        borderColor="primary.700"
         mb={{ base: 4, md: 8 }}
         gap={4}
+        position="relative"
+        zIndex={1}
+        bg="rgba(24, 24, 27, 0.8)"
+        backdropFilter="blur(20px)"
+        _before={{
+          content: '""',
+          position: "absolute",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "60%",
+          height: "1px",
+          bgGradient: "linear(to-r, transparent, secondary.500, transparent)",
+        }}
       >
         <Flex align="center" gap={3}>
           <Image
@@ -59,21 +89,22 @@ export default function Home() {
             <Heading
               as="h1"
               fontSize={{ base: "lg", md: "xl" }}
-              color="orange.300"
-              fontWeight="bold"
+              color="secondary.400"
+              fontWeight="600"
               letterSpacing="tight"
-              fontFamily="'Nunito', 'Quicksand', sans-serif"
+              fontFamily="Inter"
               style={{
-                borderRadius: "0.25rem",
-                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                textShadow: "0 2px 4px rgba(0,0,0,0.4)",
               }}
             >
               Vim Practice App
             </Heading>
             <Text
               fontSize={{ base: "xs", md: "sm" }}
-              color="whiteAlpha.700"
+              color="gray.400"
               mt={0.5}
+              fontWeight="400"
+              letterSpacing="wide"
             >
               ブラウザ上でVimのコマンドを練習できるアプリ
             </Text>
@@ -86,16 +117,26 @@ export default function Home() {
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color="whiteAlpha.800"
+            color="gray.300"
             fontSize="sm"
-            _hover={{ color: "orange.300", textDecoration: "underline" }}
+            fontWeight="500"
+            transition="all 0.2s ease"
+            _hover={{ 
+              color: "secondary.400", 
+              textDecoration: "none",
+              transform: "translateY(-1px)"
+            }}
             _focus={{ outline: "none" }}
             _focusVisible={{ outline: "none" }}
             px={3}
             py={2}
-            borderRadius="md"
+            borderRadius="lg"
+            bg="rgba(255,255,255,0.05)"
+            backdropFilter="blur(10px)"
+            border="1px solid"
+            borderColor="rgba(255,255,255,0.1)"
           >
-            <Icon as={FiGithub} mr={1} />
+            <Icon as={FiGithub} mr={2} />
             GitHub
           </Link>
           <Link
@@ -104,16 +145,26 @@ export default function Home() {
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color="whiteAlpha.800"
+            color="gray.300"
             fontSize="sm"
-            _hover={{ color: "orange.300", textDecoration: "underline" }}
+            fontWeight="500"
+            transition="all 0.2s ease"
+            _hover={{ 
+              color: "secondary.400", 
+              textDecoration: "none",
+              transform: "translateY(-1px)"
+            }}
             _focus={{ outline: "none" }}
             _focusVisible={{ outline: "none" }}
             px={3}
             py={2}
-            borderRadius="md"
+            borderRadius="lg"
+            bg="rgba(255,255,255,0.05)"
+            backdropFilter="blur(10px)"
+            border="1px solid"
+            borderColor="rgba(255,255,255,0.1)"
           >
-            <Icon as={FiExternalLink} mr={1} />
+            <Icon as={FiExternalLink} mr={2} />
             Vimチートシート
           </Link>
         </Flex>
@@ -141,29 +192,31 @@ export default function Home() {
           >
             <Button
               onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-              bg={showCheatSheet ? "orange.800" : "orange.900"}
-              color={showCheatSheet ? "orange.200" : "orange.400"}
-              borderRadius="lg"
+              bg={showCheatSheet ? "rgba(255,152,0,0.15)" : "rgba(255,152,0,0.08)"}
+              color={showCheatSheet ? "secondary.300" : "secondary.500"}
+              borderRadius="xl"
               p={3}
               width="48px"
               height="48px"
               minW="48px"
-              borderWidth={showCheatSheet ? 2 : 1}
-              borderColor={showCheatSheet ? "orange.500" : "orange.600"}
+              border="1px solid"
+              borderColor={showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"}
+              backdropFilter="blur(10px)"
+              position="relative"
               _hover={{
-                bg: "orange.700",
-                color: "orange.100",
+                bg: "rgba(255,152,0,0.2)",
+                color: "secondary.200",
                 transform: "translateY(-2px)",
-                boxShadow: "xl",
-                borderColor: "orange.400",
+                boxShadow: "0 8px 25px rgba(255,152,0,0.3)",
+                borderColor: "secondary.400",
               }}
               _active={{
-                bg: "orange.800",
                 transform: "translateY(0)",
+                boxShadow: "0 4px 15px rgba(255,152,0,0.2)",
               }}
               _focus={{ outline: "none" }}
               _focusVisible={{ outline: "none" }}
-              transition="all 0.2s ease-in-out"
+              transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
               aria-label={
                 showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
               }
@@ -172,6 +225,19 @@ export default function Home() {
                   ? "チートシートを非表示にしてエディターを広く使う"
                   : "チートシートを表示する"
               }
+              _before={{
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: "inherit",
+                bg: showCheatSheet 
+                  ? "linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.05))"
+                  : "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
+                pointerEvents: "none",
+              }}
             >
               <Icon as={FiBook} fontSize="20px" />
             </Button>

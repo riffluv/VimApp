@@ -1,23 +1,23 @@
 "use client";
 
 import {
-  Accordion,
-  Box,
-  Flex,
-  Heading,
-  Icon,
-  Image,
-  Stack,
-  Text,
+    Accordion,
+    Box,
+    Flex,
+    Heading,
+    Icon,
+    Image,
+    Stack,
+    Text,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import {
-  FiBookOpen,
-  FiChevronDown,
-  FiCommand,
-  FiCpu,
-  FiEdit2,
-  FiSearch,
+    FiBookOpen,
+    FiChevronDown,
+    FiCommand,
+    FiCpu,
+    FiEdit2,
+    FiSearch,
 } from "react-icons/fi";
 
 const MotionBox = motion.create(Box);
@@ -27,193 +27,61 @@ const MotionFlex = motion.create(Flex);
 interface Command {
   command: string;
   description: string;
-  category: "normal" | "insert" | "visual" | "practical";
+  category: "basic" | "movement" | "editing" | "webdev";
 }
 
-// 初心者・ウェブ制作者向け厳選コマンド
+// 初心者ウェブ制作者向け厳選コマンド - 実際にWebエディタで使えるもののみ
 const cheatSheetList: Command[] = [
-  // ノーマルモード（基本操作・移動・編集）
-  // ノーマルモード（基本操作・移動・編集）
-  { command: "h", description: "左に移動", category: "normal" },
-  { command: "j", description: "下に移動", category: "normal" },
-  { command: "k", description: "上に移動", category: "normal" },
-  { command: "l", description: "右に移動", category: "normal" },
-  { command: "w", description: "次の単語の先頭に移動", category: "normal" },
-  { command: "b", description: "前の単語の先頭に移動", category: "normal" },
-  { command: "e", description: "次の単語の末尾に移動", category: "normal" },
-  { command: "0", description: "行頭に移動", category: "normal" },
-  { command: "$", description: "行末に移動", category: "normal" },
-  { command: "^", description: "最初の非空白文字に移動", category: "normal" },
-  { command: "gg", description: "ファイル先頭へ移動", category: "normal" },
-  { command: "G", description: "ファイル末尾へ移動", category: "normal" },
-  { command: ":w", description: "保存", category: "normal" },
-  { command: ":q", description: "終了", category: "normal" },
-  { command: ":wq", description: "保存して終了", category: "normal" },
-  { command: ":q!", description: "強制終了（保存せず）", category: "normal" },
-  { command: "x", description: "カーソル位置の文字を削除", category: "normal" },
-  { command: "dd", description: "現在の行を削除", category: "normal" },
-  { command: "dw", description: "次の単語まで削除", category: "normal" },
-  { command: "d$", description: "行末まで削除", category: "normal" },
-  {
-    command: "yy",
-    description: "現在の行をコピー（ヤンク）",
-    category: "normal",
-  },
-  {
-    command: "yw",
-    description: "次の単語までコピー（ヤンク）",
-    category: "normal",
-  },
-  {
-    command: "y$",
-    description: "行末までコピー（ヤンク）",
-    category: "normal",
-  },
-  { command: "p", description: "貼り付け（後）", category: "normal" },
-  { command: "P", description: "貼り付け（前）", category: "normal" },
-  { command: "u", description: "アンドゥ（元に戻す）", category: "normal" },
-  { command: "Ctrl+r", description: "リドゥ（やり直し）", category: "normal" },
-  { command: ".", description: "直前の操作を繰り返し", category: "normal" },
-  { command: "/pattern", description: "パターンを検索", category: "normal" },
-  { command: "n", description: "次の検索結果へ", category: "normal" },
-  { command: "N", description: "前の検索結果へ", category: "normal" },
-  {
-    command: ":%s/old/new/g",
-    description: "全てのoldをnewに置換",
-    category: "normal",
-  },
-  // インサートモード
-  {
-    command: "i",
-    description: "カーソル位置で挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "I",
-    description: "行頭で挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "a",
-    description: "カーソルの次の位置で挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "A",
-    description: "行末で挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "o",
-    description: "下に新しい行を作って挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "O",
-    description: "上に新しい行を作って挿入モードに入る",
-    category: "insert",
-  },
-  {
-    command: "Esc",
-    description: "ノーマルモードに戻る",
-    category: "insert",
-  },
-  {
-    command: "Ctrl+h / Ctrl+w",
-    description: "挿入モード中に文字/単語消去",
-    category: "insert",
-  },
-  // ビジュアルモード
-  // ビジュアルモード
-  {
-    command: "v",
-    description: "文字単位で選択開始（ビジュアルモード）",
-    category: "visual",
-  },
-  {
-    command: "V",
-    description: "行単位で選択開始（ビジュアルモード）",
-    category: "visual",
-  },
-  {
-    command: "Ctrl+v",
-    description: "矩形選択開始（ビジュアルモード）",
-    category: "visual",
-  },
-  {
-    command: "y",
-    description: "選択範囲をコピー（ヤンク）",
-    category: "visual",
-  },
-  { command: "d", description: "選択範囲を削除", category: "visual" },
-  { command: ">", description: "選択範囲を右にインデント", category: "visual" },
-  { command: "<", description: "選択範囲を左にインデント", category: "visual" },
-  { command: "Esc", description: "ノーマルモードに戻る", category: "visual" },
-  // 実務で役立つコマンド（応用・便利技）
-  // 実務で役立つコマンド（応用・便利技）
-  {
-    command: "ciw",
-    description: "単語全体を変更（消去して挿入）",
-    category: "practical",
-  },
-  {
-    command: "cw",
-    description: "単語末尾まで変更（消去して挿入）",
-    category: "practical",
-  },
-  {
-    command: "cc",
-    description: "行全体を変更（消去して挿入）",
-    category: "practical",
-  },
-  {
-    command: "c$",
-    description: "カーソル位置から行末まで変更（消去して挿入）",
-    category: "practical",
-  },
-  {
-    command: ":tabnew",
-    description: "新しいタブを開く",
-    category: "practical",
-  },
-  { command: "gt", description: "次のタブに移動", category: "practical" },
-  { command: "gT", description: "前のタブに移動", category: "practical" },
-  {
-    command: ":sp",
-    description: "ウィンドウを水平分割",
-    category: "practical",
-  },
-  {
-    command: ":vs",
-    description: "ウィンドウを垂直分割",
-    category: "practical",
-  },
-  { command: "Ctrl+ws", description: "ウィンドウ分割", category: "practical" },
-  {
-    command: "Ctrl+wv",
-    description: "ウィンドウ垂直分割",
-    category: "practical",
-  },
-  {
-    command: "Ctrl+ww",
-    description: "ウィンドウ切り替え",
-    category: "practical",
-  },
-  {
-    command: ":reg",
-    description: "レジスタの内容を表示",
-    category: "practical",
-  },
-  {
-    command: '"+y',
-    description: "選択範囲をクリップボードにコピー",
-    category: "practical",
-  },
-  {
-    command: '"+p',
-    description: "クリップボードからペースト",
-    category: "practical",
-  },
+  // 基本操作（最初に覚える必須コマンド）
+  { command: "i", description: "カーソル位置で文字入力開始", category: "basic" },
+  { command: "a", description: "カーソルの次で文字入力開始", category: "basic" },
+  { command: "o", description: "下に新しい行を作って入力開始", category: "basic" },
+  { command: "O", description: "上に新しい行を作って入力開始", category: "basic" },
+  { command: "Esc", description: "ノーマルモードに戻る", category: "basic" },
+  { command: "u", description: "元に戻す（アンドゥ）", category: "basic" },
+  { command: "Ctrl+r", description: "やり直し（リドゥ）", category: "basic" },
+
+  // 移動コマンド（効率的なカーソル移動）
+  { command: "h", description: "左に移動", category: "movement" },
+  { command: "j", description: "下に移動", category: "movement" },
+  { command: "k", description: "上に移動", category: "movement" },
+  { command: "l", description: "右に移動", category: "movement" },
+  { command: "w", description: "次の単語の先頭に移動", category: "movement" },
+  { command: "b", description: "前の単語の先頭に移動", category: "movement" },
+  { command: "0", description: "行頭に移動", category: "movement" },
+  { command: "$", description: "行末に移動", category: "movement" },
+  { command: "gg", description: "ファイル先頭に移動", category: "movement" },
+  { command: "G", description: "ファイル末尾に移動", category: "movement" },
+  { command: "/text", description: "textを検索", category: "movement" },
+  { command: "n", description: "次の検索結果に移動", category: "movement" },
+  { command: "N", description: "前の検索結果に移動", category: "movement" },
+
+  // 編集コマンド（削除・コピー・貼り付け）
+  { command: "x", description: "カーソル位置の文字を削除", category: "editing" },
+  { command: "dd", description: "現在の行を削除", category: "editing" },
+  { command: "dw", description: "次の単語まで削除", category: "editing" },
+  { command: "d$", description: "行末まで削除", category: "editing" },
+  { command: "yy", description: "現在の行をコピー", category: "editing" },
+  { command: "yw", description: "次の単語までコピー", category: "editing" },
+  { command: "p", description: "カーソル後に貼り付け", category: "editing" },
+  { command: "P", description: "カーソル前に貼り付け", category: "editing" },
+  { command: "v", description: "文字単位で選択開始", category: "editing" },
+  { command: "V", description: "行単位で選択開始", category: "editing" },
+  { command: ">", description: "選択範囲を右にインデント", category: "editing" },
+  { command: "<", description: "選択範囲を左にインデント", category: "editing" },
+  { command: ".", description: "直前の操作を繰り返し", category: "editing" },
+
+  // ウェブ制作で特に便利なコマンド
+  { command: "ciw", description: "単語を変更（クラス名・変数名に便利）", category: "webdev" },
+  { command: "ci\"", description: "\"の中身を変更（文字列編集に便利）", category: "webdev" },
+  { command: "ci'", description: "'の中身を変更（文字列編集に便利）", category: "webdev" },
+  { command: "cit", description: "HTMLタグの中身を変更", category: "webdev" },
+  { command: "dit", description: "HTMLタグの中身を削除", category: "webdev" },
+  { command: "A", description: "行末で入力開始（;追加に便利）", category: "webdev" },
+  { command: "I", description: "行頭で入力開始（コメント追加に便利）", category: "webdev" },
+  { command: "cc", description: "行全体を変更", category: "webdev" },
+  { command: "Ctrl+v", description: "矩形選択（複数行同時編集）", category: "webdev" },
+  { command: ":%s/old/new/g", description: "全体置換（リファクタリングに便利）", category: "webdev" },
 ];
 
 // Group commands by category
@@ -225,34 +93,31 @@ const groupedCommands = cheatSheetList.reduce((acc, command) => {
   return acc;
 }, {} as Record<Command["category"], Command[]>);
 
-// Category metadata（見た目・アイコンは現状維持）
+// Category metadata - 初心者向けに再構成
 const CategoryInfo = {
-  normal: {
-    icon: FiCommand,
-    color: "orange.400",
-    title: "ノーマルモード（基本操作）",
-    description:
-      "Escで入る。移動・編集・コマンド実行の基本。Vimの中心となるモードです。",
-  },
-  insert: {
+  basic: {
     icon: FiEdit2,
     color: "green.400",
-    title: "インサートモード（テキスト入力）",
-    description:
-      "i/a/o等で入る。テキスト入力専用。Escでノーマルモードに戻ります。",
+    title: "基本操作（まずはここから）",
+    description: "Vimを使うために最低限必要なコマンド。これだけでも十分使えます。",
   },
-  visual: {
+  movement: {
+    icon: FiCommand,
+    color: "blue.400",
+    title: "移動コマンド（効率アップ）",
+    description: "マウスを使わずにカーソルを素早く移動。慣れると手放せません。",
+  },
+  editing: {
     icon: FiCpu,
-    color: "pink.400",
-    title: "ビジュアルモード（範囲選択）",
-    description:
-      "v/V/Ctrl+vで入る。範囲選択・コピー・削除・インデント等に使います。Escで終了。",
-  },
-  practical: {
-    icon: FiSearch,
     color: "purple.400",
-    title: "実務で役立つコマンド（応用）",
-    description: "現場でよく使う便利技。慣れてきたら活用しましょう。",
+    title: "編集コマンド（削除・コピー・貼り付け）",
+    description: "テキストの削除、コピー、貼り付けを効率的に行うコマンド。",
+  },
+  webdev: {
+    icon: FiSearch,
+    color: "orange.400",
+    title: "ウェブ制作で便利なコマンド",
+    description: "HTML/CSS/JS編集で特に役立つ実践的なコマンド。慣れたら挑戦！",
   },
 };
 
@@ -283,22 +148,23 @@ export default function CheatSheet() {
   return (
     <MotionBox
       p={0}
-      bgGradient="linear(to-br, gray.900, gray.800)"
+      bg="rgba(24, 24, 27, 0.95)"
       color="white"
       borderRadius="2xl"
-      boxShadow="lg"
+      boxShadow="0 20px 40px rgba(0,0,0,0.4)"
       minH={{ base: "400px", md: "520px", lg: "600px" }}
       maxH={{ base: "520px", md: "640px", lg: "700px" }}
       h={{ base: "440px", md: "600px", lg: "680px" }}
       display="flex"
       flexDirection="column"
       overflow="hidden"
-      borderWidth={1}
-      borderColor="gray.700"
+      border="1px solid"
+      borderColor="rgba(255,152,0,0.2)"
       position="relative"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
+      backdropFilter="blur(20px)"
       _before={{
         content: '""',
         position: "absolute",
@@ -307,7 +173,7 @@ export default function CheatSheet() {
         right: 0,
         bottom: 0,
         background:
-          "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(0,0,0,0.1) 100%)",
+          "linear-gradient(145deg, rgba(255,152,0,0.08) 0%, rgba(255,152,0,0.02) 50%, rgba(0,0,0,0.3) 100%)",
         borderRadius: "inherit",
         pointerEvents: "none",
       }}
@@ -319,15 +185,17 @@ export default function CheatSheet() {
         right: "1px",
         bottom: "1px",
         background:
-          "linear-gradient(145deg, rgba(0,0,0,0.2), rgba(255,255,255,0.05))",
+          "linear-gradient(145deg, rgba(0,0,0,0.4), rgba(255,152,0,0.05))",
         borderRadius: "calc(1rem - 1px)",
         pointerEvents: "none",
         zIndex: -1,
       }}
       _hover={{
-        boxShadow: "2xl",
+        boxShadow: "0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,152,0,0.3)",
         transform: "translateY(-2px)",
+        borderColor: "rgba(255,152,0,0.3)",
       }}
+      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
     >
       {/* Header */}
       <MotionFlex
@@ -335,10 +203,11 @@ export default function CheatSheet() {
         px={6}
         py={4}
         borderBottomWidth={1}
-        borderColor="orange.700"
-        bgGradient="linear(to-r, orange.900, orange.800)"
+        borderColor="rgba(255,152,0,0.3)"
+        bg="rgba(255,152,0,0.08)"
         position="relative"
         variants={itemVariants}
+        backdropFilter="blur(10px)"
         _before={{
           content: '""',
           position: "absolute",
@@ -347,8 +216,17 @@ export default function CheatSheet() {
           right: 0,
           bottom: 0,
           background:
-            "linear-gradient(90deg, rgba(255,152,0,0.1) 0%, rgba(255,152,0,0.05) 50%, transparent 100%)",
+            "linear-gradient(90deg, rgba(255,152,0,0.12) 0%, rgba(255,152,0,0.06) 50%, transparent 100%)",
           pointerEvents: "none",
+        }}
+        _after={{
+          content: '""',
+          position: "absolute",
+          bottom: 0,
+          left: "10%",
+          right: "10%",
+          height: "1px",
+          background: "linear-gradient(90deg, transparent, rgba(255,152,0,0.6), transparent)",
         }}
       >
         <Flex align="center" gap={3}>
@@ -370,19 +248,18 @@ export default function CheatSheet() {
             <Heading
               as="h2"
               size="md"
-              color="orange.400"
-              fontWeight="bold"
+              color="secondary.300"
+              fontWeight="600"
               letterSpacing="tight"
-              fontFamily="'Nunito', 'Quicksand', sans-serif"
+              fontFamily="Inter"
               style={{
-                borderRadius: "0.25rem",
-                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                textShadow: "0 2px 4px rgba(0,0,0,0.4)",
               }}
             >
               Vim Cheat Sheet
             </Heading>
-            <Text color="gray.400" fontSize="xs" mt={0.5}>
-              基本コマンド早見表
+            <Text color="gray.400" fontSize="xs" mt={0.5} fontWeight="400">
+              vimコマンド早見表
             </Text>
           </Flex>
         </Flex>
@@ -409,7 +286,7 @@ export default function CheatSheet() {
       >
         <Accordion.Root
           multiple
-          defaultValue={["basic", "navigation"]}
+          defaultValue={["basic", "movement"]}
           aria-label="Vim コマンドカテゴリー"
         >
           {Object.entries(groupedCommands).map(([category, commands]) => {
@@ -422,12 +299,15 @@ export default function CheatSheet() {
                 mb={2}
               >
                 <Accordion.ItemTrigger
-                  bgGradient={`linear(to-r, blackAlpha.700, ${catInfo.color}10)`}
-                  borderRadius="lg"
+                  bg="rgba(0,0,0,0.3)"
+                  borderRadius="xl"
+                  border="1px solid"
+                  borderColor="rgba(255,255,255,0.1)"
                   _hover={{
-                    bgGradient: `linear(to-r, blackAlpha.800, ${catInfo.color}20)`,
+                    bg: "rgba(255,152,0,0.08)",
                     transform: "translateY(-1px)",
-                    boxShadow: "md",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.3)",
+                    borderColor: "rgba(255,152,0,0.3)",
                   }}
                   _focus={{
                     outline: "2px solid",
@@ -436,11 +316,12 @@ export default function CheatSheet() {
                   }}
                   py={3}
                   px={4}
-                  transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                  transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                   position="relative"
                   role="button"
                   aria-expanded="false"
                   aria-describedby={`commands-${category}`}
+                  backdropFilter="blur(10px)"
                   _before={{
                     content: '""',
                     position: "absolute",
@@ -448,7 +329,7 @@ export default function CheatSheet() {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: `linear-gradient(135deg, ${catInfo.color}10 0%, transparent 50%)`,
+                    background: `linear-gradient(135deg, ${catInfo.color}08 0%, transparent 50%)`,
                     borderRadius: "inherit",
                     pointerEvents: "none",
                   }}
@@ -460,7 +341,7 @@ export default function CheatSheet() {
                       mr={3}
                       fontSize="lg"
                     />
-                    <Text fontWeight="bold" color="whiteAlpha.900">
+                    <Text fontWeight="600" color="gray.100" fontFamily="Inter">
                       {catInfo.title}
                     </Text>
                   </Flex>
@@ -487,9 +368,14 @@ export default function CheatSheet() {
                           py={2}
                           px={3}
                           alignItems="center"
-                          borderRadius="md"
-                          transition="all 0.15s"
-                          _hover={{ bg: "blackAlpha.400" }}
+                          borderRadius="lg"
+                          transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                          _hover={{ 
+                            bg: "rgba(255,152,0,0.08)",
+                            transform: "translateX(4px)",
+                            borderLeft: "2px solid",
+                            borderColor: "secondary.500",
+                          }}
                           role="group"
                           tabIndex={0}
                           _focus={{
@@ -499,27 +385,39 @@ export default function CheatSheet() {
                           }}
                           cursor="pointer"
                           aria-label={`コマンド: ${item.command} - ${item.description}`}
+                          position="relative"
                         >
                           <Box
-                            fontFamily="mono"
-                            fontWeight="semibold"
-                            color="secondary.300"
+                            fontFamily="Fira Code"
+                            fontWeight="500"
+                            color="secondary.400"
                             fontSize="sm"
                             mr={4}
                             letterSpacing="tight"
                             minW={{ base: "auto", md: 28 }}
                             textAlign="left"
-                            _groupHover={{ color: "secondary.400" }}
+                            bg="rgba(255,152,0,0.1)"
+                            px={2}
+                            py={1}
+                            borderRadius="md"
+                            border="1px solid"
+                            borderColor="rgba(255,152,0,0.2)"
+                            _groupHover={{ 
+                              color: "secondary.300",
+                              bg: "rgba(255,152,0,0.15)",
+                              borderColor: "rgba(255,152,0,0.3)",
+                            }}
                           >
                             {item.command}
                           </Box>
                           <Box
                             fontSize="sm"
                             flex={1}
-                            color="whiteAlpha.800"
-                            fontWeight="normal"
+                            color="gray.300"
+                            fontWeight="400"
                             textAlign="left"
-                            _groupHover={{ color: "white" }}
+                            fontFamily="Inter"
+                            _groupHover={{ color: "gray.100" }}
                           >
                             {item.description}
                           </Box>
@@ -537,44 +435,45 @@ export default function CheatSheet() {
       {/* Footer */}
       <MotionFlex
         px={4}
-        py={2}
+        py={3}
         borderTopWidth={1}
-        borderColor="orange.700"
-        bg="blackAlpha.400"
+        borderColor="rgba(255,152,0,0.3)"
+        bg="rgba(0,0,0,0.3)"
         fontSize="xs"
-        color="gray.500"
+        color="gray.400"
         align="center"
         justify="center"
         variants={itemVariants}
         position="relative"
+        backdropFilter="blur(10px)"
         _before={{
           content: '""',
           position: "absolute",
           top: 0,
-          left: 0,
-          right: 0,
+          left: "10%",
+          right: "10%",
           height: "1px",
           background:
-            "linear-gradient(90deg, transparent, orange.400, transparent)",
+            "linear-gradient(90deg, transparent, rgba(255,152,0,0.6), transparent)",
         }}
       >
         <Icon
           as={FiBookOpen}
-          mr={1.5}
-          color="orange.400"
+          mr={2}
+          color="secondary.400"
           boxSize="16px"
           filter="drop-shadow(0 1px 2px rgba(0,0,0,0.5))"
           transition="transform 0.2s ease, color 0.2s ease"
           _hover={{
-            color: "orange.300",
+            color: "secondary.300",
             transform: "scale(1.1)",
           }}
         />
-        <Text>
-          Vim を練習して速度と効率を向上させよう
+        <Text fontFamily="Inter" lineHeight="1.4">
+          基本操作から始めて、段階的にスキルアップしよう！
           <br />
-          <Box as="span" color="orange.300" fontWeight="bold">
-            ※一部コマンドはWebエディタの仕様上未対応です、ごめんね。
+          <Box as="span" color="secondary.300" fontWeight="500">
+            慣れてきたらvscodeの拡張機能でvscodevimを使ってね！
           </Box>
         </Text>
       </MotionFlex>
