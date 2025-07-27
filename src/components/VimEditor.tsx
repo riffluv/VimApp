@@ -1185,16 +1185,28 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   // localStorageからの初期化・マイグレーションはuseEffectで行う
   useEffect(() => {
     try {
-      // 既存のデータをクリア（新しいサンプルコード受け入れ準備）
-      localStorage.removeItem("vimapp_shared_docs");
-      localStorage.removeItem("vimapp_samples");
-      localStorage.removeItem("vimapp_codepen_samples");
+      // 既存のデータを確認
+      const savedDocs = localStorage.getItem("vimapp_shared_docs");
 
-      // 完全に空の状態で初期化
-      setDocs(emptyDocs);
+      if (savedDocs) {
+        // 保存されたデータがある場合はそれを使用
+        const parsedDocs = JSON.parse(savedDocs);
+        setDocs(parsedDocs);
+      } else {
+        // 保存されたデータがない場合はサンプルデータを設定
+        setDocs(codePenSamples);
+        localStorage.setItem(
+          "vimapp_shared_docs",
+          JSON.stringify(codePenSamples)
+        );
+      }
     } catch (error) {
-      console.warn("Failed to clear localStorage:", error);
-      setDocs(emptyDocs);
+      console.warn("Failed to load from localStorage:", error);
+      setDocs(codePenSamples);
+      localStorage.setItem(
+        "vimapp_shared_docs",
+        JSON.stringify(codePenSamples)
+      );
     }
   }, []);
 
@@ -1221,7 +1233,17 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   const getCleanCode = useCallback((code: string) => {
     return code
       .split("\n")
-      .filter((line: string) => !line.trim().startsWith("//"))
+      .filter((line: string) => {
+        const trimmedLine = line.trim();
+        // 空行は保持
+        if (trimmedLine === "") return true;
+        // vimtipsコメント行のみ除去（一般的なコメントは保持）
+        return (
+          !trimmedLine.startsWith("// //vimtips") &&
+          !trimmedLine.startsWith("/* //vimtips") &&
+          !trimmedLine.startsWith("<!-- //vimtips")
+        );
+      })
       .join("\n");
   }, []);
 
@@ -1319,8 +1341,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         "本当に全てのサンプルを初期状態に戻しますか？\nこの操作は元に戻せません。"
       )
     ) {
-      setDocs(emptyDocs);
-      saveDocsToStorage(emptyDocs);
+      setDocs(codePenSamples);
+      saveDocsToStorage(codePenSamples);
       setVimMode("normal");
     }
   }, [saveDocsToStorage]);
@@ -1328,6 +1350,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   // プレビュー用HTML生成 - useMemoで最適化
   const previewSrcDoc = useMemo(() => {
     const cleanHtml = getCleanCode(docs.html);
+    const cleanJs = getCleanCode(docs.js);
+
+    // HTMLからbodyタグ内の内容を抽出
+    const bodyMatch = cleanHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const bodyContent = bodyMatch ? bodyMatch[1] : cleanHtml;
 
     return `<!DOCTYPE html>
 <html lang="ja">
@@ -1336,16 +1363,60 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Preview</title>
   <style>${docs.css}</style>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
 </head>
 <body>
-  ${cleanHtml}
-  <script>${docs.js}</script>
+  ${bodyContent}
+  <script>
+    // JavaScriptの実行を保証するラッパー
+    (function() {
+      try {
+        // tsParticlesの読み込み完了を待つ
+        function waitForTsParticles(callback) {
+          if (typeof tsParticles !== 'undefined') {
+            callback();
+          } else {
+            setTimeout(() => waitForTsParticles(callback), 100);
+          }
+        }
+        
+        // オリジナルのwindow.onloadを保存
+        const originalWindowOnload = window.onload;
+        
+        // カスタムロード処理
+        function executeUserCode() {
+          ${cleanJs}
+          
+          // オリジナルのwindow.onloadがある場合は実行
+          if (typeof originalWindowOnload === 'function') {
+            originalWindowOnload();
+          }
+        }
+        
+        // 実行順序を保証
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => {
+            waitForTsParticles(executeUserCode);
+          });
+        } else {
+          waitForTsParticles(executeUserCode);
+        }
+        
+      } catch (error) {
+        console.error('JavaScript execution error:', error);
+      }
+    })();
+  </script>
 </body>
 </html>`;
   }, [docs.css, docs.html, docs.js, getCleanCode]);
 
   // CodePenモード用HTML生成 - 統一されたcleanDocsを使用
   const codePenSrcDoc = useMemo(() => {
+    // HTMLからbodyタグ内の内容を抽出
+    const bodyMatch = cleanDocs.html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const bodyContent = bodyMatch ? bodyMatch[1] : cleanDocs.html;
+
     return `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -1353,10 +1424,50 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodePen Preview</title>
   <style>${cleanDocs.css}</style>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
 </head>
 <body>
-  ${cleanDocs.html}
-  <script>${cleanDocs.js}</script>
+  ${bodyContent}
+  <script>
+    // JavaScriptの実行を保証するラッパー
+    (function() {
+      try {
+        // tsParticlesの読み込み完了を待つ
+        function waitForTsParticles(callback) {
+          if (typeof tsParticles !== 'undefined') {
+            callback();
+          } else {
+            setTimeout(() => waitForTsParticles(callback), 100);
+          }
+        }
+        
+        // オリジナルのwindow.onloadを保存
+        const originalWindowOnload = window.onload;
+        
+        // カスタムロード処理
+        function executeUserCode() {
+          ${cleanDocs.js}
+          
+          // オリジナルのwindow.onloadがある場合は実行
+          if (typeof originalWindowOnload === 'function') {
+            originalWindowOnload();
+          }
+        }
+        
+        // 実行順序を保証
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => {
+            waitForTsParticles(executeUserCode);
+          });
+        } else {
+          waitForTsParticles(executeUserCode);
+        }
+        
+      } catch (error) {
+        console.error('JavaScript execution error:', error);
+      }
+    })();
+  </script>
 </body>
 </html>`;
   }, [cleanDocs]);
@@ -1775,8 +1886,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 }}
                 sandbox={
                   process.env.NODE_ENV === "development"
-                    ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups"
-                    : "allow-scripts allow-same-origin allow-modals"
+                    ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads"
+                    : "allow-scripts allow-same-origin allow-modals allow-downloads"
                 }
               />
             </Box>
@@ -1998,6 +2109,34 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     }}
                   />
                 )}
+              </Box>
+            )}
+
+            {/* プレビューモード */}
+            {showPreview && (
+              <Box
+                w="100%"
+                h="100%"
+                borderRadius="md"
+                bg="white"
+                overflow="hidden"
+                boxShadow="lg"
+              >
+                <iframe
+                  title="Preview"
+                  srcDoc={previewSrcDoc}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    background: "white",
+                  }}
+                  sandbox={
+                    process.env.NODE_ENV === "development"
+                      ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads"
+                      : "allow-scripts allow-same-origin allow-modals allow-downloads"
+                  }
+                />
               </Box>
             )}
             {/* モード切替ボタン群は本来ヘッダー内HStackでmapしているので、ここは削除して閉じタグを正しくする */}
