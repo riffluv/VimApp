@@ -119,11 +119,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
   return (
     <MotionBox
-      bgGradient="linear(to-br, gray.900, gray.800)"
+      bg="gray.900"
       color="white"
-      p={{ base: 2, md: 4 }}
-      borderRadius="2xl"
-      boxShadow="lg"
+      borderRadius="lg"
+      boxShadow="md"
       display="flex"
       flexDirection="column"
       borderWidth={1}
@@ -140,137 +139,215 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       {/* ヘッダー */}
       <MotionFlex
         alignItems="center"
-        px={[2, 4]}
-        py={[2, 3]}
+        px={4}
+        py={3}
         borderBottomWidth={1}
         borderColor="gray.700"
-        bgGradient="linear(to-r, gray.900, gray.800)"
+        bg="gray.800"
         justifyContent="space-between"
         position="relative"
       >
-        <Flex alignItems="center">
-          <HStack gap={2} marginRight={5}>
-            <Box w={3} h={3} borderRadius="full" bg="red.400" />
-            <Box w={3} h={3} borderRadius="full" bg="yellow.400" />
-            <Box w={3} h={3} borderRadius="full" bg="green.400" />
+        <Flex alignItems="center" gap={3}>
+          {/* Window Controls - チートシートスタイルに合わせてシンプルに */}
+          <HStack gap={2}>
+            <Box
+              w={3}
+              h={3}
+              borderRadius="full"
+              bg="red.400"
+              _hover={{ transform: "scale(1.1)" }}
+              transition="all 0.2s ease"
+              cursor="pointer"
+            />
+            <Box
+              w={3}
+              h={3}
+              borderRadius="full"
+              bg="yellow.400"
+              _hover={{ transform: "scale(1.1)" }}
+              transition="all 0.2s ease"
+              cursor="pointer"
+            />
+            <Box
+              w={3}
+              h={3}
+              borderRadius="full"
+              bg="green.400"
+              _hover={{ transform: "scale(1.1)" }}
+              transition="all 0.2s ease"
+              cursor="pointer"
+            />
           </HStack>
-          <Flex alignItems="center">
-            <Icon as={FiTerminal} color="orange.400" mr={2} />
-            <Text
-              fontSize="sm"
-              fontWeight="semibold"
-              color="gray.200"
-              userSelect="none"
-            >
-              Vim Editor
-            </Text>
+
+          {/* Editor Title - チートシートスタイルに合わせる */}
+          <Flex alignItems="center" gap={3}>
+            <Icon as={FiTerminal} color="orange.400" fontSize="lg" />
+            <Box>
+              <Text
+                fontSize="md"
+                fontWeight="600"
+                color="orange.300"
+                letterSpacing="tight"
+              >
+                Vim Editor
+              </Text>
+              <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
+                {mode}.{mode === "js" ? "js" : mode === "css" ? "css" : "html"}
+              </Text>
+            </Box>
           </Flex>
         </Flex>
 
-        {/* Vimモードインジケーター */}
+        {/* Vimモードインジケーター - チートシートスタイルに合わせて調整 */}
         <AnimatePresence mode="wait">
           <MotionFlex
             key={vimMode}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             align="center"
             gap={2}
+            bg="gray.700"
+            px={3}
+            py={1}
+            borderRadius="md"
+            border="1px solid"
+            borderColor="gray.600"
           >
             <Icon
               as={currentVimModeInfo.icon}
               color={currentVimModeInfo.color}
+              fontSize="sm"
             />
             <MotionText
-              fontSize="sm"
+              fontSize="xs"
               color={currentVimModeInfo.color}
-              fontWeight="bold"
+              fontWeight="600"
               textTransform="uppercase"
+              letterSpacing="wide"
+              fontFamily="mono"
             >
               {currentVimModeInfo.text}
             </MotionText>
           </MotionFlex>
         </AnimatePresence>
 
-        {/* 右側: ボタングループ */}
+        {/* 右側: ボタングループ - チートシートスタイルに合わせてシンプルに */}
         <HStack gap={1}>
           <Button
             size="sm"
-            variant="solid"
-            colorScheme="blue"
-            bg={showPreview ? "blue.500" : "blue.600"}
-            color="white"
+            variant="ghost"
+            bg={showPreview ? "gray.600" : "gray.700"}
+            color={showPreview ? "orange.300" : "gray.300"}
+            border="1px solid"
+            borderColor="gray.600"
             onClick={handlePreviewToggle}
             disabled={showCodePenMode}
-            _hover={{ bg: "blue.400" }}
-            _disabled={{ bg: "gray.600", color: "gray.400" }}
+            _hover={{
+              bg: "gray.600",
+            }}
+            _disabled={{
+              bg: "gray.700",
+              color: "gray.500",
+              borderColor: "gray.600",
+            }}
+            fontSize="xs"
+            fontWeight="600"
+            px={3}
           >
             Preview
           </Button>
           <Button
             size="sm"
-            variant="solid"
-            colorScheme="purple"
-            bg={showCodePenMode ? "purple.500" : "purple.600"}
-            color="white"
+            variant="ghost"
+            bg={showCodePenMode ? "gray.600" : "gray.700"}
+            color={showCodePenMode ? "orange.300" : "gray.300"}
+            border="1px solid"
+            borderColor="gray.600"
             onClick={handleCodePenToggle}
-            _hover={{ bg: "purple.400" }}
+            _hover={{
+              bg: "gray.600",
+            }}
+            fontSize="xs"
+            fontWeight="600"
+            px={3}
           >
-            <FiBookOpen style={{ marginRight: "8px" }} />
+            <FiBookOpen style={{ marginRight: "4px" }} />
             CodePen
           </Button>
           <Button
             size="sm"
-            variant="solid"
-            colorScheme="red"
-            bg="red.600"
-            color="white"
+            variant="ghost"
+            bg="gray.700"
+            color="gray.300"
+            border="1px solid"
+            borderColor="gray.600"
             onClick={() => clearDoc(mode)}
-            _hover={{ bg: "red.400" }}
+            _hover={{
+              bg: "gray.600",
+            }}
+            fontSize="xs"
+            fontWeight="600"
+            px={2}
           >
             <GiBroom />
           </Button>
           <Button
             size="sm"
-            variant="solid"
-            colorScheme="orange"
-            bg="orange.600"
-            color="white"
+            variant="ghost"
+            bg="gray.700"
+            color="orange.400"
+            border="1px solid"
+            borderColor="gray.600"
             onClick={handleResetAllWithConfirm}
-            _hover={{ bg: "orange.400" }}
+            _hover={{
+              bg: "gray.600",
+            }}
+            fontSize="xs"
+            fontWeight="600"
+            px={3}
           >
-            <FiRefreshCw style={{ marginRight: "8px" }} />
+            <FiRefreshCw style={{ marginRight: "4px" }} />
             Reset
           </Button>
         </HStack>
       </MotionFlex>
 
-      {/* モード切り替えタブ */}
+      {/* モード切り替えタブ - 高さを調整してボーダーの問題を修正 */}
       <HStack
-        gap={0}
-        px={[2, 4]}
+        gap={1}
+        px={4}
         py={2}
         borderBottomWidth={1}
         borderColor="gray.700"
+        bg="gray.800"
+        position="relative"
       >
         {(["html", "css", "js"] as EditorMode[]).map((modeType) => (
           <Button
             key={modeType}
             size="sm"
-            variant="solid"
-            colorScheme={mode === modeType ? "orange" : "gray"}
-            bg={mode === modeType ? "orange.500" : "gray.600"}
-            color={mode === modeType ? "white" : "gray.200"}
+            variant="ghost"
+            bg={mode === modeType ? "gray.700" : "transparent"}
+            color={mode === modeType ? "orange.300" : "gray.400"}
+            border="1px solid"
+            borderColor={mode === modeType ? "gray.600" : "transparent"}
             _hover={{
-              bg: mode === modeType ? "orange.400" : "gray.500",
+              bg: "gray.700",
+              color: mode === modeType ? "orange.300" : "orange.400",
             }}
-            borderRadius="none"
+            borderRadius="md"
             fontSize="xs"
+            fontWeight="600"
             px={3}
             py={1}
             h="auto"
             textTransform="uppercase"
+            letterSpacing="wide"
+            fontFamily="mono"
             onClick={() => handleModeChangeWithStateSave(modeType)}
+            transition="all 0.2s ease"
+            position="relative"
           >
             {modeType}
           </Button>
@@ -280,7 +357,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       {/* メインコンテンツエリア */}
       {/* Previewモード時はプレビューのみ */}
       {showPreview ? (
-        <Box flex="1" h="100%" bg="white" overflow="hidden">
+        <Box
+          flex="1"
+          h="100%"
+          bg="white"
+          overflow="hidden"
+          borderRadius="0 0 lg lg"
+        >
           <iframe
             srcDoc={previewSrcDoc}
             style={{ width: "100%", height: "100%", border: "none" }}
@@ -299,7 +382,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               title="Preview"
             />
           </Box>
-          <Box flex="1" position="relative" overflow="hidden">
+          <Box
+            flex="1"
+            position="relative"
+            overflow="hidden"
+            borderLeft="1px solid"
+            borderColor="gray.700"
+          >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
               ref={currentRef}
@@ -313,7 +402,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               style={{
                 fontSize: "14px",
                 height: "100%",
-                backgroundColor: "#1a1a1a",
+                backgroundColor: "#1a1a1a", // gray.900相当
+                fontFamily:
+                  "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
               }}
               autoFocus
               initialState={
@@ -329,7 +420,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         </Flex>
       ) : (
         // 通常時はエディタのみ
-        <Box flex="1" position="relative" overflow="hidden">
+        <Box
+          flex="1"
+          position="relative"
+          overflow="hidden"
+          bg="gray.900"
+          borderRadius="0 0 lg lg"
+        >
           <CodeMirror
             key={mode} // モードが変わったら新しいインスタンスを作成
             ref={currentRef}
@@ -343,7 +440,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             style={{
               fontSize: "14px",
               height: "100%",
-              backgroundColor: "#1a1a1a",
+              backgroundColor: "#1a1a1a", // gray.900相当
+              fontFamily:
+                "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
             }}
             autoFocus
             initialState={
