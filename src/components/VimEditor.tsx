@@ -205,7 +205,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             _hover={{ bg: "blue.400" }}
             _disabled={{ bg: "gray.600", color: "gray.400" }}
           >
-            <FiTerminal style={{ marginRight: "8px" }} />
             Preview
           </Button>
           <Button
@@ -229,8 +228,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             onClick={() => clearDoc(mode)}
             _hover={{ bg: "red.400" }}
           >
-            <GiBroom style={{ marginRight: "8px" }} />
-            Clear
+            <GiBroom />
           </Button>
           <Button
             size="sm"
@@ -242,7 +240,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             _hover={{ bg: "orange.400" }}
           >
             <FiRefreshCw style={{ marginRight: "8px" }} />
-            Reset All
+            Reset
           </Button>
         </HStack>
       </MotionFlex>
