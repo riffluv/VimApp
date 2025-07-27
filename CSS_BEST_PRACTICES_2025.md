@@ -11,7 +11,7 @@
 
 基本的な移動・編集・ヤンク・削除・置換・検索・ビジュアルモード等はほぼ全て動作しますが、上記の特殊コマンドや複雑な操作は制限があります。最新情報は GitHub Issue（https://github.com/replit/codemirror-vim/issues）を参照してください。
 
-# CSS ベストプラクティス 2025 (vimapp プロジェクト)
+# CSS ベストプラクティス 2025 (vimapp プロジェクト) - リファクタリング版
 
 このドキュメントは、`vimapp`プロジェクトにおける CSS/スタイリングのコーディング規約とベストプラクティスを定義します。
 一貫性、メンテナンス性、パフォーマンス、アクセシビリティを高く保つことを目的とします。
@@ -29,38 +29,123 @@ CSS の記述は、原則として Chakra UI が提供する**スタイル Props
 </Box>
 ```
 
----
+## 2. コンポーネント設計とコード分離
 
-## 7. Vim コマンド互換性に関する注意（CodeMirror Vim 拡張）
+### 2.1. カスタムフックによる状態管理の分離
 
-本プロジェクトの Vim エディタは、CodeMirror の Vim 拡張（@replit/codemirror-vim）を利用しています。
-しかし、現状の CodeMirror Vim 拡張は本家 Vim と完全同等のコマンド互換性はありません。
+状態管理とビジネスロジックは、カスタムフックに分離します。これにより、コンポーネントの責務を明確にし、テスタビリティと再利用性を向上させます。
 
-特に、cit/cat 等のテキストオブジェクトコマンドや複数回数指定（例: v2a[）は未対応、または挙動が異なる場合があります。
-（詳細は[公式 Issue](https://github.com/replit/codemirror-vim/issues/229)等を参照）
-
-**Vim コマンドの練習用途としては十分ですが、厳密な Vim 互換を求める場合は注意してください。**
-
-今後のアップデートや独自拡張で改善される可能性はありますが、現状は一部コマンドが未対応・バグありです。
-
----
-
-**[NG] 避けるべき例:**
+**[OK] 正しい例:**
 
 ```jsx
-// globals.css や style属性、HEX/px/マジックナンバーでの直接指定は避ける
-<div style={{ backgroundColor: "#38B2AC", padding: "16px", color: "white" }}>
-  Hello World
-</div>
+// hooks/useVimEditor.ts - 状態管理とロジックを分離
+export const useDocs = () => {
+  const [docs, setDocs] = useState(loadDocsFromStorage());
+
+  const updateDoc = useCallback(
+    (mode, value) => {
+      const updated = { ...docs, [mode]: value };
+      setDocs(updated);
+      saveDocsToStorage(updated);
+    },
+    [docs]
+  );
+
+  return { docs, updateDoc, clearDoc, resetAllDocs };
+};
+
+// components/VimEditor.tsx - UI のみに集中
+function VimEditor() {
+  const { docs, updateDoc } = useDocs();
+  const { vimMode, onUpdate } = useVimMode();
+
+  return (
+    <MotionBox>
+      <CodeMirror value={docs[mode]} onChange={updateDoc} />
+    </MotionBox>
+  );
+}
 ```
 
-**理由:**
+### 2.2. 型定義の集約
 
-- Chakra UI のデザインシステム（カラースキーム、スペーシング、タイポグラフィ）に準拠することで、デザインの一貫性が自動的に保たれます。
-- レスポンシブ対応やダークモード対応が容易になります。
-- コードの可読性が向上します。
+すべての型定義は `src/types/` ディレクトリに集約し、コンポーネント間での型の一貫性を保ちます。
 
-## 2. レスポンシブデザイン
+**[OK] 正しい例:**
+
+```typescript
+// types/editor.ts
+export interface VimEditorProps {
+  onCodePenModeChange?: (isCodePenMode: boolean) => void;
+}
+
+export type EditorMode = "html" | "css" | "js";
+export type VimMode = "normal" | "insert" | "visual";
+```
+
+### 2.3. 定数の外部化
+
+マジックナンバーや設定値は `src/constants/` ディレクトリに外部化し、保守性を向上させます。
+
+**[OK] 正しい例:**
+
+```typescript
+// constants/index.ts
+export const VIM_MODE_INFO = {
+  normal: {
+    text: "NORMAL",
+    color: "secondary.400",
+    icon: FiCommand,
+    hint: "Press i to enter insert mode",
+  },
+  // ...
+} as const;
+
+export const ANIMATION_VARIANTS = {
+  container: {
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.4 },
+    },
+  },
+  // ...
+} as const;
+```
+
+## 3. ユーティリティ関数の分離
+
+### 3.1. ビジネスロジックの外部化
+
+複雑なロジックは `src/utils/` ディレクトリのユーティリティ関数に分離し、コンポーネントをシンプルに保ちます。
+
+**[OK] 正しい例:**
+
+```typescript
+// utils/storage.ts
+export const loadDocsFromStorage = (): DocsState => {
+  try {
+    const saved = localStorage.getItem("vimapp_shared_docs");
+    return saved ? JSON.parse(saved) : DEFAULT_SAMPLE_CODE;
+  } catch (error) {
+    console.warn("Failed to load from localStorage:", error);
+    return DEFAULT_SAMPLE_CODE;
+  }
+};
+
+// utils/editor.ts
+export const generatePreviewHTML = (
+  html: string,
+  css: string,
+  js: string
+): string => {
+  const bodyContent = extractBodyContent(html);
+  return createIframeDocument(bodyContent, css, js);
+};
+```
+
+## 4. レスポンシブデザイン
 
 レスポンシブデザインは、Chakra UI の**配列（Array）またはオブジェクト（Object）構文**を使用して実装します。
 
@@ -81,23 +166,49 @@ CSS の記述は、原則として Chakra UI が提供する**スタイル Props
 </Flex>
 ```
 
-## 3. スタイルの優先順位
+## 5. スタイルの優先順位
 
 1.  **Chakra UI スタイル Props:** (例: `bg`, `p`, `m`, `color`) を最優先で使用します。
-2.  **`sx` Prop:** Chakra UI の Props で表現できない複雑なスタイル（例: スクロールバーのカスタマイズ等）が必要な場合のみ、`sx` Prop を使用します。
+2.  **`style` Prop:** Framer Motion など外部ライブラリとの連携で必要な場合のみ使用します。
 3.  **`globals.css`:** アプリケーション全体で共通の、ごく基本的なスタイル（例: `body`のフォントファミリー、リセット CSS）のみを記述します。コンポーネント固有のスタイルは**絶対に**記述しません。
 4.  **Tailwind CSS クラス:** `className` 属性での Tailwind CSS の直接利用は、Chakra UI のシステムと競合するため**禁止**します（Google Fonts 等のクラス適用は除く）。
 
-## 4. テーマとデザイントークン・マジックナンバー禁止
+## 6. テーマとデザイントークン・マジックナンバー禁止
 
 - **色:** カラーパレットは Chakra UI のデフォルトテーマ、または将来的に拡張するカスタムテーマで管理します。`red.500` や `gray.800` のように、テーマで定義された名前で色を指定し、HEX コード (`#FF0000`) のハードコーディングは**禁止**です。
 - **スペーシング:** `p={4}` や `gap={6}` のように、テーマで定義されたスペーシングスケールを使用します。`p="15px"` のようなマジックナンバーは**禁止**です。
 - **フォントサイズ:** `fontSize="lg"` のように、テーマで定義されたタイポグラフィスケールを使用します。
 
-## 5. コンポーネントの責務
+## 7. コンポーネントの責務
 
 - スタイルは、そのスタイルが適用されるコンポーネント内で完結させます。
 - 親コンポーネントが子コンポーネントの内部スタイルを上書きするような実装は、予期せぬ競合の原因となるため避けてください。
+- 状態管理と UI の責務を明確に分離し、カスタムフックによって状態管理を抽象化します。
+
+## 8. アニメーション
+
+アニメーションは Framer Motion を使用し、定数として外部化したバリアントを使用します。
+
+**[OK] 正しい例:**
+
+```jsx
+// constants/index.ts
+export const ANIMATION_VARIANTS = {
+  container: {
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+  },
+} as const;
+
+// Component
+<MotionBox
+  initial="hidden"
+  animate="visible"
+  variants={ANIMATION_VARIANTS.container}
+>
+  Content
+</MotionBox>
+```
 
 ---
 
@@ -105,22 +216,34 @@ CSS の記述は、原則として Chakra UI が提供する**スタイル Props
 
 ---
 
-## 6. 使用を避けるべき技術
+## 9. 使用を避けるべき技術
 
-### 6.1. インラインスタイル (`style={...}`)・`sx` の利用
+### 9.1. インラインスタイル (`style={...}`)
 
-`style`属性や`css`プロパティによるインラインスタイルの使用は、動的に計算された値（例: `transform: translateX(${value}px)`) を適用するなど、やむを得ない場合を除き**原則禁止**とします。
-
-`sx`プロパティも、Chakra UI Props で表現できない場合（例: スクロールバーのカスタマイズ等）に限り、最小限の利用に留めてください。
+`style`属性によるインラインスタイルの使用は、動的に計算された値（例: `transform: translateX(${value}px)`) を適用するなど、やむを得ない場合、または外部ライブラリ（Framer Motion 等）との連携に必要な場合を除き**原則禁止**とします。
 
 **ただし、外部ライブラリのラッパー（例: CodeMirror, サードパーティ製エディタ等）で Chakra UI の Props で完全にスタイル制御できない場合は、必要最小限の style 属性利用を許容します。**
 
 **理由:** Chakra UI のテーマ（デザイントークン、レスポンシブ対応、疑似セレクタ）が適用できず、デザインの一貫性を損なうためです。常に Chakra UI のスタイル Props を優先してください。
 
-### 6.2. BEM (Block Element Modifier)・Tailwind CSS
+### 9.2. BEM (Block Element Modifier)・Tailwind CSS
 
 BEM は、CSS クラスの命名規則であり、当プロジェクトのスタイリングアプローチとは異なるため**使用しません**。
 
 Tailwind CSS のクラスも Chakra UI の Props/テーマと競合するため**使用禁止**です（Google Fonts 等のクラス適用は除く）。
 
 **理由:** Chakra UI はコンポーネント単位でスタイルを管理する CSS-in-JS のアプローチです。BEM や Tailwind が解決しようとするグローバルな CSS クラス名の衝突や管理の問題は、このアプローチでは発生しません。私たちは CSS クラス名ではなく、React コンポーネントの Props によってスタイルを記述します。
+
+---
+
+## 10. Vim コマンド互換性に関する注意（CodeMirror Vim 拡張）
+
+本プロジェクトの Vim エディタは、CodeMirror の Vim 拡張（@replit/codemirror-vim）を利用しています。
+しかし、現状の CodeMirror Vim 拡張は本家 Vim と完全同等のコマンド互換性はありません。
+
+特に、cit/cat 等のテキストオブジェクトコマンドや複数回数指定（例: v2a[）は未対応、または挙動が異なる場合があります。
+（詳細は[公式 Issue](https://github.com/replit/codemirror-vim/issues/229)等を参照）
+
+**Vim コマンドの練習用途としては十分ですが、厳密な Vim 互換を求める場合は注意してください。**
+
+今後のアップデートや独自拡張で改善される可能性はありますが、現状は一部コマンドが未対応・バグありです。
