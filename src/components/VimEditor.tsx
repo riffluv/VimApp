@@ -198,8 +198,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
-                      ? "style.css"
-                      : "script.js"}
+                    ? "style.css"
+                    : "script.js"}
                 </Text>
               </Box>
             </Flex>
