@@ -33,20 +33,30 @@ const languageExtensions = {
 
 /**
  * エディターモードに応じた拡張機能を取得
+ * 各モードごとに独立したhistoryインスタンスを作成
  */
 export const getEditorExtensions = (mode: EditorMode) => {
+  // 各モードごとに独立したhistoryインスタンスを作成
+  const modeHistory = history();
+
   if (mode === "html" || mode === "css") {
     const emmetExtension = Prec.high(abbreviationTracker(EMMET_CONFIGS[mode]));
     return [
       vim(),
       drawSelection(),
       languageExtensions[mode],
-      history(),
+      modeHistory, // 独立したhistoryインスタンス
       emmetExtension,
       oneDark,
     ];
   }
-  return [vim(), drawSelection(), languageExtensions[mode], history(), oneDark];
+  return [
+    vim(),
+    drawSelection(),
+    languageExtensions[mode],
+    modeHistory,
+    oneDark,
+  ];
 };
 
 /**

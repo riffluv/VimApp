@@ -118,32 +118,13 @@ export const useVimMode = () => {
  * エディター拡張機能管理フック
  */
 export const useEditorExtensions = () => {
-  // 各モードの拡張機能を個別にメモ化（独立したhistory付き）
-  const htmlExtensions = useMemo(() => getEditorExtensions("html"), []);
-  const cssExtensions = useMemo(() => getEditorExtensions("css"), []);
-  const jsExtensions = useMemo(() => getEditorExtensions("js"), []);
-
-  // 現在のモードに応じた拡張を返す
-  const getCurrentExtensions = useCallback(
-    (mode: EditorMode) => {
-      switch (mode) {
-        case "html":
-          return htmlExtensions;
-        case "css":
-          return cssExtensions;
-        case "js":
-          return jsExtensions;
-        default:
-          return htmlExtensions;
-      }
-    },
-    [htmlExtensions, cssExtensions, jsExtensions]
-  );
+  // 現在のモードに応じた拡張を返す（各呼び出しで新しいインスタンスを作成）
+  const getCurrentExtensions = useCallback((mode: EditorMode) => {
+    // 各モードごとに新しい拡張機能インスタンスを返す
+    return getEditorExtensions(mode);
+  }, []);
 
   return {
-    htmlExtensions,
-    cssExtensions,
-    jsExtensions,
     getCurrentExtensions,
   };
 };

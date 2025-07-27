@@ -1,9 +1,11 @@
 "use client";
 
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import type { EditorState } from "@codemirror/state";
+import type { EditorView } from "@codemirror/view";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 
@@ -29,7 +31,42 @@ type VimEditorProps = {
 };
 
 function VimEditor({ onCodePenModeChange }: VimEditorProps) {
-  const editorRef = useRef(null);
+  // 各モードごとにエディタの状態（EditorView/EditorState）を独立管理
+  const editorRefs = {
+    html: useRef(null),
+    css: useRef(null),
+    js: useRef(null),
+  };
+  // 各モードごとにCodeMirrorの内部stateを保持
+  const [editorStates, setEditorStates] = useState<{
+    html: EditorState | undefined;
+    css: EditorState | undefined;
+    js: EditorState | undefined;
+  }>({
+    html: undefined,
+    css: undefined,
+    js: undefined,
+  });
+
+  // 各モードごとにEditorViewインスタンスを保持
+  const editorViews = useRef<{
+    html: EditorView | null;
+    css: EditorView | null;
+    js: EditorView | null;
+  }>({
+    html: null,
+    css: null,
+    js: null,
+  });
+
+  // onCreateEditorでEditorView/EditorStateを保存
+  const handleCreateEditor = useCallback(
+    (view: EditorView, state: EditorState, mode: EditorMode) => {
+      setEditorStates((prev) => ({ ...prev, [mode]: state }));
+      editorViews.current[mode] = view;
+    },
+    []
+  );
   const { docs, cleanDocs, updateDoc, clearDoc, resetAllDocs } = useDocs();
   const { vimMode, onUpdate } = useVimMode();
   const { getCurrentExtensions } = useEditorExtensions();
@@ -41,6 +78,21 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     handlePreviewToggle,
     handleCodePenToggle,
   } = useUIState(onCodePenModeChange);
+
+  // モード切り替え時にエディタの状態を保存
+  const handleModeChangeWithStateSave = useCallback(
+    (newMode: EditorMode) => {
+      // 現在のエディタがあれば状態を保存
+      if (editorViews.current[mode]) {
+        setEditorStates((prev) => ({
+          ...prev,
+          [mode]: editorViews.current[mode]!.state,
+        }));
+      }
+      handleModeChange(newMode);
+    },
+    [mode, handleModeChange]
+  );
 
   const previewSrcDoc = generatePreviewHTML(docs.html, docs.css, docs.js);
   const codePenSrcDoc = generatePreviewHTML(
@@ -60,6 +112,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
   };
 
   const currentVimModeInfo = VIM_MODE_INFO[vimMode];
+
+  // 現在のモードのref/stateを取得
+  const currentRef = editorRefs[mode];
+  const currentState = editorStates[mode];
 
   return (
     <MotionBox
@@ -140,41 +196,50 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         <HStack gap={1}>
           <Button
             size="sm"
-            variant="ghost"
+            variant="solid"
             colorScheme="blue"
+            bg={showPreview ? "blue.500" : "blue.600"}
+            color="white"
             onClick={handlePreviewToggle}
             disabled={showCodePenMode}
-            _hover={{ bg: "blue.700" }}
+            _hover={{ bg: "blue.400" }}
+            _disabled={{ bg: "gray.600", color: "gray.400" }}
           >
             <FiTerminal style={{ marginRight: "8px" }} />
             Preview
           </Button>
           <Button
             size="sm"
-            variant="ghost"
+            variant="solid"
             colorScheme="purple"
+            bg={showCodePenMode ? "purple.500" : "purple.600"}
+            color="white"
             onClick={handleCodePenToggle}
-            _hover={{ bg: "purple.700" }}
+            _hover={{ bg: "purple.400" }}
           >
             <FiBookOpen style={{ marginRight: "8px" }} />
             CodePen
           </Button>
           <Button
             size="sm"
-            variant="ghost"
+            variant="solid"
             colorScheme="red"
+            bg="red.600"
+            color="white"
             onClick={() => clearDoc(mode)}
-            _hover={{ bg: "red.700" }}
+            _hover={{ bg: "red.400" }}
           >
             <GiBroom style={{ marginRight: "8px" }} />
             Clear
           </Button>
           <Button
             size="sm"
-            variant="ghost"
+            variant="solid"
             colorScheme="orange"
+            bg="orange.600"
+            color="white"
             onClick={handleResetAllWithConfirm}
-            _hover={{ bg: "orange.700" }}
+            _hover={{ bg: "orange.400" }}
           >
             <FiRefreshCw style={{ marginRight: "8px" }} />
             Reset All
@@ -194,12 +259,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           <Button
             key={modeType}
             size="sm"
-            variant="ghost"
+            variant="solid"
             colorScheme={mode === modeType ? "orange" : "gray"}
-            bg={mode === modeType ? "orange.500" : "transparent"}
-            color={mode === modeType ? "white" : "gray.400"}
+            bg={mode === modeType ? "orange.500" : "gray.600"}
+            color={mode === modeType ? "white" : "gray.200"}
             _hover={{
-              bg: mode === modeType ? "orange.600" : "gray.700",
+              bg: mode === modeType ? "orange.400" : "gray.500",
             }}
             borderRadius="none"
             fontSize="xs"
@@ -207,7 +272,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             py={1}
             h="auto"
             textTransform="uppercase"
-            onClick={() => handleModeChange(modeType)}
+            onClick={() => handleModeChangeWithStateSave(modeType)}
           >
             {modeType}
           </Button>
@@ -215,15 +280,61 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       </HStack>
 
       {/* メインコンテンツエリア */}
-      <Flex flex="1" h="100%" overflow="hidden">
-        {/* エディターエリア */}
-        <Box
-          flex={showPreview || showCodePenMode ? "1" : "1"}
-          position="relative"
-          overflow="hidden"
-        >
+      {/* Previewモード時はプレビューのみ */}
+      {showPreview ? (
+        <Box flex="1" h="100%" bg="white" overflow="hidden">
+          <iframe
+            srcDoc={previewSrcDoc}
+            style={{ width: "100%", height: "100%", border: "none" }}
+            sandbox={getSandboxAttributes()}
+            title="Preview"
+          />
+        </Box>
+      ) : showCodePenMode ? (
+        // CodePenモード時は左プレビュー・右エディタ
+        <Flex flex="1" h="100%" overflow="hidden">
+          <Box flex="1" bg="white" overflow="hidden">
+            <iframe
+              srcDoc={codePenSrcDoc}
+              style={{ width: "100%", height: "100%", border: "none" }}
+              sandbox={getSandboxAttributes()}
+              title="Preview"
+            />
+          </Box>
+          <Box flex="1" position="relative" overflow="hidden">
+            <CodeMirror
+              key={mode} // モードが変わったら新しいインスタンスを作成
+              ref={currentRef}
+              value={docs[mode]}
+              onChange={(value) => updateDoc(mode, value)}
+              onUpdate={onUpdate}
+              extensions={getCurrentExtensions(mode)}
+              basicSetup={true}
+              theme="dark"
+              height="100%"
+              style={{
+                fontSize: "14px",
+                height: "100%",
+                backgroundColor: "#1a1a1a",
+              }}
+              autoFocus
+              initialState={
+                currentState
+                  ? { json: currentState.toJSON(), fields: undefined }
+                  : undefined
+              }
+              onCreateEditor={(view, state) =>
+                handleCreateEditor(view, state, mode)
+              }
+            />
+          </Box>
+        </Flex>
+      ) : (
+        // 通常時はエディタのみ
+        <Box flex="1" position="relative" overflow="hidden">
           <CodeMirror
-            ref={editorRef}
+            key={mode} // モードが変わったら新しいインスタンスを作成
+            ref={currentRef}
             value={docs[mode]}
             onChange={(value) => updateDoc(mode, value)}
             onUpdate={onUpdate}
@@ -237,31 +348,17 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               backgroundColor: "#1a1a1a",
             }}
             autoFocus
+            initialState={
+              currentState
+                ? { json: currentState.toJSON(), fields: undefined }
+                : undefined
+            }
+            onCreateEditor={(view, state) =>
+              handleCreateEditor(view, state, mode)
+            }
           />
         </Box>
-
-        {/* プレビューエリア */}
-        {(showPreview || showCodePenMode) && (
-          <Box
-            flex="1"
-            bg="white"
-            borderLeft="1px"
-            borderColor="gray.700"
-            overflow="hidden"
-          >
-            <iframe
-              srcDoc={showCodePenMode ? codePenSrcDoc : previewSrcDoc}
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "none",
-              }}
-              sandbox={getSandboxAttributes()}
-              title="Preview"
-            />
-          </Box>
-        )}
-      </Flex>
+      )}
     </MotionBox>
   );
 }
