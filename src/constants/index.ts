@@ -146,99 +146,97 @@ export const DEFAULT_SAMPLE_CODE: DocsState = {
   - p: 貼り付け
   - u: アンドゥ
   - :w: 保存, :q: 終了, :wq: 保存して終了
-  
-  ---
-  【Visualモード/検索/置換/実務Tips】
-  - v/V/Ctrl+v: 選択開始
-  - /pattern: 検索, n/N: 次/前へ
-  - :%s/old/new/g: 置換
-  - ci": "の中身を変更, ciw: 単語を変更, cit: タグの中身を変更
-  - .: 直前の操作を繰り返し
-  - gg/G: ファイル先頭/末尾へ
-  - :e ファイル名: 別ファイルを開く
-  - :split/:vsplit: ウィンドウ分割
-  - :tabnew: 新しいタブ
-  
-  ---
-  【段階的に: HTML編集でよく使うVimコマンド例】
-  - cit: タグの中身を一発で編集
-  - dit: タグの中身を削除
-  - >/<: インデント調整
-  - %: 対応する括弧やタグにジャンプ
 -->
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
-  <!-- Vimヒント: headタグ内でiやAで挿入、ci"で属性値編集、citでタグ中身編集 -->
+  <!-- Vimヒント: まずは基本移動！ h←, j↓, k↑, l→ でカーソルを動かしてみよう -->
   <meta charset="UTF-8" />
+  <!-- Vimヒント: 文字を変更したい？ i で挿入モード開始、ESC でノーマルモードに戻る -->
   <title>manavim</title>
+  <!-- Vimヒント: この行をコピーしたい？ yy でコピー、p で貼り付け -->
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet" />
+  <!-- Vimヒント: 行を削除したい？ dd で一発削除。間違えたら u で元に戻す -->
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+  <!-- Vimヒント: 行末に文字を追加したい？ A で行末から挿入モード開始 -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
-  <!-- Vimヒント: o/Oで新しい行を挿入。タグごとにcit/ditで編集・削除。%でタグ対応ジャンプ。 -->
+  <!-- Vimヒント: 新しい行を作りたい？ o で下に新行、O で上に新行を作って挿入モード -->
   <div id="tsparticles"></div>
   <div class="overlay"></div>
+  <!-- Vimヒント: クラス名を変更したい？ ciw でクラス名だけを変更モード -->
   <div class="container">
-    <!-- Vimヒント: ciwでクラス名変更、citでタグ中身編集。Visualモードで複数行選択も便利。 -->
+    <!-- Vimヒント: タグの中身だけ変更したい？ cit でタグ内容を変更モード -->
     <div class="title-main">VIMQUEST</div>
     <div class="title-sub">III</div>
+    <!-- Vimヒント: 複数行を選択したい？ V で行選択モード、j/k で範囲を広げる -->
     <div class="menu">
-      <!-- Vimヒント: j/kで上下移動、ciwでテキスト変更、yy/pで複製。 -->
+      <!-- Vimヒント: この行を複製したい？ yy でコピー、p で下に貼り付け -->
       <div class="menu-item">START GAME</div>
+      <!-- Vimヒント: 単語を検索したい？ /GAME と入力、n で次を検索 -->
       <div class="menu-item">SELECT MODE</div>
       <div class="menu-item">RANKING</div>
+      <!-- Vimヒント: 文字を1つ削除したい？ x で削除。単語全体なら dw -->
       <div class="menu-item">SYSTEM</div>
     </div>
+    <!-- Vimヒント: 行頭に移動したい？ 0 で行頭、$ で行末にジャンプ -->
     <div class="selected-mode" id="selectedMode">Mode: Vim</div>
   </div>
+  <!-- Vimヒント: 対応するタグを見つけたい？ % で開始・終了タグ間をジャンプ -->
   <div class="copyright">
-    <!-- Vimヒント: Aで行末編集、ciwで年号変更、ditでタグ中身削除。 -->
+    <!-- Vimヒント: 年号だけ変更したい？ ciw で単語変更、数字部分にカーソルを合わせて -->
     &copy;2025 manaby Omiya Studio. All rights reserved.
   </div>
+  <!-- Vimヒント: ファイルの最初に移動したい？ gg で先頭、G で最後にジャンプ -->
   <div class="version">App Ver. 1.01</div>
 </body>
 
 </html>`,
-  css: `/* Vimヒント: CSSファイルでは、よく移動と編集を繰り返します。ノーマルモードとインサートモードの切り替えに慣れましょう */
+  css: `/* Vimヒント: CSSでも基本移動から！ h←, j↓, k↑, l→ でプロパティ間を移動しよう */
 *,
 *::before,
 *::after {
   margin: 0;
   padding: 0;
+  /* Vimヒント: 値を変更したい？ ci" で"の中身を変更モード */
   box-sizing: border-box;
 }
 
-/* Vimヒント: f文字 で現在行の「文字」まで移動できます。例えば fm で m まで移動 */
+/* Vimヒント: プロパティ名を変更したい？ ciw で単語変更モード */
 html,
 body {
   width: 100%;
+  /* Vimヒント: この行をコピーしたい？ yy でコピー、p で貼り付け */
   height: 100%;
   font-family: "Libre Baskerville", serif;
+  /* Vimヒント: 数値だけ変更したい？ 数値にカーソルを合わせて ciw */
   font-size: 16px;
   line-height: 1.5;
   color: #ccc;
   overflow: hidden;
+  /* Vimヒント: カラーコードを変更したい？ ci# で#以降を変更モード */
   background-color: #000;
 }
 
-/* Vimヒント: ciw で単語を削除して挿入モードになります (change inner word) - プロパティ名の変更に便利です */
+/* Vimヒント: セレクタを検索したい？ /tsparticles で検索、n で次を探す */
 #tsparticles {
   position: absolute;
   width: 100%;
   height: 100%;
+  /* Vimヒント: 行を削除したい？ dd で一発削除。間違えたら u で元に戻す */
   z-index: 0;
 }
 
-/* Vimヒント: ci" で"の中身を削除して挿入モードになります - 値の変更に便利です */
+/* Vimヒント: 複数行を選択したい？ V で行選択、j/k で範囲を広げる */
 .overlay {
   position: absolute;
   width: 100%;
   height: 100%;
+  /* Vimヒント: 括弧の対応を確認したい？ % で開始・終了括弧間をジャンプ */
   background: radial-gradient(
     ellipse at center,
     rgba(0, 0, 0, 0.3),
@@ -247,7 +245,7 @@ body {
   z-index: 0;
 }
 
-/* Vimヒント: % で対応する括弧に移動します - CSSの括弧の対応を確認するのに便利です */
+/* Vimヒント: CSSブロック全体をコピーしたい？ { にカーソルを合わせて % で } に移動、V で選択 */
 .container {
   position: relative;
   z-index: 1;
@@ -258,14 +256,16 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
+  /* Vimヒント: 行末に文字を追加したい？ A で行末から挿入モード */
   animation: fadeIn 2s ease;
 }
 
-/* Vimヒント: . で直前のコマンドを繰り返します - 同じ編集を複数箇所に適用するのに便利です */
+/* Vimヒント: 同じ編集を繰り返したい？ . で直前の操作を繰り返し */
 .title-main {
   font-size: clamp(2.2rem, 7vw, 4.5rem);
   color: #fff;
   letter-spacing: 0.15em;
+  /* Vimヒント: 長い値を一括変更したい？ 値の最初で ci, で次のカンマまで変更 */
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.4),
     0 0 35px rgba(200, 200, 255, 0.15);
   text-transform: uppercase;
@@ -273,7 +273,7 @@ body {
   margin-bottom: 35px;
 }
 
-/* Vimヒント: cit でタグの中身を変更します (change inner tag) - HTMLタグ内のテキスト変更に便利です */
+/* Vimヒント: クラス名を変更したい？ .title-sub の部分で ciw */
 .title-sub {
   font-size: clamp(1.5rem, 5.5vw, 4rem);
   color: #ddd;
@@ -284,13 +284,13 @@ body {
   text-align: center;
 }
 
-/* Vimヒント: A で行末に移動して挿入モードに入ります - セミコロンを追加するのに便利です */
+/* Vimヒント: 不要な行を削除したい？ dd で行削除 */
 .title-sub::before,
 .title-sub::after {
   display: none;
 }
 
-/* Vimヒント: /{検索語} で検索できます - 特定のプロパティやセレクタを探すのに便利です */
+/* Vimヒント: 特定のプロパティを検索したい？ /display で検索 */
 .menu {
   display: flex;
   flex-direction: column;
@@ -299,7 +299,7 @@ body {
   animation: fadeUp 2s ease-in-out;
 }
 
-/* Vimヒント: n で次の検索結果に移動、N で前の検索結果に移動します */
+/* Vimヒント: 複数の値を一度に変更したい？ Ctrl+v で矩形選択 */
 .menu-item {
   font-size: clamp(1rem, 2.8vw, 1.4rem);
   color: #ccc;
@@ -309,14 +309,14 @@ body {
   padding: 0.1em 0.5em;
 }
 
-/* Vimヒント: Shift+v で行選択モードになります - 複数行を選択してコピーや削除ができます */
+/* Vimヒント: 行を複製したい？ yy でコピー、p で貼り付け */
 .menu-item:hover,
 .menu-item.active {
   color: #ff8800;
   text-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
 }
 
-/* Vimヒント: Ctrl+v で矩形選択モードになります - 複数行の同じ位置を一度に編集できます */
+/* Vimヒント: 複数のセレクタを一度に編集したい？ V で行選択、複数行選んで一括編集 */
 .version,
 .copyright {
   position: absolute;
@@ -325,17 +325,17 @@ body {
   bottom: 15px;
 }
 
-/* Vimヒント: gg=G でファイル全体のインデントを整形します - コードを綺麗に整えるのに便利です */
+/* Vimヒント: ファイルの最初に移動したい？ gg で先頭、G で最後 */
 .version {
   right: 20px;
 }
 
-/* Vimヒント: :s/old/new/ で現在行の最初の「old」を「new」に置換します */
+/* Vimヒント: 置換したい？ :%s/old/new/g で全体置換 */
 .copyright {
   left: 20px;
 }
 
-/* Vimヒント: :%s/old/new/g でファイル全体の「old」をすべて「new」に置換します - 一括置換に便利です */
+/* Vimヒント: 画面中央に表示したい？ zz でカーソル行を中央に */
 .selected-mode {
   margin-top: 1.2em;
   font-size: clamp(0.8rem, 2vw, 1rem);
@@ -343,14 +343,13 @@ body {
   font-style: italic;
 }
 
-/* Vimヒント: zz でカーソル行を画面中央に表示します - 長いCSSファイルを編集するときに便利です */
-/* レスポンシブ: 画面幅600px以下でさらに調整 */
+/* Vimヒント: メディアクエリ内を編集したい？ { } で段落移動が便利 */
 @media (max-width: 600px) {
   .container {
     padding: 0 0.5em;
   }
 
-  /* Vimヒント: { } で段落単位で移動できます - CSSのブロック間を素早く移動できます */
+  /* Vimヒント: インデントを調整したい？ >> で右に、<< で左にインデント */
   .title-main {
     font-size: clamp(1.2rem, 10vw, 2.5rem);
     letter-spacing: 0.08em;
@@ -390,7 +389,7 @@ body {
   }
 }
 
-/* Vimヒント: :split でウィンドウを水平分割、:vsplit で垂直分割できます - 複数のCSSファイルを同時に編集できます */
+/* Vimヒント: CSSブロック全体を削除したい？ dap で段落削除 */
 .mode-select-screen {
   position: fixed;
   top: 0;
@@ -408,13 +407,11 @@ body {
   backdrop-filter: blur(8px);
 }
 
-/* Vimヒント: Ctrl+w w でウィンドウ間を移動します - 分割したウィンドウ間を素早く切り替えられます */
 .mode-select-screen.active {
   display: flex;
   opacity: 1;
 }
 
-/* Vimヒント: dap で段落を削除します (delete around paragraph) - CSSのブロック全体を削除するのに便利です */
 .mode-card {
   font-size: 1.4rem;
   color: #eee;
@@ -428,7 +425,6 @@ body {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
 }
 
-/* Vimヒント: yap で段落をコピーします (yank around paragraph) - CSSのブロック全体をコピーするのに便利です */
 .mode-card:hover,
 .mode-card.selected {
   color: #fff;
@@ -437,7 +433,6 @@ body {
   transform: scale(1.03);
 }
 
-/* Vimヒント: :set number で行番号を表示します - 大きなCSSファイルでの位置確認に便利です */
 .back-button {
   margin-top: 1.5rem;
   background: none;
@@ -450,14 +445,13 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Vimヒント: :set relativenumber で相対行番号を表示します - 現在行からの相対的な行数がわかります */
 .back-button:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.04);
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
 
-/* Vimヒント: :e ファイル名 で別のファイルを開きます - HTMLとCSSを素早く切り替えられます */
+/* Vimヒント: アニメーション名を変更したい？ fadeIn の部分で ciw */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -470,7 +464,6 @@ body {
   }
 }
 
-/* Vimヒント: :tabnew ファイル名 で新しいタブでファイルを開きます - 複数のファイルをタブで管理できます */
 @keyframes fadeUp {
   0% {
     opacity: 0;
@@ -482,39 +475,41 @@ body {
     transform: translateY(0);
   }
 }`,
-  js: `// Vimヒント: Vimの基本 - ノーマルモード(ESC)で移動・編集、挿入モード(i)で文字入力
+  js: `// Vimヒント: JavaScriptでも基本移動から！ h←, j↓, k↑, l→ で関数間を移動しよう
 
-// Vimヒント: 基本的な移動 - h(左) j(下) k(上) l(右)
+// Vimヒント: 関数名を変更したい？ 関数名にカーソルを合わせて ciw で単語変更
 window.onload = () => {
-  // Vimヒント: w で単語単位で前に進む、b で単語単位で後ろに戻る
+  // Vimヒント: 関数呼び出しを複製したい？ yy でコピー、p で貼り付け
   initParticles();
 
-  // Vimヒント: 0 で行頭に移動、$ で行末に移動
+  // Vimヒント: 行末にセミコロンを追加したい？ A で行末から挿入モード
   setupMenuListeners();
 
-  // Vimヒント: gg でファイル先頭に移動、G でファイル末尾に移動
+  // Vimヒント: 関数を削除したい？ dd で行削除。間違えたら u で元に戻す
   setupKeyboardShortcuts();
 
-  // Vimヒント: 数字+移動コマンドで複数回移動 (例: 5j で5行下に移動)
+  // Vimヒント: コメントを追加したい？ I で行頭から挿入モード、// を入力
   initVimTips();
 };
 
-// Vimヒント: 基本的な編集 - x で1文字削除、dd で1行削除
+// Vimヒント: 文字列を変更したい？ ci" で"の中身を変更モード
 
 // パーティクルの初期化関数
 function initParticles() {
-  // Vimヒント: i でカーソル位置に文字挿入、a でカーソルの次の位置に文字挿入
+  // Vimヒント: 変数名を変更したい？ 変数名で ciw
   tsParticles.load("tsparticles", {
+    // Vimヒント: オブジェクトのプロパティを変更したい？ プロパティ名で ciw
     background: { color: { value: "transparent" } },
     particles: {
+      // Vimヒント: 数値を変更したい？ 数値にカーソルを合わせて ciw
       number: { value: 40 },
-      // Vimヒント: o で現在行の下に新しい行を挿入、O で現在行の上に新しい行を挿入
+      // Vimヒント: 配列の要素を変更したい？ 要素にカーソルを合わせて ci"
       color: { value: ["#ff6600", "#ffaa00"] },
       shape: { type: "circle" },
       opacity: { value: 0.6 },
       size: { value: { min: 1, max: 3 } },
       move: {
-        // Vimヒント: yy で行をコピー(ヤンク)、p でカーソル位置の後にペースト
+        // Vimヒント: ブール値を変更したい？ true/false で ciw
         enable: true,
         speed: 0.6,
         direction: "top",
@@ -525,74 +520,79 @@ function initParticles() {
   });
 }
 
-// Vimヒント: u で直前の変更を取り消し、Ctrl+r で取り消しを戻す
+// Vimヒント: 関数全体をコピーしたい？ 関数の { で % で } に移動、V で行選択
 
 // メニュー項目のイベントリスナー設定
 function setupMenuListeners() {
-  // Vimヒント: ciw でカーソル位置の単語を削除して挿入モード (change inner word)
+  // Vimヒント: 変数宣言を変更したい？ const の部分で ciw で let に変更
   const menuItems = document.querySelectorAll(".menu-item");
 
+  // Vimヒント: 配列の各要素を編集したい？ forEach の中で操作
   menuItems.forEach((item, index) => {
-    // Vimヒント: ci" で"の中の文字を削除して挿入モード - 文字列編集に便利
+    // Vimヒント: イベント名を変更したい？ "click" の部分で ci"
     item.addEventListener("click", () => {
-      // Vimヒント: ci( で()の中身を削除して挿入モード - 関数の引数編集に便利
+      // Vimヒント: 関数の引数を変更したい？ 引数名で ciw
       showVimTip(index);
       highlightMenuItem(item);
     });
 
-    // Vimヒント: cit でタグの中身を削除して挿入モード - HTMLタグ内の編集に便利
+    // Vimヒント: 新しいイベントリスナーを追加したい？ yy でコピー、p で貼り付け後編集
     item.addEventListener("mouseenter", () => {
-      // Vimヒント: A で行末に移動して挿入モード - セミコロンの追加に便利
+      // Vimヒント: 関数呼び出しを削除したい？ dd で行削除
       playHoverSound();
     });
   });
 }
 
-// Vimヒント: . で直前の編集を繰り返す - 同じ編集を複数箇所に適用するのに便利
+// Vimヒント: 同じ編集を繰り返したい？ . で直前の操作を繰り返し
 
 // キーボードショートカットの設定
 function setupKeyboardShortcuts() {
-  // Vimヒント: /検索語 で検索、n で次の検索結果、N で前の検索結果に移動
+  // Vimヒント: 特定の文字列を検索したい？ /keydown で検索、n で次を探す
   document.addEventListener("keydown", (e) => {
-    // Vimヒント: * でカーソル位置の単語を検索 - 変数名の検索に便利
+    // Vimヒント: 条件文を変更したい？ >= の部分で ciw で != に変更
     if (e.key >= "1" && e.key <= "4") {
+      // Vimヒント: 変数の値を変更したい？ 1 の部分で ciw
       const index = parseInt(e.key) - 1;
+      // Vimヒント: セレクタを変更したい？ ".menu-item" の部分で ci"
       const menuItems = document.querySelectorAll(".menu-item");
 
-      // Vimヒント: % で対応する括弧に移動 - 括弧の対応関係を確認するのに便利
+      // Vimヒント: 括弧の対応を確認したい？ % で開始・終了括弧間をジャンプ
       if (menuItems[index]) {
         highlightMenuItem(menuItems[index]);
         showVimTip(index);
       }
     }
 
-    // Vimヒント: f文字 で現在行の「文字」まで移動 - 行内の素早い移動に便利
+    // Vimヒント: 文字列比較を変更したい？ "Escape" の部分で ci"
     if (e.key === "Escape") {
       hideAllTips();
     }
   });
 }
 
-// Vimヒント: v でビジュアルモード - テキスト選択モード
+// Vimヒント: 複数行を選択したい？ V で行選択、j/k で範囲を広げる
 
 // メニュー項目のハイライト
 function highlightMenuItem(item) {
-  // Vimヒント: V で行単位のビジュアルモード - 行単位での選択に便利
+  // Vimヒント: メソッド名を変更したい？ querySelectorAll の部分で ciw
   const menuItems = document.querySelectorAll(".menu-item");
 
-  // Vimヒント: Ctrl+v で矩形選択ビジュアルモード - 複数行の同じ位置を編集するのに便利
+  // Vimヒント: ループ処理を複製したい？ forEach行で yy、p で貼り付け
   menuItems.forEach((menuItem) => {
+    // Vimヒント: メソッド呼び出しを変更したい？ remove の部分で ciw
     menuItem.classList.remove("active");
   });
 
+  // Vimヒント: クラス名を変更したい？ "active" の部分で ci"
   item.classList.add("active");
 }
 
-// Vimヒント: :s/old/new/ で現在行の「old」を「new」に置換
+// Vimヒント: 置換したい？ :%s/old/new/g で全体置換
 
 // Vimのヒントを表示する関数
 function showVimTip(index) {
-  // Vimヒント: :%s/old/new/g でファイル全体の「old」を「new」に置換
+  // Vimヒント: 配列の要素を編集したい？ 各要素で ci"
   const tips = [
     "Vimヒント: hjkl - 左下上右に移動",
     "Vimヒント: i - カーソル位置で文字入力開始",
@@ -600,33 +600,34 @@ function showVimTip(index) {
     "Vimヒント: :w - 保存、:q - 終了、:wq - 保存して終了",
   ];
 
-  // Vimヒント: { } で段落単位で移動 - 関数間の素早い移動に便利
+  // Vimヒント: IDセレクタを変更したい？ "selectedMode" の部分で ci"
   const selectedMode = document.getElementById("selectedMode");
+  // Vimヒント: テンプレートリテラルを変更したい？ \`\` の中で編集
   selectedMode.textContent = \`Tip: \${tips[index]}\`;
 }
 
-// Vimヒント: zz でカーソル行を画面中央に表示 - コードの確認に便利
+// Vimヒント: 画面中央に表示したい？ zz でカーソル行を中央に
 
 // すべてのヒントを非表示にする
 function hideAllTips() {
-  // Vimヒント: gg=G でファイル全体のインデントを整形 - コードを綺麗に整えるのに便利
+  // Vimヒント: ファイルの最初に移動したい？ gg で先頭、G で最後
   const selectedMode = document.getElementById("selectedMode");
   selectedMode.textContent = "Mode: Vim";
 }
 
-// Vimヒント: :split でウィンドウを水平分割、:vsplit で垂直分割 - 複数ファイルの編集に便利
+// Vimヒント: 関数間を移動したい？ { } で段落単位移動が便利
 
 // ホバー効果用のサウンド再生（実際のサウンドはありません）
 function playHoverSound() {
-  // Vimヒント: Ctrl+w w でウィンドウ間を移動 - 分割したウィンドウ間の移動に便利
+  // Vimヒント: コメントを削除したい？ dd で行削除
   // サウンド再生のコードがここに入ります（現在は実装なし）
 }
 
-// Vimヒント: :e ファイル名 で別のファイルを開く - 関連ファイルの素早い切り替えに便利
+// Vimヒント: 新しい関数を追加したい？ o で新行、function と入力
 
 // Vimのヒントシステムを初期化
 function initVimTips() {
-  // Vimヒント: :tabnew ファイル名 で新しいタブでファイルを開く - 複数ファイルの管理に便利
+  // Vimヒント: 長い文字列を変更したい？ 文字列の最初で ci" で全体変更
   console.log(
     "Vimヒントシステムが初期化されました。メニュー項目をクリックしてヒントを表示します。"
   );

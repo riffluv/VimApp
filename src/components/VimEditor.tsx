@@ -114,8 +114,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
   const currentVimModeInfo = VIM_MODE_INFO[vimMode];
 
-  // 現在のモードのref/stateを取得
-  const currentRef = editorRefs[mode];
+  // 現在のモードのstateを取得
   const currentState = editorStates[mode];
 
   return (
@@ -252,6 +251,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               content="現在のコードをクリア"
               showArrow
               portalled
+              openDelay={75}
               contentProps={{
                 fontSize: "sm",
                 bg: "gray.700",
@@ -283,6 +283,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               content="全てリセット（初期状態に戻す）"
               showArrow
               portalled
+              openDelay={75}
               contentProps={{
                 fontSize: "sm",
                 bg: "gray.700",
@@ -430,7 +431,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             >
               <CodeMirror
                 key={mode} // モードが変わったら新しいインスタンスを作成
-                ref={currentRef}
                 value={docs[mode]}
                 onChange={(value) => updateDoc(mode, value)}
                 onUpdate={onUpdate}
@@ -468,7 +468,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
-              ref={currentRef}
               value={docs[mode]}
               onChange={(value) => updateDoc(mode, value)}
               onUpdate={onUpdate}

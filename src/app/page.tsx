@@ -200,6 +200,7 @@ export default function Home() {
               }
               showArrow
               portalled
+              openDelay={75}
               contentProps={{
                 fontSize: "sm",
                 bg: "gray.700",
