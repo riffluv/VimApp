@@ -18,6 +18,22 @@ import { vim } from "@replit/codemirror-vim";
 import { EMMET_CONFIGS } from "@/constants";
 import type { EditorMode } from "@/types/editor";
 
+// Vimキーバインドを保護するための最小限のキーマップ
+// Ctrl+Aのブラウザのデフォルト動作（全選択）のみを防ぐ
+const vimProtectionKeymap = Prec.highest(
+  keymap.of([
+    {
+      key: "Ctrl-a",
+      run: () => {
+        // ブラウザのデフォルト動作（全選択）を防ぐだけ
+        // CodeMirror Vimが処理するように、falseを返す
+        return false;
+      },
+      preventDefault: true,
+    },
+  ])
+);
+
 // 共通のキーマップ設定
 const commonKeymap = keymap.of([
   { key: "Ctrl-e", run: expandAbbreviation },
@@ -39,24 +55,33 @@ export const getEditorExtensions = (mode: EditorMode) => {
   // 各モードごとに独立したhistoryインスタンスを作成
   const modeHistory = history();
 
+  // 基本拡張機能の配列（正しい順序で設定）
+  const baseExtensions = [
+    vimProtectionKeymap, // Ctrl+Aのブラウザデフォルト動作を防ぐ
+    Prec.highest(vim()), // Vim拡張を最高優先度で設定
+    drawSelection(),
+    languageExtensions[mode],
+    modeHistory, // 独立したhistoryインスタンス
+    commonKeymap, // Emmet用キーマップ
+    oneDark,
+  ];
+
   if (mode === "html" || mode === "css") {
     const emmetExtension = Prec.high(abbreviationTracker(EMMET_CONFIGS[mode]));
+    // Emmet拡張を含む場合の配列
     return [
-      vim(),
+      vimProtectionKeymap,
+      Prec.highest(vim()),
       drawSelection(),
       languageExtensions[mode],
-      modeHistory, // 独立したhistoryインスタンス
+      modeHistory,
       emmetExtension,
+      commonKeymap,
       oneDark,
     ];
   }
-  return [
-    vim(),
-    drawSelection(),
-    languageExtensions[mode],
-    modeHistory,
-    oneDark,
-  ];
+
+  return baseExtensions;
 };
 
 /**
