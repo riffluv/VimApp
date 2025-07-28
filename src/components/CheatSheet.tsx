@@ -37,7 +37,7 @@ export default function CheatSheet({}: CheatSheetProps) {
       borderColor="rgba(255, 152, 0, 0.2)"
       position="relative"
       backdropFilter="blur(20px)"
-      // VimEditorと統一された高さ設定
+      // VimEditorと同じ高さに統一（黄金比は横幅の比率のみ適用）
       minH={{
         base: "clamp(370px, 38vh, 500px)",
         md: "clamp(480px, 45vh, 650px)",
@@ -232,47 +232,24 @@ export default function CheatSheet({}: CheatSheetProps) {
                       {commands.map((item, index) => (
                         <Flex
                           key={index}
-                          py={3}
-                          px={4}
+                          py={1.5}
+                          px={3}
                           alignItems="center"
                           borderRadius="md"
                           _hover={{
-                            bg: "rgba(45, 55, 72, 0.4)",
-                            borderLeft: "3px solid",
-                            borderLeftColor: "orange.400",
-                            transform: "translateX(2px)",
-                            boxShadow: "0 2px 8px rgba(255, 152, 0, 0.1)",
+                            bg: "rgba(45, 55, 72, 0.3)",
                           }}
                           transition="all 0.2s ease"
                           cursor="pointer"
                         >
                           <Box
                             fontFamily="'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace"
-                            fontWeight="500"
+                            fontWeight="600"
                             color="orange.400"
                             fontSize="sm"
                             mr={4}
-                            minW={20}
+                            minW={14}
                             textAlign="left"
-                            bg="rgba(45, 55, 72, 0.8)" // VimEditorのCodeMirror背景色と統一
-                            px={3}
-                            py={2}
-                            borderRadius="md"
-                            border="1px solid"
-                            borderColor="gray.600"
-                            backdropFilter="blur(10px)"
-                            position="relative"
-                            _before={{
-                              content: '""',
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              borderRadius: "inherit",
-                              bg: "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
-                              pointerEvents: "none",
-                            }}
                           >
                             {item.command}
                           </Box>
@@ -282,7 +259,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                             color="gray.300"
                             fontWeight="400"
                             textAlign="left"
-                            lineHeight="1.5"
+                            lineHeight="1.4"
                           >
                             {item.description}
                           </Box>

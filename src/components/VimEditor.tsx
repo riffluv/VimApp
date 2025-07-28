@@ -129,7 +129,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       position="relative"
       overflow="hidden"
       flex={1}
-      // 黄金比（1:1.618）を意識した高さバランス
+      // CheatSheetと同じ高さに統一（黄金比は横幅の比率のみ適用）
       minH={{
         base: "clamp(370px, 38vh, 500px)",
         md: "clamp(480px, 45vh, 650px)",
@@ -147,7 +147,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       }}
       initial="hidden"
       animate="visible"
-      borderWidth="var(--border-width, 1px)"
+      borderWidth="1px"
     >
       {/* すべての要素を1つの親要素でラップ */}
       <>

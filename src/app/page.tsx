@@ -271,8 +271,9 @@ export default function Home() {
           {!isCodePenMode && showCheatSheet && (
             <MotionBox
               key="cheatsheet"
-              flex={{ base: "none", md: "0 0 320px" }}
-              w={{ base: "100%", md: "320px" }}
+              // コンパクトなサイズに調整（340px → エディターにより多くのスペースを確保）
+              flex={{ base: "none", md: "0 0 340px", lg: "0 0 360px" }}
+              w={{ base: "100%", md: "340px", lg: "360px" }}
               minH="320px"
               mb={{ base: 4, md: 0 }}
               mr={{ base: 0, md: 8 }}
@@ -291,10 +292,11 @@ export default function Home() {
           flex="1 1 0%"
           w="100%"
           minH="360px"
+          // エディターにより多くのスペースを確保
           maxW={
             isCodePenMode || !showCheatSheet
               ? "100%"
-              : { base: "100%", md: "700px", lg: "800px" }
+              : { base: "100%", md: "750px", lg: "800px" }
           }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
