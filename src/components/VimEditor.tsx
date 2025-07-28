@@ -239,15 +239,24 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 bg: "gray.600",
                 color: "orange.300",
                 borderColor: "gray.500",
+                transform: "translateY(-1px)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              }}
+              _active={{
+                transform: "translateY(0)",
+                transition: "transform 0.1s ease",
               }}
               _disabled={{
                 bg: "gray.700",
                 color: "gray.500",
                 borderColor: "gray.600",
+                transform: "none",
+                boxShadow: "none",
               }}
               fontSize="xs"
               fontWeight="600"
               px={3}
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             >
               Preview
             </Button>
@@ -263,10 +272,17 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 bg: "gray.600",
                 color: "orange.300",
                 borderColor: "gray.500",
+                transform: "translateY(-1px)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              }}
+              _active={{
+                transform: "translateY(0)",
+                transition: "transform 0.1s ease",
               }}
               fontSize="xs"
               fontWeight="600"
               px={3}
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             >
               <Icon as={FiBookOpen} mr={1} />
               CodePen
@@ -331,12 +347,28 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   bg: "gray.600",
                   color: "orange.300",
                   borderColor: "gray.500",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(255,140,66,0.15)",
+                }}
+                _active={{
+                  transform: "scale(0.95)",
+                  transition: "transform 0.1s ease",
                 }}
                 fontSize="xs"
                 fontWeight="600"
                 px={3}
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               >
-                <Icon as={FiRefreshCw} mr={1} />
+                <Icon 
+                  as={FiRefreshCw} 
+                  mr={1}
+                  style={{
+                    transition: "transform 0.3s ease",
+                  }}
+                  _hover={{
+                    transform: "rotate(180deg)",
+                  }}
+                />
                 Reset
               </Button>
             </Tooltip>
@@ -365,10 +397,16 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 color={mode === modeType ? "orange.300" : "gray.400"}
                 borderWidth="1px"
                 borderColor={mode === modeType ? "gray.600" : "gray.700"}
+                position="relative"
                 _hover={{
                   bg: "gray.700",
                   color: mode === modeType ? "orange.300" : "orange.400",
                   borderColor: mode === modeType ? "gray.600" : "gray.600",
+                  transform: "translateY(-1px)",
+                }}
+                _active={{
+                  transform: "translateY(0)",
+                  transition: "transform 0.1s ease",
                 }}
                 borderRadius="md"
                 fontSize="xs"
@@ -380,8 +418,22 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 letterSpacing="wide"
                 fontFamily="mono"
                 onClick={() => handleModeChangeWithStateSave(modeType)}
-                transition="all 0.2s ease"
-                position="relative"
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                _before={
+                  mode === modeType
+                    ? {
+                        content: '""',
+                        position: "absolute",
+                        bottom: "-1px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: "60%",
+                        height: "2px",
+                        bg: "orange.400",
+                        borderRadius: "1px",
+                      }
+                    : undefined
+                }
               >
                 {modeType}
               </Button>

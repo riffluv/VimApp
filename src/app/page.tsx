@@ -232,11 +232,12 @@ export default function Home() {
                     ? "rgba(255,140,66,0.5)"
                     : "rgba(255,140,66,0.25)",
                   color: showCheatSheet ? "orange.100" : "orange.300",
-                  transform: "translateY(-1px)",
-                  boxShadow: "0 0 16px rgba(255,140,66,0.25)",
+                  transform: "translateY(-2px) scale(1.05)",
+                  boxShadow: "0 6px 20px rgba(255,140,66,0.3)",
                 }}
                 _active={{
-                  transform: "translateY(0)",
+                  transform: "translateY(0) scale(0.95)",
+                  transition: "transform 0.1s ease",
                   boxShadow: showCheatSheet
                     ? "0 0 8px rgba(255,140,66,0.15)"
                     : "none",
