@@ -164,14 +164,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           minH="clamp(56px, 3.5rem, 64px)" // タッチターゲット確保
         >
           <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
-            {/* Window Controls - DPIスケール対応 */}
+            {/* Window Controls - オレンジ系グラデーションに統一 */}
             <HStack gap="clamp(6px, 0.375rem, 8px)">
               <Box
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="red.400"
-                _hover={{ transform: "scale(1.1)" }}
+                bg="secondary.600"
+                _hover={{ transform: "scale(1.1)", bg: "secondary.500" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -181,8 +181,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="yellow.400"
-                _hover={{ transform: "scale(1.1)" }}
+                bg="secondary.500"
+                _hover={{ transform: "scale(1.1)", bg: "secondary.400" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -192,8 +192,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="green.400"
-                _hover={{ transform: "scale(1.1)" }}
+                bg="secondary.400"
+                _hover={{ transform: "scale(1.1)", bg: "secondary.300" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -224,24 +224,22 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             </Flex>
           </Flex>
 
-          {/* 右側: ボタングループ - シンプルに */}
+          {/* 右側: ボタングループ - ヘッダーボタンとの統一感を保つ */}
           <HStack gap={1}>
             <Button
               size="sm"
               variant="ghost"
               bg={showPreview ? "gray.600" : "gray.700"}
               color={showPreview ? "orange.300" : "gray.300"}
-              border="1px solid"
-              borderColor="gray.600"
               onClick={handlePreviewToggle}
               disabled={showCodePenMode}
               _hover={{
                 bg: "gray.600",
+                color: "orange.300",
               }}
               _disabled={{
                 bg: "gray.700",
                 color: "gray.500",
-                borderColor: "gray.600",
               }}
               fontSize="xs"
               fontWeight="600"
@@ -254,11 +252,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               variant="ghost"
               bg={showCodePenMode ? "gray.600" : "gray.700"}
               color={showCodePenMode ? "orange.300" : "gray.300"}
-              border="1px solid"
-              borderColor="gray.600"
               onClick={handleCodePenToggle}
               _hover={{
                 bg: "gray.600",
+                color: "orange.300",
               }}
               fontSize="xs"
               fontWeight="600"
@@ -274,7 +271,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               openDelay={75}
               contentProps={{
                 fontSize: "sm",
-                bg: "gray.700",
+                bg: "primary.800",
                 color: "white",
                 borderRadius: "md",
                 px: 3,
@@ -286,11 +283,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg="gray.700"
                 color="gray.300"
-                border="1px solid"
-                borderColor="gray.600"
                 onClick={() => clearDoc(mode)}
                 _hover={{
                   bg: "gray.600",
+                  color: "orange.300",
                 }}
                 fontSize="xs"
                 fontWeight="600"
@@ -306,7 +302,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               openDelay={75}
               contentProps={{
                 fontSize: "sm",
-                bg: "gray.700",
+                bg: "primary.800",
                 color: "white",
                 borderRadius: "md",
                 px: 3,
@@ -318,11 +314,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg="gray.700"
                 color="orange.400"
-                border="1px solid"
-                borderColor="gray.600"
                 onClick={handleResetAllWithConfirm}
                 _hover={{
                   bg: "gray.600",
+                  color: "orange.300",
                 }}
                 fontSize="xs"
                 fontWeight="600"
@@ -346,7 +341,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           bg="gray.800"
           position="relative"
         >
-          {/* 左側: HTML/CSS/JSタブ */}
+          {/* 左側: HTML/CSS/JSタブ - ヘッダーボタンとの統一感 */}
           <HStack gap={1}>
             {(["html", "css", "js"] as EditorMode[]).map((modeType) => (
               <Button
@@ -355,8 +350,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg={mode === modeType ? "gray.700" : "transparent"}
                 color={mode === modeType ? "orange.300" : "gray.400"}
-                border="1px solid"
-                borderColor={mode === modeType ? "gray.600" : "transparent"}
                 _hover={{
                   bg: "gray.700",
                   color: mode === modeType ? "orange.300" : "orange.400",
@@ -392,8 +385,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               px={2}
               py={1}
               borderRadius="md"
-              border="1px solid"
-              borderColor="gray.600"
             >
               <Icon
                 as={currentVimModeInfo.icon}

@@ -195,7 +195,7 @@ export default function Home() {
               openDelay={75}
               contentProps={{
                 fontSize: "sm",
-                bg: "gray.700",
+                bg: "primary.800",
                 color: "white",
                 borderRadius: "md",
                 px: 3,
