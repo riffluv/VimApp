@@ -133,10 +133,6 @@ export default function Home() {
             px={3}
             py={2}
             borderRadius="lg"
-            bg="rgba(255,255,255,0.05)"
-            backdropFilter="blur(10px)"
-            border="1px solid"
-            borderColor="rgba(255,255,255,0.1)"
           >
             <Icon as={FiGithub} mr={2} />
             GitHub
@@ -161,10 +157,6 @@ export default function Home() {
             px={3}
             py={2}
             borderRadius="lg"
-            bg="rgba(255,255,255,0.05)"
-            backdropFilter="blur(10px)"
-            border="1px solid"
-            borderColor="rgba(255,255,255,0.1)"
           >
             <Icon as={FiExternalLink} mr={2} />
             Vimチートシート
