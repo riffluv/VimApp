@@ -226,72 +226,128 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
           {/* 右側: ボタングループ - ヘッダーボタンとの統一感を保つ */}
           <HStack gap={1}>
-            <Button
-              size="sm"
-              variant="ghost"
-              bg={showPreview ? "gray.600" : "gray.700"}
-              color={showPreview ? "orange.300" : "gray.300"}
-              borderWidth="1px"
-              borderColor={showPreview ? "gray.500" : "gray.600"}
-              onClick={handlePreviewToggle}
-              disabled={showCodePenMode}
-              _hover={{
-                bg: "gray.600",
-                color: "orange.300",
-                borderColor: "gray.500",
-                transform: "translateY(-1px)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            <Tooltip
+              content={
+                showCodePenMode
+                  ? "分割表示モードではプレビューは無効です"
+                  : showPreview
+                  ? "HTMLプレビューを非表示"
+                  : "HTMLプレビューを表示"
+              }
+              showArrow
+              portalled
+              openDelay={300}
+              contentProps={{
+                fontSize: "sm",
+                bg: "primary.800",
+                color: "white",
+                borderRadius: "md",
+                px: 3,
+                py: 2,
               }}
-              _active={{
-                transform: "translateY(0)",
-                transition: "transform 0.1s ease",
-              }}
-              _disabled={{
-                bg: "gray.700",
-                color: "gray.500",
-                borderColor: "gray.600",
-                transform: "none",
-                boxShadow: "none",
-              }}
-              fontSize="xs"
-              fontWeight="600"
-              px={3}
-              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             >
-              Preview
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              bg={showCodePenMode ? "gray.600" : "gray.700"}
-              color={showCodePenMode ? "orange.300" : "gray.300"}
-              borderWidth="1px"
-              borderColor={showCodePenMode ? "gray.500" : "gray.600"}
-              onClick={handleCodePenToggle}
-              _hover={{
-                bg: "gray.600",
-                color: "orange.300",
-                borderColor: "gray.500",
-                transform: "translateY(-1px)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              <Button
+                size="sm"
+                variant="ghost"
+                bg={showPreview ? "gray.600" : "gray.700"}
+                color={showPreview ? "orange.300" : "gray.300"}
+                borderWidth="1px"
+                borderColor={showPreview ? "gray.500" : "gray.600"}
+                onClick={handlePreviewToggle}
+                disabled={showCodePenMode}
+                aria-label={
+                  showCodePenMode
+                    ? "プレビューボタン（分割表示モードでは無効）"
+                    : showPreview
+                    ? "HTMLプレビューを非表示にする"
+                    : "HTMLプレビューを表示する"
+                }
+                aria-pressed={showPreview}
+                _hover={{
+                  bg: "gray.600",
+                  color: "orange.300",
+                  borderColor: "gray.500",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+                _active={{
+                  transform: "translateY(0)",
+                  transition: "transform 0.1s ease",
+                }}
+                _disabled={{
+                  bg: "gray.700",
+                  color: "gray.500",
+                  borderColor: "gray.600",
+                  transform: "none",
+                  boxShadow: "none",
+                }}
+                fontSize="xs"
+                fontWeight="600"
+                px={3}
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
+              >
+                Preview
+              </Button>
+            </Tooltip>
+            <Tooltip
+              content={
+                showCodePenMode
+                  ? "通常モードに戻す"
+                  : "エディタとプレビューを並べて表示"
+              }
+              showArrow
+              portalled
+              openDelay={300}
+              contentProps={{
+                fontSize: "sm",
+                bg: "primary.800",
+                color: "white",
+                borderRadius: "md",
+                px: 3,
+                py: 2,
               }}
-              _active={{
-                transform: "translateY(0)",
-                transition: "transform 0.1s ease",
-              }}
-              fontSize="xs"
-              fontWeight="600"
-              px={3}
-              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
             >
-              <Icon as={FiBookOpen} mr={1} />
-              CodePen
-            </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                bg={showCodePenMode ? "gray.600" : "gray.700"}
+                color={showCodePenMode ? "orange.300" : "gray.300"}
+                borderWidth="1px"
+                borderColor={showCodePenMode ? "gray.500" : "gray.600"}
+                onClick={handleCodePenToggle}
+                aria-label={
+                  showCodePenMode
+                    ? "分割表示を終了して通常モードに戻す"
+                    : "エディタとプレビューを並べて表示する"
+                }
+                aria-pressed={showCodePenMode}
+                _hover={{
+                  bg: "gray.600",
+                  color: "orange.300",
+                  borderColor: "gray.500",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+                _active={{
+                  transform: "translateY(0)",
+                  transition: "transform 0.1s ease",
+                }}
+                fontSize="xs"
+                fontWeight="600"
+                px={3}
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
+              >
+                <Icon as={FiBookOpen} mr={1.5} />
+                CodePen
+              </Button>
+            </Tooltip>
             <Tooltip
               content="現在のコードをクリア"
               showArrow
               portalled
-              openDelay={75}
+              openDelay={300}
               contentProps={{
                 fontSize: "sm",
                 bg: "primary.800",
@@ -309,14 +365,23 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 borderWidth="1px"
                 borderColor="gray.600"
                 onClick={() => clearDoc(mode)}
+                aria-label="現在のエディタのコードをクリアする"
                 _hover={{
                   bg: "gray.600",
                   color: "orange.300",
                   borderColor: "gray.500",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+                _active={{
+                  transform: "translateY(0)",
+                  transition: "transform 0.1s ease",
                 }}
                 fontSize="xs"
                 fontWeight="600"
                 px={2}
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
               >
                 <GiBroom />
               </Button>
@@ -325,7 +390,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               content="全てリセット（初期状態に戻す）"
               showArrow
               portalled
-              openDelay={75}
+              openDelay={300}
               contentProps={{
                 fontSize: "sm",
                 bg: "primary.800",
@@ -343,6 +408,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 borderWidth="1px"
                 borderColor="gray.600"
                 onClick={handleResetAllWithConfirm}
+                aria-label="全てのエディタをリセットして初期状態に戻す"
                 _hover={{
                   bg: "gray.600",
                   color: "orange.300",
@@ -358,10 +424,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 fontWeight="600"
                 px={3}
                 transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
               >
                 <Icon
                   as={FiRefreshCw}
-                  mr={1}
+                  mr={1.5}
                   style={{
                     transition: "transform 0.3s ease",
                   }}
