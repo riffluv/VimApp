@@ -224,9 +224,52 @@ export const ANIMATION_VARIANTS = {
 
 **ただし、外部ライブラリのラッパー（例: CodeMirror, サードパーティ製エディタ等）で Chakra UI の Props で完全にスタイル制御できない場合は、必要最小限の style 属性利用を許容します。**
 
+**[NG] 避けるべき例:**
+
+```jsx
+// アイコンのマージンを style で指定
+<FiBookOpen style={{ marginRight: "4px" }} />
+```
+
+**[OK] 正しい例:**
+
+```jsx
+// Chakra UI の Icon コンポーネントと Props を使用
+<Icon as={FiBookOpen} mr={1} />
+```
+
 **理由:** Chakra UI のテーマ（デザイントークン、レスポンシブ対応、疑似セレクタ）が適用できず、デザインの一貫性を損なうためです。常に Chakra UI のスタイル Props を優先してください。
 
-### 9.2. BEM (Block Element Modifier)・Tailwind CSS
+### 9.2. グローバル CSS クラス（`.glass-effect`等）
+
+Chakra UI の CSS-in-JS システムと競合するグローバル CSS クラスの定義は**禁止**します。ガラスモーフィズム効果やその他の視覚効果は、Chakra UI の Props（`backdropFilter`, `bg`, `border`等）で実装してください。
+
+**[NG] 避けるべき例:**
+
+```css
+/* globals.css */
+.glass-effect {
+  backdrop-filter: blur(20px);
+  background: rgba(24, 24, 27, 0.8);
+  border: 1px solid rgba(255, 152, 0, 0.2);
+}
+```
+
+**[OK] 正しい例:**
+
+```jsx
+// Chakra UI Props で同等の効果を実現
+<Box
+  backdropFilter="blur(20px)"
+  bg="rgba(24, 24, 27, 0.8)"
+  border="1px solid"
+  borderColor="rgba(255, 152, 0, 0.2)"
+>
+  Content
+</Box>
+```
+
+### 9.3. BEM (Block Element Modifier)・Tailwind CSS
 
 BEM は、CSS クラスの命名規則であり、当プロジェクトのスタイリングアプローチとは異なるため**使用しません**。
 

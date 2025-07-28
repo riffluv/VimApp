@@ -95,9 +95,7 @@ export default function Home() {
               fontWeight="600"
               letterSpacing="tight"
               fontFamily="Inter"
-              style={{
-                textShadow: "0 2px 4px rgba(0,0,0,0.4)",
-              }}
+              textShadow="0 2px 4px rgba(0,0,0,0.4)"
             >
               manaVimEditor
             </Heading>
@@ -215,10 +213,6 @@ export default function Home() {
                 width="48px"
                 height="48px"
                 minW="48px"
-                border="1px solid"
-                borderColor={
-                  showCheatSheet ? "secondary.600" : "rgba(255,152,0,0.3)"
-                }
                 backdropFilter="blur(10px)"
                 position="relative"
                 _hover={{
@@ -226,7 +220,6 @@ export default function Home() {
                   color: "secondary.200",
                   transform: "translateY(-2px)",
                   boxShadow: "glow-subtle",
-                  borderColor: "secondary.400",
                 }}
                 _active={{
                   transform: "translateY(0)",

@@ -164,14 +164,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           minH="clamp(56px, 3.5rem, 64px)" // タッチターゲット確保
         >
           <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
-            {/* Window Controls - オレンジ系グラデーションに統一 */}
+            {/* Window Controls - macOSスタイルに戻す */}
             <HStack gap="clamp(6px, 0.375rem, 8px)">
               <Box
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="secondary.600"
-                _hover={{ transform: "scale(1.1)", bg: "secondary.500" }}
+                bg="red.400"
+                _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -181,8 +181,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="secondary.500"
-                _hover={{ transform: "scale(1.1)", bg: "secondary.400" }}
+                bg="yellow.400"
+                _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -192,8 +192,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 w="clamp(10px, 0.625rem, 14px)"
                 h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
-                bg="secondary.400"
-                _hover={{ transform: "scale(1.1)", bg: "secondary.300" }}
+                bg="green.400"
+                _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
                 minW="clamp(10px, 0.625rem, 14px)"
@@ -261,7 +261,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               fontWeight="600"
               px={3}
             >
-              <FiBookOpen style={{ marginRight: "4px" }} />
+              <Icon as={FiBookOpen} mr={1} />
               CodePen
             </Button>
             <Tooltip
@@ -323,7 +323,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 fontWeight="600"
                 px={3}
               >
-                <FiRefreshCw style={{ marginRight: "4px" }} />
+                <Icon as={FiRefreshCw} mr={1} />
                 Reset
               </Button>
             </Tooltip>

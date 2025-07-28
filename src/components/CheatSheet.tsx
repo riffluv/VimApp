@@ -1,6 +1,14 @@
 "use client";
 
-import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
+import {
+  Accordion,
+  Box,
+  Flex,
+  Icon,
+  Image,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { FiBookOpen, FiChevronDown } from "react-icons/fi";
 
 import { CATEGORY_INFO, CHEAT_SHEET_COMMANDS } from "@/constants";
@@ -75,10 +83,12 @@ export default function CheatSheet({}: CheatSheetProps) {
         <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
           {/* manabyicon.pngに置き換え */}
           <Box>
-            <img
+            <Image
               src="/manabyicon.png"
               alt="manaby icon"
-              style={{ width: "28px", height: "28px", display: "block" }}
+              width="28px"
+              height="28px"
+              display="block"
             />
           </Box>
 
