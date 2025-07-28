@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Accordion,
-  Box,
-  Flex,
-  HStack,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
 import { FiBookOpen, FiChevronDown } from "react-icons/fi";
 
 import { CATEGORY_INFO, CHEAT_SHEET_COMMANDS } from "@/constants";
@@ -23,7 +15,7 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
   return acc;
 }, {} as Record<CommandCategory, Command[]>);
 
-export default function CheatSheet({ }: CheatSheetProps) {
+export default function CheatSheet({}: CheatSheetProps) {
   return (
     <Box
       bg="rgba(23, 25, 35, 0.95)"
@@ -81,60 +73,29 @@ export default function CheatSheet({ }: CheatSheetProps) {
         zIndex={1}
       >
         <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
-          {/* Window Controls - VimEditorと同じスタイル */}
-          <HStack gap="clamp(6px, 0.375rem, 8px)">
-            <Box
-              w="clamp(10px, 0.625rem, 14px)"
-              h="clamp(10px, 0.625rem, 14px)"
-              borderRadius="full"
-              bg="red.400"
-              _hover={{ transform: "scale(1.1)" }}
-              transition="all 0.2s ease"
-              cursor="pointer"
-              minW="clamp(10px, 0.625rem, 14px)"
-              minH="clamp(10px, 0.625rem, 14px)"
+          {/* manabyicon.pngに置き換え */}
+          <Box>
+            <img
+              src="/manabyicon.png"
+              alt="manaby icon"
+              style={{ width: "28px", height: "28px", display: "block" }}
             />
-            <Box
-              w="clamp(10px, 0.625rem, 14px)"
-              h="clamp(10px, 0.625rem, 14px)"
-              borderRadius="full"
-              bg="yellow.400"
-              _hover={{ transform: "scale(1.1)" }}
-              transition="all 0.2s ease"
-              cursor="pointer"
-              minW="clamp(10px, 0.625rem, 14px)"
-              minH="clamp(10px, 0.625rem, 14px)"
-            />
-            <Box
-              w="clamp(10px, 0.625rem, 14px)"
-              h="clamp(10px, 0.625rem, 14px)"
-              borderRadius="full"
-              bg="green.400"
-              _hover={{ transform: "scale(1.1)" }}
-              transition="all 0.2s ease"
-              cursor="pointer"
-              minW="clamp(10px, 0.625rem, 14px)"
-              minH="clamp(10px, 0.625rem, 14px)"
-            />
-          </HStack>
+          </Box>
 
-          {/* アイコンとタイトル - VimEditorのスタイルに合わせる */}
-          <Flex alignItems="center" gap={3}>
-            <Icon as={FiBookOpen} color="orange.400" fontSize="lg" />
-            <Box>
-              <Text
-                fontSize="md"
-                fontWeight="600"
-                color="orange.300"
-                letterSpacing="tight"
-              >
-                Vim Cheat Sheet
-              </Text>
-              <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
-                vimコマンド早見表
-              </Text>
-            </Box>
-          </Flex>
+          {/* タイトルとサブタイトルのみ */}
+          <Box>
+            <Text
+              fontSize="md"
+              fontWeight="600"
+              color="orange.300"
+              letterSpacing="tight"
+            >
+              Vim Cheat Sheet
+            </Text>
+            <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
+              vimコマンド早見表
+            </Text>
+          </Box>
         </Flex>
       </Flex>
 

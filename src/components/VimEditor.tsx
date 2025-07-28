@@ -174,7 +174,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
-                // 高DPI対応の最小サイズ確保
                 minW="clamp(10px, 0.625rem, 14px)"
                 minH="clamp(10px, 0.625rem, 14px)"
               />
@@ -218,8 +217,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
-                      ? "style.css"
-                      : "script.js"}
+                    ? "style.css"
+                    : "script.js"}
                 </Text>
               </Box>
             </Flex>
