@@ -3,8 +3,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Vim Practice App",
-  description: "ブラウザ上でVimのコマンドを練習できるアプリ",
+  title: "manaVimEditor - Vimをマスターする実践的エディタ",
+  description: "コードを書きながらVimを覚える。manaby就労移行支援で開発された実践的Vim学習プラットフォーム",
   icons: {
     icon: "/manabyicon.png",
   },
@@ -20,6 +20,8 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="theme-color" content="#18181b" />
         <link
           href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Quicksand:wght@400;500;600;700&display=swap"
           rel="stylesheet"

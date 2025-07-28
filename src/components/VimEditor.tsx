@@ -125,59 +125,80 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       boxShadow="md"
       display="flex"
       flexDirection="column"
-      borderWidth={1}
       borderColor="gray.700"
       position="relative"
       overflow="hidden"
       flex={1}
-      minH={{ base: "400px", md: "520px", lg: "600px" }}
-      maxH={{ base: "520px", md: "640px", lg: "700px" }}
-      h={{ base: "440px", md: "600px", lg: "680px" }}
+      // 黄金比（1:1.618）を意識した高さバランス
+      minH={{
+        base: "clamp(370px, 38vh, 500px)",
+        md: "clamp(480px, 45vh, 650px)",
+        lg: "clamp(540px, 50vh, 700px)",
+      }}
+      maxH={{
+        base: "clamp(600px, 62vh, 800px)",
+        md: "clamp(780px, 72vh, 1050px)",
+        lg: "clamp(900px, 81vh, 1200px)",
+      }}
+      h={{
+        base: "clamp(460px, 42vh, 618px)",
+        md: "clamp(618px, 56vh, 1000px)",
+        lg: "clamp(700px, 62vh, 1120px)",
+      }}
       initial="hidden"
       animate="visible"
+      borderWidth="var(--border-width, 1px)"
     >
       {/* すべての要素を1つの親要素でラップ */}
       <>
-        {/* ヘッダー */}
+        {/* ヘッダー - DPIスケール対応 */}
         <MotionFlex
           alignItems="center"
-          px={4}
-          py={3}
-          borderBottomWidth={1}
+          px={{ base: 3, md: 4 }}
+          py={{ base: 2, md: 3 }}
+          borderBottomWidth="clamp(1px, 0.0625rem, 2px)"
           borderColor="gray.700"
           bg="gray.800"
           justifyContent="space-between"
           position="relative"
+          minH="clamp(56px, 3.5rem, 64px)" // タッチターゲット確保
         >
-          <Flex alignItems="center" gap={3}>
-            {/* Window Controls - チートシートスタイルに合わせてシンプルに */}
-            <HStack gap={2}>
+          <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
+            {/* Window Controls - DPIスケール対応 */}
+            <HStack gap="clamp(6px, 0.375rem, 8px)">
               <Box
-                w={3}
-                h={3}
+                w="clamp(10px, 0.625rem, 14px)"
+                h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
                 bg="red.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
+                // 高DPI対応の最小サイズ確保
+                minW="clamp(10px, 0.625rem, 14px)"
+                minH="clamp(10px, 0.625rem, 14px)"
               />
               <Box
-                w={3}
-                h={3}
+                w="clamp(10px, 0.625rem, 14px)"
+                h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
                 bg="yellow.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
+                minW="clamp(10px, 0.625rem, 14px)"
+                minH="clamp(10px, 0.625rem, 14px)"
               />
               <Box
-                w={3}
-                h={3}
+                w="clamp(10px, 0.625rem, 14px)"
+                h="clamp(10px, 0.625rem, 14px)"
                 borderRadius="full"
                 bg="green.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
+                minW="clamp(10px, 0.625rem, 14px)"
+                minH="clamp(10px, 0.625rem, 14px)"
               />
             </HStack>
 
@@ -191,7 +212,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   color="orange.300"
                   letterSpacing="tight"
                 >
-                  Vim Editor
+                  manaVimEditor
                 </Text>
                 <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
                   {mode === "html"

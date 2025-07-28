@@ -99,7 +99,7 @@ export default function Home() {
                 textShadow: "0 2px 4px rgba(0,0,0,0.4)",
               }}
             >
-              Vim Practice App
+              manaVimEditor
             </Heading>
             <Text
               fontSize={{ base: "xs", md: "sm" }}
@@ -108,7 +108,7 @@ export default function Home() {
               fontWeight="400"
               letterSpacing="wide"
             >
-              ブラウザ上でVimのコマンドを練習できるアプリ
+              コードを書きながらVimを覚える実践的エディタ
             </Text>
           </Box>
         </Flex>
