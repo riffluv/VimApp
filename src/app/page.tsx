@@ -48,7 +48,7 @@ export default function Home() {
         right: 0,
         bottom: 0,
         bgGradient:
-          "radial-gradient(ellipse at top, rgba(255,152,0,0.03) 0%, transparent 50%)",
+          "radial-gradient(ellipse at top, rgba(255,140,66,0.04) 0%, transparent 50%)",
         pointerEvents: "none",
         zIndex: 0,
       }}
@@ -233,12 +233,12 @@ export default function Home() {
                   bg: "rgba(255,152,0,0.2)",
                   color: "secondary.200",
                   transform: "translateY(-2px)",
-                  boxShadow: "0 8px 25px rgba(255,152,0,0.3)",
+                  boxShadow: "glow-subtle",
                   borderColor: "secondary.400",
                 }}
                 _active={{
                   transform: "translateY(0)",
-                  boxShadow: "0 4px 15px rgba(255,152,0,0.2)",
+                  boxShadow: "glow-sm",
                 }}
                 _focus={{ outline: "none" }}
                 _focusVisible={{ outline: "none" }}
@@ -255,8 +255,8 @@ export default function Home() {
                   bottom: 0,
                   borderRadius: "inherit",
                   bg: showCheatSheet
-                    ? "linear-gradient(135deg, rgba(255,152,0,0.1), rgba(255,152,0,0.05))"
-                    : "linear-gradient(135deg, rgba(255,152,0,0.05), transparent)",
+                    ? "linear-gradient(135deg, rgba(255,140,66,0.12), rgba(255,140,66,0.06))"
+                    : "linear-gradient(135deg, rgba(255,140,66,0.06), transparent)",
                   pointerEvents: "none",
                 }}
               >

@@ -24,13 +24,13 @@ const customTheme = createSystem(defaultConfig, {
           100: { value: "#fef4e6" },
           200: { value: "#fde6c7" },
           300: { value: "#fbd49a" },
-          400: { value: "#f9c066" }, // ライトオレンジ
-          500: { value: "#ff9800" }, // メインオレンジ
-          600: { value: "#f57c00" }, // ダークオレンジ
-          700: { value: "#e65100" },
-          800: { value: "#d84315" },
-          900: { value: "#bf360c" },
-          950: { value: "#8d2600" },
+          400: { value: "#ff9f43" }, // より温かみのあるライトオレンジ
+          500: { value: "#ff8c42" }, // メインオレンジ - より洗練された色合い
+          600: { value: "#e67e22" }, // ダークオレンジ - より深みのある色
+          700: { value: "#d35400" },
+          800: { value: "#c0392b" },
+          900: { value: "#a93226" },
+          950: { value: "#8b2635" },
         },
         // アクセントカラー
         accent: {
@@ -50,14 +50,26 @@ const customTheme = createSystem(defaultConfig, {
           },
           secondary: {
             value:
-              "linear-gradient(135deg, #ff9800 0%, #f57c00 50%, #ef6c00 100%)",
+              "linear-gradient(135deg, #ff8c42 0%, #e67e22 50%, #d35400 100%)",
+          },
+          "secondary-subtle": {
+            value:
+              "linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(230, 126, 34, 0.05) 100%)",
           },
           glass: {
             value:
               "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
           },
+          "glass-warm": {
+            value:
+              "linear-gradient(135deg, rgba(255, 140, 66, 0.08) 0%, rgba(255, 140, 66, 0.02) 100%)",
+          },
           accent: {
             value: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+          },
+          "premium": {
+            value:
+              "linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, transparent 50%, rgba(255, 140, 66, 0.05) 100%)",
           },
         },
         // 特殊エフェクト用
@@ -71,9 +83,10 @@ const customTheme = createSystem(defaultConfig, {
       },
       // カスタムシャドウ
       shadows: {
-        glow: { value: "0 0 20px rgba(255, 152, 0, 0.3)" },
-        "glow-sm": { value: "0 0 10px rgba(255, 152, 0, 0.2)" },
-        "glow-lg": { value: "0 0 40px rgba(255, 152, 0, 0.4)" },
+        glow: { value: "0 0 20px rgba(255, 140, 66, 0.3)" },
+        "glow-sm": { value: "0 0 10px rgba(255, 140, 66, 0.2)" },
+        "glow-lg": { value: "0 0 40px rgba(255, 140, 66, 0.4)" },
+        "glow-subtle": { value: "0 0 30px rgba(255, 140, 66, 0.15)" },
         glass: {
           value:
             "0 8px 32px 0 rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
@@ -82,9 +95,17 @@ const customTheme = createSystem(defaultConfig, {
           value:
             "0 12px 48px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
         },
+        "glass-premium": {
+          value:
+            "0 20px 60px 0 rgba(0, 0, 0, 0.5), 0 8px 25px 0 rgba(255, 140, 66, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+        },
         neo: {
           value:
             "0 8px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+        },
+        "elevated": {
+          value:
+            "0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 140, 66, 0.1)",
         },
       },
       // カスタムフォント

@@ -122,7 +122,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       bg="gray.900"
       color="white"
       borderRadius="lg"
-      boxShadow="md"
+      boxShadow="glass-premium"
       display="flex"
       flexDirection="column"
       borderColor="gray.700"
@@ -218,8 +218,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
-                    ? "style.css"
-                    : "script.js"}
+                      ? "style.css"
+                      : "script.js"}
                 </Text>
               </Box>
             </Flex>

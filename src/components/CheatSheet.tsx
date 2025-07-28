@@ -23,18 +23,18 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
   return acc;
 }, {} as Record<CommandCategory, Command[]>);
 
-export default function CheatSheet({}: CheatSheetProps) {
+export default function CheatSheet({ }: CheatSheetProps) {
   return (
     <Box
       bg="rgba(23, 25, 35, 0.95)"
       color="white"
       borderRadius="lg"
-      boxShadow="0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.1)"
+      boxShadow="glass-premium"
       display="flex"
       flexDirection="column"
       overflow="hidden"
       border="1px solid"
-      borderColor="rgba(255, 152, 0, 0.2)"
+      borderColor="rgba(255, 140, 66, 0.2)"
       position="relative"
       backdropFilter="blur(20px)"
       // VimEditorと同じ高さに統一（黄金比は横幅の比率のみ適用）
@@ -62,7 +62,7 @@ export default function CheatSheet({}: CheatSheetProps) {
         right: 0,
         bottom: 0,
         borderRadius: "inherit",
-        bg: "linear-gradient(135deg, rgba(255,152,0,0.03) 0%, transparent 50%, rgba(255,152,0,0.01) 100%)",
+        bg: "linear-gradient(135deg, rgba(255,140,66,0.04) 0%, transparent 50%, rgba(255,140,66,0.02) 100%)",
         pointerEvents: "none",
         zIndex: 0,
       }}
@@ -185,9 +185,9 @@ export default function CheatSheet({}: CheatSheetProps) {
                   borderColor="gray.600"
                   _hover={{
                     bg: "rgba(45, 55, 72, 0.8)",
-                    borderColor: "orange.400",
+                    borderColor: "secondary.400",
                     transform: "translateY(-1px)",
-                    boxShadow: "0 4px 12px rgba(255, 152, 0, 0.15)",
+                    boxShadow: "glow-subtle",
                   }}
                   py={3}
                   px={4}
@@ -202,7 +202,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                     right: 0,
                     bottom: 0,
                     borderRadius: "inherit",
-                    bg: "linear-gradient(135deg, rgba(255,152,0,0.03), transparent)",
+                    bg: "linear-gradient(135deg, rgba(255,140,66,0.04), transparent)",
                     pointerEvents: "none",
                   }}
                 >
