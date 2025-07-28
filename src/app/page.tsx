@@ -15,7 +15,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { FiBook, FiExternalLink, FiGithub } from "react-icons/fi";
+import { FiBook, FiBookOpen, FiExternalLink, FiGithub } from "react-icons/fi";
 const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ssr: false,
 });
@@ -186,7 +186,7 @@ export default function Home() {
               content={
                 showCheatSheet
                   ? "チートシートを非表示に！"
-                  : "チートシートを表示する"
+                  : "チートシートを表示する！"
               }
               showArrow
               portalled
@@ -204,10 +204,10 @@ export default function Home() {
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
                 bg={
                   showCheatSheet
-                    ? "rgba(255,152,0,0.15)"
-                    : "rgba(255,152,0,0.08)"
+                    ? "rgba(255,140,66,0.25)" // ON: 落ち着いたオレンジ
+                    : "rgba(255,140,66,0.08)" // OFF: 薄いオレンジ
                 }
-                color={showCheatSheet ? "secondary.300" : "secondary.500"}
+                color={showCheatSheet ? "orange.200" : "orange.400"}
                 borderRadius="xl"
                 p={3}
                 width="48px"
@@ -215,15 +215,22 @@ export default function Home() {
                 minW="48px"
                 backdropFilter="blur(10px)"
                 position="relative"
+                boxShadow={
+                  showCheatSheet ? "0 0 12px rgba(255,140,66,0.2)" : "none"
+                }
                 _hover={{
-                  bg: "rgba(255,152,0,0.2)",
-                  color: "secondary.200",
-                  transform: "translateY(-2px)",
-                  boxShadow: "glow-subtle",
+                  bg: showCheatSheet
+                    ? "rgba(255,140,66,0.3)"
+                    : "rgba(255,140,66,0.12)",
+                  color: showCheatSheet ? "orange.100" : "orange.300",
+                  transform: "translateY(-1px)",
+                  boxShadow: "0 0 16px rgba(255,140,66,0.25)",
                 }}
                 _active={{
                   transform: "translateY(0)",
-                  boxShadow: "glow-sm",
+                  boxShadow: showCheatSheet
+                    ? "0 0 8px rgba(255,140,66,0.15)"
+                    : "none",
                 }}
                 _focus={{ outline: "none" }}
                 _focusVisible={{ outline: "none" }}
@@ -231,21 +238,13 @@ export default function Home() {
                 aria-label={
                   showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
                 }
-                _before={{
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  borderRadius: "inherit",
-                  bg: showCheatSheet
-                    ? "linear-gradient(135deg, rgba(255,140,66,0.12), rgba(255,140,66,0.06))"
-                    : "linear-gradient(135deg, rgba(255,140,66,0.06), transparent)",
-                  pointerEvents: "none",
-                }}
               >
-                <Icon as={FiBook} fontSize="20px" />
+                <Icon
+                  as={showCheatSheet ? FiBookOpen : FiBook}
+                  fontSize="20px"
+                  transform={showCheatSheet ? "scale(1.1)" : "scale(1)"}
+                  transition="all 0.2s ease"
+                />
               </Button>
             </Tooltip>
           </Flex>
