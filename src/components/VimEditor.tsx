@@ -359,8 +359,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 px={3}
                 transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               >
-                <Icon 
-                  as={FiRefreshCw} 
+                <Icon
+                  as={FiRefreshCw}
                   mr={1}
                   style={{
                     transition: "transform 0.3s ease",
