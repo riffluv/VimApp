@@ -209,6 +209,12 @@ export default function Home() {
                 }
                 color={showCheatSheet ? "orange.200" : "orange.400"}
                 borderRadius="xl"
+                borderWidth="1px"
+                borderColor={
+                  showCheatSheet
+                    ? "rgba(255,140,66,0.4)" // ON: オレンジのボーダー
+                    : "rgba(255,140,66,0.15)" // OFF: 薄いオレンジのボーダー
+                }
                 p={3}
                 width="48px"
                 height="48px"
@@ -222,6 +228,9 @@ export default function Home() {
                   bg: showCheatSheet
                     ? "rgba(255,140,66,0.3)"
                     : "rgba(255,140,66,0.12)",
+                  borderColor: showCheatSheet
+                    ? "rgba(255,140,66,0.5)"
+                    : "rgba(255,140,66,0.25)",
                   color: showCheatSheet ? "orange.100" : "orange.300",
                   transform: "translateY(-1px)",
                   boxShadow: "0 0 16px rgba(255,140,66,0.25)",
