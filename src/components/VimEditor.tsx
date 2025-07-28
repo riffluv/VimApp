@@ -231,15 +231,19 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               variant="ghost"
               bg={showPreview ? "gray.600" : "gray.700"}
               color={showPreview ? "orange.300" : "gray.300"}
+              borderWidth="1px"
+              borderColor={showPreview ? "gray.500" : "gray.600"}
               onClick={handlePreviewToggle}
               disabled={showCodePenMode}
               _hover={{
                 bg: "gray.600",
                 color: "orange.300",
+                borderColor: "gray.500",
               }}
               _disabled={{
                 bg: "gray.700",
                 color: "gray.500",
+                borderColor: "gray.600",
               }}
               fontSize="xs"
               fontWeight="600"
@@ -252,10 +256,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               variant="ghost"
               bg={showCodePenMode ? "gray.600" : "gray.700"}
               color={showCodePenMode ? "orange.300" : "gray.300"}
+              borderWidth="1px"
+              borderColor={showCodePenMode ? "gray.500" : "gray.600"}
               onClick={handleCodePenToggle}
               _hover={{
                 bg: "gray.600",
                 color: "orange.300",
+                borderColor: "gray.500",
               }}
               fontSize="xs"
               fontWeight="600"
@@ -283,10 +290,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg="gray.700"
                 color="gray.300"
+                borderWidth="1px"
+                borderColor="gray.600"
                 onClick={() => clearDoc(mode)}
                 _hover={{
                   bg: "gray.600",
                   color: "orange.300",
+                  borderColor: "gray.500",
                 }}
                 fontSize="xs"
                 fontWeight="600"
@@ -314,10 +324,13 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg="gray.700"
                 color="orange.400"
+                borderWidth="1px"
+                borderColor="gray.600"
                 onClick={handleResetAllWithConfirm}
                 _hover={{
                   bg: "gray.600",
                   color: "orange.300",
+                  borderColor: "gray.500",
                 }}
                 fontSize="xs"
                 fontWeight="600"
@@ -350,9 +363,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 variant="ghost"
                 bg={mode === modeType ? "gray.700" : "transparent"}
                 color={mode === modeType ? "orange.300" : "gray.400"}
+                borderWidth="1px"
+                borderColor={mode === modeType ? "gray.600" : "gray.700"}
                 _hover={{
                   bg: "gray.700",
                   color: mode === modeType ? "orange.300" : "orange.400",
+                  borderColor: mode === modeType ? "gray.600" : "gray.600",
                 }}
                 borderRadius="md"
                 fontSize="xs"
