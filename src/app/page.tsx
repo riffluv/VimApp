@@ -190,7 +190,7 @@ export default function Home() {
               }
               showArrow
               portalled
-              openDelay={75}
+              openDelay={300}
               contentProps={{
                 fontSize: "sm",
                 bg: "primary.800",
