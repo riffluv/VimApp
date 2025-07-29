@@ -265,10 +265,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 aria-pressed={showPreview}
                 _hover={{
                   bg: "gray.600",
-                  color: "orange.300",
+                  color: "secondary.400",
                   borderColor: "gray.500",
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
+                  isolation: "isolate", // CSS分離を強制
+                  zIndex: 10, // スタッキングコンテキストを作成
                 }}
                 _active={{
                   transform: "translateY(0)",
@@ -324,10 +326,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 aria-pressed={showCodePenMode}
                 _hover={{
                   bg: "gray.600",
-                  color: "orange.300",
+                  color: "secondary.400",
                   borderColor: "gray.500",
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
+                  isolation: "isolate", // CSS分離を強制
+                  zIndex: 10, // スタッキングコンテキストを作成
                 }}
                 _active={{
                   transform: "translateY(0)",
@@ -368,10 +372,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 aria-label="現在のエディタのコードをクリアする"
                 _hover={{
                   bg: "gray.600",
-                  color: "orange.300",
+                  color: "secondary.400",
                   borderColor: "gray.500",
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
+                  isolation: "isolate", // CSS分離を強制
+                  zIndex: 10, // スタッキングコンテキストを作成
                 }}
                 _active={{
                   transform: "translateY(0)",
@@ -411,10 +417,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 aria-label="全てのエディタをリセットして初期状態に戻す"
                 _hover={{
                   bg: "gray.600",
-                  color: "orange.300",
+                  color: "secondary.400",
                   borderColor: "gray.500",
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(255,140,66,0.15)",
+                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
+                  isolation: "isolate", // CSS分離を強制
+                  zIndex: 10, // スタッキングコンテキストを作成
                 }}
                 _active={{
                   transform: "scale(0.95)",
@@ -467,9 +475,11 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 position="relative"
                 _hover={{
                   bg: "gray.700",
-                  color: mode === modeType ? "orange.300" : "orange.400",
+                  color: mode === modeType ? "secondary.400" : "secondary.500",
                   borderColor: mode === modeType ? "gray.600" : "gray.600",
                   transform: "translateY(-1px)",
+                  isolation: "isolate", // CSS分離を強制
+                  zIndex: 10, // スタッキングコンテキストを作成
                 }}
                 _active={{
                   transform: "translateY(0)",
@@ -611,6 +621,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             overflow="hidden"
             bg="gray.900"
             borderRadius="0 0 lg lg"
+            isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
+            zIndex={1} // スタッキングコンテキストを作成
           >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
