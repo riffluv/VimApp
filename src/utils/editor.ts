@@ -14,6 +14,8 @@ import {
   completionStatus,
   moveCompletionSelection,
   startCompletion,
+  CompletionContext,
+  CompletionResult,
 } from "@codemirror/autocomplete";
 import { history } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
@@ -26,6 +28,8 @@ import {
   EditorView,
   keymap,
   scrollPastEnd,
+  Tooltip,
+  showTooltip,
 } from "@codemirror/view";
 import {
   abbreviationTracker,
@@ -40,82 +44,82 @@ import type { EditorMode } from "@/types/editor";
 // 自動補完の設定と位置調整
 // ==============================
 
+// ==============================
+// 自動補完の設定と位置調整
+// ==============================
+
 /**
- * 高度な自動補完設定
- * 基本設定のみでDOM操作による位置調整を別途実装
+ * シンプルで確実な自動補完設定
+ * CodeMirror 6の標準APIのみを使用
  */
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
   defaultKeymap: true,
-  aboveCursor: false, // 基本は下表示（smartPositioningで動的調整）
+  aboveCursor: false, // 基本は下表示
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
   closeOnBlur: true,
 });
 
 /**
- * 正確なカーソル位置ベースの補完位置調整
- * CodeMirror 6のDOM構造を正しく操作
+ * 視覚的位置ベースの補完位置調整
+ * 確実で安定した実装
  */
 const smartPositioning = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
-    // より確実なタイミングでDOM操作を実行
-    setTimeout(() => {
+    // 次のフレームで確実にDOM更新後に実行
+    requestAnimationFrame(() => {
       const view = update.view;
-      const tooltip = view.dom.querySelector(
-        ".cm-tooltip-autocomplete"
-      ) as HTMLElement;
-
+      const tooltip = view.dom.querySelector('.cm-tooltip-autocomplete') as HTMLElement;
+      
       if (!tooltip) return;
-
+      
       try {
         const { main } = view.state.selection;
         const cursorCoords = view.coordsAtPos(main.head);
-
+        
         if (!cursorCoords) return;
-
+        
         const editorRect = view.scrollDOM.getBoundingClientRect();
-        const viewportHeight = editorRect.height;
-
-        // スクロール位置を考慮した正確な相対位置を計算
-        const scrollTop = view.scrollDOM.scrollTop;
-        const cursorRelativeY = cursorCoords.top - editorRect.top + scrollTop;
-        const viewportMiddle = viewportHeight / 2 + scrollTop;
-
-        // ツールチップのサイズを取得
-        const tooltipRect = tooltip.getBoundingClientRect();
-        const tooltipHeight = tooltipRect.height;
-
-        // カーソルが中間より下にある場合は上に表示
-        const shouldShowAbove = cursorRelativeY > viewportMiddle;
-
-        console.log("Position calculation:", {
-          cursorTop: cursorCoords.top,
+        
+        // シンプルな視覚的位置判定
+        const cursorScreenY = cursorCoords.top;
+        const editorScreenMiddle = editorRect.top + (editorRect.height / 2);
+        
+        // カーソルが画面上でエディタの中央より下にある場合は上に表示
+        const shouldShowAbove = cursorScreenY > editorScreenMiddle;
+        
+        console.log('Final positioning logic:', {
+          cursorScreenY,
+          editorScreenMiddle,
           editorTop: editorRect.top,
-          cursorRelativeY,
-          viewportMiddle,
-          viewportHeight,
-          scrollTop,
-          shouldShowAbove,
+          editorHeight: editorRect.height,
+          shouldShowAbove
         });
-
+        
+        // 確実な位置設定
+        tooltip.style.position = 'absolute';
+        tooltip.style.transform = 'none';
+        tooltip.style.margin = '0';
+        
         if (shouldShowAbove) {
-          // 上に表示：カーソルの真上に配置
-          tooltip.style.position = "fixed";
-          tooltip.style.top = `${cursorCoords.top - tooltipHeight - 8}px`;
-          tooltip.style.left = `${cursorCoords.left}px`;
-          tooltip.setAttribute("data-position", "above");
+          // 上に表示
+          tooltip.style.top = 'auto';
+          tooltip.style.bottom = '100%';
+          tooltip.style.marginBottom = '8px';
+          tooltip.setAttribute('data-position', 'above');
         } else {
-          // 下に表示：カーソルの真下に配置
-          tooltip.style.position = "fixed";
-          tooltip.style.top = `${cursorCoords.bottom + 8}px`;
-          tooltip.style.left = `${cursorCoords.left}px`;
-          tooltip.setAttribute("data-position", "below");
+          // 下に表示
+          tooltip.style.bottom = 'auto';
+          tooltip.style.top = '100%';
+          tooltip.style.marginTop = '8px';
+          tooltip.setAttribute('data-position', 'below');
         }
+        
       } catch (error) {
-        console.warn("Position calculation error:", error);
+        console.warn('Position calculation error:', error);
       }
-    }, 20); // 少し長めの遅延でDOM更新を確実に
+    });
   }
 });
 
@@ -282,12 +286,13 @@ const autocompleteTheme = EditorView.theme({
     minHeight: "140px !important",
     overflow: "hidden !important",
     zIndex: `${EDITOR_CONFIG.autocomplete.zIndex} !important`,
-    // 位置調整のための重要なスタイル
-    position: "fixed !important", // 正確な位置制御のため
-    transform: "none !important", // smartPositioningで制御
-    margin: "0 !important", // デフォルトマージンをリセット
-    // プロフェッショナルなアニメーション
+    // 位置調整のための重要なスタイル - 相対位置ベース
+    position: "absolute !important", // 相対位置で確実な制御
+    transform: "none !important",
+    margin: "0 !important",
+    // スムーズなアニメーション
     transition: "all 0.18s cubic-bezier(0.2, 0.9, 0.3, 1) !important",
+    opacity: "1 !important",
   },
   ".cm-tooltip-autocomplete > ul": {
     fontFamily: EDITOR_CONFIG.fonts.mono,
@@ -410,7 +415,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
     oneDark,
     subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
     autocompleteTheme, // 自動補完候補のスタイリング
-    smartPositioning, // 正確なカーソル位置ベースの補完位置調整
+    smartPositioning, // 視覚的位置ベースの補完位置調整
     scrollPastEnd(), // エディタの下部に余白を追加
     scrollMargins, // カーソル周りのスクロールマージンを確保
     livecodesScrolling, // livecodesスタイルのスクロール動作
