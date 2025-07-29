@@ -8,7 +8,7 @@ import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { drawSelection, keymap } from "@codemirror/view";
+import { drawSelection, keymap, EditorView } from "@codemirror/view";
 import {
   abbreviationTracker,
   expandAbbreviation,
@@ -40,6 +40,44 @@ const commonKeymap = keymap.of([
   { key: "Cmd-e", run: expandAbbreviation },
 ]);
 
+// アクティブライン（カーソル行）のハイライトを控えめに調整
+const subtleActiveLineHighlight = EditorView.theme({
+  "&.cm-focused .cm-activeLine": {
+    backgroundColor: "rgba(232, 131, 58, 0.05) !important", // 非常に薄いオレンジ
+  },
+  ".cm-activeLine": {
+    backgroundColor: "rgba(232, 131, 58, 0.03) !important", // フォーカス外はさらに薄く
+  },
+  "&.cm-focused .cm-activeLineGutter": {
+    backgroundColor: "rgba(232, 131, 58, 0.08) !important", // ガター部分も薄く
+  },
+  ".cm-activeLineGutter": {
+    backgroundColor: "rgba(232, 131, 58, 0.05) !important",
+  },
+  // INSERT時のカーソル（縦線）は表示させる
+  ".cm-cursor": {
+    borderLeft: "2px solid #e8833a !important", // オレンジ色の縦カーソル
+    display: "block !important",
+    visibility: "visible !important",
+  },
+  "&.cm-focused .cm-cursor": {
+    borderLeft: "2px solid #e8833a !important", // フォーカス時も確実に表示
+    display: "block !important",
+    visibility: "visible !important",
+  },
+  // Vimモード別のカーソルスタイル
+  ".cm-cursor.cm-cursor-primary": {
+    borderLeft: "2px solid #e8833a !important", // INSERT mode - 縦線
+    backgroundColor: "transparent !important",
+  },
+  ".cm-cursor.cm-cursor-secondary": {
+    borderLeft: "none !important",
+    backgroundColor: "#e8833a !important", // NORMAL mode - ブロック
+    width: "8px !important",
+    height: "1.2em !important",
+  },
+});
+
 // 言語固有の拡張機能マップ
 const languageExtensions = {
   html: htmlLang(),
@@ -64,6 +102,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
     modeHistory, // 独立したhistoryインスタンス
     commonKeymap, // Emmet用キーマップ
     oneDark,
+    subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
   ];
 
   if (mode === "html" || mode === "css") {
@@ -78,6 +117,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
       emmetExtension,
       commonKeymap,
       oneDark,
+      subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
     ];
   }
 

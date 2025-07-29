@@ -124,9 +124,6 @@ button:hover,
 .cm-editor,
 .cm-content,
 .cm-line {
-  transform: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
   text-shadow: none !important;
   box-shadow: none !important;
 }
@@ -139,15 +136,12 @@ button:hover,
 .CodeMirror-lines,
 .CodeMirror-line {
   isolation: isolate !important;
-  contain: layout style !important;
   position: relative !important;
   z-index: 2 !important;
 }
 
-/* Prevent unwanted inheritance of hover/focus effects */
+/* Prevent unwanted inheritance of hover/focus effects - but preserve syntax highlighting */
 .cm-editor * {
-  color: inherit !important;
-  background: inherit !important;
   box-shadow: none !important;
   text-shadow: none !important;
   outline: none !important;
