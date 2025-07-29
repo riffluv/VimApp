@@ -8,7 +8,7 @@ import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { drawSelection, keymap, EditorView } from "@codemirror/view";
+import { drawSelection, EditorView, keymap } from "@codemirror/view";
 import {
   abbreviationTracker,
   expandAbbreviation,
