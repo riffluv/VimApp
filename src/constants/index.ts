@@ -767,4 +767,26 @@ export const EDITOR_CONFIG = {
     blockWidth: "8px",
     height: "1.2em",
   },
+  scroll: {
+    // livecodes風スクロール設定
+    margins: "120px 0", // 上下のスクロールマージン
+    bottomPadding: "30vh", // 画面の30%分の下部余白
+    cursorMargin: 150, // カーソル位置から画面下部までの最小マージン（px）
+  },
+  autocomplete: {
+    // 自動補完の設定
+    maxHeight: "200px",
+    zIndex: 1000,
+    colors: {
+      border: "rgba(232, 131, 58, 0.3)",
+      background: "rgba(26, 26, 30, 0.95)",
+      shadow:
+        "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 131, 58, 0.1)",
+      selectedBg: "rgba(232, 131, 58, 0.25)",
+      selectedBorder: "#e8833a",
+      label: "#9cdcfe",
+      detail: "#6a9955",
+      text: "#d4d4d4",
+    },
+  },
 } as const;
