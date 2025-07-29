@@ -3,12 +3,12 @@
  */
 
 import type {
-    CategoryInfo,
-    Command,
-    CommandCategory,
-    DocsState,
-    StorageKeys,
-    VimModeInfo,
+  CategoryInfo,
+  Command,
+  CommandCategory,
+  DocsState,
+  StorageKeys,
+  VimModeInfo,
 } from "@/types/editor";
 import { FiCommand, FiCpu, FiEdit2, FiSearch } from "react-icons/fi";
 
@@ -52,7 +52,8 @@ export const CATEGORY_INFO: Record<CommandCategory, CategoryInfo> = {
     icon: FiCommand,
     color: "blue.400",
     title: "2. 文字入力と編集の基本",
-    description: "文字を入力したり、削除したり。Vimの基本的な編集操作を覚えよう。",
+    description:
+      "文字を入力したり、削除したり。Vimの基本的な編集操作を覚えよう。",
   },
   editing: {
     icon: FiCpu,
@@ -85,8 +86,16 @@ export const CHEAT_SHEET_COMMANDS: Command[] = [
   // 2. 文字入力と編集の基本
   { command: "i", description: "カーソル位置で入力開始", category: "movement" },
   { command: "a", description: "カーソルの次で入力開始", category: "movement" },
-  { command: "o", description: "下に新しい行を作って入力", category: "movement" },
-  { command: "O", description: "上に新しい行を作って入力", category: "movement" },
+  {
+    command: "o",
+    description: "下に新しい行を作って入力",
+    category: "movement",
+  },
+  {
+    command: "O",
+    description: "上に新しい行を作って入力",
+    category: "movement",
+  },
   { command: "A", description: "行末で入力開始", category: "movement" },
   { command: "I", description: "行頭で入力開始", category: "movement" },
   { command: "Esc", description: "ノーマルモードに戻る", category: "movement" },
@@ -110,7 +119,11 @@ export const CHEAT_SHEET_COMMANDS: Command[] = [
   { command: ".", description: "直前の操作を繰り返し", category: "editing" },
 
   // 4. 実務で使える便利技
-  { command: "ciw", description: "単語を変更（クラス名等）", category: "webdev" },
+  {
+    command: "ciw",
+    description: "単語を変更（クラス名等）",
+    category: "webdev",
+  },
   { command: 'ci"', description: '"の中身を変更', category: "webdev" },
   { command: "ci'", description: "'の中身を変更", category: "webdev" },
   { command: "ci(", description: "()の中身を変更", category: "webdev" },
@@ -119,7 +132,11 @@ export const CHEAT_SHEET_COMMANDS: Command[] = [
   { command: "cc", description: "行全体を変更", category: "webdev" },
   { command: ">>", description: "行を右にインデント", category: "webdev" },
   { command: "<<", description: "行を左にインデント", category: "webdev" },
-  { command: "Ctrl+v", description: "矩形選択（複数行編集）", category: "webdev" },
+  {
+    command: "Ctrl+v",
+    description: "矩形選択（複数行編集）",
+    category: "webdev",
+  },
   { command: ":%s/old/new/g", description: "全体置換", category: "webdev" },
   { command: "%", description: "対応する括弧へジャンプ", category: "webdev" },
 ];

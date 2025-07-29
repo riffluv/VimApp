@@ -212,7 +212,7 @@ export const ANIMATION_VARIANTS = {
 
 ---
 
-## 11. リファクタリング済みパターン（2025年7月29日更新）
+## 11. リファクタリング済みパターン（2025 年 7 月 29 日更新）
 
 ### 11.1. スタイル関数パターン
 
@@ -242,7 +242,7 @@ const getButtonBaseStyle = (isActive = false) => ({
   _active={getButtonActiveStyle()}
 >
   Preview
-</Button>
+</Button>;
 ```
 
 ### 11.2. 設定の外部化
@@ -332,7 +332,7 @@ export const ANIMATION_VARIANTS = {
 </MotionBox>
 ```
 
-### 11.4. CSS分離とホバー効果
+### 11.4. CSS 分離とホバー効果
 
 **[OK] 推奨パターン:**
 
@@ -341,7 +341,7 @@ export const ANIMATION_VARIANTS = {
 const getButtonHoverStyle = () => ({
   bg: "gray.600",
   color: UI_STYLES.colors.primary,
-  borderColor: "gray.500", 
+  borderColor: "gray.500",
   transform: "translateY(-1px)",
   boxShadow: UI_STYLES.shadow.subtle,
   isolation: "isolate", // CSS分離を強制
@@ -354,10 +354,10 @@ const getButtonHoverStyle = () => ({
   zIndex={1} // スタッキングコンテキストを作成
 >
   <CodeMirror {...props} />
-</Box>
+</Box>;
 ```
 
-**理由:** 2025年7月29日の作業で判明したように、ボタンのホバー効果がCodeMirrorエディタのコンテンツに予期しない影響を与える可能性があります。CSS分離(`isolation: "isolate"`)とスタッキングコンテキスト(`zIndex`)を適切に使用することで、この問題を防げます。
+**理由:** 2025 年 7 月 29 日の作業で判明したように、ボタンのホバー効果が CodeMirror エディタのコンテンツに予期しない影響を与える可能性があります。CSS 分離(`isolation: "isolate"`)とスタッキングコンテキスト(`zIndex`)を適切に使用することで、この問題を防げます。
 
 ---
 

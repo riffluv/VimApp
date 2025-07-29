@@ -10,11 +10,11 @@ import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
 
-import { 
-  VIM_MODE_INFO, 
-  ANIMATION_VARIANTS, 
-  UI_STYLES, 
-  EDITOR_CONFIG 
+import {
+  ANIMATION_VARIANTS,
+  EDITOR_CONFIG,
+  UI_STYLES,
+  VIM_MODE_INFO,
 } from "@/constants";
 import {
   useDocs,
@@ -50,7 +50,7 @@ const getButtonBaseStyle = (isActive = false) => ({
 const getButtonHoverStyle = () => ({
   bg: "gray.600",
   color: UI_STYLES.colors.primary,
-  borderColor: "gray.500", 
+  borderColor: "gray.500",
   transform: "translateY(-1px)",
   boxShadow: UI_STYLES.shadow.subtle,
   isolation: "isolate",
@@ -460,7 +460,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         >
           {/* 左側: HTML/CSS/JSタブ - ヘッダーボタンとの統一感 */}
           <HStack gap={UI_STYLES.spacing.buttonGap}>
-            {(EDITOR_CONFIG.modes).map((modeType) => (
+            {EDITOR_CONFIG.modes.map((modeType) => (
               <Button
                 key={modeType}
                 {...getModeTabStyle(mode === modeType, modeType)}
