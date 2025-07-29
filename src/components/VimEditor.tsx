@@ -10,7 +10,12 @@ import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
 
-import { VIM_MODE_INFO } from "@/constants";
+import { 
+  VIM_MODE_INFO, 
+  ANIMATION_VARIANTS, 
+  UI_STYLES, 
+  EDITOR_CONFIG 
+} from "@/constants";
 import {
   useDocs,
   useEditorExtensions,
@@ -26,6 +31,79 @@ const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
 const MotionBox = motion(Box);
 const MotionFlex = motion(Flex);
 const MotionText = motion(Text);
+
+// 共通ボタンスタイル（マジックナンバー排除）
+const getButtonBaseStyle = (isActive = false) => ({
+  size: "sm" as const,
+  variant: "ghost" as const,
+  bg: isActive ? "gray.600" : "gray.700",
+  color: isActive ? UI_STYLES.colors.primary : "gray.300",
+  borderWidth: "1px",
+  borderColor: isActive ? "gray.500" : "gray.600",
+  fontSize: "xs",
+  fontWeight: "600",
+  px: 3,
+  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
+  fontFamily: EDITOR_CONFIG.fonts.ui,
+});
+
+const getButtonHoverStyle = () => ({
+  bg: "gray.600",
+  color: UI_STYLES.colors.primary,
+  borderColor: "gray.500", 
+  transform: "translateY(-1px)",
+  boxShadow: UI_STYLES.shadow.subtle,
+  isolation: "isolate",
+  zIndex: 10,
+});
+
+const getButtonActiveStyle = () => ({
+  transform: "translateY(0)",
+  transition: "transform 0.1s ease",
+});
+
+// モード切り替えタブ専用スタイル
+const getModeTabStyle = (isActive: boolean, modeType: string) => ({
+  size: "sm" as const,
+  variant: "ghost" as const,
+  bg: isActive ? "gray.700" : "transparent",
+  color: isActive ? "orange.300" : "gray.400",
+  borderWidth: "1px",
+  borderColor: isActive ? "gray.600" : "gray.700",
+  borderRadius: "md",
+  fontSize: "xs",
+  fontWeight: "600",
+  px: 3,
+  py: 1,
+  h: "auto",
+  textTransform: "uppercase" as const,
+  letterSpacing: "wide",
+  fontFamily: "mono",
+  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
+  position: "relative" as const,
+  _before: isActive
+    ? {
+        content: '""',
+        position: "absolute",
+        bottom: "-1px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "60%",
+        height: "2px",
+        bg: "orange.400",
+        borderRadius: "1px",
+      }
+    : undefined,
+});
+
+const getModeTabHoverStyle = (isActive: boolean) => ({
+  bg: "gray.700",
+  color: isActive ? UI_STYLES.colors.primary : "secondary.500",
+  borderColor: isActive ? "gray.600" : "gray.600",
+  transform: "translateY(-1px)",
+  isolation: "isolate",
+  zIndex: 10,
+});
 
 type VimEditorProps = {
   onCodePenModeChange?: (isCodePenMode: boolean) => void;
@@ -119,9 +197,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
   return (
     <MotionBox
+      initial="hidden"
+      animate="visible"
+      variants={ANIMATION_VARIANTS.container}
       bg="gray.900"
       color="white"
-      borderRadius="lg"
+      borderRadius={UI_STYLES.spacing.borderRadius}
       boxShadow="glass-premium"
       display="flex"
       flexDirection="column"
@@ -145,8 +226,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
         md: "clamp(618px, 56vh, 1000px)",
         lg: "clamp(700px, 62vh, 1120px)",
       }}
-      initial="hidden"
-      animate="visible"
       borderWidth="1px"
     >
       {/* すべての要素を1つの親要素でラップ */}
@@ -247,12 +326,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               }}
             >
               <Button
-                size="sm"
-                variant="ghost"
-                bg={showPreview ? "gray.600" : "gray.700"}
-                color={showPreview ? "secondary.400" : "gray.300"}
-                borderWidth="1px"
-                borderColor={showPreview ? "gray.500" : "gray.600"}
+                {...getButtonBaseStyle(showPreview)}
                 onClick={handlePreviewToggle}
                 disabled={showCodePenMode}
                 aria-label={
@@ -263,19 +337,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     : "HTMLプレビューを表示する"
                 }
                 aria-pressed={showPreview}
-                _hover={{
-                  bg: "gray.600",
-                  color: "secondary.400",
-                  borderColor: "gray.500",
-                  transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
-                  isolation: "isolate", // CSS分離を強制
-                  zIndex: 10, // スタッキングコンテキストを作成
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  transition: "transform 0.1s ease",
-                }}
+                _hover={getButtonHoverStyle()}
+                _active={getButtonActiveStyle()}
                 _disabled={{
                   bg: "gray.700",
                   color: "gray.500",
@@ -283,11 +346,6 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   transform: "none",
                   boxShadow: "none",
                 }}
-                fontSize="xs"
-                fontWeight="600"
-                px={3}
-                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
               >
                 Preview
               </Button>
@@ -311,12 +369,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               }}
             >
               <Button
-                size="sm"
-                variant="ghost"
-                bg={showCodePenMode ? "gray.600" : "gray.700"}
-                color={showCodePenMode ? "secondary.400" : "gray.300"}
-                borderWidth="1px"
-                borderColor={showCodePenMode ? "gray.500" : "gray.600"}
+                {...getButtonBaseStyle(showCodePenMode)}
                 onClick={handleCodePenToggle}
                 aria-label={
                   showCodePenMode
@@ -324,26 +377,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                     : "エディタとプレビューを並べて表示する"
                 }
                 aria-pressed={showCodePenMode}
-                _hover={{
-                  bg: "gray.600",
-                  color: "secondary.400",
-                  borderColor: "gray.500",
-                  transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
-                  isolation: "isolate", // CSS分離を強制
-                  zIndex: 10, // スタッキングコンテキストを作成
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  transition: "transform 0.1s ease",
-                }}
-                fontSize="xs"
-                fontWeight="600"
-                px={3}
-                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
+                _hover={getButtonHoverStyle()}
+                _active={getButtonActiveStyle()}
               >
-                <Icon as={FiBookOpen} mr={1.5} />
+                <Icon as={FiBookOpen} mr={UI_STYLES.spacing.iconMargin} />
                 CodePen
               </Button>
             </Tooltip>
@@ -362,32 +399,12 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               }}
             >
               <Button
-                size="sm"
-                variant="ghost"
-                bg="gray.700"
-                color="gray.300"
-                borderWidth="1px"
-                borderColor="gray.600"
+                {...getButtonBaseStyle(false)}
                 onClick={() => clearDoc(mode)}
                 aria-label="現在のエディタのコードをクリアする"
-                _hover={{
-                  bg: "gray.600",
-                  color: "secondary.400",
-                  borderColor: "gray.500",
-                  transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
-                  isolation: "isolate", // CSS分離を強制
-                  zIndex: 10, // スタッキングコンテキストを作成
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  transition: "transform 0.1s ease",
-                }}
-                fontSize="xs"
-                fontWeight="600"
+                _hover={getButtonHoverStyle()}
+                _active={getButtonActiveStyle()}
                 px={2}
-                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
               >
                 <GiBroom />
               </Button>
@@ -407,36 +424,16 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               }}
             >
               <Button
-                size="sm"
-                variant="ghost"
-                bg="gray.700"
+                {...getButtonBaseStyle(false)}
                 color="orange.400"
-                borderWidth="1px"
-                borderColor="gray.600"
                 onClick={handleResetAllWithConfirm}
                 aria-label="全てのエディタをリセットして初期状態に戻す"
-                _hover={{
-                  bg: "gray.600",
-                  color: "secondary.400",
-                  borderColor: "gray.500",
-                  transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(232,131,58,0.15)",
-                  isolation: "isolate", // CSS分離を強制
-                  zIndex: 10, // スタッキングコンテキストを作成
-                }}
-                _active={{
-                  transform: "scale(0.95)",
-                  transition: "transform 0.1s ease",
-                }}
-                fontSize="xs"
-                fontWeight="600"
-                px={3}
-                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                fontFamily="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif"
+                _hover={getButtonHoverStyle()}
+                _active={getButtonActiveStyle()}
               >
                 <Icon
                   as={FiRefreshCw}
-                  mr={1.5}
+                  mr={UI_STYLES.spacing.iconMargin}
                   style={{
                     transition: "transform 0.3s ease",
                   }}
@@ -462,55 +459,14 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           position="relative"
         >
           {/* 左側: HTML/CSS/JSタブ - ヘッダーボタンとの統一感 */}
-          <HStack gap={1}>
-            {(["html", "css", "js"] as EditorMode[]).map((modeType) => (
+          <HStack gap={UI_STYLES.spacing.buttonGap}>
+            {(EDITOR_CONFIG.modes).map((modeType) => (
               <Button
                 key={modeType}
-                size="sm"
-                variant="ghost"
-                bg={mode === modeType ? "gray.700" : "transparent"}
-                color={mode === modeType ? "orange.300" : "gray.400"}
-                borderWidth="1px"
-                borderColor={mode === modeType ? "gray.600" : "gray.700"}
-                position="relative"
-                _hover={{
-                  bg: "gray.700",
-                  color: mode === modeType ? "secondary.400" : "secondary.500",
-                  borderColor: mode === modeType ? "gray.600" : "gray.600",
-                  transform: "translateY(-1px)",
-                  isolation: "isolate", // CSS分離を強制
-                  zIndex: 10, // スタッキングコンテキストを作成
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  transition: "transform 0.1s ease",
-                }}
-                borderRadius="md"
-                fontSize="xs"
-                fontWeight="600"
-                px={3}
-                py={1}
-                h="auto"
-                textTransform="uppercase"
-                letterSpacing="wide"
-                fontFamily="mono"
+                {...getModeTabStyle(mode === modeType, modeType)}
                 onClick={() => handleModeChangeWithStateSave(modeType)}
-                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-                _before={
-                  mode === modeType
-                    ? {
-                        content: '""',
-                        position: "absolute",
-                        bottom: "-1px",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        width: "60%",
-                        height: "2px",
-                        bg: "orange.400",
-                        borderRadius: "1px",
-                      }
-                    : undefined
-                }
+                _hover={getModeTabHoverStyle(mode === modeType)}
+                _active={getButtonActiveStyle()}
               >
                 {modeType}
               </Button>
@@ -521,9 +477,10 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
           <AnimatePresence mode="wait">
             <MotionFlex
               key={vimMode}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={ANIMATION_VARIANTS.modeIndicator}
               align="center"
               gap={2}
               bg="gray.700"
@@ -558,7 +515,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             h="100%"
             bg="white"
             overflow="hidden"
-            borderRadius="0 0 lg lg"
+            borderRadius={`0 0 ${UI_STYLES.spacing.borderRadius} ${UI_STYLES.spacing.borderRadius}`}
           >
             <iframe
               srcDoc={previewSrcDoc}
@@ -598,8 +555,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                   fontSize: "14px",
                   height: "100%",
                   backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
-                  fontFamily:
-                    "'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
+                  fontFamily: EDITOR_CONFIG.fonts.mono,
                 }}
                 autoFocus
                 initialState={
@@ -620,7 +576,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             position="relative"
             overflow="hidden"
             bg="gray.900"
-            borderRadius="0 0 lg lg"
+            borderRadius={`0 0 ${UI_STYLES.spacing.borderRadius} ${UI_STYLES.spacing.borderRadius}`}
             isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
             zIndex={1} // スタッキングコンテキストを作成
           >
@@ -637,8 +593,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 fontSize: "14px",
                 height: "100%",
                 backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
-                fontFamily:
-                  "'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
+                fontFamily: EDITOR_CONFIG.fonts.mono,
               }}
               autoFocus
               initialState={

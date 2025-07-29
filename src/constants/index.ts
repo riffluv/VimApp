@@ -706,3 +706,48 @@ export const EMMET_CONFIGS = {
     },
   },
 } as const;
+
+// UI スタイリング定数
+export const UI_STYLES = {
+  animation: {
+    // Framer Motion のイージング設定
+    spring: { type: "spring", damping: 25, stiffness: 300 },
+    easeOut: { type: "tween", ease: "easeOut", duration: 0.2 },
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+  },
+  spacing: {
+    // 統一されたスペーシング
+    buttonGap: 1,
+    containerPadding: 4,
+    borderRadius: "lg",
+    iconMargin: 1.5,
+  },
+  shadow: {
+    // ホバー効果のシャドウ
+    subtle: "0 4px 12px rgba(232,131,58,0.15)",
+    medium: "0 6px 20px rgba(232,131,58,0.2)",
+  },
+  colors: {
+    // アクセントカラー（オレンジ系）
+    primary: "secondary.400", // オレンジ
+    accent: "#e8833a", // 直接的なオレンジ
+    transparent: "rgba(232,131,58,0.15)",
+  },
+} as const;
+
+// エディタ設定
+export const EDITOR_CONFIG = {
+  modes: ["html", "css", "js"] as const,
+  defaultMode: "html" as const,
+  fonts: {
+    mono: "JetBrains Mono, 'Fira Code', 'SF Mono', 'Monaco', Menlo, 'Ubuntu Mono', monospace",
+    ui: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif",
+  },
+  cursor: {
+    // カーソルの色とサイズ
+    color: "#e8833a",
+    width: "2px",
+    blockWidth: "8px",
+    height: "1.2em",
+  },
+} as const;

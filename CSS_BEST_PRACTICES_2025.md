@@ -212,7 +212,156 @@ export const ANIMATION_VARIANTS = {
 
 ---
 
-**このガイドラインは、今後のすべての UI 実装とレビューの基準となります。**
+## 11. リファクタリング済みパターン（2025年7月29日更新）
+
+### 11.1. スタイル関数パターン
+
+**[OK] 推奨パターン:**
+
+```typescript
+// 共通スタイル関数でマジックナンバーを排除
+const getButtonBaseStyle = (isActive = false) => ({
+  size: "sm" as const,
+  variant: "ghost" as const,
+  bg: isActive ? "gray.600" : "gray.700",
+  color: isActive ? UI_STYLES.colors.primary : "gray.300",
+  borderWidth: "1px",
+  borderColor: isActive ? "gray.500" : "gray.600",
+  fontSize: "xs",
+  fontWeight: "600",
+  px: 3,
+  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
+  fontFamily: EDITOR_CONFIG.fonts.ui,
+});
+
+// 使用例
+<Button
+  {...getButtonBaseStyle(showPreview)}
+  onClick={handlePreviewToggle}
+  _hover={getButtonHoverStyle()}
+  _active={getButtonActiveStyle()}
+>
+  Preview
+</Button>
+```
+
+### 11.2. 設定の外部化
+
+**[OK] 推奨パターン:**
+
+```typescript
+// constants/index.ts
+export const UI_STYLES = {
+  animation: {
+    spring: { type: "spring", damping: 25, stiffness: 300 },
+    easeOut: { type: "tween", ease: "easeOut", duration: 0.2 },
+    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+  },
+  spacing: {
+    buttonGap: 1,
+    containerPadding: 4,
+    borderRadius: "lg",
+    iconMargin: 1.5,
+  },
+  shadow: {
+    subtle: "0 4px 12px rgba(232,131,58,0.15)",
+    medium: "0 6px 20px rgba(232,131,58,0.2)",
+  },
+  colors: {
+    primary: "secondary.400",
+    accent: "#e8833a",
+    transparent: "rgba(232,131,58,0.15)",
+  },
+} as const;
+
+export const EDITOR_CONFIG = {
+  modes: ["html", "css", "js"] as const,
+  defaultMode: "html" as const,
+  fonts: {
+    mono: "JetBrains Mono, 'Fira Code', 'SF Mono', 'Monaco', Menlo, 'Ubuntu Mono', monospace",
+    ui: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif",
+  },
+  cursor: {
+    color: "#e8833a",
+    width: "2px",
+    blockWidth: "8px",
+    height: "1.2em",
+  },
+} as const;
+```
+
+### 11.3. アニメーション統一
+
+**[OK] 推奨パターン:**
+
+```jsx
+// constants/index.ts でアニメーションバリアントを定義
+export const ANIMATION_VARIANTS = {
+  container: {
+    hidden: { opacity: 0, scale: 0.98 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.4, staggerChildren: 0.05 },
+    },
+  },
+  modeIndicator: {
+    hidden: { opacity: 0, x: -15, scale: 0.9 },
+    visible: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.3 } },
+    exit: { opacity: 0, x: 15, scale: 0.9, transition: { duration: 0.2 } },
+  },
+} as const;
+
+// コンポーネントで使用
+<MotionBox
+  initial="hidden"
+  animate="visible"
+  variants={ANIMATION_VARIANTS.container}
+>
+  <AnimatePresence mode="wait">
+    <MotionFlex
+      key={vimMode}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={ANIMATION_VARIANTS.modeIndicator}
+    >
+      {content}
+    </MotionFlex>
+  </AnimatePresence>
+</MotionBox>
+```
+
+### 11.4. CSS分離とホバー効果
+
+**[OK] 推奨パターン:**
+
+```jsx
+// ホバー効果の分離
+const getButtonHoverStyle = () => ({
+  bg: "gray.600",
+  color: UI_STYLES.colors.primary,
+  borderColor: "gray.500", 
+  transform: "translateY(-1px)",
+  boxShadow: UI_STYLES.shadow.subtle,
+  isolation: "isolate", // CSS分離を強制
+  zIndex: 10, // スタッキングコンテキストを作成
+});
+
+// エディタコンテナの保護
+<Box
+  isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
+  zIndex={1} // スタッキングコンテキストを作成
+>
+  <CodeMirror {...props} />
+</Box>
+```
+
+**理由:** 2025年7月29日の作業で判明したように、ボタンのホバー効果がCodeMirrorエディタのコンテンツに予期しない影響を与える可能性があります。CSS分離(`isolation: "isolate"`)とスタッキングコンテキスト(`zIndex`)を適切に使用することで、この問題を防げます。
+
+---
+
+**このリファクタリング済みパターンは、今後のコンポーネント開発の基準となります。**
 
 ---
 

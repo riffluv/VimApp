@@ -15,7 +15,7 @@ import {
 } from "@emmetio/codemirror6-plugin";
 import { vim } from "@replit/codemirror-vim";
 
-import { EMMET_CONFIGS } from "@/constants";
+import { EMMET_CONFIGS, EDITOR_CONFIG } from "@/constants";
 import type { EditorMode } from "@/types/editor";
 
 // Vimキーバインドを保護するための最小限のキーマップ
@@ -56,25 +56,25 @@ const subtleActiveLineHighlight = EditorView.theme({
   },
   // INSERT時のカーソル（縦線）は表示させる
   ".cm-cursor": {
-    borderLeft: "2px solid #e8833a !important", // オレンジ色の縦カーソル
+    borderLeft: `${EDITOR_CONFIG.cursor.width} solid ${EDITOR_CONFIG.cursor.color} !important`, 
     display: "block !important",
     visibility: "visible !important",
   },
   "&.cm-focused .cm-cursor": {
-    borderLeft: "2px solid #e8833a !important", // フォーカス時も確実に表示
+    borderLeft: `${EDITOR_CONFIG.cursor.width} solid ${EDITOR_CONFIG.cursor.color} !important`, 
     display: "block !important",
     visibility: "visible !important",
   },
   // Vimモード別のカーソルスタイル
   ".cm-cursor.cm-cursor-primary": {
-    borderLeft: "2px solid #e8833a !important", // INSERT mode - 縦線
+    borderLeft: `${EDITOR_CONFIG.cursor.width} solid ${EDITOR_CONFIG.cursor.color} !important`, // INSERT mode - 縦線
     backgroundColor: "transparent !important",
   },
   ".cm-cursor.cm-cursor-secondary": {
     borderLeft: "none !important",
-    backgroundColor: "#e8833a !important", // NORMAL mode - ブロック
-    width: "8px !important",
-    height: "1.2em !important",
+    backgroundColor: `${EDITOR_CONFIG.cursor.color} !important`, // NORMAL mode - ブロック
+    width: `${EDITOR_CONFIG.cursor.blockWidth} !important`,
+    height: `${EDITOR_CONFIG.cursor.height} !important`,
   },
 });
 
