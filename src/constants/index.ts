@@ -727,6 +727,22 @@ export const EMMET_CONFIGS = {
       },
     },
   },
+  js: {
+    autocompleteTab: true,
+    config: {
+      markup: {
+        options: {
+          // JSX風のEmmet補完を有効化
+          "markup.attributes": {
+            className: "",
+            onClick: "() => {}",
+          },
+          "abbreviation.triggers": "tab,enter",
+          "completion.previewEnabled": true,
+        },
+      },
+    },
+  },
 } as const;
 
 // UI スタイリング定数

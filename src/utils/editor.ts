@@ -14,8 +14,6 @@ import {
   completionStatus,
   moveCompletionSelection,
   startCompletion,
-  CompletionContext,
-  CompletionResult,
 } from "@codemirror/autocomplete";
 import { history } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
@@ -28,8 +26,6 @@ import {
   EditorView,
   keymap,
   scrollPastEnd,
-  Tooltip,
-  showTooltip,
 } from "@codemirror/view";
 import {
   abbreviationTracker,
@@ -59,6 +55,7 @@ const advancedAutocompletion = autocompletion({
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
   closeOnBlur: true,
+  tooltipClass: () => "cm-tooltip-no-animation", // アニメーション無効化クラス
 });
 
 /**
@@ -70,54 +67,55 @@ const smartPositioning = EditorView.updateListener.of((update) => {
     // 次のフレームで確実にDOM更新後に実行
     requestAnimationFrame(() => {
       const view = update.view;
-      const tooltip = view.dom.querySelector('.cm-tooltip-autocomplete') as HTMLElement;
-      
+      const tooltip = view.dom.querySelector(
+        ".cm-tooltip-autocomplete"
+      ) as HTMLElement;
+
       if (!tooltip) return;
-      
+
       try {
         const { main } = view.state.selection;
         const cursorCoords = view.coordsAtPos(main.head);
-        
+
         if (!cursorCoords) return;
-        
+
         const editorRect = view.scrollDOM.getBoundingClientRect();
-        
+
         // シンプルな視覚的位置判定
         const cursorScreenY = cursorCoords.top;
-        const editorScreenMiddle = editorRect.top + (editorRect.height / 2);
-        
+        const editorScreenMiddle = editorRect.top + editorRect.height / 2;
+
         // カーソルが画面上でエディタの中央より下にある場合は上に表示
         const shouldShowAbove = cursorScreenY > editorScreenMiddle;
-        
-        console.log('Final positioning logic:', {
+
+        console.log("Final positioning logic:", {
           cursorScreenY,
           editorScreenMiddle,
           editorTop: editorRect.top,
           editorHeight: editorRect.height,
-          shouldShowAbove
+          shouldShowAbove,
         });
-        
+
         // 確実な位置設定
-        tooltip.style.position = 'absolute';
-        tooltip.style.transform = 'none';
-        tooltip.style.margin = '0';
-        
+        tooltip.style.position = "absolute";
+        tooltip.style.transform = "none";
+        tooltip.style.margin = "0";
+
         if (shouldShowAbove) {
           // 上に表示
-          tooltip.style.top = 'auto';
-          tooltip.style.bottom = '100%';
-          tooltip.style.marginBottom = '8px';
-          tooltip.setAttribute('data-position', 'above');
+          tooltip.style.top = "auto";
+          tooltip.style.bottom = "100%";
+          tooltip.style.marginBottom = "8px";
+          tooltip.setAttribute("data-position", "above");
         } else {
           // 下に表示
-          tooltip.style.bottom = 'auto';
-          tooltip.style.top = '100%';
-          tooltip.style.marginTop = '8px';
-          tooltip.setAttribute('data-position', 'below');
+          tooltip.style.bottom = "auto";
+          tooltip.style.top = "100%";
+          tooltip.style.marginTop = "8px";
+          tooltip.setAttribute("data-position", "below");
         }
-        
       } catch (error) {
-        console.warn('Position calculation error:', error);
+        console.warn("Position calculation error:", error);
       }
     });
   }
@@ -277,95 +275,106 @@ const subtleActiveLineHighlight = EditorView.theme({
  */
 const autocompleteTheme = EditorView.theme({
   ".cm-tooltip-autocomplete": {
-    border: `1px solid ${EDITOR_CONFIG.autocomplete.colors.border} !important`,
-    borderRadius: `${EDITOR_CONFIG.autocomplete.spacing.borderRadius} !important`,
-    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.background} !important`,
-    backdropFilter: "blur(20px) saturate(1.2) !important",
-    boxShadow: `${EDITOR_CONFIG.autocomplete.colors.shadow} !important`,
-    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight} !important`,
-    minHeight: "140px !important",
-    overflow: "hidden !important",
-    zIndex: `${EDITOR_CONFIG.autocomplete.zIndex} !important`,
+    border: `1px solid ${EDITOR_CONFIG.autocomplete.colors.border}`,
+    borderRadius: `${EDITOR_CONFIG.autocomplete.spacing.borderRadius}`,
+    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.background}`,
+    backdropFilter: "blur(20px) saturate(1.2)",
+    boxShadow: `${EDITOR_CONFIG.autocomplete.colors.shadow}`,
+    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight}`,
+    minHeight: "140px",
+    overflow: "hidden",
+    zIndex: `${EDITOR_CONFIG.autocomplete.zIndex}`,
     // 位置調整のための重要なスタイル - 相対位置ベース
-    position: "absolute !important", // 相対位置で確実な制御
-    transform: "none !important",
-    margin: "0 !important",
-    // スムーズなアニメーション
-    transition: "all 0.18s cubic-bezier(0.2, 0.9, 0.3, 1) !important",
-    opacity: "1 !important",
+    position: "absolute",
+    transform: "none",
+    margin: "0",
+    // アニメーション完全無効化でやかましさを排除
+    transition: "none",
+    opacity: "1",
   },
   ".cm-tooltip-autocomplete > ul": {
     fontFamily: EDITOR_CONFIG.fonts.mono,
-    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize} !important`,
-    lineHeight: `${EDITOR_CONFIG.autocomplete.typography.lineHeight} !important`,
-    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.fontWeight} !important`,
-    margin: "0 !important",
-    padding: `${EDITOR_CONFIG.autocomplete.spacing.listPadding} !important`,
-    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight} !important`,
-    overflow: "auto !important",
+    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize}`,
+    lineHeight: `${EDITOR_CONFIG.autocomplete.typography.lineHeight}`,
+    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.fontWeight}`,
+    margin: "0",
+    padding: `${EDITOR_CONFIG.autocomplete.spacing.listPadding}`,
+    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight}`,
+    overflow: "auto",
     // ミニマルスクロールバー
     scrollbarWidth: "thin",
     scrollbarColor: "rgba(232, 131, 58, 0.25) transparent",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar": {
-    width: "4px !important", // より細いスクロールバー
+    width: "4px",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-track": {
-    background: "transparent !important",
+    background: "transparent",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb": {
-    background: "rgba(232, 131, 58, 0.3) !important",
-    borderRadius: "2px !important",
+    background: "rgba(232, 131, 58, 0.3)",
+    borderRadius: "2px",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb:hover": {
-    background: "rgba(232, 131, 58, 0.5) !important",
+    background: "rgba(232, 131, 58, 0.5)",
   },
   ".cm-tooltip-autocomplete ul li": {
-    padding: `${EDITOR_CONFIG.autocomplete.spacing.itemPadding} !important`,
-    borderRadius: "0 !important",
-    transition: "all 0.12s ease-out !important", // より俊敏な反応
-    color: `${EDITOR_CONFIG.autocomplete.colors.text} !important`,
-    backgroundColor: "transparent !important",
-    cursor: "pointer !important",
-    border: "none !important",
-    borderLeft: "2px solid transparent !important", // より細いアクセント
-    position: "relative !important",
+    padding: `${EDITOR_CONFIG.autocomplete.spacing.itemPadding}`,
+    borderRadius: "0",
+    transition: "none", // アニメーション完全無効化
+    color: `${EDITOR_CONFIG.autocomplete.colors.text}`,
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    border: "none",
+    borderLeft: "2px solid transparent",
+    position: "relative",
     // 情報密度を高める行間調整
-    display: "flex !important",
-    alignItems: "center !important",
+    display: "flex",
+    alignItems: "center",
   },
   ".cm-tooltip-autocomplete ul li:hover": {
-    backgroundColor: "rgba(232, 131, 58, 0.06) !important", // 超控えめなホバー
-    borderLeft: "2px solid rgba(232, 131, 58, 0.25) !important",
+    backgroundColor: "rgba(232, 131, 58, 0.06)",
+    borderLeft: "2px solid rgba(232, 131, 58, 0.25)",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected]": {
-    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.selectedBg} !important`,
-    color: "#ffffff !important",
-    borderLeft: `2px solid ${EDITOR_CONFIG.autocomplete.colors.selectedAccent} !important`,
-    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.selectedFontWeight} !important`,
+    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.selectedBg}`,
+    color: "#ffffff",
+    borderLeft: `2px solid ${EDITOR_CONFIG.autocomplete.colors.selectedAccent}`,
+    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.selectedFontWeight}`,
     // 選択時の微細なエレベーション効果
-    boxShadow: "inset 0 0 0 0.5px rgba(232, 131, 58, 0.1) !important",
+    boxShadow: "inset 0 0 0 0.5px rgba(232, 131, 58, 0.1)",
   },
   // Emmet候補の詳細スタイル - 超一流の情報階層
   ".cm-tooltip-autocomplete .cm-completionLabel": {
-    color: `${EDITOR_CONFIG.autocomplete.colors.label} !important`,
-    fontWeight: "500 !important",
-    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize} !important`,
-    flex: "1 !important", // フレックス最適化
+    color: `${EDITOR_CONFIG.autocomplete.colors.label}`,
+    fontWeight: "500",
+    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize}`,
+    flex: "1",
   },
   ".cm-tooltip-autocomplete .cm-completionDetail": {
-    color: `${EDITOR_CONFIG.autocomplete.colors.detail} !important`,
-    fontSize: "10px !important", // よりコンパクトな詳細情報
-    fontStyle: "normal !important",
-    marginLeft: "8px !important", // 最適な間隔
-    opacity: "0.75 !important",
-    flexShrink: "0 !important", // 圧縮されないように
+    color: `${EDITOR_CONFIG.autocomplete.colors.detail}`,
+    fontSize: "10px",
+    fontStyle: "normal",
+    marginLeft: "8px",
+    opacity: "0.75",
+    flexShrink: "0",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionLabel": {
-    color: "#ffffff !important",
+    color: "#ffffff",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionDetail": {
-    color: "rgba(255, 255, 255, 0.65) !important", // 選択時の詳細情報
+    color: "rgba(255, 255, 255, 0.65)",
+  },
+  // アニメーション完全無効化クラス
+  ".cm-tooltip-no-animation": {
+    transition: "none",
+    animation: "none",
+    transform: "none",
+  },
+  ".cm-tooltip-no-animation *": {
+    transition: "none",
+    animation: "none",
+    transform: "none",
   },
 });
 
@@ -421,17 +430,13 @@ export const getEditorExtensions = (mode: EditorMode) => {
     livecodesScrolling, // livecodesスタイルのスクロール動作
   ];
 
-  // Emmet対応モード（HTML/CSS）の場合は専用拡張を追加
-  if (mode === "html" || mode === "css") {
-    const emmetExtension = Prec.high(abbreviationTracker(EMMET_CONFIGS[mode]));
-    return [
-      ...commonExtensions.slice(0, 5),
-      emmetExtension,
-      ...commonExtensions.slice(5),
-    ];
-  }
-
-  return commonExtensions;
+  // 全モードでEmmet自動補完を有効化
+  const emmetExtension = Prec.high(abbreviationTracker(EMMET_CONFIGS[mode]));
+  return [
+    ...commonExtensions.slice(0, 5),
+    emmetExtension,
+    ...commonExtensions.slice(5),
+  ];
 };
 
 // ==============================
