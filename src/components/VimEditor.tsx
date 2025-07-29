@@ -203,17 +203,17 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
             {/* Editor Title - チートシートスタイルに合わせる */}
             <Flex alignItems="center" gap={3}>
-              <Icon as={FiTerminal} color="orange.400" fontSize="lg" />
+              <Icon as={FiTerminal} color="secondary.500" fontSize="lg" />
               <Box>
                 <Text
                   fontSize="md"
                   fontWeight="600"
-                  color="orange.300"
+                  color="secondary.500"
                   letterSpacing="tight"
                 >
                   manaVimEditor
                 </Text>
-                <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
+                <Text fontSize="xs" color="gray.300" mt={0.5} fontWeight="400">
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
@@ -250,7 +250,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 size="sm"
                 variant="ghost"
                 bg={showPreview ? "gray.600" : "gray.700"}
-                color={showPreview ? "orange.300" : "gray.300"}
+                color={showPreview ? "secondary.400" : "gray.300"}
                 borderWidth="1px"
                 borderColor={showPreview ? "gray.500" : "gray.600"}
                 onClick={handlePreviewToggle}
@@ -312,7 +312,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 size="sm"
                 variant="ghost"
                 bg={showCodePenMode ? "gray.600" : "gray.700"}
-                color={showCodePenMode ? "orange.300" : "gray.300"}
+                color={showCodePenMode ? "secondary.400" : "gray.300"}
                 borderWidth="1px"
                 borderColor={showCodePenMode ? "gray.500" : "gray.600"}
                 onClick={handleCodePenToggle}
@@ -587,9 +587,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 style={{
                   fontSize: "14px",
                   height: "100%",
-                  backgroundColor: "#2d3748", // gray.800相当 - チートシートのコマンド背景と同じ
+                  backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
                   fontFamily:
-                    "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
+                    "'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
                 }}
                 autoFocus
                 initialState={
@@ -624,9 +624,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               style={{
                 fontSize: "14px",
                 height: "100%",
-                backgroundColor: "#2d3748", // gray.800相当 - チートシートのコマンド背景と同じ
+                backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
                 fontFamily:
-                  "'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
+                  "'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace",
               }}
               autoFocus
               initialState={

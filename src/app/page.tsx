@@ -48,7 +48,7 @@ export default function Home() {
         right: 0,
         bottom: 0,
         bgGradient:
-          "radial-gradient(ellipse at top, rgba(255,140,66,0.04) 0%, transparent 50%)",
+          "radial-gradient(ellipse at top, rgba(232,131,58,0.04) 0%, transparent 50%)",
         pointerEvents: "none",
         zIndex: 0,
       }}
@@ -204,16 +204,16 @@ export default function Home() {
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
                 bg={
                   showCheatSheet
-                    ? "rgba(255,140,66,0.25)" // ON: 落ち着いたオレンジ
-                    : "rgba(255,140,66,0.08)" // OFF: 薄いオレンジ
+                    ? "rgba(232,131,58,0.25)" // ON: 落ち着いたオレンジ
+                    : "rgba(232,131,58,0.08)" // OFF: 薄いオレンジ
                 }
                 color={showCheatSheet ? "orange.200" : "orange.400"}
                 borderRadius="xl"
                 borderWidth="1px"
                 borderColor={
                   showCheatSheet
-                    ? "rgba(255,140,66,0.4)" // ON: オレンジのボーダー
-                    : "rgba(255,140,66,0.15)" // OFF: 薄いオレンジのボーダー
+                    ? "rgba(232,131,58,0.4)" // ON: オレンジのボーダー
+                    : "rgba(232,131,58,0.15)" // OFF: 薄いオレンジのボーダー
                 }
                 p={3}
                 width="48px"
@@ -222,24 +222,24 @@ export default function Home() {
                 backdropFilter="blur(10px)"
                 position="relative"
                 boxShadow={
-                  showCheatSheet ? "0 0 12px rgba(255,140,66,0.2)" : "none"
+                  showCheatSheet ? "0 0 12px rgba(232,131,58,0.2)" : "none"
                 }
                 _hover={{
                   bg: showCheatSheet
-                    ? "rgba(255,140,66,0.3)"
-                    : "rgba(255,140,66,0.12)",
+                    ? "rgba(232,131,58,0.3)"
+                    : "rgba(232,131,58,0.12)",
                   borderColor: showCheatSheet
-                    ? "rgba(255,140,66,0.5)"
-                    : "rgba(255,140,66,0.25)",
+                    ? "rgba(232,131,58,0.5)"
+                    : "rgba(232,131,58,0.25)",
                   color: showCheatSheet ? "orange.100" : "orange.300",
                   transform: "translateY(-2px) scale(1.05)",
-                  boxShadow: "0 6px 20px rgba(255,140,66,0.3)",
+                  boxShadow: "0 6px 20px rgba(232,131,58,0.3)",
                 }}
                 _active={{
                   transform: "translateY(0) scale(0.95)",
                   transition: "transform 0.1s ease",
                   boxShadow: showCheatSheet
-                    ? "0 0 8px rgba(255,140,66,0.15)"
+                    ? "0 0 8px rgba(232,131,58,0.15)"
                     : "none",
                 }}
                 _focus={{ outline: "none" }}

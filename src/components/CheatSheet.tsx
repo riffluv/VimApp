@@ -97,12 +97,12 @@ export default function CheatSheet({}: CheatSheetProps) {
             <Text
               fontSize="md"
               fontWeight="600"
-              color="orange.300"
+              color="secondary.500"
               letterSpacing="tight"
             >
               Vim Cheat Sheet
             </Text>
-            <Text fontSize="xs" color="gray.400" mt={0.5} fontWeight="400">
+            <Text fontSize="xs" color="gray.300" mt={0.5} fontWeight="400">
               vimコマンド早見表
             </Text>
           </Box>
@@ -216,7 +216,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                           <Box
                             fontFamily="'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace"
                             fontWeight="600"
-                            color="orange.400"
+                            color="secondary.500"
                             fontSize="sm"
                             mr={4}
                             minW={14}
@@ -269,7 +269,7 @@ export default function CheatSheet({}: CheatSheetProps) {
           bgGradient: "linear(to-r, transparent, orange.500, transparent)",
         }}
       >
-        <Icon as={FiBookOpen} mr={2} color="orange.400" boxSize="16px" />
+        <Icon as={FiBookOpen} mr={2} color="secondary.500" boxSize="16px" />
         <Text lineHeight="1.4" fontWeight="500">
           基本操作から始めて、段階的にスキルアップしよう！
         </Text>
