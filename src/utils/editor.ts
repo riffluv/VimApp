@@ -2,6 +2,7 @@
  * CodeMirror関連のユーティリティ関数
  */
 
+import { moveCompletionSelection } from "@codemirror/autocomplete";
 import { history } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
@@ -34,7 +35,26 @@ const vimProtectionKeymap = Prec.highest(
   ])
 );
 
-// 共通のキーマップ設定
+// Emmet補完時にTab/Shift-Tabで候補を移動するキーマップ（VSCode風）
+const emmetCompletionKeymap = Prec.highest(
+  keymap.of([
+    {
+      key: "Tab",
+      run: moveCompletionSelection(true), // 次の候補へ
+      preventDefault: true,
+    },
+    {
+      key: "Shift-Tab",
+      run: moveCompletionSelection(false), // 前の候補へ
+      preventDefault: true,
+    },
+    // Emmet展開用
+    { key: "Ctrl-e", run: expandAbbreviation },
+    { key: "Cmd-e", run: expandAbbreviation },
+  ])
+);
+
+// 共通のキーマップ設定（TabはEmmet補完用に上書きされるため除外）
 const commonKeymap = keymap.of([
   { key: "Ctrl-e", run: expandAbbreviation },
   { key: "Cmd-e", run: expandAbbreviation },
@@ -100,6 +120,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
     drawSelection(),
     languageExtensions[mode],
     modeHistory, // 独立したhistoryインスタンス
+    emmetCompletionKeymap, // Tab/Shift-Tabで候補移動
     commonKeymap, // Emmet用キーマップ
     oneDark,
     subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
@@ -115,6 +136,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
       languageExtensions[mode],
       modeHistory,
       emmetExtension,
+      emmetCompletionKeymap, // Tab/Shift-Tabで候補移動
       commonKeymap,
       oneDark,
       subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
