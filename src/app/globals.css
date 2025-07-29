@@ -1,3 +1,10 @@
+/* Resetボタンのアイコンを親ボタンの:hoverで回転 */
+.chakra-button:hover .reset-icon {
+  transform: rotate(180deg);
+}
+.chakra-button .reset-icon {
+  transition: transform 0.3s ease;
+}
 /* --- vimapp globals.css: 洗練されたプロフェッショナルデザイン --- */
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
 

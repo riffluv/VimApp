@@ -434,12 +434,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 <Icon
                   as={FiRefreshCw}
                   mr={UI_STYLES.spacing.iconMargin}
-                  style={{
-                    transition: "transform 0.3s ease",
-                  }}
-                  _hover={{
-                    transform: "rotate(180deg)",
-                  }}
+                  className="reset-icon"
                 />
                 Reset
               </Button>
