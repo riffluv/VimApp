@@ -774,19 +774,37 @@ export const EDITOR_CONFIG = {
     cursorMargin: 150, // カーソル位置から画面下部までの最小マージン（px）
   },
   autocomplete: {
-    // 自動補完の設定
-    maxHeight: "200px",
+    // 自動補完の設定 - 超一流UIUXデザイナー仕様
+    maxHeight: "280px", // 適切な高さに調整（320px -> 280px）
+    minItems: 10, // より多くの情報を効率的に表示（8 -> 10）
+    maxItems: 16, // 情報密度を最適化（14 -> 16）
     zIndex: 1000,
     colors: {
-      border: "rgba(232, 131, 58, 0.3)",
-      background: "rgba(26, 26, 30, 0.95)",
+      // 洗練されたミニマルカラーパレット - リッチブラック + 上品なオレンジ
+      border: "rgba(232, 131, 58, 0.15)", // より控えめなボーダー
+      background: "rgba(12, 12, 14, 0.99)", // 最高品質のリッチブラック
       shadow:
-        "0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 131, 58, 0.1)",
-      selectedBg: "rgba(232, 131, 58, 0.25)",
+        "0 2px 16px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(232, 131, 58, 0.06)",
+      selectedBg: "rgba(232, 131, 58, 0.12)", // 上品な選択状態
       selectedBorder: "#e8833a",
-      label: "#9cdcfe",
-      detail: "#6a9955",
-      text: "#d4d4d4",
+      selectedAccent: "rgba(232, 131, 58, 0.35)", // 左アクセント
+      label: "#f8f8f8", // 最高のコントラスト
+      detail: "#999999", // 完璧なセカンダリテキスト
+      text: "#e8e8e8", // 理想的な可読性
+      muted: "#666666", // 情報階層の明確化
+    },
+    typography: {
+      fontSize: "12px", // より情報密度の高いサイズ（13px -> 12px）
+      lineHeight: "1.3", // タイトな行間で情報密度向上（1.5 -> 1.3）
+      fontWeight: "400",
+      selectedFontWeight: "500",
+    },
+    spacing: {
+      // 超一流の情報密度とバランス
+      itemPadding: "6px 12px", // 理想的なクリッカブルエリア（10px -> 6px）
+      listPadding: "4px 0", // リスト全体の余白最適化（8px -> 4px）
+      borderRadius: "6px",
+      itemBorderRadius: "3px",
     },
   },
 } as const;
