@@ -7,7 +7,6 @@ import {
   Button,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   Text,
@@ -137,7 +136,13 @@ export default function Home() {
             py={1}
             borderRadius="md"
           >
-            <Icon as={FiGithub} mr={2} />
+            <FiGithub
+              style={{
+                marginRight: "8px",
+                fontSize: "16px",
+                color: "inherit",
+              }}
+            />
             GitHub
           </Link>
           <Link
@@ -161,7 +166,13 @@ export default function Home() {
             py={1}
             borderRadius="md"
           >
-            <Icon as={FiExternalLink} mr={2} />
+            <FiExternalLink
+              style={{
+                marginRight: "8px",
+                fontSize: "16px",
+                color: "inherit",
+              }}
+            />
             Vimチートシート
           </Link>
         </Flex>
