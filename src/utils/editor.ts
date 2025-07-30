@@ -200,6 +200,8 @@ const emmetKeymap = Prec.highest(
         }
         const isValidEmmetAbbreviation = (text: string): boolean => {
           if (!text || text.length === 0) return false;
+          // html:5展開用の!は特別扱い
+          if (mode === "html" && text.trim() === "!") return true;
           const htmlElementPattern =
             /^[a-zA-Z][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
           const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
@@ -288,6 +290,8 @@ const emmetKeymap = Prec.highest(
         const beforeCursor = line.slice(0, cursorPos).trim();
         const isValidEmmetAbbreviation = (text: string): boolean => {
           if (!text || text.length === 0) return false;
+          // html:5展開用の!は特別扱い
+          if (mode === "html" && text.trim() === "!") return true;
           const htmlElementPattern =
             /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
           const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
