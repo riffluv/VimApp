@@ -36,6 +36,7 @@ import {
 } from "@codemirror/autocomplete";
 import {
   abbreviationTracker,
+  emmetConfig,
   EmmetKnownSyntax,
   expandAbbreviation,
 } from "@emmetio/codemirror6-plugin";
@@ -59,11 +60,201 @@ export const languageExtensions: Record<EditorMode, Extension> = {
  */
 // ...（この壊れたオブジェクトリテラル全体を削除）
 
-// ==============================
-// 自動補完拡張（AI感ゼロ・実用重視）
-// ==============================
+/**
+ * HTML/CSS/JS共通Emmet候補生成関数
+ * 統一的な候補表示を実現
+ */
+const createEmmetCompletions = (mode: EditorMode) => {
+  const completions: Array<{
+    label: string;
+    displayLabel?: string;
+    type: string;
+    detail: string;
+    apply: string;
+    boost?: number;
+  }> = [];
+
+  if (mode === "html") {
+    // HTML要素候補
+    const htmlElements = [
+      "div",
+      "span",
+      "p",
+      "a",
+      "img",
+      "ul",
+      "li",
+      "ol",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "section",
+      "article",
+      "header",
+      "footer",
+      "nav",
+      "main",
+      "aside",
+      "form",
+      "input",
+      "button",
+      "textarea",
+      "select",
+      "option",
+      "table",
+      "tr",
+      "td",
+      "th",
+      "thead",
+      "tbody",
+      "tfoot",
+      "script",
+      "style",
+      "link",
+      "meta",
+      "title",
+      "head",
+      "body",
+      "html",
+    ];
+
+    htmlElements.forEach((tag) => {
+      completions.push({
+        label: tag,
+        displayLabel: tag,
+        type: "element",
+        detail: "HTML Element",
+        apply: `<${tag}></${tag}>`,
+        boost: tag.length === 1 ? 10 : 0, // 単文字タグを優先
+      });
+    });
+
+    // Emmet省略形候補
+    const emmetAbbreviations = [
+      {
+        label: "!",
+        detail: "HTML5 doctype",
+        apply:
+          '<!DOCTYPE html>\n<html lang="ja">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Document</title>\n</head>\n<body>\n\t\n</body>\n</html>',
+      },
+      {
+        label: "div.class",
+        detail: "Div with class",
+        apply: '<div class="class"></div>',
+      },
+      { label: "div#id", detail: "Div with ID", apply: '<div id="id"></div>' },
+      {
+        label: "ul>li*3",
+        detail: "UL with 3 LI",
+        apply: "<ul>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ul>",
+      },
+    ];
+
+    emmetAbbreviations.forEach((abbr) => {
+      completions.push({
+        ...abbr,
+        type: "emmet",
+        boost: 15,
+      });
+    });
+  }
+
+  if (mode === "css") {
+    // CSS プロパティ候補
+    const cssProperties = [
+      "display",
+      "position",
+      "width",
+      "height",
+      "margin",
+      "padding",
+      "color",
+      "background",
+      "font-size",
+      "font-family",
+      "text-align",
+      "border",
+      "border-radius",
+      "flex",
+      "grid",
+      "transform",
+      "transition",
+      "animation",
+      "opacity",
+      "z-index",
+      "overflow",
+    ];
+
+    cssProperties.forEach((prop) => {
+      completions.push({
+        label: prop,
+        type: "property",
+        detail: "CSS Property",
+        apply: `${prop}: ;`,
+        boost: 5,
+      });
+    });
+
+    // CSS Emmet省略形
+    const cssEmmetAbbr = [
+      { label: "m", detail: "margin", apply: "margin: ;" },
+      { label: "p", detail: "padding", apply: "padding: ;" },
+      { label: "w", detail: "width", apply: "width: ;" },
+      { label: "h", detail: "height", apply: "height: ;" },
+      { label: "bg", detail: "background", apply: "background: ;" },
+      { label: "c", detail: "color", apply: "color: ;" },
+      { label: "d", detail: "display", apply: "display: ;" },
+      { label: "pos", detail: "position", apply: "position: ;" },
+    ];
+
+    cssEmmetAbbr.forEach((abbr) => {
+      completions.push({
+        ...abbr,
+        type: "emmet",
+        boost: 15,
+      });
+    });
+  }
+
+  if (mode === "js") {
+    // JavaScript候補
+    const jsKeywords = [
+      "function",
+      "const",
+      "let",
+      "var",
+      "if",
+      "else",
+      "for",
+      "while",
+      "return",
+      "class",
+      "console.log",
+      "document.querySelector",
+      "addEventListener",
+      "setTimeout",
+      "setInterval",
+    ];
+
+    jsKeywords.forEach((keyword) => {
+      completions.push({
+        label: keyword,
+        type: "keyword",
+        detail: "JS Keyword",
+        apply: keyword.includes("(") ? keyword : `${keyword} `,
+        boost: 5,
+      });
+    });
+  }
+
+  return completions;
+};
 /**
  * 高度な自動補完拡張（UI/UX・競合防止・情報密度重視）
+ * 全モード統一の美しいUI
  */
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
@@ -72,8 +263,9 @@ const advancedAutocompletion = autocompletion({
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
   closeOnBlur: true,
-  tooltipClass: () => "cm-tooltip-no-animation",
+  tooltipClass: () => "cm-tooltip-no-animation cm-tooltip-unified",
   selectOnOpen: true,
+  override: [], // 統一的なcompletionソースを使用
 });
 
 // ==============================
@@ -407,84 +599,161 @@ const subtleActiveLineHighlight = EditorView.theme({
 });
 
 /**
- * 自動補完候補のスタイリング
- * vimapp デザインコンセプト: リッチブラック + オレンジのプロフェッショナルデザイン
- * AI感を排除した自然で実用的なインターフェース
+ * 統一されたEmmet自動補完スタイル
+ * vimapp デザインコンセプト: リッチブラック + オレンジの美しいプロフェッショナルデザイン
  */
 const autocompleteTheme = EditorView.theme({
-  ".cm-tooltip-autocomplete": {
-    // 基本レイアウト - 無駄な空間を完全に排除
-    border: "1px solid rgba(232, 131, 58, 0.2)",
-    borderRadius: "4px",
-    backgroundColor: "rgba(8, 8, 10, 0.98)", // 深いリッチブラック
+  // 統一されたEmmet自動補完スタイル
+  ".cm-autocomplete-tooltip-unified": {
+    border: "1px solid rgba(232, 131, 58, 0.3)",
+    borderRadius: "6px",
+    backgroundColor: "rgba(8, 8, 10, 0.98)",
     backdropFilter: "blur(12px) saturate(1.1)",
     boxShadow:
-      "0 4px 20px rgba(0, 0, 0, 0.85), 0 0 0 0.5px rgba(232, 131, 58, 0.08)",
-    maxHeight: "240px", // コンパクトサイズ
-    minHeight: "auto", // 自動サイズ（無駄な固定高さを排除）
+      "0 8px 32px rgba(0, 0, 0, 0.85), 0 0 0 0.5px rgba(232, 131, 58, 0.15)",
+    maxHeight: "280px",
     overflow: "hidden",
-    zIndex: "1000",
-    position: "absolute",
-    transform: "none",
-    margin: "0", // 余計な余白を完全排除
-    padding: "0", // パディングも排除
-    transition: "none",
-    opacity: "1",
+    zIndex: "10000",
     fontFamily: "JetBrains Mono, 'Fira Code', monospace",
+    fontSize: "12px",
+    fontWeight: "400",
+    lineHeight: "1.4",
+    margin: "0",
+    padding: "6px",
+    transition: "opacity 0.2s ease",
   },
-  ".cm-tooltip-autocomplete > ul": {
+
+  ".cm-autocomplete-tooltip-unified .cm-completions": {
+    backgroundColor: "transparent",
+    border: "none",
+    margin: "0",
+    padding: "0",
+  },
+
+  ".cm-autocomplete-tooltip-unified .cm-completion": {
+    display: "flex",
+    alignItems: "center",
+    padding: "8px 10px",
+    margin: "1px 0",
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "all 0.15s ease",
+    color: "#f0f0f0",
+    backgroundColor: "transparent",
+
+    "&:hover": {
+      backgroundColor: "rgba(232, 131, 58, 0.12)",
+      color: "#ffffff",
+      transform: "translateX(2px)",
+    },
+
+    "&.cm-completion-selected": {
+      backgroundColor: "rgba(232, 131, 58, 0.2)",
+      color: "#ffffff",
+      fontWeight: "500",
+      transform: "translateX(3px)",
+      boxShadow: "inset 3px 0 0 #e8833a",
+      borderLeft: "none",
+    },
+  },
+
+  ".cm-autocomplete-tooltip-unified .cm-completion-label": {
     fontFamily: "JetBrains Mono, 'Fira Code', monospace",
-    fontSize: "11px", // 情報密度重視
-    lineHeight: "1.2", // タイトな行間
-    fontWeight: "400",
-    color: "#ffffff",
-  },
-  ".cm-tooltip-autocomplete ul li[aria-selected]": {
-    backgroundColor: "rgba(232, 131, 58, 0.15)", // 明確な選択状態
-    color: "#ffffff",
-    borderLeft: "2px solid #e8833a", // vimappのセカンダリカラー
-    fontWeight: "500", // 選択時は少し太く
-    boxShadow: "inset 0 0 0 0.5px rgba(232, 131, 58, 0.1)",
-  },
-  // ラベルとディテールのスタイリング - プロフェッショナルな情報階層
-  ".cm-tooltip-autocomplete .cm-completionLabel": {
-    color: "#f0f0f0", // 高コントラスト
-    fontWeight: "400",
-    fontSize: "11px",
+    fontSize: "12px",
+    fontWeight: "500",
+    marginRight: "10px",
     flex: "1",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
-  ".cm-tooltip-autocomplete .cm-completionDetail": {
-    color: "#999999", // 適度にミュートされたディテール
-    fontSize: "9px", // より小さく情報密度アップ
-    fontStyle: "normal",
-    marginLeft: "6px",
-    opacity: "0.8",
+
+  ".cm-autocomplete-tooltip-unified .cm-completion-detail": {
+    marginLeft: "auto",
+    fontSize: "10px",
+    opacity: "0.7",
+    color: "#999999",
+    fontStyle: "italic",
     flexShrink: "0",
-    maxWidth: "60px",
+    maxWidth: "80px",
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+
+  // 標準のautocompleteも統一
+  ".cm-tooltip-autocomplete": {
+    border: "1px solid rgba(232, 131, 58, 0.3)",
+    borderRadius: "6px",
+    backgroundColor: "rgba(8, 8, 10, 0.98)",
+    backdropFilter: "blur(12px) saturate(1.1)",
+    boxShadow:
+      "0 8px 32px rgba(0, 0, 0, 0.85), 0 0 0 0.5px rgba(232, 131, 58, 0.15)",
+    maxHeight: "280px",
+    overflow: "hidden",
+    zIndex: "10000",
+    fontFamily: "JetBrains Mono, 'Fira Code', monospace",
+    fontSize: "12px",
+    margin: "0",
+    padding: "6px",
+  },
+
+  ".cm-tooltip-autocomplete > ul": {
+    fontFamily: "JetBrains Mono, 'Fira Code', monospace",
+    fontSize: "12px",
+    lineHeight: "1.4",
+    fontWeight: "400",
+    color: "#f0f0f0",
+    margin: "0",
+    padding: "0",
+  },
+
+  ".cm-tooltip-autocomplete ul li": {
+    padding: "8px 10px",
+    margin: "1px 0",
+    borderRadius: "4px",
+    transition: "all 0.15s ease",
+    display: "flex",
+    alignItems: "center",
+  },
+
+  ".cm-tooltip-autocomplete ul li[aria-selected]": {
+    backgroundColor: "rgba(232, 131, 58, 0.2)",
+    color: "#ffffff",
+    fontWeight: "500",
+    transform: "translateX(3px)",
+    boxShadow: "inset 3px 0 0 #e8833a",
+  },
+
+  ".cm-tooltip-autocomplete .cm-completionLabel": {
+    color: "#f0f0f0",
+    fontWeight: "500",
+    fontSize: "12px",
+    flex: "1",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+
+  ".cm-tooltip-autocomplete .cm-completionDetail": {
+    color: "#999999",
+    fontSize: "10px",
+    fontStyle: "italic",
+    marginLeft: "10px",
+    opacity: "0.7",
+    flexShrink: "0",
+    maxWidth: "80px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionLabel": {
     color: "#ffffff",
     fontWeight: "500",
   },
+
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionDetail": {
-    color: "rgba(255, 255, 255, 0.7)",
+    color: "rgba(255, 255, 255, 0.8)",
     opacity: "1",
-  },
-  // アニメーション完全無効化 - 実用性重視
-  ".cm-tooltip-no-animation": {
-    transition: "none",
-    animation: "none",
-    transform: "none",
-  },
-  ".cm-tooltip-no-animation *": {
-    transition: "none",
-    animation: "none",
-    transform: "none",
   },
 });
 
@@ -492,7 +761,7 @@ const autocompleteTheme = EditorView.theme({
 // メイン拡張セット取得関数（型安全・責務分離・競合ゼロ）
 // ==============================
 /**
- * 指定モードに応じたCodeMirror拡張セットを返す（型安全・責務分離・競合ゼロ・拡張性重視）
+ * 指定モードに応じたCodeMirror拡張セットを返す（統一Emmet自動補完版）
  * @param mode EditorMode ("html" | "css" | "js")
  * @returns Extension[]
  */
@@ -500,28 +769,70 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
   // 各モードごとに独立したhistoryインスタンス（Undo/Redo競合防止）
   const modeHistory = history();
 
-  // Emmet abbreviationTracker（モードごとにsyntax明示・責務分離）
+  // 統一されたEmmet自動補完設定
+  const unifiedAutocompletion = autocompletion({
+    override: [
+      // カスタムEmmet候補（統一美しいUI）
+      (context) => {
+        const word = context.matchBefore(/\w*/);
+        if (!word) return null;
+
+        const customCompletions = createEmmetCompletions(mode);
+        const filtered = customCompletions.filter((comp) =>
+          comp.label.toLowerCase().startsWith(word.text.toLowerCase())
+        );
+
+        if (filtered.length === 0) return null;
+
+        return {
+          from: word.from,
+          options: filtered.map((comp) => ({
+            label: comp.label,
+            type: comp.type,
+            detail: comp.detail,
+            apply: comp.apply,
+            boost: comp.boost || 0,
+          })),
+        };
+      },
+    ],
+    tooltipClass: () => "cm-autocomplete-tooltip-unified",
+    closeOnBlur: false,
+    maxRenderedOptions: 20,
+    defaultKeymap: true,
+  });
+
+  // Emmet設定（モード別・統一UI）
   const emmetExtension = (() => {
     switch (mode) {
       case "html":
-        return abbreviationTracker({
-          syntax: EmmetKnownSyntax.html,
-          mark: true,
-        });
+        return [
+          abbreviationTracker({
+            syntax: EmmetKnownSyntax.html,
+            mark: true,
+          }),
+          emmetConfig.of({ syntax: EmmetKnownSyntax.html }),
+        ];
       case "css":
-        return abbreviationTracker({
-          syntax: EmmetKnownSyntax.css,
-          mark: true,
-        });
+        return [
+          abbreviationTracker({
+            syntax: EmmetKnownSyntax.css,
+            mark: true,
+          }),
+          emmetConfig.of({ syntax: EmmetKnownSyntax.css }),
+        ];
       default:
-        return abbreviationTracker({
-          syntax: EmmetKnownSyntax.jsx,
-          mark: false,
-        });
+        return [
+          abbreviationTracker({
+            syntax: EmmetKnownSyntax.jsx,
+            mark: false,
+          }),
+          emmetConfig.of({ syntax: EmmetKnownSyntax.jsx }),
+        ];
     }
   })();
 
-  // 拡張セット（優先順位厳守・競合ゼロ）
+  // 拡張セット（優先順位厳守・統一Emmet）
   return [
     // 1. Vimキーマップ（最優先）
     Prec.highest(vim()),
@@ -535,10 +846,10 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
     languageExtensions[mode],
     // 6. 履歴（Undo/Redo）
     modeHistory,
-    // 7. 自動補完
-    advancedAutocompletion,
-    // 8. Emmet abbreviationTracker
-    emmetExtension,
+    // 7. 統一自動補完（美しいUI）
+    unifiedAutocompletion,
+    // 8. Emmet拡張（統一UI）
+    ...emmetExtension,
     // 9. テーマ・スタイル
     oneDark,
     subtleActiveLineHighlight,
