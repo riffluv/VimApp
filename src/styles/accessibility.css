@@ -1,0 +1,267 @@
+/* --- 2025年最新 アクセシビリティ強化スタイル --- */
+
+/* WCAG 2.1 AAA準拠 カラーコントラスト比改善 */
+:root {
+  /* 高コントラスト文字色 */
+  --text-high-contrast: #ffffff;
+  --text-medium-contrast: #f1f1f1;
+  --text-low-contrast: #d1d1d1;
+
+  /* 高コントラスト背景色 */
+  --bg-high-contrast: #000000;
+  --bg-medium-contrast: #1a1a1a;
+  --bg-low-contrast: #2a2a2a;
+
+  /* アクセシブルなアクセント色 */
+  --accent-accessible: #ff9f40; /* オレンジ系でコントラスト比 4.5:1以上 */
+  --accent-focus: #ffb366; /* フォーカス用 */
+  --accent-hover: #e8833a; /* ホバー用 */
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+  :root {
+    --text-high-contrast: CanvasText;
+    --bg-high-contrast: Canvas;
+    --accent-accessible: Highlight;
+    --accent-focus: Highlight;
+    --accent-hover: Highlight;
+  }
+}
+
+/* スクリーンリーダー最適化 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--bg-high-contrast);
+  color: var(--text-high-contrast);
+  border: 2px solid var(--accent-accessible);
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+/* 高品質フォーカスインジケーター */
+.focus-enhanced:focus-visible {
+  outline: 3px solid var(--accent-focus);
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+  box-shadow: 0 0 0 5px rgba(255, 159, 64, 0.2), 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+/* タッチアクセシビリティ向上 */
+@media (hover: none) and (pointer: coarse) {
+  .touch-friendly {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  /* より大きなタップターゲット */
+  .touch-primary {
+    min-height: 56px;
+    min-width: 56px;
+    padding: 1rem;
+  }
+}
+
+/* キーボードナビゲーション最適化 */
+.keyboard-nav:focus-within {
+  background: rgba(255, 159, 64, 0.1);
+  border: 2px solid var(--accent-accessible);
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+}
+
+/* 動きの軽減設定尊重 */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .motion-safe-slide {
+    transform: none !important;
+  }
+}
+
+/* 文字サイズ設定尊重 */
+@media (prefers-contrast: more) {
+  .contrast-adaptive {
+    color: var(--text-high-contrast);
+    background: var(--bg-high-contrast);
+    border-color: var(--accent-accessible);
+  }
+}
+
+/* カラーブラインドネス対応 */
+.colorblind-safe {
+  /* 色だけでなく形状やパターンでも情報を伝達 */
+  position: relative;
+}
+
+.colorblind-safe[data-status="success"]::before {
+  content: "✓";
+  position: absolute;
+  left: -1.5rem;
+  color: var(--accent-accessible);
+  font-weight: bold;
+}
+
+.colorblind-safe[data-status="error"]::before {
+  content: "✗";
+  position: absolute;
+  left: -1.5rem;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.colorblind-safe[data-status="warning"]::before {
+  content: "⚠";
+  position: absolute;
+  left: -1.5rem;
+  color: #ffa726;
+  font-weight: bold;
+}
+
+/* セマンティックHTML強化 */
+[role="button"]:not(button) {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+[role="button"]:not(button):focus {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 2px;
+}
+
+/* ARIA対応 */
+[aria-expanded="true"] + * {
+  display: block;
+}
+
+[aria-expanded="false"] + * {
+  display: none;
+}
+
+[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* ライブリージョン */
+[aria-live="polite"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+[aria-live="assertive"] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* フォーム改善 */
+.form-accessible input:invalid {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
+
+.form-accessible input:valid {
+  border-color: var(--accent-accessible);
+  box-shadow: 0 0 0 2px rgba(255, 159, 64, 0.2);
+}
+
+.form-accessible label {
+  color: var(--text-high-contrast);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-accessible .error-message {
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.form-accessible .error-message::before {
+  content: "⚠";
+  font-weight: bold;
+}
+
+/* ツールチップアクセシビリティ */
+.tooltip-accessible {
+  position: relative;
+}
+
+.tooltip-accessible[aria-describedby]:hover::after,
+.tooltip-accessible[aria-describedby]:focus::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-high-contrast);
+  color: var(--text-high-contrast);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  z-index: 1000;
+  border: 1px solid var(--accent-accessible);
+}
+
+/* テキスト読み上げ最適化 */
+.pronunciation-guide::after {
+  content: attr(data-pronunciation);
+  position: absolute;
+  left: -10000px;
+}
+
+/* デバイス向け最適化 */
+@media (max-width: 768px) {
+  .mobile-accessible {
+    font-size: clamp(1rem, 4vw, 1.125rem);
+    line-height: 1.6;
+    padding: clamp(0.75rem, 2vw, 1rem);
+  }
+}
+
+@media (min-width: 1200px) {
+  .desktop-accessible {
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    line-height: 1.5;
+    max-width: 75ch;
+  }
+}

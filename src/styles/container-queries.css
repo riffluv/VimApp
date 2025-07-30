@@ -1,0 +1,175 @@
+/* --- 2025年最新 Container Queries専用スタイル --- */
+
+/* メインアプリケーションコンテナ */
+@container app-main (min-width: 48rem) {
+  .responsive-layout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1rem, 3vw, 2rem);
+  }
+}
+
+@container app-main (max-width: 47.9rem) {
+  .responsive-layout {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 2vw, 1rem);
+  }
+}
+
+/* ヘッダーコンポーネント */
+@container header (min-width: 48rem) {
+  .header-nav {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+  }
+
+  .header-logo {
+    height: clamp(2rem, 3vw, 2.5rem);
+  }
+
+  .header-title {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+  }
+}
+
+@container header (max-width: 47.9rem) {
+  .header-nav {
+    display: none;
+  }
+
+  .header-logo {
+    height: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .header-title {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+  }
+}
+
+/* チートシートコンポーネント */
+@container cheatsheet (min-width: 24rem) {
+  .cheatsheet-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(0.5rem, 1.5vw, 1rem);
+  }
+
+  .cheatsheet-item {
+    padding: clamp(0.75rem, 1.5vw, 1rem);
+    font-size: clamp(0.875rem, 1.2vw, 1rem);
+  }
+}
+
+@container cheatsheet (max-width: 23.9rem) {
+  .cheatsheet-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.25rem, 1vw, 0.5rem);
+  }
+
+  .cheatsheet-item {
+    padding: clamp(0.5rem, 1vw, 0.75rem);
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+  }
+}
+
+/* エディターコンポーネント */
+@container editor (min-width: 48rem) {
+  .editor-toolbar {
+    display: flex;
+    gap: clamp(0.5rem, 1vw, 1rem);
+    padding: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .editor-tab {
+    padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+    font-size: clamp(0.875rem, 1.2vw, 1rem);
+    min-width: clamp(4rem, 8vw, 6rem);
+  }
+
+  .editor-content {
+    font-size: clamp(0.875rem, 1.2vw, 1rem);
+    line-height: 1.6;
+  }
+}
+
+@container editor (min-width: 32rem) and (max-width: 47.9rem) {
+  .editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.25rem, 0.8vw, 0.5rem);
+    padding: clamp(0.5rem, 1.2vw, 1rem);
+  }
+
+  .editor-tab {
+    padding: clamp(0.375rem, 0.8vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem);
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+    min-width: clamp(3rem, 6vw, 4rem);
+  }
+
+  .editor-content {
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+    line-height: 1.5;
+  }
+}
+
+@container editor (max-width: 31.9rem) {
+  .editor-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.25rem, 0.5vw, 0.375rem);
+    padding: clamp(0.375rem, 1vw, 0.75rem);
+  }
+
+  .editor-tab {
+    padding: clamp(0.25rem, 0.6vw, 0.375rem) clamp(0.5rem, 1vw, 0.75rem);
+    font-size: clamp(0.675rem, 0.9vw, 0.75rem);
+    text-align: center;
+  }
+
+  .editor-content {
+    font-size: clamp(0.675rem, 0.9vw, 0.75rem);
+    line-height: 1.4;
+  }
+}
+
+/* DPI 125%特化最適化 */
+@media (resolution: 1.25dppx) {
+  @container app-main (min-width: 38.4rem) {
+    /* 768px ÷ 1.25 = 614.4px → 38.4rem */
+    .dpi-responsive {
+      padding: clamp(1rem, 1.6vw, 1.5rem);
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+    }
+  }
+
+  @container header (min-width: 38.4rem) {
+    .header-title {
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+      letter-spacing: -0.025em;
+    }
+  }
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+  @container (min-width: 1px) {
+    .container-responsive {
+      border: 2px solid;
+      background: Canvas;
+      color: CanvasText;
+    }
+  }
+}
+
+/* ダークモード最適化 */
+@media (prefers-color-scheme: dark) {
+  @container (min-width: 1px) {
+    .dark-optimized {
+      background: rgba(0, 0, 0, 0.95);
+      color: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}

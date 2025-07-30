@@ -5,24 +5,48 @@
 .chakra-button .reset-icon {
   transition: transform 0.3s ease;
 }
-/* --- vimapp globals.css: 洗練されたプロフェッショナルデザイン --- */
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600;700;800&family=Fira+Code:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
 
-html,
-body {
+/* --- vimapp globals.css: 洗練されたモダンデザイン --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap");
+
+/* モダンリセット */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
   min-height: 100vh;
-  box-sizing: border-box;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
     Arial, sans-serif;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "kern";
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-/* 洗練されたスクロールバーデザイン */
+body {
+  min-height: 100vh;
+  background-color: #0f0f12;
+}
+
+/* 画像とメディア要素 */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* カスタムスクロールバー */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -55,25 +79,25 @@ body {
   box-shadow: 0 0 8px rgba(232, 131, 58, 0.3);
 }
 
-/* 洗練された選択テキストのスタイル */
+/* 選択テキスト */
 ::selection {
-  background: rgba(232, 131, 58, 0.25);
+  background: rgba(232, 131, 58, 0.3);
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 ::-moz-selection {
-  background: rgba(232, 131, 58, 0.25);
+  background: rgba(232, 131, 58, 0.3);
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-/* 洗練されたローディング状態 */
+/* ローディングアニメーション */
 .loading {
   background: linear-gradient(
     90deg,
     rgba(26, 26, 30, 0.8) 25%,
-    rgba(232, 131, 58, 0.1) 50%,
+    rgba(232, 131, 58, 0.15) 50%,
     rgba(26, 26, 30, 0.8) 75%
   );
   background-size: 200% 100%;
@@ -84,67 +108,81 @@ body {
   0% {
     background-position: -200% 0;
   }
-
   100% {
     background-position: 200% 0;
   }
 }
 
-/* フォーカス状態の改善 - エディタ内要素への影響を防ぐ */
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-[role="button"]:focus-visible,
-[role="menuitem"]:focus-visible,
-[role="tab"]:focus-visible,
-[tabindex]:focus-visible:not([tabindex="-1"]) {
-  outline: 2px solid rgba(232, 131, 58, 0.6);
+/* フォーカス */
+:focus-visible {
+  outline: 2px solid rgba(232, 131, 58, 0.8);
   outline-offset: 2px;
   border-radius: 4px;
+  box-shadow: 0 0 0 4px rgba(232, 131, 58, 0.2);
 }
 
-/* ボタンやインタラクティブ要素の基本スタイル */
-button,
-[role="button"] {
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* ホバー効果 */
+@media (hover: hover) and (pointer: fine) {
+  button:hover,
+  [role="button"]:hover {
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
-/* Button hover isolation - prevent effects from cascading to editor */
-button:hover,
-[data-theme] button:hover,
-.chakra-button:hover {
-  contain: layout style !important;
-  isolation: isolate !important;
+/* タッチデバイス対応 */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
-/* Completely isolate editor content from any parent hover effects */
+/* モーション設定の尊重 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* エディタの分離と幅制限 */
 .cm-editor {
-  transform: translateZ(0) !important; /* Force GPU layer */
+  transform: translateZ(0) !important;
   will-change: auto !important;
   backface-visibility: hidden !important;
-  pointer-events: auto !important; /* Ensure editor interactions work */
+  pointer-events: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  box-sizing: border-box !important;
 }
 
-/* Block inheritance of transform, filter, and backdrop effects that could cause glowing */
+.cm-scroller {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.cm-content {
+  max-width: none !important; /* コンテンツは自由に拡張 */
+  min-width: 100% !important; /* 最小幅は親と同じ */
+}
+
 .cm-editor,
 .cm-content,
 .cm-line {
   text-shadow: none !important;
   box-shadow: none !important;
-}
-
-/* CodeMirror editor content protection from hover effects */
-.cm-editor,
-.cm-content,
-.cm-line {
   isolation: isolate !important;
   position: relative !important;
   z-index: 2 !important;
 }
 
-/* Prevent unwanted inheritance of hover/focus effects - but preserve syntax highlighting */
 .cm-editor * {
   box-shadow: none !important;
   text-shadow: none !important;
@@ -152,7 +190,14 @@ button:hover,
   border: none !important;
 }
 
-/* CodeMirrorエディタのフォーカス状態は独自に管理 */
 .cm-editor.cm-focused {
   outline: none;
+}
+
+/* ボタンホバー分離 */
+button:hover,
+[data-theme] button:hover,
+.chakra-button:hover {
+  contain: layout style !important;
+  isolation: isolate !important;
 }

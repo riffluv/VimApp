@@ -28,9 +28,9 @@ import { generatePreviewHTML, getSandboxAttributes } from "@/utils/editor";
 const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
   ssr: false,
 });
-const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
-const MotionText = motion(Text);
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
+const MotionText = motion.create(Text);
 
 // 共通ボタンスタイル（マジックナンバー排除）
 const getButtonBaseStyle = (isActive = false) => ({
@@ -192,89 +192,76 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       position="relative"
       overflow="hidden"
       flex={1}
-      // CheatSheetと同じ高さに統一（黄金比は横幅の比率のみ適用）
-      minH={{
-        base: "clamp(370px, 38vh, 500px)",
-        md: "clamp(480px, 45vh, 650px)",
-        lg: "clamp(540px, 50vh, 700px)",
-      }}
-      maxH={{
-        base: "clamp(600px, 62vh, 800px)",
-        md: "clamp(780px, 72vh, 1050px)",
-        lg: "clamp(900px, 81vh, 1200px)",
-      }}
-      h={{
-        base: "clamp(460px, 42vh, 618px)",
-        md: "clamp(618px, 56vh, 1000px)",
-        lg: "clamp(700px, 62vh, 1120px)",
-      }}
+      h="100%" // 親の高さに合わせる
+      w="100%" // 親の幅に合わせる
       borderWidth="1px"
     >
       {/* すべての要素を1つの親要素でラップ */}
       <>
-        {/* ヘッダー - DPIスケール対応 */}
+        {/* ヘッダー - 高さを適切に調整 */}
         <MotionFlex
           alignItems="center"
           px={{ base: 3, md: 4 }}
           py={{ base: 2, md: 3 }}
-          borderBottomWidth="clamp(1px, 0.0625rem, 2px)"
+          borderBottomWidth="1px"
           borderColor="gray.700"
           bg="gray.800"
           justifyContent="space-between"
           position="relative"
-          minH="clamp(56px, 3.5rem, 64px)" // タッチターゲット確保
+          minH="60px" // CheatSheetと同じ高さ
+          maxH="60px" // CheatSheetと同じ高さ
         >
           <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
-            {/* Window Controls - macOSスタイルに戻す */}
-            <HStack gap="clamp(6px, 0.375rem, 8px)">
+            {/* Window Controls - macOSスタイル */}
+            <HStack gap="6px">
               <Box
-                w="clamp(10px, 0.625rem, 14px)"
-                h="clamp(10px, 0.625rem, 14px)"
+                w="12px"
+                h="12px"
                 borderRadius="full"
                 bg="red.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
-                minW="clamp(10px, 0.625rem, 14px)"
-                minH="clamp(10px, 0.625rem, 14px)"
+                minW="12px"
+                minH="12px"
               />
               <Box
-                w="clamp(10px, 0.625rem, 14px)"
-                h="clamp(10px, 0.625rem, 14px)"
+                w="12px"
+                h="12px"
                 borderRadius="full"
                 bg="yellow.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
-                minW="clamp(10px, 0.625rem, 14px)"
-                minH="clamp(10px, 0.625rem, 14px)"
+                minW="12px"
+                minH="12px"
               />
               <Box
-                w="clamp(10px, 0.625rem, 14px)"
-                h="clamp(10px, 0.625rem, 14px)"
+                w="12px"
+                h="12px"
                 borderRadius="full"
                 bg="green.400"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
-                minW="clamp(10px, 0.625rem, 14px)"
-                minH="clamp(10px, 0.625rem, 14px)"
+                minW="12px"
+                minH="12px"
               />
             </HStack>
 
-            {/* Editor Title - チートシートスタイルに合わせる */}
-            <Flex alignItems="center" gap={3}>
-              <Icon as={FiTerminal} color="secondary.500" fontSize="lg" />
+            {/* Editor Title - 適切なサイズに調整 */}
+            <Flex alignItems="center" gap={2}>
+              <Icon as={FiTerminal} color="secondary.500" fontSize="md" />
               <Box>
                 <Text
-                  fontSize="md"
+                  fontSize="sm"
                   fontWeight="600"
                   color="secondary.500"
                   letterSpacing="tight"
                 >
                   manaVimEditor
                 </Text>
-                <Text fontSize="xs" color="gray.300" mt={0.5} fontWeight="400">
+                <Text fontSize="xs" color="gray.300" mt={0} fontWeight="400">
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
@@ -518,6 +505,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               overflow="hidden"
               borderLeft="1px solid"
               borderColor="gray.700"
+              maxW="50%" // 確実に50%以下に制限
+              minW="0" // flexアイテムの最小幅を0に設定
             >
               <CodeMirror
                 key={mode} // モードが変わったら新しいインスタンスを作成
@@ -531,6 +520,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
                 style={{
                   fontSize: "14px",
                   height: "100%",
+                  width: "100%", // 親コンテナに合わせる
+                  maxWidth: "100%", // 絶対に親を超えない
                   backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
                   fontFamily: EDITOR_CONFIG.fonts.mono,
                 }}
@@ -556,6 +547,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             borderRadius={`0 0 ${UI_STYLES.spacing.borderRadius} ${UI_STYLES.spacing.borderRadius}`}
             isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
             zIndex={1} // スタッキングコンテキストを作成
+            maxW="100%" // 確実に親の幅以下に制限
+            minW="0" // flexアイテムの最小幅を0に設定
           >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
@@ -569,6 +562,8 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               style={{
                 fontSize: "14px",
                 height: "100%",
+                width: "100%", // 親コンテナに合わせる
+                maxWidth: "100%", // 絶対に親を超えない
                 backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
                 fontFamily: EDITOR_CONFIG.fonts.mono,
               }}

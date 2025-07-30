@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Accordion,
-  Box,
-  Flex,
-  Icon,
-  Image,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
 import { FiBookOpen, FiChevronDown } from "react-icons/fi";
 
 import { CATEGORY_INFO, CHEAT_SHEET_COMMANDS } from "@/constants";
@@ -37,22 +29,8 @@ export default function CheatSheet({}: CheatSheetProps) {
       borderColor="rgba(255, 140, 66, 0.2)"
       position="relative"
       backdropFilter="blur(20px)"
-      // VimEditorと同じ高さに統一（黄金比は横幅の比率のみ適用）
-      minH={{
-        base: "clamp(370px, 38vh, 500px)",
-        md: "clamp(480px, 45vh, 650px)",
-        lg: "clamp(540px, 50vh, 700px)",
-      }}
-      maxH={{
-        base: "clamp(600px, 62vh, 800px)",
-        md: "clamp(780px, 72vh, 1050px)",
-        lg: "clamp(900px, 81vh, 1200px)",
-      }}
-      h={{
-        base: "clamp(460px, 42vh, 618px)",
-        md: "clamp(618px, 56vh, 1000px)",
-        lg: "clamp(700px, 62vh, 1120px)",
-      }}
+      h="100%" // 親の高さに合わせる
+      w="100%" // 親の幅に合わせる
       borderWidth="1px"
       _before={{
         content: '""',
@@ -67,42 +45,32 @@ export default function CheatSheet({}: CheatSheetProps) {
         zIndex: 0,
       }}
     >
-      {/* Header - VimEditorと統一されたデザイン */}
+      {/* Header - 高さを適切に調整 */}
       <Flex
         alignItems="center"
         px={{ base: 3, md: 4 }}
         py={{ base: 2, md: 3 }}
-        borderBottomWidth="clamp(1px, 0.0625rem, 2px)"
+        borderBottomWidth="1px"
         borderColor="gray.700"
         bg="gray.800"
         justifyContent="flex-start"
         position="relative"
-        minH="clamp(56px, 3.5rem, 64px)"
+        minH="60px" // 固定の高さ
+        maxH="60px" // 固定の高さ
         zIndex={1}
       >
         <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
-          {/* manabyicon.pngに置き換え */}
-          <Box>
-            <Image
-              src="/manabyicon.png"
-              alt="manaby icon"
-              width="28px"
-              height="28px"
-              display="block"
-            />
-          </Box>
-
-          {/* タイトルとサブタイトルのみ */}
+          <Icon as={FiBookOpen} color="secondary.500" fontSize="md" />
           <Box>
             <Text
-              fontSize="md"
+              fontSize="sm"
               fontWeight="600"
               color="secondary.500"
               letterSpacing="tight"
             >
               Vim Cheat Sheet
             </Text>
-            <Text fontSize="xs" color="gray.300" mt={0.5} fontWeight="400">
+            <Text fontSize="xs" color="gray.300" mt={0} fontWeight="400">
               vimコマンド早見表
             </Text>
           </Box>
@@ -245,10 +213,10 @@ export default function CheatSheet({}: CheatSheetProps) {
         </Accordion.Root>
       </Box>
 
-      {/* Footer - VimEditorと統一されたスタイル */}
+      {/* Footer - manabydash.pngキャラクター付き */}
       <Flex
         px={4}
-        py={3}
+        py={4} // 高さを少し増やす
         borderTopWidth={1}
         borderColor="gray.700"
         bg="gray.800"
@@ -258,6 +226,7 @@ export default function CheatSheet({}: CheatSheetProps) {
         justify="center"
         position="relative"
         zIndex={1}
+        minH="64px" // 最小高さを設定してキャラクターが見やすく
         _before={{
           content: '""',
           position: "absolute",
@@ -269,6 +238,17 @@ export default function CheatSheet({}: CheatSheetProps) {
           bgGradient: "linear(to-r, transparent, orange.500, transparent)",
         }}
       >
+        {/* manabydash.pngキャラクター */}
+        <Box
+          mr={3}
+          width="40px"
+          height="40px"
+          backgroundImage="url('/manabydash.png')"
+          backgroundSize="contain"
+          backgroundRepeat="no-repeat"
+          backgroundPosition="center"
+          flexShrink={0}
+        />
         <Icon as={FiBookOpen} mr={2} color="secondary.500" boxSize="16px" />
         <Text lineHeight="1.4" fontWeight="500">
           基本操作から始めて、段階的にスキルアップしよう！
