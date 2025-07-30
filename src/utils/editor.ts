@@ -13,7 +13,6 @@ import {
   autocompletion,
   completionStatus,
   moveCompletionSelection,
-  startCompletion,
 } from "@codemirror/autocomplete";
 import { history } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
@@ -29,11 +28,12 @@ import {
 } from "@codemirror/view";
 import {
   abbreviationTracker,
+  EmmetKnownSyntax,
   expandAbbreviation,
 } from "@emmetio/codemirror6-plugin";
 import { vim } from "@replit/codemirror-vim";
 
-import { EDITOR_CONFIG, EMMET_CONFIGS } from "@/constants";
+import { EDITOR_CONFIG } from "@/constants";
 import type { EditorMode } from "@/types/editor";
 
 // ==============================
@@ -46,11 +46,11 @@ import type { EditorMode } from "@/types/editor";
 
 /**
  * シンプルで確実な自動補完設定
- * CodeMirror 6の標準APIのみを使用
+ * CodeMirror 6の標準APIのみを使用し、Emmetとの連携を重視
  */
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
-  defaultKeymap: true,
+  defaultKeymap: false, // デフォルトキーマップを無効化して手動制御
   aboveCursor: false, // 基本は下表示
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
@@ -181,48 +181,30 @@ const vimProtectionKeymap = Prec.highest(
 );
 
 /**
- * Emmet補完時にTab/Shift-Tabで候補を移動するキーマップ（VSCode風）
- * 自動補完の使いやすさを向上 + 明示的なトリガー
+ * Emmet展開用のキーマップ（Tabで補完候補がなければEmmet展開、Ctrl-e/Cmd-eでも展開）
+ * 公式推奨の形に整理
  */
-const emmetCompletionKeymap = Prec.highest(
+const emmetKeymap = Prec.highest(
   keymap.of([
-    {
-      key: "Ctrl-Space",
-      run: startCompletion, // 明示的に補完を開始
-      preventDefault: true,
-    },
     {
       key: "Tab",
       run: (view) => {
-        // 補完が表示されている場合は次の候補へ移動
+        // 補完候補が表示されていれば補完UI優先
         const completion = completionStatus(view.state);
         if (completion === "active") {
           return moveCompletionSelection(true)(view);
         }
-        // そうでなければ補完を開始
-        return startCompletion(view);
+        // 補完候補がなければEmmet展開
+        return expandAbbreviation(view);
       },
       preventDefault: true,
     },
-    {
-      key: "Shift-Tab",
-      run: moveCompletionSelection(false), // 前の候補へ
-      preventDefault: true,
-    },
-    // Emmet展開用
     { key: "Ctrl-e", run: expandAbbreviation },
     { key: "Cmd-e", run: expandAbbreviation },
   ])
 );
 
-/**
- * 共通のキーマップ設定
- * TabはEmmet補完用にemmetCompletionKeymapで処理されるため除外
- */
-const commonKeymap = keymap.of([
-  { key: "Ctrl-e", run: expandAbbreviation },
-  { key: "Cmd-e", run: expandAbbreviation },
-]);
+// ...existing code...
 
 // ==============================
 // テーマとスタイリング
@@ -419,8 +401,7 @@ export const getEditorExtensions = (mode: EditorMode) => {
     languageExtensions[mode],
     modeHistory, // 独立したhistoryインスタンス
     advancedAutocompletion, // 高度な自動補完設定
-    emmetCompletionKeymap, // Tab/Shift-Tabで候補移動
-    commonKeymap, // Emmet用キーマップ
+    // ...emmetKeymapでTab/Emmet展開を制御...
     oneDark,
     subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
     autocompleteTheme, // 自動補完候補のスタイリング
@@ -430,11 +411,28 @@ export const getEditorExtensions = (mode: EditorMode) => {
     livecodesScrolling, // livecodesスタイルのスクロール動作
   ];
 
-  // 全モードでEmmet自動補完を有効化
-  const emmetExtension = Prec.high(abbreviationTracker(EMMET_CONFIGS[mode]));
+  // モードごとにEmmet abbreviationTrackerを適切に設定
+  let emmetExtension;
+  if (mode === "html") {
+    emmetExtension = abbreviationTracker({
+      syntax: EmmetKnownSyntax.html,
+      mark: true,
+    });
+  } else if (mode === "css") {
+    emmetExtension = abbreviationTracker({
+      syntax: EmmetKnownSyntax.css,
+      mark: true,
+    });
+  } else {
+    emmetExtension = abbreviationTracker({
+      syntax: EmmetKnownSyntax.jsx,
+      mark: false,
+    });
+  }
   return [
     ...commonExtensions.slice(0, 5),
     emmetExtension,
+    emmetKeymap,
     ...commonExtensions.slice(5),
   ];
 };

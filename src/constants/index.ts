@@ -697,54 +697,6 @@ export const ANIMATION_VARIANTS = {
   },
 };
 
-// Emmet設定 - VSCode風の快適な自動補完
-export const EMMET_CONFIGS = {
-  html: {
-    autocompleteTab: true,
-    config: {
-      markup: {
-        options: {
-          "markup.attributes": {
-            href: "https://",
-            src: "/",
-          },
-          // 適切な閾値で自動補完の品質を向上
-          "abbreviation.triggers": "tab,enter", // Tab/Enterでの展開
-          "completion.previewEnabled": true, // プレビュー有効
-        },
-      },
-    },
-  },
-  css: {
-    autocompleteTab: true,
-    config: {
-      stylesheet: {
-        options: {
-          "stylesheet.strictMatch": false, // より柔軟なマッチング
-          "completion.previewEnabled": true, // プレビュー有効
-          "abbreviation.triggers": "tab,enter",
-        },
-      },
-    },
-  },
-  js: {
-    autocompleteTab: true,
-    config: {
-      markup: {
-        options: {
-          // JSX風のEmmet補完を有効化
-          "markup.attributes": {
-            className: "",
-            onClick: "() => {}",
-          },
-          "abbreviation.triggers": "tab,enter",
-          "completion.previewEnabled": true,
-        },
-      },
-    },
-  },
-} as const;
-
 // UI スタイリング定数
 export const UI_STYLES = {
   animation: {
