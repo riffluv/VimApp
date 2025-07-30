@@ -1,19 +1,15 @@
-/**
- * CodeMirror 6 拡張・ユーティリティ集（2025年最新版ベストプラクティス）
- * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを厳密に責務分離
- * - 型安全・拡張性・保守性・UI/UX・競合防止を徹底
- */
-
+import { EDITOR_CONFIG } from "@/constants";
+import type { EditorMode } from "@/types/editor";
 import {
   acceptCompletion,
   autocompletion,
   completionStatus,
   moveCompletionSelection,
 } from "@codemirror/autocomplete";
-import { history, indentMore } from "@codemirror/commands";
-import { css as cssLang } from "@codemirror/lang-css";
-import { html as htmlLang } from "@codemirror/lang-html";
-import { javascript as jsLang } from "@codemirror/lang-javascript";
+import { history } from "@codemirror/commands";
+import { css } from "@codemirror/lang-css";
+import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
 import { language } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -29,18 +25,20 @@ import {
   expandAbbreviation,
 } from "@emmetio/codemirror6-plugin";
 import { vim } from "@replit/codemirror-vim";
+// 各エディタモードに対応する言語拡張セット
+export const languageExtensions: Record<string, any> = {
+  html: html(),
+  css: css(),
+  js: javascript(),
+};
+// 言語拡張(languageExtensions)は別途定義またはimportが必要
 
-import { EDITOR_CONFIG } from "@/constants";
-import type { EditorMode } from "@/types/editor";
-
-// ==============================
-// 言語拡張
-// ==============================
-const languageExtensions = {
-  html: htmlLang(),
-  css: cssLang(),
-  js: jsLang(),
-} as const;
+/**
+ * CodeMirror 6 拡張・ユーティリティ集（2025年最新版ベストプラクティス）
+ * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを厳密に責務分離
+ * - 型安全・拡張性・保守性・UI/UX・競合防止を徹底
+ */
+// ...（この壊れたオブジェクトリテラル全体を削除）
 
 // ==============================
 // 自動補完拡張
@@ -148,7 +146,17 @@ const emmetKeymap = Prec.highest(
         const cursorPos =
           view.state.selection.main.head -
           view.state.doc.lineAt(view.state.selection.main.from).from;
-        const beforeCursor = line.slice(0, cursorPos).trim();
+        let beforeCursor = line.slice(0, cursorPos);
+        // タグ直後の省略形も検出
+        let abbr = beforeCursor.trim();
+        // 直前がタグ閉じ > なら、その直後の省略形だけを抽出
+        const tagCloseIdx = beforeCursor.lastIndexOf(">");
+        if (tagCloseIdx !== -1 && tagCloseIdx < beforeCursor.length - 1) {
+          const afterTag = beforeCursor.slice(tagCloseIdx + 1).trim();
+          if (/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(afterTag)) {
+            abbr = afterTag;
+          }
+        }
         const isValidEmmetAbbreviation = (text: string): boolean => {
           if (!text || text.length === 0) return false;
           const htmlElementPattern =
@@ -208,10 +216,10 @@ const emmetKeymap = Prec.highest(
             return /^\s*<.*/.test(text);
           return false;
         };
-        if (isValidEmmetAbbreviation(beforeCursor)) {
+        if (isValidEmmetAbbreviation(abbr)) {
           if (expandAbbreviation(view)) return true;
         }
-        return indentMore(view);
+        return false; // インデントは一切発生させない
       },
       preventDefault: true,
     },
@@ -221,7 +229,7 @@ const emmetKeymap = Prec.highest(
         const completion = completionStatus(view.state);
         if (completion === "active")
           return moveCompletionSelection(false)(view);
-        return false;
+        return false; // インデントは一切発生させない
       },
       preventDefault: true,
     },
@@ -384,43 +392,6 @@ const autocompleteTheme = EditorView.theme({
     fontSize: "11px", // 情報密度重視
     lineHeight: "1.2", // タイトな行間
     fontWeight: "400",
-    margin: "0",
-    padding: "2px 0", // 最小限のパディング
-    maxHeight: "240px",
-    overflow: "auto",
-    scrollbarWidth: "thin",
-    scrollbarColor: "rgba(232, 131, 58, 0.2) transparent",
-  },
-  ".cm-tooltip-autocomplete > ul::-webkit-scrollbar": {
-    width: "3px", // より細いスクロールバー
-  },
-  ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-track": {
-    background: "transparent",
-  },
-  ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb": {
-    background: "rgba(232, 131, 58, 0.25)",
-    borderRadius: "2px",
-  },
-  ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb:hover": {
-    background: "rgba(232, 131, 58, 0.4)",
-  },
-  ".cm-tooltip-autocomplete ul li": {
-    padding: "4px 8px", // コンパクトなアイテム
-    borderRadius: "0",
-    transition: "none",
-    color: "#e0e0e0", // クリアな白文字
-    backgroundColor: "transparent",
-    cursor: "pointer",
-    border: "none",
-    borderLeft: "2px solid transparent",
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-    minHeight: "20px", // 最小高さで統一
-  },
-  ".cm-tooltip-autocomplete ul li:hover": {
-    backgroundColor: "rgba(232, 131, 58, 0.08)", // 控えめなホバー
-    borderLeft: "2px solid rgba(232, 131, 58, 0.3)",
     color: "#ffffff",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected]": {
