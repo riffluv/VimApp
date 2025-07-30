@@ -1,7 +1,7 @@
 /**
- * CodeMirror 6 拡張・ユーティリティ集（2025年ベストプラクティス）
- * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを責務分離
- * - 型安全・拡張性・保守性・UI/UXを徹底
+ * CodeMirror 6 拡張・ユーティリティ集（2025年最新版ベストプラクティス）
+ * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを厳密に責務分離
+ * - 型安全・拡張性・保守性・UI/UX・競合防止を徹底
  */
 
 import {
@@ -10,9 +10,7 @@ import {
   completionStatus,
   moveCompletionSelection,
 } from "@codemirror/autocomplete";
-import { indentMore } from "@codemirror/commands";
-
-import { history } from "@codemirror/commands";
+import { history, indentMore } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
@@ -49,13 +47,13 @@ const languageExtensions = {
 // ==============================
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
-  defaultKeymap: true, // デフォルトのキーマップを有効化（重要）
+  defaultKeymap: true,
   aboveCursor: false,
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
   closeOnBlur: true,
   tooltipClass: () => "cm-tooltip-no-animation",
-  selectOnOpen: true, // 最初の候補を自動選択（UX向上）
+  selectOnOpen: true,
 });
 
 // ==============================
@@ -143,11 +141,7 @@ const emmetKeymap = Prec.highest(
       key: "Tab",
       run: (view) => {
         const completion = completionStatus(view.state);
-        if (completion === "active") {
-          return moveCompletionSelection(true)(view);
-        }
-
-        // カーソル位置の文字列を取得
+        if (completion === "active") return moveCompletionSelection(true)(view);
         const lang = view.state.facet(language);
         const mode = lang?.name || "";
         const line = view.state.doc.lineAt(view.state.selection.main.head).text;
@@ -155,24 +149,13 @@ const emmetKeymap = Prec.highest(
           view.state.selection.main.head -
           view.state.doc.lineAt(view.state.selection.main.from).from;
         const beforeCursor = line.slice(0, cursorPos).trim();
-
-        // 有効なEmmet記法の判定を厳密化
         const isValidEmmetAbbreviation = (text: string): boolean => {
           if (!text || text.length === 0) return false;
-
-          // HTMLの有効な要素名または記法かチェック
           const htmlElementPattern =
-            /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
+            /^[a-zA-Z][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
           const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
-
-          // CSS構文の場合
-          if (mode === "css") {
-            return cssPropertyPattern.test(text);
-          }
-
-          // HTML構文の場合 - 明確にHTMLタグ名として認識できるもののみ
+          if (mode === "css") return cssPropertyPattern.test(text);
           if (mode === "html") {
-            // 一般的なHTMLタグ名のみ許可
             const commonHtmlTags = [
               "div",
               "span",
@@ -217,29 +200,17 @@ const emmetKeymap = Prec.highest(
               "body",
               "html",
             ];
-
-            // 基本的なタグ名かどうかをチェック
             const baseTag = text.split(/[.#\[\{*+>]/)[0];
-            if (!commonHtmlTags.includes(baseTag.toLowerCase())) {
-              return false;
-            }
-
+            if (!commonHtmlTags.includes(baseTag.toLowerCase())) return false;
             return htmlElementPattern.test(text);
           }
-
-          // JS/JSXの場合は<から始まる場合のみ
-          if (mode === "javascript" || mode === "jsx") {
+          if (mode === "javascript" || mode === "jsx")
             return /^\s*<.*/.test(text);
-          }
-
           return false;
         };
-
-        // 有効なEmmet記法の場合のみ展開、そうでなければインデント
         if (isValidEmmetAbbreviation(beforeCursor)) {
           if (expandAbbreviation(view)) return true;
         }
-
         return indentMore(view);
       },
       preventDefault: true,
@@ -248,9 +219,8 @@ const emmetKeymap = Prec.highest(
       key: "Shift-Tab",
       run: (view) => {
         const completion = completionStatus(view.state);
-        if (completion === "active") {
+        if (completion === "active")
           return moveCompletionSelection(false)(view);
-        }
         return false;
       },
       preventDefault: true,
@@ -258,13 +228,8 @@ const emmetKeymap = Prec.highest(
     {
       key: "Enter",
       run: (view) => {
-        // 補完UIがactiveならacceptCompletionを最優先で実行
         const completion = completionStatus(view.state);
-        if (completion === "active") {
-          return acceptCompletion(view);
-        }
-
-        // カーソル位置の文字列を取得
+        if (completion === "active") return acceptCompletion(view);
         const lang = view.state.facet(language);
         const mode = lang?.name || "";
         const line = view.state.doc.lineAt(view.state.selection.main.head).text;
@@ -272,24 +237,13 @@ const emmetKeymap = Prec.highest(
           view.state.selection.main.head -
           view.state.doc.lineAt(view.state.selection.main.from).from;
         const beforeCursor = line.slice(0, cursorPos).trim();
-
-        // 有効なEmmet記法の判定を厳密化
         const isValidEmmetAbbreviation = (text: string): boolean => {
           if (!text || text.length === 0) return false;
-
-          // HTMLの有効な要素名または記法かチェック
           const htmlElementPattern =
             /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
           const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
-
-          // CSS構文の場合
-          if (mode === "css") {
-            return cssPropertyPattern.test(text);
-          }
-
-          // HTML構文の場合 - 明確にHTMLタグ名として認識できるもののみ
+          if (mode === "css") return cssPropertyPattern.test(text);
           if (mode === "html") {
-            // 一般的なHTMLタグ名のみ許可
             const commonHtmlTags = [
               "div",
               "span",
@@ -334,41 +288,23 @@ const emmetKeymap = Prec.highest(
               "body",
               "html",
             ];
-
-            // 基本的なタグ名かどうかをチェック
             const baseTag = text.split(/[.#\[\{*+>]/)[0];
-            if (!commonHtmlTags.includes(baseTag.toLowerCase())) {
-              return false;
-            }
-
+            if (!commonHtmlTags.includes(baseTag.toLowerCase())) return false;
             return htmlElementPattern.test(text);
           }
-
-          // JS/JSXの場合は<から始まる場合のみ
-          if (mode === "javascript" || mode === "jsx") {
+          if (mode === "javascript" || mode === "jsx")
             return /^\s*<.*/.test(text);
-          }
-
           return false;
         };
-
-        // 有効なEmmet記法の場合のみ展開
         if (isValidEmmetAbbreviation(beforeCursor)) {
           if (expandAbbreviation(view)) return true;
         }
-
         return false;
       },
       preventDefault: true,
     },
-    {
-      key: "Ctrl-e",
-      run: expandAbbreviation,
-    },
-    {
-      key: "Cmd-e",
-      run: expandAbbreviation,
-    },
+    { key: "Ctrl-e", run: expandAbbreviation },
+    { key: "Cmd-e", run: expandAbbreviation },
   ])
 );
 

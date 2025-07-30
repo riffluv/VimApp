@@ -110,35 +110,18 @@ type VimEditorProps = {
 };
 
 function VimEditor({ onCodePenModeChange }: VimEditorProps) {
-  // 各モードごとにエディタの状態（EditorView/EditorState）を独立管理
-  const editorRefs = {
-    html: useRef(null),
-    css: useRef(null),
-    js: useRef(null),
-  };
-  // 各モードごとにCodeMirrorの内部stateを保持
+  // 各モードごとにEditorView/EditorStateを独立管理
   const [editorStates, setEditorStates] = useState<{
     html: EditorState | undefined;
     css: EditorState | undefined;
     js: EditorState | undefined;
-  }>({
-    html: undefined,
-    css: undefined,
-    js: undefined,
-  });
-
-  // 各モードごとにEditorViewインスタンスを保持
+  }>({ html: undefined, css: undefined, js: undefined });
   const editorViews = useRef<{
     html: EditorView | null;
     css: EditorView | null;
     js: EditorView | null;
-  }>({
-    html: null,
-    css: null,
-    js: null,
-  });
-
-  // onCreateEditorでEditorView/EditorStateを保存
+  }>({ html: null, css: null, js: null });
+  // EditorView/EditorState保存
   const handleCreateEditor = useCallback(
     (view: EditorView, state: EditorState, mode: EditorMode) => {
       setEditorStates((prev) => ({ ...prev, [mode]: state }));
@@ -158,10 +141,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     handleCodePenToggle,
   } = useUIState(onCodePenModeChange);
 
-  // モード切り替え時にエディタの状態を保存
+  // モード切替時に現モードのstateを保存
   const handleModeChangeWithStateSave = useCallback(
     (newMode: EditorMode) => {
-      // 現在のエディタがあれば状態を保存
       if (editorViews.current[mode]) {
         setEditorStates((prev) => ({
           ...prev,
@@ -192,7 +174,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
 
   const currentVimModeInfo = VIM_MODE_INFO[vimMode];
 
-  // 現在のモードのstateを取得
+  // 現在のモードstate
   const currentState = editorStates[mode];
 
   return (

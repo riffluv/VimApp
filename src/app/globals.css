@@ -138,10 +138,7 @@ button:hover,
 /* CodeMirror editor content protection from hover effects */
 .cm-editor,
 .cm-content,
-.cm-line,
-.CodeMirror,
-.CodeMirror-lines,
-.CodeMirror-line {
+.cm-line {
   isolation: isolate !important;
   position: relative !important;
   z-index: 2 !important;
