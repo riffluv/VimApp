@@ -1,23 +1,22 @@
 /**
- * CodeMirror関連のユーティリティ関数とエディタ拡張機能
- *
- * このファイルには以下の機能が含まれています：
- * - CodeMirror拡張機能の設定
- * - Vim統合とキーマップ
- * - livecodes風スクロール機能
- * - Emmet自動補完
- * - プレビューHTML生成
+ * CodeMirror 6 拡張・ユーティリティ集（2025年ベストプラクティス）
+ * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを責務分離
+ * - 型安全・拡張性・保守性・UI/UXを徹底
  */
 
 import {
+  acceptCompletion,
   autocompletion,
   completionStatus,
   moveCompletionSelection,
 } from "@codemirror/autocomplete";
+import { indentMore } from "@codemirror/commands";
+
 import { history } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript as jsLang } from "@codemirror/lang-javascript";
+import { language } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import {
@@ -37,78 +36,56 @@ import { EDITOR_CONFIG } from "@/constants";
 import type { EditorMode } from "@/types/editor";
 
 // ==============================
-// 自動補完の設定と位置調整
+// 言語拡張
 // ==============================
+const languageExtensions = {
+  html: htmlLang(),
+  css: cssLang(),
+  js: jsLang(),
+} as const;
 
 // ==============================
-// 自動補完の設定と位置調整
+// 自動補完拡張
 // ==============================
-
-/**
- * シンプルで確実な自動補完設定
- * CodeMirror 6の標準APIのみを使用し、Emmetとの連携を重視
- */
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
-  defaultKeymap: false, // デフォルトキーマップを無効化して手動制御
-  aboveCursor: false, // 基本は下表示
+  defaultKeymap: true, // デフォルトのキーマップを有効化（重要）
+  aboveCursor: false,
   optionClass: () => "cm-completion-option-enhanced",
   activateOnTyping: true,
   closeOnBlur: true,
-  tooltipClass: () => "cm-tooltip-no-animation", // アニメーション無効化クラス
+  tooltipClass: () => "cm-tooltip-no-animation",
+  selectOnOpen: true, // 最初の候補を自動選択（UX向上）
 });
 
-/**
- * 視覚的位置ベースの補完位置調整
- * 確実で安定した実装
- */
+// ==============================
+// 補完UIの位置調整（UI/UX）
+// ==============================
 const smartPositioning = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
-    // 次のフレームで確実にDOM更新後に実行
     requestAnimationFrame(() => {
       const view = update.view;
       const tooltip = view.dom.querySelector(
         ".cm-tooltip-autocomplete"
       ) as HTMLElement;
-
       if (!tooltip) return;
-
       try {
         const { main } = view.state.selection;
         const cursorCoords = view.coordsAtPos(main.head);
-
         if (!cursorCoords) return;
-
         const editorRect = view.scrollDOM.getBoundingClientRect();
-
-        // シンプルな視覚的位置判定
         const cursorScreenY = cursorCoords.top;
         const editorScreenMiddle = editorRect.top + editorRect.height / 2;
-
-        // カーソルが画面上でエディタの中央より下にある場合は上に表示
         const shouldShowAbove = cursorScreenY > editorScreenMiddle;
-
-        console.log("Final positioning logic:", {
-          cursorScreenY,
-          editorScreenMiddle,
-          editorTop: editorRect.top,
-          editorHeight: editorRect.height,
-          shouldShowAbove,
-        });
-
-        // 確実な位置設定
         tooltip.style.position = "absolute";
         tooltip.style.transform = "none";
         tooltip.style.margin = "0";
-
         if (shouldShowAbove) {
-          // 上に表示
           tooltip.style.top = "auto";
           tooltip.style.bottom = "100%";
           tooltip.style.marginBottom = "8px";
           tooltip.setAttribute("data-position", "above");
         } else {
-          // 下に表示
           tooltip.style.bottom = "auto";
           tooltip.style.top = "100%";
           tooltip.style.marginTop = "8px";
@@ -122,36 +99,21 @@ const smartPositioning = EditorView.updateListener.of((update) => {
 });
 
 // ==============================
-// スクロール関連の拡張機能
+// スクロール拡張
 // ==============================
-
-/**
- * カーソル周りのスクロールマージンを確保する拡張
- * livecodes風の快適なスクロール体験を実現
- */
 const scrollMargins = EditorView.theme({
-  "&": {
-    scrollMargin: EDITOR_CONFIG.scroll.margins,
-  },
+  "&": { scrollMargin: EDITOR_CONFIG.scroll.margins },
   ".cm-scroller": {
     paddingBottom: `${EDITOR_CONFIG.scroll.bottomPadding} !important`,
   },
 });
-
-/**
- * カーソル移動時の動的スクロール調整
- * カーソル位置から画面下部まで常に一定の余白を維持
- */
 const livecodesScrolling = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
     const view = update.view;
     const { main } = view.state.selection;
     const line = view.lineBlockAt(main.head);
-
-    // カーソル位置から画面下部まで最小マージンを確保
     const viewportHeight = view.scrollDOM.clientHeight;
     const targetBottom = line.bottom + EDITOR_CONFIG.scroll.cursorMargin;
-
     if (targetBottom > view.scrollDOM.scrollTop + viewportHeight) {
       view.scrollDOM.scrollTop = targetBottom - viewportHeight;
     }
@@ -159,55 +121,255 @@ const livecodesScrolling = EditorView.updateListener.of((update) => {
 });
 
 // ==============================
-// キーマップとVim統合
+// Vim/Emmet/キーマップ拡張
 // ==============================
-
-/**
- * Vimキーバインドを保護するための最小限のキーマップ
- * ブラウザのデフォルト動作（Ctrl+A全選択）を防ぐ
- */
 const vimProtectionKeymap = Prec.highest(
   keymap.of([
     {
       key: "Ctrl-a",
-      run: () => {
-        // ブラウザのデフォルト動作（全選択）を防ぐだけ
-        // CodeMirror Vimが処理するように、falseを返す
-        return false;
-      },
+      run: () => false,
       preventDefault: true,
     },
   ])
 );
 
-/**
- * Emmet展開用のキーマップ（Tabで補完候補がなければEmmet展開、Ctrl-e/Cmd-eでも展開）
- * 公式推奨の形に整理
- */
 const emmetKeymap = Prec.highest(
   keymap.of([
     {
       key: "Tab",
       run: (view) => {
-        // 補完候補が表示されていれば補完UI優先
         const completion = completionStatus(view.state);
         if (completion === "active") {
           return moveCompletionSelection(true)(view);
         }
-        // 補完候補がなければEmmet展開
-        return expandAbbreviation(view);
+
+        // カーソル位置の文字列を取得
+        const lang = view.state.facet(language);
+        const mode = lang?.name || "";
+        const line = view.state.doc.lineAt(view.state.selection.main.head).text;
+        const cursorPos =
+          view.state.selection.main.head -
+          view.state.doc.lineAt(view.state.selection.main.from).from;
+        const beforeCursor = line.slice(0, cursorPos).trim();
+
+        // 有効なEmmet記法の判定を厳密化
+        const isValidEmmetAbbreviation = (text: string): boolean => {
+          if (!text || text.length === 0) return false;
+
+          // HTMLの有効な要素名または記法かチェック
+          const htmlElementPattern =
+            /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
+          const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
+
+          // CSS構文の場合
+          if (mode === "css") {
+            return cssPropertyPattern.test(text);
+          }
+
+          // HTML構文の場合 - 明確にHTMLタグ名として認識できるもののみ
+          if (mode === "html") {
+            // 一般的なHTMLタグ名のみ許可
+            const commonHtmlTags = [
+              "div",
+              "span",
+              "p",
+              "a",
+              "img",
+              "ul",
+              "li",
+              "ol",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "h5",
+              "h6",
+              "section",
+              "article",
+              "header",
+              "footer",
+              "nav",
+              "main",
+              "aside",
+              "form",
+              "input",
+              "button",
+              "textarea",
+              "select",
+              "option",
+              "table",
+              "tr",
+              "td",
+              "th",
+              "thead",
+              "tbody",
+              "tfoot",
+              "script",
+              "style",
+              "link",
+              "meta",
+              "title",
+              "head",
+              "body",
+              "html",
+            ];
+
+            // 基本的なタグ名かどうかをチェック
+            const baseTag = text.split(/[.#\[\{*+>]/)[0];
+            if (!commonHtmlTags.includes(baseTag.toLowerCase())) {
+              return false;
+            }
+
+            return htmlElementPattern.test(text);
+          }
+
+          // JS/JSXの場合は<から始まる場合のみ
+          if (mode === "javascript" || mode === "jsx") {
+            return /^\s*<.*/.test(text);
+          }
+
+          return false;
+        };
+
+        // 有効なEmmet記法の場合のみ展開、そうでなければインデント
+        if (isValidEmmetAbbreviation(beforeCursor)) {
+          if (expandAbbreviation(view)) return true;
+        }
+
+        return indentMore(view);
       },
       preventDefault: true,
     },
-    { key: "Ctrl-e", run: expandAbbreviation },
-    { key: "Cmd-e", run: expandAbbreviation },
+    {
+      key: "Shift-Tab",
+      run: (view) => {
+        const completion = completionStatus(view.state);
+        if (completion === "active") {
+          return moveCompletionSelection(false)(view);
+        }
+        return false;
+      },
+      preventDefault: true,
+    },
+    {
+      key: "Enter",
+      run: (view) => {
+        // 補完UIがactiveならacceptCompletionを最優先で実行
+        const completion = completionStatus(view.state);
+        if (completion === "active") {
+          return acceptCompletion(view);
+        }
+
+        // カーソル位置の文字列を取得
+        const lang = view.state.facet(language);
+        const mode = lang?.name || "";
+        const line = view.state.doc.lineAt(view.state.selection.main.head).text;
+        const cursorPos =
+          view.state.selection.main.head -
+          view.state.doc.lineAt(view.state.selection.main.from).from;
+        const beforeCursor = line.slice(0, cursorPos).trim();
+
+        // 有効なEmmet記法の判定を厳密化
+        const isValidEmmetAbbreviation = (text: string): boolean => {
+          if (!text || text.length === 0) return false;
+
+          // HTMLの有効な要素名または記法かチェック
+          const htmlElementPattern =
+            /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
+          const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
+
+          // CSS構文の場合
+          if (mode === "css") {
+            return cssPropertyPattern.test(text);
+          }
+
+          // HTML構文の場合 - 明確にHTMLタグ名として認識できるもののみ
+          if (mode === "html") {
+            // 一般的なHTMLタグ名のみ許可
+            const commonHtmlTags = [
+              "div",
+              "span",
+              "p",
+              "a",
+              "img",
+              "ul",
+              "li",
+              "ol",
+              "h1",
+              "h2",
+              "h3",
+              "h4",
+              "h5",
+              "h6",
+              "section",
+              "article",
+              "header",
+              "footer",
+              "nav",
+              "main",
+              "aside",
+              "form",
+              "input",
+              "button",
+              "textarea",
+              "select",
+              "option",
+              "table",
+              "tr",
+              "td",
+              "th",
+              "thead",
+              "tbody",
+              "tfoot",
+              "script",
+              "style",
+              "link",
+              "meta",
+              "title",
+              "head",
+              "body",
+              "html",
+            ];
+
+            // 基本的なタグ名かどうかをチェック
+            const baseTag = text.split(/[.#\[\{*+>]/)[0];
+            if (!commonHtmlTags.includes(baseTag.toLowerCase())) {
+              return false;
+            }
+
+            return htmlElementPattern.test(text);
+          }
+
+          // JS/JSXの場合は<から始まる場合のみ
+          if (mode === "javascript" || mode === "jsx") {
+            return /^\s*<.*/.test(text);
+          }
+
+          return false;
+        };
+
+        // 有効なEmmet記法の場合のみ展開
+        if (isValidEmmetAbbreviation(beforeCursor)) {
+          if (expandAbbreviation(view)) return true;
+        }
+
+        return false;
+      },
+      preventDefault: true,
+    },
+    {
+      key: "Ctrl-e",
+      run: expandAbbreviation,
+    },
+    {
+      key: "Cmd-e",
+      run: expandAbbreviation,
+    },
   ])
 );
 
-// ...existing code...
-
 // ==============================
-// テーマとスタイリング
+// テーマ/スタイリング拡張
 // ==============================
 
 /**
@@ -361,57 +523,16 @@ const autocompleteTheme = EditorView.theme({
 });
 
 // ==============================
-// 言語サポート
+// メイン拡張セット取得関数
 // ==============================
-
 /**
- * 言語固有の拡張機能マップ
- * HTML, CSS, JavaScriptの各言語サポートを提供
+ * 指定モードに応じたCodeMirror拡張セットを返す（型安全・責務分離・拡張性重視）
  */
-const languageExtensions = {
-  html: htmlLang(),
-  css: cssLang(),
-  js: jsLang(),
-} as const;
-
-// ==============================
-// メイン拡張機能統合
-// ==============================
-
-/**
- * エディターモードに応じた拡張機能を取得
- *
- * 機能:
- * - 各モードごとに独立したhistoryインスタンスを作成
- * - HTML/CSSモードではEmmet自動補完を有効化
- * - 全モードでVim統合、livecodes風スクロール、自動補完UIを提供
- *
- * @param mode - エディターモード ('html' | 'css' | 'js')
- * @returns CodeMirror拡張機能の配列
- */
-export const getEditorExtensions = (mode: EditorMode) => {
-  // 各モードごとに独立したhistoryインスタンスを作成
+export const getEditorExtensions = (mode: EditorMode): any[] => {
+  // 各モードごとに独立したhistoryインスタンス
   const modeHistory = history();
 
-  // 共通拡張機能（全モードで使用）
-  const commonExtensions = [
-    vimProtectionKeymap, // Ctrl+Aのブラウザデフォルト動作を防ぐ
-    Prec.highest(vim()), // Vim拡張を最高優先度で設定
-    drawSelection(),
-    languageExtensions[mode],
-    modeHistory, // 独立したhistoryインスタンス
-    advancedAutocompletion, // 高度な自動補完設定
-    // ...emmetKeymapでTab/Emmet展開を制御...
-    oneDark,
-    subtleActiveLineHighlight, // 控えめなアクティブライン（カーソル行）のハイライト
-    autocompleteTheme, // 自動補完候補のスタイリング
-    smartPositioning, // 視覚的位置ベースの補完位置調整
-    scrollPastEnd(), // エディタの下部に余白を追加
-    scrollMargins, // カーソル周りのスクロールマージンを確保
-    livecodesScrolling, // livecodesスタイルのスクロール動作
-  ];
-
-  // モードごとにEmmet abbreviationTrackerを適切に設定
+  // Emmet abbreviationTracker（モードごとにsyntax明示）
   let emmetExtension;
   if (mode === "html") {
     emmetExtension = abbreviationTracker({
@@ -429,11 +550,31 @@ export const getEditorExtensions = (mode: EditorMode) => {
       mark: false,
     });
   }
+
+  // 拡張セット（優先順位に注意）
   return [
-    ...commonExtensions.slice(0, 5),
-    emmetExtension,
+    // Vimキーマップを最優先
+    Prec.highest(vim()),
+    // その次にVim保護用キーマップ
+    vimProtectionKeymap,
+    // Emmetキーマップ（acceptCompletionを含む）
     emmetKeymap,
-    ...commonExtensions.slice(5),
+    // 基本的な編集機能
+    drawSelection(),
+    languageExtensions[mode],
+    modeHistory,
+    // 自動補完（デフォルトキーマップを有効化）
+    advancedAutocompletion,
+    // Emmet機能
+    emmetExtension,
+    // テーマとスタイル
+    oneDark,
+    subtleActiveLineHighlight,
+    autocompleteTheme,
+    smartPositioning,
+    scrollPastEnd(),
+    scrollMargins,
+    livecodesScrolling,
   ];
 };
 
