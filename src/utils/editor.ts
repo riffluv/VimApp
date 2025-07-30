@@ -1,16 +1,13 @@
+// ==============================
+// 型・定数
+// ==============================
 import { EDITOR_CONFIG } from "@/constants";
 import type { EditorMode } from "@/types/editor";
-import {
-  acceptCompletion,
-  autocompletion,
-  completionStatus,
-  moveCompletionSelection,
-} from "@codemirror/autocomplete";
+
+// ==============================
+// CodeMirror 本体・コア拡張
+// ==============================
 import { history } from "@codemirror/commands";
-import { css } from "@codemirror/lang-css";
-import { html } from "@codemirror/lang-html";
-import { javascript } from "@codemirror/lang-javascript";
-import { language } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import {
@@ -19,19 +16,41 @@ import {
   keymap,
   scrollPastEnd,
 } from "@codemirror/view";
+
+// ==============================
+// 言語拡張
+// ==============================
+import { css } from "@codemirror/lang-css";
+import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { language } from "@codemirror/language";
+
+// ==============================
+// 補完・Emmet・Vim
+// ==============================
+import {
+  acceptCompletion,
+  autocompletion,
+  completionStatus,
+  moveCompletionSelection,
+} from "@codemirror/autocomplete";
 import {
   abbreviationTracker,
   EmmetKnownSyntax,
   expandAbbreviation,
 } from "@emmetio/codemirror6-plugin";
 import { vim } from "@replit/codemirror-vim";
-// 各エディタモードに対応する言語拡張セット
-export const languageExtensions: Record<string, any> = {
+
+/**
+ * 各エディタモードに対応するCodeMirror言語拡張セット
+ * @type {Record<EditorMode, Extension>}
+ */
+import type { Extension } from "@codemirror/state";
+export const languageExtensions: Record<EditorMode, Extension> = {
   html: html(),
   css: css(),
   js: javascript(),
 };
-// 言語拡張(languageExtensions)は別途定義またはimportが必要
 
 /**
  * CodeMirror 6 拡張・ユーティリティ集（2025年最新版ベストプラクティス）
@@ -41,8 +60,11 @@ export const languageExtensions: Record<string, any> = {
 // ...（この壊れたオブジェクトリテラル全体を削除）
 
 // ==============================
-// 自動補完拡張
+// 自動補完拡張（AI感ゼロ・実用重視）
 // ==============================
+/**
+ * 高度な自動補完拡張（UI/UX・競合防止・情報密度重視）
+ */
 const advancedAutocompletion = autocompletion({
   maxRenderedOptions: EDITOR_CONFIG.autocomplete.maxItems,
   defaultKeymap: true,
@@ -55,8 +77,11 @@ const advancedAutocompletion = autocompletion({
 });
 
 // ==============================
-// 補完UIの位置調整（無駄な空間を排除）
+// 補完UIの位置調整（無駄な空間を排除・UX最適化）
 // ==============================
+/**
+ * 補完UIのスマートポジショニング（上下自動・余白最小化）
+ */
 const smartPositioning = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
     requestAnimationFrame(() => {
@@ -99,14 +124,20 @@ const smartPositioning = EditorView.updateListener.of((update) => {
 });
 
 // ==============================
-// スクロール拡張
+// スクロール拡張（下部余白・カーソル追従）
 // ==============================
+/**
+ * スクロールマージン拡張（下部余白を確保）
+ */
 const scrollMargins = EditorView.theme({
   "&": { scrollMargin: EDITOR_CONFIG.scroll.margins },
   ".cm-scroller": {
     paddingBottom: `${EDITOR_CONFIG.scroll.bottomPadding} !important`,
   },
 });
+/**
+ * カーソル追従スクロール拡張
+ */
 const livecodesScrolling = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
     const view = update.view;
@@ -121,8 +152,11 @@ const livecodesScrolling = EditorView.updateListener.of((update) => {
 });
 
 // ==============================
-// Vim/Emmet/キーマップ拡張
+// Vim/Emmet/キーマップ拡張（競合ゼロ・責務分離）
 // ==============================
+/**
+ * Vim保護用キーマップ（Ctrl-a等の競合防止）
+ */
 const vimProtectionKeymap = Prec.highest(
   keymap.of([
     {
@@ -133,6 +167,13 @@ const vimProtectionKeymap = Prec.highest(
   ])
 );
 
+/**
+ * Emmet/補完/インデント競合ゼロのTab/Enter/Shift-Tabキーマップ
+ * - Tab: 補完UI→Emmet→false（インデント禁止）
+ * - Enter: 補完UI→Emmet→false
+ * - Shift-Tab: 補完UIのみ
+ * - Ctrl-e/Cmd-e: Emmet強制展開
+ */
 const emmetKeymap = Prec.highest(
   keymap.of([
     {
@@ -317,7 +358,7 @@ const emmetKeymap = Prec.highest(
 );
 
 // ==============================
-// テーマ/スタイリング拡張
+// テーマ/スタイリング拡張（UI/UX・アクセシビリティ）
 // ==============================
 
 /**
@@ -444,54 +485,61 @@ const autocompleteTheme = EditorView.theme({
 });
 
 // ==============================
-// メイン拡張セット取得関数
+// メイン拡張セット取得関数（型安全・責務分離・競合ゼロ）
 // ==============================
 /**
- * 指定モードに応じたCodeMirror拡張セットを返す（型安全・責務分離・拡張性重視）
+ * 指定モードに応じたCodeMirror拡張セットを返す（型安全・責務分離・競合ゼロ・拡張性重視）
+ * @param mode EditorMode ("html" | "css" | "js")
+ * @returns Extension[]
  */
-export const getEditorExtensions = (mode: EditorMode): any[] => {
-  // 各モードごとに独立したhistoryインスタンス
+export const getEditorExtensions = (mode: EditorMode): Extension[] => {
+  // 各モードごとに独立したhistoryインスタンス（Undo/Redo競合防止）
   const modeHistory = history();
 
-  // Emmet abbreviationTracker（モードごとにsyntax明示）
-  let emmetExtension;
-  if (mode === "html") {
-    emmetExtension = abbreviationTracker({
-      syntax: EmmetKnownSyntax.html,
-      mark: true,
-    });
-  } else if (mode === "css") {
-    emmetExtension = abbreviationTracker({
-      syntax: EmmetKnownSyntax.css,
-      mark: true,
-    });
-  } else {
-    emmetExtension = abbreviationTracker({
-      syntax: EmmetKnownSyntax.jsx,
-      mark: false,
-    });
-  }
+  // Emmet abbreviationTracker（モードごとにsyntax明示・責務分離）
+  const emmetExtension = (() => {
+    switch (mode) {
+      case "html":
+        return abbreviationTracker({
+          syntax: EmmetKnownSyntax.html,
+          mark: true,
+        });
+      case "css":
+        return abbreviationTracker({
+          syntax: EmmetKnownSyntax.css,
+          mark: true,
+        });
+      default:
+        return abbreviationTracker({
+          syntax: EmmetKnownSyntax.jsx,
+          mark: false,
+        });
+    }
+  })();
 
-  // 拡張セット（優先順位に注意）
+  // 拡張セット（優先順位厳守・競合ゼロ）
   return [
-    // Vimキーマップを最優先
+    // 1. Vimキーマップ（最優先）
     Prec.highest(vim()),
-    // その次にVim保護用キーマップ
+    // 2. Vim保護用キーマップ
     vimProtectionKeymap,
-    // Emmetキーマップ（acceptCompletionを含む）
+    // 3. Emmet/補完/インデント競合ゼロキーマップ
     emmetKeymap,
-    // 基本的な編集機能
+    // 4. 基本編集機能
     drawSelection(),
+    // 5. 言語拡張
     languageExtensions[mode],
+    // 6. 履歴（Undo/Redo）
     modeHistory,
-    // 自動補完（デフォルトキーマップを有効化）
+    // 7. 自動補完
     advancedAutocompletion,
-    // Emmet機能
+    // 8. Emmet abbreviationTracker
     emmetExtension,
-    // テーマとスタイル
+    // 9. テーマ・スタイル
     oneDark,
     subtleActiveLineHighlight,
     autocompleteTheme,
+    // 10. UI/UX拡張
     smartPositioning,
     scrollPastEnd(),
     scrollMargins,
