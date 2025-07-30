@@ -59,7 +59,7 @@ const advancedAutocompletion = autocompletion({
 });
 
 // ==============================
-// 補完UIの位置調整（UI/UX）
+// 補完UIの位置調整（無駄な空間を排除）
 // ==============================
 const smartPositioning = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
@@ -77,18 +77,22 @@ const smartPositioning = EditorView.updateListener.of((update) => {
         const cursorScreenY = cursorCoords.top;
         const editorScreenMiddle = editorRect.top + editorRect.height / 2;
         const shouldShowAbove = cursorScreenY > editorScreenMiddle;
+
+        // 基本位置設定（無駄な余白を排除）
         tooltip.style.position = "absolute";
         tooltip.style.transform = "none";
         tooltip.style.margin = "0";
+        tooltip.style.padding = "0";
+
         if (shouldShowAbove) {
           tooltip.style.top = "auto";
           tooltip.style.bottom = "100%";
-          tooltip.style.marginBottom = "8px";
+          tooltip.style.marginBottom = "2px"; // 最小限の間隔（8px -> 2px）
           tooltip.setAttribute("data-position", "above");
         } else {
           tooltip.style.bottom = "auto";
           tooltip.style.top = "100%";
-          tooltip.style.marginTop = "8px";
+          tooltip.style.marginTop = "2px"; // 最小限の間隔（8px -> 2px）
           tooltip.setAttribute("data-position", "below");
         }
       } catch (error) {
@@ -415,101 +419,111 @@ const subtleActiveLineHighlight = EditorView.theme({
 
 /**
  * 自動補完候補のスタイリング
- * 正確な位置制御と美しいデザインの両立
+ * vimapp デザインコンセプト: リッチブラック + オレンジのプロフェッショナルデザイン
+ * AI感を排除した自然で実用的なインターフェース
  */
 const autocompleteTheme = EditorView.theme({
   ".cm-tooltip-autocomplete": {
-    border: `1px solid ${EDITOR_CONFIG.autocomplete.colors.border}`,
-    borderRadius: `${EDITOR_CONFIG.autocomplete.spacing.borderRadius}`,
-    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.background}`,
-    backdropFilter: "blur(20px) saturate(1.2)",
-    boxShadow: `${EDITOR_CONFIG.autocomplete.colors.shadow}`,
-    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight}`,
-    minHeight: "140px",
+    // 基本レイアウト - 無駄な空間を完全に排除
+    border: "1px solid rgba(232, 131, 58, 0.2)",
+    borderRadius: "4px",
+    backgroundColor: "rgba(8, 8, 10, 0.98)", // 深いリッチブラック
+    backdropFilter: "blur(12px) saturate(1.1)",
+    boxShadow:
+      "0 4px 20px rgba(0, 0, 0, 0.85), 0 0 0 0.5px rgba(232, 131, 58, 0.08)",
+    maxHeight: "240px", // コンパクトサイズ
+    minHeight: "auto", // 自動サイズ（無駄な固定高さを排除）
     overflow: "hidden",
-    zIndex: `${EDITOR_CONFIG.autocomplete.zIndex}`,
-    // 位置調整のための重要なスタイル - 相対位置ベース
+    zIndex: "1000",
     position: "absolute",
     transform: "none",
-    margin: "0",
-    // アニメーション完全無効化でやかましさを排除
+    margin: "0", // 余計な余白を完全排除
+    padding: "0", // パディングも排除
     transition: "none",
     opacity: "1",
+    fontFamily: "JetBrains Mono, 'Fira Code', monospace",
   },
   ".cm-tooltip-autocomplete > ul": {
-    fontFamily: EDITOR_CONFIG.fonts.mono,
-    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize}`,
-    lineHeight: `${EDITOR_CONFIG.autocomplete.typography.lineHeight}`,
-    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.fontWeight}`,
+    fontFamily: "JetBrains Mono, 'Fira Code', monospace",
+    fontSize: "11px", // 情報密度重視
+    lineHeight: "1.2", // タイトな行間
+    fontWeight: "400",
     margin: "0",
-    padding: `${EDITOR_CONFIG.autocomplete.spacing.listPadding}`,
-    maxHeight: `${EDITOR_CONFIG.autocomplete.maxHeight}`,
+    padding: "2px 0", // 最小限のパディング
+    maxHeight: "240px",
     overflow: "auto",
-    // ミニマルスクロールバー
     scrollbarWidth: "thin",
-    scrollbarColor: "rgba(232, 131, 58, 0.25) transparent",
+    scrollbarColor: "rgba(232, 131, 58, 0.2) transparent",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar": {
-    width: "4px",
+    width: "3px", // より細いスクロールバー
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-track": {
     background: "transparent",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb": {
-    background: "rgba(232, 131, 58, 0.3)",
+    background: "rgba(232, 131, 58, 0.25)",
     borderRadius: "2px",
   },
   ".cm-tooltip-autocomplete > ul::-webkit-scrollbar-thumb:hover": {
-    background: "rgba(232, 131, 58, 0.5)",
+    background: "rgba(232, 131, 58, 0.4)",
   },
   ".cm-tooltip-autocomplete ul li": {
-    padding: `${EDITOR_CONFIG.autocomplete.spacing.itemPadding}`,
+    padding: "4px 8px", // コンパクトなアイテム
     borderRadius: "0",
-    transition: "none", // アニメーション完全無効化
-    color: `${EDITOR_CONFIG.autocomplete.colors.text}`,
+    transition: "none",
+    color: "#e0e0e0", // クリアな白文字
     backgroundColor: "transparent",
     cursor: "pointer",
     border: "none",
     borderLeft: "2px solid transparent",
     position: "relative",
-    // 情報密度を高める行間調整
     display: "flex",
     alignItems: "center",
+    minHeight: "20px", // 最小高さで統一
   },
   ".cm-tooltip-autocomplete ul li:hover": {
-    backgroundColor: "rgba(232, 131, 58, 0.06)",
-    borderLeft: "2px solid rgba(232, 131, 58, 0.25)",
+    backgroundColor: "rgba(232, 131, 58, 0.08)", // 控えめなホバー
+    borderLeft: "2px solid rgba(232, 131, 58, 0.3)",
+    color: "#ffffff",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected]": {
-    backgroundColor: `${EDITOR_CONFIG.autocomplete.colors.selectedBg}`,
+    backgroundColor: "rgba(232, 131, 58, 0.15)", // 明確な選択状態
     color: "#ffffff",
-    borderLeft: `2px solid ${EDITOR_CONFIG.autocomplete.colors.selectedAccent}`,
-    fontWeight: `${EDITOR_CONFIG.autocomplete.typography.selectedFontWeight}`,
-    // 選択時の微細なエレベーション効果
+    borderLeft: "2px solid #e8833a", // vimappのセカンダリカラー
+    fontWeight: "500", // 選択時は少し太く
     boxShadow: "inset 0 0 0 0.5px rgba(232, 131, 58, 0.1)",
   },
-  // Emmet候補の詳細スタイル - 超一流の情報階層
+  // ラベルとディテールのスタイリング - プロフェッショナルな情報階層
   ".cm-tooltip-autocomplete .cm-completionLabel": {
-    color: `${EDITOR_CONFIG.autocomplete.colors.label}`,
-    fontWeight: "500",
-    fontSize: `${EDITOR_CONFIG.autocomplete.typography.fontSize}`,
+    color: "#f0f0f0", // 高コントラスト
+    fontWeight: "400",
+    fontSize: "11px",
     flex: "1",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   ".cm-tooltip-autocomplete .cm-completionDetail": {
-    color: `${EDITOR_CONFIG.autocomplete.colors.detail}`,
-    fontSize: "10px",
+    color: "#999999", // 適度にミュートされたディテール
+    fontSize: "9px", // より小さく情報密度アップ
     fontStyle: "normal",
-    marginLeft: "8px",
-    opacity: "0.75",
+    marginLeft: "6px",
+    opacity: "0.8",
     flexShrink: "0",
+    maxWidth: "60px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionLabel": {
     color: "#ffffff",
+    fontWeight: "500",
   },
   ".cm-tooltip-autocomplete ul li[aria-selected] .cm-completionDetail": {
-    color: "rgba(255, 255, 255, 0.65)",
+    color: "rgba(255, 255, 255, 0.7)",
+    opacity: "1",
   },
-  // アニメーション完全無効化クラス
+  // アニメーション完全無効化 - 実用性重視
   ".cm-tooltip-no-animation": {
     transition: "none",
     animation: "none",
