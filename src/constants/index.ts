@@ -1,5 +1,5 @@
 /**
- * アプリケーション定数
+ * アプリケーション定数 2025 - パフォーマンスファーストアーキテクチャ
  */
 
 import type {
@@ -11,6 +11,7 @@ import type {
   VimModeInfo,
 } from "@/types/editor";
 import { FiCommand, FiCpu, FiEdit2, FiSearch } from "react-icons/fi";
+import { DESIGN_SYSTEM } from "./design-system";
 
 // LocalStorage キー
 export const STORAGE_KEYS: StorageKeys = {
@@ -153,661 +154,205 @@ export const CHEAT_SHEET_COMMANDS: Command[] = [
   { command: "%", description: "対応する括弧へジャンプ", category: "webdev" },
 ];
 
-// デフォルトドキュメント内容
+// デフォルトドキュメント内容（軽量化版）
 export const DEFAULT_SAMPLE_CODE: DocsState = {
-  html: `<!--
-  Vimヒント: Vimは3つのモードを使い分けて編集します。
-  - Normalモード: 移動・編集の基本。ESCで入る。hjklで移動、ddで行削除、yyでコピーなど。
-  - Insertモード: 文字入力。iやaで入る。ESCでNormalに戻る。
-  - Visualモード: 選択。vで文字単位、Vで行単位、Ctrl+vで矩形選択。
-  
-  まずはNormal/Insert/Visualの切り替えを体で覚えましょう。
-  
-  ---
-  【初心者向け: 最初に覚えるべき操作】
-  - i: カーソル位置で挿入開始
-  - a: カーソルの次で挿入開始
-  - ESC: ノーマルモードに戻る
-  - h/j/k/l: 左/下/上/右に移動
-  - x: 1文字削除
-  - dd: 行削除
-  - yy: 行コピー
-  - p: 貼り付け
-  - u: アンドゥ
-  - :w: 保存, :q: 終了, :wq: 保存して終了
--->
-<!DOCTYPE html>
+  html: `<!DOCTYPE html>
 <html lang="ja">
-
 <head>
-  <!-- Vimヒント: まずは基本移動！ h←, j↓, k↑, l→ でカーソルを動かしてみよう -->
   <meta charset="UTF-8" />
-  <!-- Vimヒント: 文字を変更しよう！ i で挿入モード開始、ESC でノーマルモードに戻る -->
-  <title>manaVimEditor</title>
-  <!-- Vimヒント: この行をコピーしよう！ yy でコピー、p で貼り付け -->
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet" />
-  <!-- Vimヒント: 行を削除してみよう！ dd で一発削除。間違えたら u で元に戻す -->
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
-  <!-- Vimヒント: 行末に文字を追加しよう！ A で行末から挿入モード開始 -->
-  <script src="script.js" defer></script>
+  <title>VimEditor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-
 <body>
-  <!-- Vimヒント: 新しい行を作ってみよう！ o で下に新行、O で上に新行を作って挿入モード -->
-  <div id="tsparticles"></div>
-  <div class="overlay"></div>
-  <!-- Vimヒント: クラス名を変更してみよう！ ciw でクラス名だけを変更モード -->
   <div class="container">
-    <!-- Vimヒント: タグの中身だけ変更しよう！ cit でタグ内容を変更モード -->
-    <div class="title-main">VIMQUEST</div>
-    <div class="title-sub">III</div>
-    <!-- Vimヒント: 複数行を選択してみよう！ V で行選択モード、j/k で範囲を広げる -->
-    <div class="menu">
-      <!-- Vimヒント: この行を複製してみよう！ yy でコピー、p で下に貼り付け -->
-      <div class="menu-item">START GAME</div>
-      <!-- Vimヒント: 単語を検索してみよう！ /GAME と入力、n で次を検索 -->
-      <div class="menu-item">SELECT MODE</div>
-      <div class="menu-item">RANKING</div>
-      <!-- Vimヒント: 文字を1つ削除してみよう！ x で削除。単語全体なら dw -->
-      <div class="menu-item">SYSTEM</div>
+    <h1>Hello Vim World!</h1>
+    <p>Edit this text using Vim commands.</p>
+    <div class="highlight">
+      Try: i to insert, Esc to normal mode
     </div>
-    <!-- Vimヒント: 行頭に移動してみよう！ 0 で行頭、$ で行末にジャンプ -->
-    <div class="selected-mode" id="selectedMode">Mode: Vim</div>
   </div>
-  <!-- Vimヒント: 対応するタグを見つけてみよう！ % で開始・終了タグ間をジャンプ -->
-  <div class="copyright">
-    <!-- Vimヒント: 年号だけ変更してみよう！ ciw で単語変更、数字部分にカーソルを合わせて -->
-    &copy;2025 manaby Omiya Studio. All rights reserved.
-  </div>
-  <!-- Vimヒント: ファイルの最初に移動してみよう！ gg で先頭、G で最後にジャンプ -->
-  <div class="version">App Ver. 1.01</div>
 </body>
-
 </html>`,
-  css: `/* Vimヒント: CSSでも基本移動から！ h←, j↓, k↑, l→ でプロパティ間を移動しよう */
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  /* Vimヒント: 値を変更しよう！ ci" で"の中身を変更モード */
-  box-sizing: border-box;
-}
-
-/* Vimヒント: プロパティ名を変更してみよう！ ciw で単語変更モード */
-html,
-body {
-  width: 100%;
-  /* Vimヒント: この行をコピーしてみよう！ yy でコピー、p で貼り付け */
-  height: 100%;
-  font-family: "Libre Baskerville", serif;
-  /* Vimヒント: 数値だけ変更してみよう！ 数値にカーソルを合わせて ciw */
-  font-size: 16px;
-  line-height: 1.5;
-  color: #ccc;
-  overflow: hidden;
-  /* Vimヒント: カラーコードを変更してみよう！ ci# で#以降を変更モード */
-  background-color: #000;
-}
-
-/* Vimヒント: セレクタを検索してみよう！ /tsparticles で検索、n で次を探す */
-#tsparticles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  /* Vimヒント: 行を削除してみよう！ dd で一発削除。間違えたら u で元に戻す */
-  z-index: 0;
-}
-
-/* Vimヒント: 複数行を選択してみよう！ V で行選択、j/k で範囲を広げる */
-.overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  /* Vimヒント: 括弧の対応を確認してみよう！ % で開始・終了括弧間をジャンプ */
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 0, 0, 0.3),
-    rgba(0, 0, 0, 0.85)
-  );
-  z-index: 0;
-}
-
-/* Vimヒント: CSSブロック全体をコピーしてみよう！ { にカーソルを合わせて % で } に移動、V で選択 */
+  css: `/* Modern CSS Example */
 .container {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  /* Vimヒント: 行末に文字を追加してみよう！ A で行末から挿入モード */
-  animation: fadeIn 2s ease;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Vimヒント: 同じ編集を繰り返してみよう！ . で直前の操作を繰り返し */
-.title-main {
-  font-size: clamp(2.2rem, 7vw, 4.5rem);
-  color: #fff;
-  letter-spacing: 0.15em;
-  /* Vimヒント: 長い値を一括変更してみよう！ 値の最初で ci, で次のカンマまで変更 */
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4),
-    0 0 35px rgba(200, 200, 255, 0.15);
-  text-transform: uppercase;
-  line-height: 1.1;
-  margin-bottom: 35px;
+h1 {
+  color: #e8833a;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* Vimヒント: クラス名を変更してみよう！ .title-sub の部分で ciw */
-.title-sub {
-  font-size: clamp(1.5rem, 5.5vw, 4rem);
-  color: #ddd;
-  letter-spacing: 0.25em;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
-  margin: 0 0 45px;
-  line-height: 1.1;
-  text-align: center;
-}
-
-/* Vimヒント: 不要な行を削除してみよう！ dd で行削除 */
-.title-sub::before,
-.title-sub::after {
-  display: none;
-}
-
-/* Vimヒント: 特定のプロパティを検索してみよう！ /display で検索 */
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8em;
-  align-items: center;
-  animation: fadeUp 2s ease-in-out;
-}
-
-/* Vimヒント: 複数の値を一度に変更してみよう！ Ctrl+v で矩形選択 */
-.menu-item {
-  font-size: clamp(1rem, 2.8vw, 1.4rem);
-  color: #ccc;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.1em 0.5em;
-}
-
-/* Vimヒント: 行を複製してみよう！ yy でコピー、p で貼り付け */
-.menu-item:hover,
-.menu-item.active {
-  color: #ff8800;
-  text-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
-}
-
-/* Vimヒント: 複数のセレクタを一度に編集してみよう！ V で行選択、複数行選んで一括編集 */
-.version,
-.copyright {
-  position: absolute;
-  font-size: 0.7rem;
-  color: #777;
-  bottom: 15px;
-}
-
-/* Vimヒント: ファイルの最初に移動してみよう！ gg で先頭、G で最後 */
-.version {
-  right: 20px;
-}
-
-/* Vimヒント: 置換してみよう！ :%s/old/new/g で全体置換 */
-.copyright {
-  left: 20px;
-}
-
-/* Vimヒント: 画面中央に表示してみよう！ zz でカーソル行を中央に */
-.selected-mode {
-  margin-top: 1.2em;
-  font-size: clamp(0.8rem, 2vw, 1rem);
-  color: #ccc;
-  font-style: italic;
-}
-
-/* Vimヒント: メディアクエリ内を編集してみよう！ { } で段落移動が便利 */
-@media (max-width: 600px) {
-  .container {
-    padding: 0 0.5em;
-  }
-
-  /* Vimヒント: インデントを調整してみよう！ >> で右に、<< で左にインデント */
-  .title-main {
-    font-size: clamp(1.2rem, 10vw, 2.5rem);
-    letter-spacing: 0.08em;
-    margin-bottom: 25px;
-  }
-
-  .title-sub {
-    font-size: clamp(1rem, 8vw, 2rem);
-    letter-spacing: 0.15em;
-    margin: 0 0 30px;
-  }
-
-  .title-sub::before,
-  .title-sub::after {
-    width: 25px;
-    left: calc(50% - 40px);
-  }
-
-  .title-sub::after {
-    right: calc(50% - 40px);
-  }
-
-  .menu-item {
-    font-size: clamp(0.8rem, 4vw, 1.1rem);
-    padding: 0.08em 0.3em;
-  }
-
-  .selected-mode {
-    font-size: clamp(0.7rem, 2vw, 0.9rem);
-    margin-top: 0.7em;
-  }
-
-  .version,
-  .copyright {
-    font-size: 0.6rem;
-    bottom: 8px;
-  }
-}
-
-/* Vimヒント: CSSブロック全体を削除してみよう！ dap で段落削除 */
-.mode-select-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.95);
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  backdrop-filter: blur(8px);
-}
-
-.mode-select-screen.active {
-  display: flex;
-  opacity: 1;
-}
-
-.mode-card {
-  font-size: 1.4rem;
-  color: #eee;
-  margin: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0.6rem 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
-}
-
-.mode-card:hover,
-.mode-card.selected {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 10px rgba(255, 100, 100, 0.3);
-  transform: scale(1.03);
-}
-
-.back-button {
-  margin-top: 1.5rem;
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #aaa;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0.5rem 1.5rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.back-button:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
-}
-
-/* Vimヒント: アニメーション名を変更してみよう！ fadeIn の部分で ciw */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.highlight {
+  background: rgba(232, 131, 58, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid #e8833a;
 }`,
-  js: `// Vimヒント: JavaScriptでも基本移動から！ h←, j↓, k↑, l→ で関数間を移動しよう
-
-// Vimヒント: 関数名を変更してみよう！ 関数名にカーソルを合わせて ciw で単語変更
-window.onload = () => {
-  // Vimヒント: 関数呼び出しを複製してみよう！ yy でコピー、p で貼り付け
-  initParticles();
-
-  // Vimヒント: 行末にセミコロンを追加してみよう！ A で行末から挿入モード
-  setupMenuListeners();
-
-  // Vimヒント: 関数を削除してみよう！ dd で行削除。間違えたら u で元に戻す
-  setupKeyboardShortcuts();
-
-  // Vimヒント: コメントを追加してみよう！ I で行頭から挿入モード、// を入力
-  initVimTips();
+  js: `// JavaScript Example
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Vim Editor Ready!');
+  
+  const container = document.querySelector('.container');
+  if (container) {
+    container.addEventListener('click', () => {
+      console.log('Container clicked');
+    });
+  }
+});`,
 };
 
-// Vimヒント: 文字列を変更してみよう！ ci" で"の中身を変更モード
-
-// パーティクルの初期化関数
-function initParticles() {
-  // Vimヒント: 変数名を変更してみよう！ 変数名で ciw
-  tsParticles.load("tsparticles", {
-    // Vimヒント: オブジェクトのプロパティを変更してみよう！ プロパティ名で ciw
-    background: { color: { value: "transparent" } },
-    particles: {
-      // Vimヒント: 数値を変更してみよう！ 数値にカーソルを合わせて ciw
-      number: { value: 40 },
-      // Vimヒント: 配列の要素を変更してみよう！ 要素にカーソルを合わせて ci"
-      color: { value: ["#ff6600", "#ffaa00"] },
-      shape: { type: "circle" },
-      opacity: { value: 0.6 },
-      size: { value: { min: 1, max: 3 } },
-      move: {
-        // Vimヒント: ブール値を変更してみよう！ true/false で ciw
-        enable: true,
-        speed: 0.6,
-        direction: "top",
-        outModes: { default: "out" },
-      },
-    },
-    detectRetina: true,
-  });
-}
-
-// Vimヒント: 関数全体をコピーしてみよう！ 関数の { で % で } に移動、V で行選択
-
-// メニュー項目のイベントリスナー設定
-function setupMenuListeners() {
-  // Vimヒント: 変数宣言を変更してみよう！ const の部分で ciw で let に変更
-  const menuItems = document.querySelectorAll(".menu-item");
-
-  // Vimヒント: 配列の各要素を編集してみよう！ forEach の中で操作
-  menuItems.forEach((item, index) => {
-    // Vimヒント: イベント名を変更してみよう！ "click" の部分で ci"
-    item.addEventListener("click", () => {
-      // Vimヒント: 関数の引数を変更してみよう！ 引数名で ciw
-      showVimTip(index);
-      highlightMenuItem(item);
-    });
-
-    // Vimヒント: 新しいイベントリスナーを追加してみよう！ yy でコピー、p で貼り付け後編集
-    item.addEventListener("mouseenter", () => {
-      // Vimヒント: 関数呼び出しを削除してみよう！ dd で行削除
-      playHoverSound();
-    });
-  });
-}
-
-// Vimヒント: 同じ編集を繰り返してみよう！ . で直前の操作を繰り返し
-
-// キーボードショートカットの設定
-function setupKeyboardShortcuts() {
-  // Vimヒント: 特定の文字列を検索してみよう！ /keydown で検索、n で次を探す
-  document.addEventListener("keydown", (e) => {
-    // Vimヒント: 条件文を変更してみよう！ >= の部分で ciw で != に変更
-    if (e.key >= "1" && e.key <= "4") {
-      // Vimヒント: 変数の値を変更してみよう！ 1 の部分で ciw
-      const index = parseInt(e.key) - 1;
-      // Vimヒント: セレクタを変更してみよう！ ".menu-item" の部分で ci"
-      const menuItems = document.querySelectorAll(".menu-item");
-
-      // Vimヒント: 括弧の対応を確認してみよう！ % で開始・終了括弧間をジャンプ
-      if (menuItems[index]) {
-        highlightMenuItem(menuItems[index]);
-        showVimTip(index);
-      }
-    }
-
-    // Vimヒント: 文字列比較を変更してみよう！ "Escape" の部分で ci"
-    if (e.key === "Escape") {
-      hideAllTips();
-    }
-  });
-}
-
-// Vimヒント: 複数行を選択してみよう！ V で行選択、j/k で範囲を広げる
-
-// メニュー項目のハイライト
-function highlightMenuItem(item) {
-  // Vimヒント: メソッド名を変更してみよう！ querySelectorAll の部分で ciw
-  const menuItems = document.querySelectorAll(".menu-item");
-
-  // Vimヒント: ループ処理を複製してみよう！ forEach行で yy、p で貼り付け
-  menuItems.forEach((menuItem) => {
-    // Vimヒント: メソッド呼び出しを変更してみよう！ remove の部分で ciw
-    menuItem.classList.remove("active");
-  });
-
-  // Vimヒント: クラス名を変更してみよう！ "active" の部分で ci"
-  item.classList.add("active");
-}
-
-// Vimヒント: 置換してみよう！ :%s/old/new/g で全体置換
-
-// Vimのヒントを表示する関数
-function showVimTip(index) {
-  // Vimヒント: 配列の要素を編集してみよう！ 各要素で ci"
-  const tips = [
-    "Vimヒント: hjkl - 左下上右に移動",
-    "Vimヒント: i - カーソル位置で文字入力開始",
-    "Vimヒント: ESC - ノーマルモードに戻る",
-    "Vimヒント: :w - 保存、:q - 終了、:wq - 保存して終了",
-  ];
-
-  // Vimヒント: IDセレクタを変更してみよう！ "selectedMode" の部分で ci"
-  const selectedMode = document.getElementById("selectedMode");
-  // Vimヒント: テンプレートリテラルを変更してみよう！ \`\` の中で編集
-  selectedMode.textContent = \`Tip: \${tips[index]}\`;
-}
-
-// Vimヒント: 画面中央に表示してみよう！ zz でカーソル行を中央に
-
-// すべてのヒントを非表示にする
-function hideAllTips() {
-  // Vimヒント: ファイルの最初に移動してみよう！ gg で先頭、G で最後
-  const selectedMode = document.getElementById("selectedMode");
-  selectedMode.textContent = "Mode: Vim";
-}
-
-// Vimヒント: 関数間を移動してみよう！ { } で段落単位移動が便利
-
-// ホバー効果用のサウンド再生（実際のサウンドはありません）
-function playHoverSound() {
-  // Vimヒント: コメントを削除してみよう！ dd で行削除
-  // サウンド再生のコードがここに入ります（現在は実装なし）
-}
-
-// Vimヒント: 新しい関数を追加してみよう！ o で新行、function と入力
-
-// Vimのヒントシステムを初期化
-function initVimTips() {
-  // Vimヒント: 長い文字列を変更してみよう！ 文字列の最初で ci" で全体変更
-  console.log(
-    "Vimヒントシステムが初期化されました。メニュー項目をクリックしてヒントを表示します。"
-  );
-}
-
-// Vimヒント: 実務でよく使うコマンド - ciw(単語変更)、ci"(文字列変更)、A(行末に挿入)、/(検索)、%(括弧移動)`,
-};
-
-// アニメーション設定
+// パフォーマンス最適化アニメーション（Compositor-Only Properties）
 export const ANIMATION_VARIANTS = {
   container: {
-    hidden: { opacity: 0, scale: 0.98 },
+    hidden: {
+      opacity: 0,
+      transform: "scale(0.98) translateZ(0)", // GPU acceleration
+    },
     visible: {
       opacity: 1,
-      scale: 1,
+      transform: "scale(1) translateZ(0)",
       transition: {
-        duration: 0.4,
+        duration: 0.3,
+        ease: "easeOut",
         staggerChildren: 0.05,
       },
     },
   },
   item: {
-    hidden: { opacity: 0, y: 10 },
+    hidden: {
+      opacity: 0,
+      transform: "translateY(10px) translateZ(0)",
+    },
     visible: {
       opacity: 1,
-      y: 0,
+      transform: "translateY(0) translateZ(0)",
       transition: {
-        duration: 0.3,
+        duration: 0.2,
+        ease: "easeOut",
       },
     },
   },
   modeIndicator: {
-    hidden: { opacity: 0, x: -15, scale: 0.9 },
+    hidden: {
+      opacity: 0,
+      transform: "translateX(-15px) scale(0.9) translateZ(0)",
+    },
     visible: {
       opacity: 1,
-      x: 0,
-      scale: 1,
+      transform: "translateX(0) scale(1) translateZ(0)",
       transition: {
-        duration: 0.3,
+        duration: 0.15,
+        ease: "easeOut",
       },
     },
     exit: {
       opacity: 0,
-      x: 15,
-      scale: 0.9,
+      transform: "translateX(15px) scale(0.9) translateZ(0)",
       transition: {
-        duration: 0.2,
+        duration: 0.15,
+        ease: "easeIn",
       },
     },
   },
 };
 
-// UI スタイリング定数
+// パフォーマンス最適化 UI スタイリング
 export const UI_STYLES = {
   animation: {
-    // Framer Motion のイージング設定
+    // Compositor-friendly transitions
     spring: { type: "spring", damping: 25, stiffness: 300 },
-    easeOut: { type: "tween", ease: "easeOut", duration: 0.2 },
-    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+    easeOut: {
+      type: "tween",
+      ease: DESIGN_SYSTEM.animation.easing.easeOut,
+      duration: parseFloat(DESIGN_SYSTEM.animation.duration.fast) / 1000,
+    },
+    transition: {
+      duration: parseFloat(DESIGN_SYSTEM.animation.duration.fast) / 1000,
+      ease: [0.4, 0, 0.2, 1],
+    },
   },
   spacing: {
-    // 統一されたスペーシング
     buttonGap: 1,
     containerPadding: 4,
-    borderRadius: "lg",
+    borderRadius: DESIGN_SYSTEM.borders.radius.lg,
     iconMargin: 1.5,
   },
   shadow: {
-    // ホバー効果のシャドウ
-    subtle: "0 4px 12px rgba(232,131,58,0.15)",
-    medium: "0 6px 20px rgba(232,131,58,0.2)",
+    subtle: DESIGN_SYSTEM.shadows.glass.subtle,
+    medium: DESIGN_SYSTEM.shadows.glass.medium,
   },
   colors: {
-    // アクセントカラー（オレンジ系）
-    primary: "secondary.400", // オレンジ
-    accent: "#e8833a", // 直接的なオレンジ
-    transparent: "rgba(232,131,58,0.15)",
+    primary: DESIGN_SYSTEM.colors.accent.primary,
+    accent: DESIGN_SYSTEM.colors.accent.secondary,
+    transparent: DESIGN_SYSTEM.colors.interactive.hover,
   },
 } as const;
 
-// エディタ設定
+// エディタ設定（2025年最適化版）
 export const EDITOR_CONFIG = {
   modes: ["html", "css", "js"] as const,
   defaultMode: "html" as const,
   fonts: {
-    mono: "JetBrains Mono, 'Fira Code', 'SF Mono', 'Monaco', Menlo, 'Ubuntu Mono', monospace",
-    ui: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif",
+    mono: DESIGN_SYSTEM.typography.fonts.mono,
+    ui: DESIGN_SYSTEM.typography.fonts.sans,
   },
   cursor: {
-    // カーソルの色とサイズ
-    color: "#e8833a",
+    color: DESIGN_SYSTEM.colors.accent.primary,
     width: "2px",
     blockWidth: "8px",
     height: "1.2em",
   },
   scroll: {
-    // livecodes風スクロール設定
-    margins: "120px 0", // 上下のスクロールマージン
-    bottomPadding: "30vh", // 画面の30%分の下部余白
-    cursorMargin: 150, // カーソル位置から画面下部までの最小マージン（px）
+    margins: "120px 0",
+    bottomPadding: "30vh",
+    cursorMargin: 150,
   },
   autocomplete: {
-    // 自動補完の設定 - 超一流UIUXデザイナー仕様
-    maxHeight: "280px", // 適切な高さに調整（320px -> 280px）
-    minItems: 10, // より多くの情報を効率的に表示（8 -> 10）
-    maxItems: 16, // 情報密度を最適化（14 -> 16）
-    zIndex: 1000,
+    maxHeight: "280px",
+    minItems: 10,
+    maxItems: 16,
+    zIndex: DESIGN_SYSTEM.zIndex.tooltip,
     colors: {
-      // 洗練されたミニマルカラーパレット - リッチブラック + 上品なオレンジ
-      border: "rgba(232, 131, 58, 0.15)", // より控えめなボーダー
-      background: "rgba(12, 12, 14, 0.99)", // 最高品質のリッチブラック
-      shadow:
-        "0 2px 16px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(232, 131, 58, 0.06)",
-      selectedBg: "rgba(232, 131, 58, 0.12)", // 上品な選択状態
-      selectedBorder: "#e8833a",
-      selectedAccent: "rgba(232, 131, 58, 0.35)", // 左アクセント
-      label: "#f8f8f8", // 最高のコントラスト
-      detail: "#999999", // 完璧なセカンダリテキスト
-      text: "#e8e8e8", // 理想的な可読性
-      muted: "#666666", // 情報階層の明確化
+      border: `${DESIGN_SYSTEM.colors.accent.primary}15`,
+      background: `${DESIGN_SYSTEM.colors.bg.primary}f9`,
+      shadow: `${DESIGN_SYSTEM.shadows.lg}, 0 0 0 0.5px ${DESIGN_SYSTEM.colors.accent.primary}06`,
+      selectedBg: `${DESIGN_SYSTEM.colors.accent.primary}12`,
+      selectedBorder: DESIGN_SYSTEM.colors.accent.primary,
+      selectedAccent: `${DESIGN_SYSTEM.colors.accent.primary}35`,
+      label: DESIGN_SYSTEM.colors.text.primary,
+      detail: DESIGN_SYSTEM.colors.text.tertiary,
+      text: DESIGN_SYSTEM.colors.text.secondary,
+      muted: DESIGN_SYSTEM.colors.text.muted,
     },
     typography: {
-      fontSize: "12px", // より情報密度の高いサイズ（13px -> 12px）
-      lineHeight: "1.3", // タイトな行間で情報密度向上（1.5 -> 1.3）
-      fontWeight: "400",
-      selectedFontWeight: "500",
+      fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
+      lineHeight: "1.3",
+      fontWeight: DESIGN_SYSTEM.typography.fontWeight.normal,
+      selectedFontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
     },
     spacing: {
-      // 超一流の情報密度とバランス
-      itemPadding: "6px 12px", // 理想的なクリッカブルエリア（10px -> 6px）
-      listPadding: "4px 0", // リスト全体の余白最適化（8px -> 4px）
-      borderRadius: "6px",
-      itemBorderRadius: "3px",
+      itemPadding: `${DESIGN_SYSTEM.spacing.xs} ${DESIGN_SYSTEM.spacing.sm}`,
+      listPadding: `${DESIGN_SYSTEM.spacing.xs} 0`,
+      borderRadius: DESIGN_SYSTEM.borders.radius.md,
+      itemBorderRadius: DESIGN_SYSTEM.borders.radius.sm,
     },
   },
-  // パフォーマンス設定（2025年最適化）
   performance: {
-    // デバウンス時間
     debounceMs: 150,
-    // メモ化のキャッシュサイズ
     memoizationCacheSize: 100,
-    // 大きなドキュメントの閾値
     largeDocumentThreshold: 50000,
   },
-  // エラーハンドリング設定
   errorHandling: {
-    // エラー表示時間
     errorDisplayTimeMs: 5000,
-    // リトライ回数
     maxRetries: 3,
-    // リトライ間隔
     retryDelayMs: 1000,
   },
 } as const;
+
+// Export design system for external use
+export { DESIGN_SYSTEM };

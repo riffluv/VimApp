@@ -10,12 +10,7 @@ import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
 
-import {
-  ANIMATION_VARIANTS,
-  EDITOR_CONFIG,
-  UI_STYLES,
-  VIM_MODE_INFO,
-} from "@/constants";
+import { DESIGN_SYSTEM, EDITOR_CONFIG, VIM_MODE_INFO } from "@/constants";
 import {
   useDocs,
   useEditorExtensions,
@@ -32,55 +27,74 @@ const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
 const MotionText = motion.create(Text);
 
-// 共通ボタンスタイル（マジックナンバー排除）
+// パフォーマンス最適化ボタンスタイル（Compositor-only Properties）
 const getButtonBaseStyle = (isActive = false) => ({
   size: "sm" as const,
   variant: "ghost" as const,
-  bg: isActive ? "gray.600" : "gray.700",
-  color: isActive ? UI_STYLES.colors.primary : "gray.300",
+  bg: isActive
+    ? DESIGN_SYSTEM.colors.bg.surface
+    : DESIGN_SYSTEM.colors.bg.tertiary,
+  color: isActive
+    ? DESIGN_SYSTEM.colors.accent.primary
+    : DESIGN_SYSTEM.colors.text.tertiary,
   borderWidth: "1px",
-  borderColor: isActive ? "gray.500" : "gray.600",
-  fontSize: "xs",
-  fontWeight: "600",
-  px: 3,
-  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
-  fontFamily: EDITOR_CONFIG.fonts.ui,
+  borderColor: isActive
+    ? DESIGN_SYSTEM.borders.colors.primary
+    : DESIGN_SYSTEM.borders.colors.subtle,
+  fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
+  fontWeight: DESIGN_SYSTEM.typography.fontWeight.semibold,
+  px: DESIGN_SYSTEM.spacing["3"],
+  transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
+  fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
+  // レイアウトスラッシング防止
+  transform: "translateZ(0)",
+  backfaceVisibility: "hidden",
+  willChange: "transform, opacity, background-color",
 });
 
 const getButtonHoverStyle = () => ({
-  bg: "gray.600",
-  color: UI_STYLES.colors.primary,
-  borderColor: "gray.500",
-  transform: "translateY(-1px)",
-  boxShadow: UI_STYLES.shadow.subtle,
+  bg: DESIGN_SYSTEM.colors.bg.surface,
+  color: DESIGN_SYSTEM.colors.accent.primary,
+  borderColor: DESIGN_SYSTEM.borders.colors.primary,
+  // Compositor-only properties for smooth animations
+  transform: "translateY(-1px) translateZ(0)",
+  boxShadow: DESIGN_SYSTEM.shadows.glass.medium,
   isolation: "isolate",
   zIndex: 10,
 });
 
 const getButtonActiveStyle = () => ({
-  transform: "translateY(0)",
-  transition: "transform 0.1s ease",
+  transform: "translateY(0) translateZ(0)",
+  transition: `transform ${DESIGN_SYSTEM.animation.duration.fastest} ${DESIGN_SYSTEM.animation.easing.easeIn}`,
 });
 
-// モード切り替えタブ専用スタイル
+// モード切り替えタブ専用スタイル（パフォーマンス最適化）
 const getModeTabStyle = (isActive: boolean, modeType: string) => ({
   size: "sm" as const,
   variant: "ghost" as const,
-  bg: isActive ? "gray.700" : "transparent",
-  color: isActive ? "orange.300" : "gray.400",
+  bg: isActive ? DESIGN_SYSTEM.colors.bg.surface : "transparent",
+  color: isActive
+    ? DESIGN_SYSTEM.colors.accent.secondary
+    : DESIGN_SYSTEM.colors.text.muted,
   borderWidth: "1px",
-  borderColor: isActive ? "gray.600" : "gray.700",
-  borderRadius: "md",
-  fontSize: "xs",
-  fontWeight: "600",
-  px: 3,
-  py: 1,
+  borderColor: isActive
+    ? DESIGN_SYSTEM.borders.colors.secondary
+    : DESIGN_SYSTEM.borders.colors.subtle,
+  borderRadius: DESIGN_SYSTEM.borders.radius.md,
+  fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
+  fontWeight: DESIGN_SYSTEM.typography.fontWeight.semibold,
+  px: DESIGN_SYSTEM.spacing["3"],
+  py: DESIGN_SYSTEM.spacing["1"],
   h: "auto",
   textTransform: "uppercase" as const,
   letterSpacing: "wide",
-  fontFamily: "mono",
-  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
+  fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
+  transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
   position: "relative" as const,
+  // レイアウトスラッシング防止
+  transform: "translateZ(0)",
+  backfaceVisibility: "hidden",
+  willChange: "transform, opacity, background-color",
   _before: isActive
     ? {
         content: '""',
@@ -90,17 +104,22 @@ const getModeTabStyle = (isActive: boolean, modeType: string) => ({
         transform: "translateX(-50%)",
         width: "60%",
         height: "2px",
-        bg: "orange.400",
+        bg: DESIGN_SYSTEM.colors.accent.secondary,
         borderRadius: "1px",
       }
     : undefined,
 });
 
 const getModeTabHoverStyle = (isActive: boolean) => ({
-  bg: "gray.700",
-  color: isActive ? UI_STYLES.colors.primary : "secondary.500",
-  borderColor: isActive ? "gray.600" : "gray.600",
-  transform: "translateY(-1px)",
+  bg: DESIGN_SYSTEM.colors.bg.surface,
+  color: isActive
+    ? DESIGN_SYSTEM.colors.accent.primary
+    : DESIGN_SYSTEM.colors.accent.secondary,
+  borderColor: isActive
+    ? DESIGN_SYSTEM.borders.colors.primary
+    : DESIGN_SYSTEM.borders.colors.secondary,
+  // Compositor-only properties
+  transform: "translateY(-1px) translateZ(0)",
   isolation: "isolate",
   zIndex: 10,
 });
@@ -203,18 +222,39 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
   // エラー状態の場合のレンダリング
   if (hasError) {
     return (
-      <Box p={4} bg="red.100" borderRadius="md" maxW="800px" mx="auto">
-        <Text color="red.700" fontWeight="bold" mb={2}>
+      <Box
+        p={DESIGN_SYSTEM.spacing["4"]}
+        bg={DESIGN_SYSTEM.colors.status.error}
+        borderRadius={DESIGN_SYSTEM.borders.radius.md}
+        maxW="800px"
+        mx="auto"
+        border={`1px solid ${DESIGN_SYSTEM.borders.colors.strong}`}
+        boxShadow={DESIGN_SYSTEM.shadows.lg}
+      >
+        <Text
+          color={DESIGN_SYSTEM.colors.text.primary}
+          fontWeight="bold"
+          mb={DESIGN_SYSTEM.spacing["2"]}
+        >
           エディタでエラーが発生しました
         </Text>
-        <Text color="red.600" fontSize="sm">
+        <Text
+          color={DESIGN_SYSTEM.colors.text.secondary}
+          fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+        >
           ページをリロードして再度お試しください。
         </Text>
         <Button
-          mt={3}
+          mt={DESIGN_SYSTEM.spacing["3"]}
           size="sm"
-          colorScheme="red"
-          variant="outline"
+          bg={DESIGN_SYSTEM.colors.bg.primary}
+          color={DESIGN_SYSTEM.colors.text.primary}
+          borderColor={DESIGN_SYSTEM.borders.colors.primary}
+          borderWidth="1px"
+          _hover={{
+            bg: DESIGN_SYSTEM.colors.bg.secondary,
+            transform: "translateY(-1px)",
+          }}
           onClick={() => window.location.reload()}
         >
           リロード
@@ -230,46 +270,66 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
 
   return (
     <MotionBox
-      initial="hidden"
-      animate="visible"
-      variants={ANIMATION_VARIANTS.container}
-      bg="gray.900"
-      color="white"
-      borderRadius={UI_STYLES.spacing.borderRadius}
-      boxShadow="glass-premium"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      bg={DESIGN_SYSTEM.colors.bg.primary}
+      color={DESIGN_SYSTEM.colors.text.primary}
+      borderRadius={DESIGN_SYSTEM.borders.radius.lg}
+      boxShadow={DESIGN_SYSTEM.shadows.glass.strong}
       display="flex"
       flexDirection="column"
-      borderColor="gray.700"
+      borderColor={DESIGN_SYSTEM.borders.colors.subtle}
       position="relative"
       overflow="hidden"
       flex={1}
       h="100%" // 親の高さに合わせる
       w="100%" // 親の幅に合わせる
       borderWidth="1px"
+      // CSS分離とパフォーマンス最適化
+      isolation="isolate"
+      willChange="transform"
+      transform="translateZ(0)"
+      className="vim-editor-container"
     >
       {/* すべての要素を1つの親要素でラップ */}
       <>
         {/* ヘッダー - 高さを適切に調整 */}
         <MotionFlex
           alignItems="center"
-          px={{ base: 3, md: 4 }}
-          py={{ base: 2, md: 3 }}
+          px={{
+            base: DESIGN_SYSTEM.spacing["3"],
+            md: DESIGN_SYSTEM.spacing["4"],
+          }}
+          py={{
+            base: DESIGN_SYSTEM.spacing["2"],
+            md: DESIGN_SYSTEM.spacing["3"],
+          }}
           borderBottomWidth="1px"
-          borderColor="gray.700"
-          bg="gray.800"
+          borderColor={DESIGN_SYSTEM.borders.colors.subtle}
+          bg={DESIGN_SYSTEM.colors.bg.secondary}
           justifyContent="space-between"
           position="relative"
           minH="60px" // CheatSheetと同じ高さ
           maxH="60px" // CheatSheetと同じ高さ
+          // CSS分離とパフォーマンス最適化
+          isolation="isolate"
+          zIndex={2}
         >
-          <Flex alignItems="center" gap={{ base: 2, md: 3 }}>
+          <Flex
+            alignItems="center"
+            gap={{
+              base: DESIGN_SYSTEM.spacing["2"],
+              md: DESIGN_SYSTEM.spacing["3"],
+            }}
+          >
             {/* Window Controls - macOSスタイル */}
             <HStack gap="6px">
               <Box
                 w="12px"
                 h="12px"
                 borderRadius="full"
-                bg="red.400"
+                bg="#ff5f57"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
@@ -280,7 +340,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 w="12px"
                 h="12px"
                 borderRadius="full"
-                bg="yellow.400"
+                bg="#ffbd2e"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
@@ -291,7 +351,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 w="12px"
                 h="12px"
                 borderRadius="full"
-                bg="green.400"
+                bg="#28ca42"
                 _hover={{ transform: "scale(1.1)" }}
                 transition="all 0.2s ease"
                 cursor="pointer"
@@ -301,18 +361,27 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
             </HStack>
 
             {/* Editor Title - 適切なサイズに調整 */}
-            <Flex alignItems="center" gap={2}>
-              <Icon as={FiTerminal} color="secondary.500" fontSize="md" />
+            <Flex alignItems="center" gap={DESIGN_SYSTEM.spacing["2"]}>
+              <Icon
+                as={FiTerminal}
+                color={DESIGN_SYSTEM.colors.accent.secondary}
+                fontSize="md"
+              />
               <Box>
                 <Text
-                  fontSize="sm"
-                  fontWeight="600"
-                  color="secondary.500"
+                  fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+                  fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
+                  color={DESIGN_SYSTEM.colors.accent.secondary}
                   letterSpacing="tight"
                 >
                   manaVimEditor
                 </Text>
-                <Text fontSize="xs" color="gray.300" mt={0} fontWeight="400">
+                <Text
+                  fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
+                  color={DESIGN_SYSTEM.colors.text.tertiary}
+                  mt={0}
+                  fontWeight={DESIGN_SYSTEM.typography.fontWeight.normal}
+                >
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
@@ -337,12 +406,14 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               portalled
               openDelay={300}
               contentProps={{
-                fontSize: "sm",
-                bg: "primary.800",
-                color: "white",
-                borderRadius: "md",
-                px: 3,
-                py: 2,
+                fontSize: DESIGN_SYSTEM.typography.fontSize.sm,
+                bg: DESIGN_SYSTEM.colors.bg.overlay,
+                color: DESIGN_SYSTEM.colors.text.primary,
+                borderRadius: DESIGN_SYSTEM.borders.radius.md,
+                px: DESIGN_SYSTEM.spacing["3"],
+                py: DESIGN_SYSTEM.spacing["2"],
+                border: `1px solid ${DESIGN_SYSTEM.borders.colors.subtle}`,
+                boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
               <Button
@@ -380,12 +451,14 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               portalled
               openDelay={300}
               contentProps={{
-                fontSize: "sm",
-                bg: "primary.800",
-                color: "white",
-                borderRadius: "md",
-                px: 3,
-                py: 2,
+                fontSize: DESIGN_SYSTEM.typography.fontSize.sm,
+                bg: DESIGN_SYSTEM.colors.bg.overlay,
+                color: DESIGN_SYSTEM.colors.text.primary,
+                borderRadius: DESIGN_SYSTEM.borders.radius.md,
+                px: DESIGN_SYSTEM.spacing["3"],
+                py: DESIGN_SYSTEM.spacing["2"],
+                border: `1px solid ${DESIGN_SYSTEM.borders.colors.subtle}`,
+                boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
               <Button
@@ -400,7 +473,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 _hover={getButtonHoverStyle()}
                 _active={getButtonActiveStyle()}
               >
-                <Icon as={FiBookOpen} mr={UI_STYLES.spacing.iconMargin} />
+                <Icon as={FiBookOpen} mr={DESIGN_SYSTEM.spacing["1"]} />
                 CodePen
               </Button>
             </Tooltip>
@@ -410,12 +483,14 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               portalled
               openDelay={300}
               contentProps={{
-                fontSize: "sm",
-                bg: "primary.800",
-                color: "white",
-                borderRadius: "md",
-                px: 3,
-                py: 2,
+                fontSize: DESIGN_SYSTEM.typography.fontSize.sm,
+                bg: DESIGN_SYSTEM.colors.bg.overlay,
+                color: DESIGN_SYSTEM.colors.text.primary,
+                borderRadius: DESIGN_SYSTEM.borders.radius.md,
+                px: DESIGN_SYSTEM.spacing["3"],
+                py: DESIGN_SYSTEM.spacing["2"],
+                border: `1px solid ${DESIGN_SYSTEM.borders.colors.subtle}`,
+                boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
               <Button
@@ -424,7 +499,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 aria-label="現在のエディタのコードをクリアする"
                 _hover={getButtonHoverStyle()}
                 _active={getButtonActiveStyle()}
-                px={2}
+                px={DESIGN_SYSTEM.spacing["2"]}
               >
                 <GiBroom />
               </Button>
@@ -435,17 +510,19 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               portalled
               openDelay={300}
               contentProps={{
-                fontSize: "sm",
-                bg: "primary.800",
-                color: "white",
-                borderRadius: "md",
-                px: 3,
-                py: 2,
+                fontSize: DESIGN_SYSTEM.typography.fontSize.sm,
+                bg: DESIGN_SYSTEM.colors.bg.overlay,
+                color: DESIGN_SYSTEM.colors.text.primary,
+                borderRadius: DESIGN_SYSTEM.borders.radius.md,
+                px: DESIGN_SYSTEM.spacing["3"],
+                py: DESIGN_SYSTEM.spacing["2"],
+                border: `1px solid ${DESIGN_SYSTEM.borders.colors.subtle}`,
+                boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
               <Button
                 {...getButtonBaseStyle(false)}
-                color="orange.400"
+                color={DESIGN_SYSTEM.colors.accent.secondary}
                 onClick={handleResetAllWithConfirm}
                 aria-label="全てのエディタをリセットして初期状態に戻す"
                 _hover={getButtonHoverStyle()}
@@ -453,7 +530,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               >
                 <Icon
                   as={FiRefreshCw}
-                  mr={UI_STYLES.spacing.iconMargin}
+                  mr={DESIGN_SYSTEM.spacing["1"]}
                   className="reset-icon"
                 />
                 Reset
@@ -466,15 +543,18 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
         <Flex
           justify="space-between"
           align="center"
-          px={4}
-          py={2}
+          px={DESIGN_SYSTEM.spacing["4"]}
+          py={DESIGN_SYSTEM.spacing["2"]}
           borderBottomWidth={1}
-          borderColor="gray.700"
-          bg="gray.800"
+          borderColor={DESIGN_SYSTEM.borders.colors.subtle}
+          bg={DESIGN_SYSTEM.colors.bg.secondary}
           position="relative"
+          // CSS分離とパフォーマンス最適化
+          isolation="isolate"
+          zIndex={2}
         >
-          {/* 左側: HTML/CSS/JSタブ - ヘッダーボタンとの統一感 */}
-          <HStack gap={UI_STYLES.spacing.buttonGap}>
+          {/* 左側: HTML/CSS/JSタブ */}
+          <HStack gap={DESIGN_SYSTEM.spacing["1"]}>
             {EDITOR_CONFIG.modes.map((modeType) => (
               <Button
                 key={modeType}
@@ -492,16 +572,19 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           <AnimatePresence mode="wait">
             <MotionFlex
               key={vimMode}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={ANIMATION_VARIANTS.modeIndicator}
+              initial={{ opacity: 0, x: -15, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 15, scale: 0.9 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
               align="center"
-              gap={2}
-              bg="gray.700"
-              px={2}
-              py={1}
-              borderRadius="md"
+              gap={DESIGN_SYSTEM.spacing["2"]}
+              bg={DESIGN_SYSTEM.colors.bg.surface}
+              px={DESIGN_SYSTEM.spacing["2"]}
+              py={DESIGN_SYSTEM.spacing["1"]}
+              borderRadius={DESIGN_SYSTEM.borders.radius.md}
+              // レイアウトスラッシング防止
+              willChange="transform, opacity"
+              transform="translateZ(0)"
             >
               <Icon
                 as={currentVimModeInfo.icon}
@@ -509,12 +592,12 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 fontSize="sm"
               />
               <MotionText
-                fontSize="xs"
+                fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
                 color={currentVimModeInfo.color}
-                fontWeight="600"
+                fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
                 textTransform="uppercase"
                 letterSpacing="wide"
-                fontFamily="mono"
+                fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
               >
                 {currentVimModeInfo.text}
               </MotionText>
@@ -528,9 +611,9 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           <Box
             flex="1"
             h="100%"
-            bg="white"
+            bg={DESIGN_SYSTEM.colors.text.primary}
             overflow="hidden"
-            borderRadius={`0 0 ${UI_STYLES.spacing.borderRadius} ${UI_STYLES.spacing.borderRadius}`}
+            borderRadius={`0 0 ${DESIGN_SYSTEM.borders.radius.lg} ${DESIGN_SYSTEM.borders.radius.lg}`}
           >
             <iframe
               srcDoc={previewSrcDoc}
@@ -542,7 +625,11 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
         ) : showCodePenMode ? (
           // CodePenモード時は左プレビュー・右エディタ
           <Flex flex="1" h="100%" overflow="hidden">
-            <Box flex="1" bg="white" overflow="hidden">
+            <Box
+              flex="1"
+              bg={DESIGN_SYSTEM.colors.text.primary}
+              overflow="hidden"
+            >
               <iframe
                 srcDoc={codePenSrcDoc}
                 style={{ width: "100%", height: "100%", border: "none" }}
@@ -555,7 +642,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               position="relative"
               overflow="hidden"
               borderLeft="1px solid"
-              borderColor="gray.700"
+              borderColor={DESIGN_SYSTEM.borders.colors.subtle}
               maxW="50%" // 確実に50%以下に制限
               minW="0" // flexアイテムの最小幅を0に設定
               className="codemirror-isolated-container" // CodeMirror専用の分離クラス
@@ -574,8 +661,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                   height: "100%",
                   width: "100%", // 親コンテナに合わせる
                   maxWidth: "100%", // 絶対に親を超えない
-                  backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
-                  fontFamily: EDITOR_CONFIG.fonts.mono,
+                  backgroundColor: DESIGN_SYSTEM.colors.bg.secondary, // 新しいデザインシステムに合わせて調整
+                  fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
                 }}
                 autoFocus
                 initialState={
@@ -595,8 +682,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
             flex="1"
             position="relative"
             overflow="hidden"
-            bg="gray.900"
-            borderRadius={`0 0 ${UI_STYLES.spacing.borderRadius} ${UI_STYLES.spacing.borderRadius}`}
+            bg={DESIGN_SYSTEM.colors.bg.primary}
+            borderRadius={`0 0 ${DESIGN_SYSTEM.borders.radius.lg} ${DESIGN_SYSTEM.borders.radius.lg}`}
             isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
             zIndex={1} // スタッキングコンテキストを作成
             maxW="100%" // 確実に親の幅以下に制限
@@ -617,8 +704,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 height: "100%",
                 width: "100%", // 親コンテナに合わせる
                 maxWidth: "100%", // 絶対に親を超えない
-                backgroundColor: "#1a1a1e", // 新しいprimary.800に合わせて調整
-                fontFamily: EDITOR_CONFIG.fonts.mono,
+                backgroundColor: DESIGN_SYSTEM.colors.bg.secondary, // 新しいデザインシステムに合わせて調整
+                fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
               }}
               autoFocus
               initialState={

@@ -11,138 +11,204 @@
 
 基本的な移動・編集・ヤンク・削除・置換・検索・ビジュアルモード等はほぼ全て動作しますが、上記の特殊コマンドや複雑な操作は制限があります。最新情報は GitHub Issue（https://github.com/replit/codemirror-vim/issues）を参照してください。
 
-# CSS ベストプラクティス 2025 (vimapp プロジェクト) - リファクタリング版
+# CSS ベストプラクティス 2025 (vimapp プロジェクト) - 完全リファクタリング版
 
 このドキュメントは、`vimapp`プロジェクトにおける CSS/スタイリングのコーディング規約とベストプラクティスを定義します。
-一貫性、メンテナンス性、パフォーマンス、アクセシビリティを高く保つことを目的とします。
+**2025 年最新のモダン CSS 技術**を基盤として、一貫性、メンテナンス性、パフォーマンス、アクセシビリティを最高レベルで保つことを目的とします。
 
-## 1. 基本方針：Chakra UI Props を徹底活用
+## 1. 基本方針：Chakra UI Props + モダン CSS 技術の融合
 
-当プロジェクトでは、UI の構築に **Chakra UI** を全面的に採用します。
-CSS の記述は、原則として Chakra UI が提供する**スタイル Props**を通じて行い、`globals.css` には最低限のリセット・ベーススタイルのみを記述します。
+当プロジェクトでは、UI の構築に **Chakra UI v3** を全面的に採用し、最新のモダン CSS 技術と組み合わせます：
+
+### 1.1 採用技術スタック
+
+- **CSS Isolation & Scoping**: 各コンポーネントの CSS を完全に分離
+- **Container Queries**: レスポンシブデザインの新時代対応
+- **CSS Cascade Layers**: スタイル優先順位の明確化
+- **Modern CSS Custom Properties**: デザイントークンシステム
+- **Performance-First Approach**: レイアウトスラッシング完全回避
 
 **[OK] 正しい例:**
 
 ```jsx
-<Box bg="teal.500" p={4} color="white">
+<Box
+  bg="teal.500"
+  p={4}
+  color="white"
+  containerType="inline-size"
+  isolation="isolate"
+>
   Hello World
 </Box>
 ```
 
-## 2. コンポーネント設計とコード分離
+## 2. パフォーマンスファーストアプローチ（2025 年製品化基準）
 
-### 2.1. カスタムフックによる状態管理の分離
+### 2.1 レイアウトスラッシング完全回避
 
-状態管理とビジネスロジックは、カスタムフックに分離します。これにより、コンポーネントの責務を明確にし、テスタビリティと再利用性を向上させます。
+以下の原則を **絶対に** 遵守し、強制同期レイアウトを排除します：
 
-**[OK] 正しい例:**
+**[CRITICAL] 禁止パターン:**
 
 ```jsx
-// hooks/useVimEditor.ts - 状態管理とロジックを分離
-export const useDocs = () => {
-  const [docs, setDocs] = useState(loadDocsFromStorage());
-
-  const updateDoc = useCallback(
-    (mode, value) => {
-      const updated = { ...docs, [mode]: value };
-      setDocs(updated);
-      saveDocsToStorage(updated);
-    },
-    [docs]
-  );
-
-  return { docs, updateDoc, clearDoc, resetAllDocs };
+// ❌ レイアウトスラッシングを引き起こす
+const BadButton = () => {
+  const handleHover = () => {
+    element.offsetWidth; // 読み取り
+    element.style.width = "200px"; // 書き込み - レイアウト強制発生
+  };
 };
+```
 
-// components/VimEditor.tsx - UI のみに集中
-function VimEditor() {
-  const { docs, updateDoc } = useDocs();
-  const { vimMode, onUpdate } = useVimMode();
+**[OK] 最適化パターン:**
 
-  return (
-    <MotionBox>
-      <CodeMirror value={docs[mode]} onChange={updateDoc} />
-    </MotionBox>
-  );
+```jsx
+// ✅ レイアウトスラッシング回避
+const OptimizedButton = () => (
+  <Button
+    // transform/opacity のみ使用（コンポジターレイヤー）
+    _hover={{
+      transform: "translateY(-1px)", // GPU アクセラレーション
+      opacity: 0.9, // レイアウト発生しない
+      willChange: "transform", // 最適化ヒント
+    }}
+    // CSS Isolation で副作用防止
+    isolation="isolate"
+    // Container Query 対応
+    containerType="inline-size"
+  >
+    Button
+  </Button>
+);
+```
+
+### 2.2 コンポジターフレンドリーアニメーション
+
+以下のプロパティ **のみ** をアニメーションで使用：
+
+- `transform` (translate, rotate, scale)
+- `opacity`
+- `filter`
+- `backdrop-filter`
+
+**[NG] 避けるべきアニメーション:**
+
+```css
+/* ❌ レイアウト発生 - 禁止 */
+.bad-animation {
+  transition: width 0.3s, height 0.3s, top 0.3s;
 }
 ```
 
-### 2.2. 型定義の集約
+**[OK] 推奨アニメーション:**
 
-すべての型定義は `src/types/` ディレクトリに集約し、コンポーネント間での型の一貫性を保ちます。
-
-**[OK] 正しい例:**
-
-```typescript
-// types/editor.ts
-export interface VimEditorProps {
-  onCodePenModeChange?: (isCodePenMode: boolean) => void;
+```css
+/* ✅ GPU アクセラレーション対応 */
+.good-animation {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform; /* 必要時のみ設定 */
 }
-
-export type EditorMode = "html" | "css" | "js";
-export type VimMode = "normal" | "insert" | "visual";
 ```
 
-### 2.3. 定数の外部化
+## 3. モダン CSS 技術の活用（2025 年最新）
 
-マジックナンバーや設定値は `src/constants/` ディレクトリに外部化し、保守性を向上させます。
+### 3.1 CSS 分離とスコープ化
 
-**[OK] 正しい例:**
+**全てのコンポーネント**で CSS 分離を徹底し、副作用を完全に防止します：
 
-```typescript
-// constants/index.ts
-export const VIM_MODE_INFO = {
-  normal: {
-    text: "NORMAL",
-    color: "secondary.400",
-    icon: FiCommand,
-    hint: "Press i to enter insert mode",
-  },
-  // ...
-} as const;
-
-export const ANIMATION_VARIANTS = {
-  container: {
-    hidden: { opacity: 0, scale: 0.98 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.4 },
-    },
-  },
-  // ...
-} as const;
+```jsx
+// ✅ CSS分離の徹底
+const IsolatedComponent = () => (
+  <Box
+    isolation="isolate" // CSS分離
+    position="relative" // スタッキングコンテキスト作成
+    zIndex="auto" // z-index管理の簡素化
+    containerType="inline-size" // Container Query有効化
+  >
+    <Button
+      _hover={{
+        // ホバー効果を親に波及させない
+        transform: "translateY(-1px)",
+        isolation: "isolate",
+      }}
+    >
+      Content
+    </Button>
+  </Box>
+);
 ```
 
-## 3. ユーティリティ関数の分離
+### 3.2 Container Queries でレスポンシブ進化
 
-### 3.1. ビジネスロジックの外部化
+メディアクエリから Container Queries に移行し、より柔軟なレスポンシブデザインを実現：
 
-複雑なロジックは `src/utils/` ディレクトリのユーティリティ関数に分離し、コンポーネントをシンプルに保ちます。
+```jsx
+// ✅ Container Query活用例
+const ResponsiveCard = () => (
+  <Box
+    containerType="inline-size"
+    sx={{
+      // Container Query でカード内レイアウト制御
+      "@container (width >= 300px)": {
+        ".card-content": {
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+        },
+      },
+      "@container (width >= 500px)": {
+        ".card-content": {
+          gridTemplateColumns: "1fr 1fr 1fr",
+        },
+      },
+    }}
+  >
+    <div className="card-content">{/* カード内コンテンツ */}</div>
+  </Box>
+);
+```
 
-**[OK] 正しい例:**
+### 3.3 カスケードレイヤーによる優先順位管理
 
-```typescript
-// utils/storage.ts
-export const loadDocsFromStorage = (): DocsState => {
-  try {
-    const saved = localStorage.getItem("vimapp_shared_docs");
-    return saved ? JSON.parse(saved) : DEFAULT_SAMPLE_CODE;
-  } catch (error) {
-    console.warn("Failed to load from localStorage:", error);
-    return DEFAULT_SAMPLE_CODE;
+CSS の優先順位を明確に分離し、`!important` を排除：
+
+```css
+/* globals.css で定義 */
+@layer reset, base, components, utilities, overrides;
+
+@layer reset {
+  /* CSS Reset */
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-};
+}
 
-// utils/editor.ts
-export const generatePreviewHTML = (
-  html: string,
-  css: string,
-  js: string
-): string => {
-  const bodyContent = extractBodyContent(html);
-  return createIframeDocument(bodyContent, css, js);
-};
+@layer base {
+  /* 基本スタイル */
+  html {
+    font-family: "Inter", sans-serif;
+  }
+  body {
+    background: var(--color-bg-primary);
+  }
+}
+
+@layer components {
+  /* コンポーネント固有スタイル */
+  .vim-editor {
+    /* エディタ特有のスタイル */
+  }
+}
+
+@layer utilities {
+  /* ユーティリティクラス */
+  .sr-only {
+    position: absolute; /* ... */
+  }
+}
 ```
 
 ## 4. レスポンシブデザイン
