@@ -125,12 +125,17 @@ export default function CheatSheet({}: CheatSheetProps) {
                   _hover={{
                     bg: "rgba(45, 55, 72, 0.8)",
                     borderColor: "secondary.400",
-                    transform: "translateY(-1px)",
-                    boxShadow: "glow-subtle",
+                    transform: "translateY(-1px) scale(1.02)",
+                    boxShadow:
+                      "0 6px 20px rgba(232, 131, 58, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+                  }}
+                  _active={{
+                    transform: "translateY(0) scale(0.98)",
+                    transition: "transform 0.1s ease",
                   }}
                   py={3}
                   px={4}
-                  transition="all 0.3s ease"
+                  transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                   backdropFilter="blur(10px)"
                   position="relative"
                   _before={{
@@ -143,6 +148,35 @@ export default function CheatSheet({}: CheatSheetProps) {
                     borderRadius: "inherit",
                     bg: "linear-gradient(135deg, rgba(255,140,66,0.04), transparent)",
                     pointerEvents: "none",
+                    opacity: 1,
+                    transition: "opacity 0.3s ease",
+                  }}
+                  _after={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    borderRadius: "inherit",
+                    bg: "linear-gradient(135deg, rgba(232,131,58,0.15), rgba(232,131,58,0.05))",
+                    pointerEvents: "none",
+                    opacity: 0,
+                    transition: "opacity 0.3s ease",
+                  }}
+                  css={{
+                    "&:hover::after": {
+                      opacity: 1,
+                    },
+                    "&[data-state=open]": {
+                      background: "rgba(232, 131, 58, 0.1)",
+                      borderColor: "rgba(232, 131, 58, 0.8)",
+                      boxShadow:
+                        "0 4px 12px rgba(232, 131, 58, 0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+                    },
+                    "&[data-state=open]::after": {
+                      opacity: 0.7,
+                    },
                   }}
                 >
                   <Flex align="center" flex="1" textAlign="left">
@@ -177,9 +211,33 @@ export default function CheatSheet({}: CheatSheetProps) {
                           borderRadius="md"
                           _hover={{
                             bg: "rgba(45, 55, 72, 0.3)",
+                            transform: "translateX(4px) scale(1.01)",
+                            boxShadow:
+                              "0 2px 8px rgba(232, 131, 58, 0.15), inset 0 1px 0 rgba(255,255,255,0.05)",
                           }}
-                          transition="all 0.2s ease"
+                          _active={{
+                            transform: "translateX(2px) scale(0.99)",
+                          }}
+                          transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
                           cursor="pointer"
+                          position="relative"
+                          _before={{
+                            content: '""',
+                            position: "absolute",
+                            left: 0,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            width: "2px",
+                            height: "0",
+                            bg: "secondary.400",
+                            borderRadius: "1px",
+                            transition: "height 0.2s ease",
+                          }}
+                          css={{
+                            "&:hover::before": {
+                              height: "60%",
+                            },
+                          }}
                         >
                           <Box
                             fontFamily="'Fira Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace"
@@ -241,8 +299,8 @@ export default function CheatSheet({}: CheatSheetProps) {
         {/* manabydash.pngキャラクター */}
         <Box
           mr={3}
-          width="40px"
-          height="40px"
+          width="60px"
+          height="60px"
           backgroundImage="url('/manabydash.png')"
           backgroundSize="contain"
           backgroundRepeat="no-repeat"
