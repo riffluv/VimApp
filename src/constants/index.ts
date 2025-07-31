@@ -665,75 +665,296 @@ function initVimTips() {
 // Vimヒント: 実務でよく使うコマンド - ciw(単語変更)、ci"(文字列変更)、A(行末に挿入)、/(検索)、%(括弧移動)`,
 };
 
-// アニメーション設定
+// アニメーション設定（2025年最新トレンド：自然で人間らしい動き）
 export const ANIMATION_VARIANTS = {
   container: {
-    hidden: { opacity: 0, scale: 0.98 },
+    hidden: { opacity: 0, scale: 0.96, y: 8 },
     visible: {
       opacity: 1,
       scale: 1,
+      y: 0,
       transition: {
-        duration: 0.4,
-        staggerChildren: 0.05,
+        duration: 0.6,
+        ease: "easeOut" as const, // より自然なイージング
+        staggerChildren: 0.08,
       },
     },
   },
   item: {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 12, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
+      scale: 1,
       transition: {
-        duration: 0.3,
+        duration: 0.4,
+        ease: "easeOut" as const, // 人の手で作った感のあるスプリング
+      },
+    },
+    hover: {
+      y: -1, // 2025年ベストプラクティス: 控えめな上昇（-2px → -1px）
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut" as const,
+      },
+    },
+    tap: {
+      scale: 0.98,
+      transition: {
+        duration: 0.1,
+        ease: "easeOut" as const,
+      },
+    },
+  },
+  button: {
+    idle: { scale: 1, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)" },
+    hover: {
+      scale: 1.03, // スケールを微調整（1.05 → 1.03）
+      y: -1, // 2025年ベストプラクティス: 控えめな上昇（-2px → -1px）
+      boxShadow: "0 6px 18px rgba(232, 131, 58, 0.25)", // シャドウも控えめに
+      transition: {
+        duration: 0.2,
+        ease: "easeOut" as const,
+      },
+    },
+    tap: {
+      scale: 0.98,
+      y: 0,
+      transition: {
+        duration: 0.1,
+        ease: "easeInOut" as const,
+      },
+    },
+  },
+  windowControls: {
+    hover: {
+      scale: 1.2,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut" as const,
+      },
+    },
+    tap: {
+      scale: 0.9,
+      transition: {
+        duration: 0.1,
+        ease: "easeInOut" as const,
       },
     },
   },
   modeIndicator: {
-    hidden: { opacity: 0, x: -15, scale: 0.9 },
+    hidden: { opacity: 0, x: -20, scale: 0.85, rotateY: -15 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      rotateY: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut" as const,
+        opacity: { duration: 0.3 },
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      scale: 0.85,
+      rotateY: 15,
+      transition: {
+        duration: 0.3,
+        ease: "easeIn" as const,
+      },
+    },
+  },
+  cheatSheet: {
+    hidden: { opacity: 0, x: -30, scale: 0.94 },
     visible: {
       opacity: 1,
       x: 0,
       scale: 1,
       transition: {
-        duration: 0.3,
+        duration: 0.6,
+        ease: "easeOut" as const,
+        staggerChildren: 0.05,
       },
     },
     exit: {
       opacity: 0,
-      x: 15,
-      scale: 0.9,
+      x: -30,
+      scale: 0.94,
+      transition: {
+        duration: 0.4,
+        ease: "easeIn" as const,
+      },
+    },
+  },
+  toggleButton: {
+    active: {
+      scale: 1.05,
+      backgroundColor: "rgba(232, 131, 58, 0.15)",
+      borderColor: "rgba(232, 131, 58, 0.5)",
+      boxShadow:
+        "0 4px 16px rgba(232, 131, 58, 0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+    },
+    inactive: {
+      scale: 1,
+      backgroundColor: "rgba(45, 55, 72, 0.6)",
+      borderColor: "rgba(255, 255, 255, 0.15)",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+    },
+  },
+  modalOverlay: {
+    hidden: { opacity: 0, backdropFilter: "blur(0px)" },
+    visible: {
+      opacity: 1,
+      backdropFilter: "blur(8px)",
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      backdropFilter: "blur(0px)",
       transition: {
         duration: 0.2,
+        ease: "easeIn",
       },
     },
   },
 };
 
-// UI スタイリング定数
+// UI スタイリング定数（2025年最新：人の手で作った温かみのあるデザイン）
 export const UI_STYLES = {
   animation: {
-    // Framer Motion のイージング設定
-    spring: { type: "spring", damping: 25, stiffness: 300 },
-    easeOut: { type: "tween", ease: "easeOut", duration: 0.2 },
-    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+    // より自然で人間らしいイージング設定
+    spring: {
+      type: "spring",
+      damping: 28,
+      stiffness: 280,
+      mass: 0.8,
+    },
+    easeNatural: {
+      type: "tween",
+      ease: [0.25, 0.46, 0.45, 0.94],
+      duration: 0.3,
+    },
+    easeGentle: {
+      type: "tween",
+      ease: [0.16, 1, 0.3, 1],
+      duration: 0.4,
+    },
+    easeSharp: {
+      type: "tween",
+      ease: [0.55, 0.055, 0.675, 0.19],
+      duration: 0.2,
+    },
+    transition: {
+      duration: 0.25,
+      ease: [0.23, 1, 0.32, 1],
+    },
+    hover: {
+      duration: 0.2,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
+    tap: {
+      duration: 0.1,
+      ease: "easeOut",
+    },
   },
   spacing: {
-    // 統一されたスペーシング
-    buttonGap: 1,
-    containerPadding: 4,
+    // 統一されたスペーシング（人間工学に基づく）
+    buttonGap: 2, // より余裕のある間隔
+    containerPadding: { base: 3, md: 4, lg: 6 },
     borderRadius: "lg",
     iconMargin: 1.5,
+    sectionGap: { base: 4, md: 6 },
+    cardPadding: { base: 4, md: 5 },
   },
   shadow: {
-    // ホバー効果のシャドウ
-    subtle: "0 4px 12px rgba(232,131,58,0.15)",
-    medium: "0 6px 20px rgba(232,131,58,0.2)",
+    // より自然で深みのあるシャドウ
+    subtle: "0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.06)",
+    medium: "0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)",
+    large: "0 8px 32px rgba(0, 0, 0, 0.16), 0 4px 16px rgba(0, 0, 0, 0.12)",
+    glow: "0 4px 16px rgba(232, 131, 58, 0.15), 0 2px 8px rgba(232, 131, 58, 0.1)",
+    glowMedium:
+      "0 6px 24px rgba(232, 131, 58, 0.2), 0 3px 12px rgba(232, 131, 58, 0.15)",
+    glowLarge:
+      "0 12px 48px rgba(232, 131, 58, 0.25), 0 6px 24px rgba(232, 131, 58, 0.2)",
+    // 特別なエフェクト
+    pressed: "inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1)",
+    floating:
+      "0 16px 64px rgba(0, 0, 0, 0.15), 0 8px 32px rgba(232, 131, 58, 0.1)",
+    glass:
+      "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
   },
   colors: {
-    // アクセントカラー（オレンジ系）
-    primary: "secondary.400", // オレンジ
+    // 洗練されたカラーパレット
+    primary: "secondary.400", // メインオレンジ
+    primaryLight: "secondary.300",
+    primaryDark: "secondary.600",
     accent: "#e8833a", // 直接的なオレンジ
-    transparent: "rgba(232,131,58,0.15)",
+    accentTransparent: "rgba(232, 131, 58, 0.15)",
+    accentSoft: "rgba(232, 131, 58, 0.08)",
+    // 新しく追加：状態別カラー
+    success: "#10b981",
+    warning: "#f59e0b",
+    error: "#ef4444",
+    info: "#3b82f6",
+    // グレースケール
+    textPrimary: "#f8fafc",
+    textSecondary: "#cbd5e1",
+    textMuted: "#64748b",
+    textDisabled: "#475569",
+    // 背景
+    bgPrimary: "#0f172a",
+    bgSecondary: "#1e293b",
+    bgTertiary: "#334155",
+    // ボーダー
+    borderPrimary: "rgba(255, 255, 255, 0.1)",
+    borderSecondary: "rgba(255, 255, 255, 0.05)",
+    borderAccent: "rgba(232, 131, 58, 0.3)",
+  },
+  focus: {
+    // アクセシブルなフォーカス状態
+    ring: "0 0 0 3px rgba(232, 131, 58, 0.3)",
+    ringOffset: "0 0 0 2px rgba(15, 23, 42, 1)",
+    outline: "2px solid rgba(232, 131, 58, 0.6)",
+    outlineOffset: "2px",
+  },
+  interaction: {
+    // インタラクション状態の定義
+    hover: {
+      transform: "translateY(-2px) scale(1.02)",
+      filter: "brightness(1.05)",
+    },
+    active: {
+      transform: "translateY(0) scale(0.98)",
+      filter: "brightness(0.95)",
+    },
+    disabled: {
+      opacity: 0.5,
+      cursor: "not-allowed",
+      filter: "grayscale(0.5)",
+    },
+  },
+  // 新しく追加：ブレークポイント対応のレスポンシブ値
+  responsive: {
+    fontSize: {
+      xs: { base: "0.75rem", md: "0.875rem" },
+      sm: { base: "0.875rem", md: "1rem" },
+      base: { base: "1rem", md: "1.125rem" },
+      lg: { base: "1.125rem", md: "1.25rem" },
+      xl: { base: "1.25rem", md: "1.5rem" },
+    },
+    spacing: {
+      xs: { base: 1, md: 2 },
+      sm: { base: 2, md: 3 },
+      md: { base: 3, md: 4 },
+      lg: { base: 4, md: 6 },
+      xl: { base: 6, md: 8 },
+    },
   },
 } as const;
 

@@ -20,6 +20,7 @@ const VimEditor = dynamic(() => import("@/components/VimEditor"), {
 });
 
 const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
 
 export default function Home() {
   const [isCodePenMode, setIsCodePenMode] = useState(false);
@@ -192,7 +193,17 @@ export default function Home() {
       >
         {/* チートシート切り替えボタン - マージン調整 */}
         {!isCodePenMode && (
-          <Flex
+          <MotionFlex
+            initial={{ opacity: 0, scale: 0.8, x: -20 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              transition: {
+                duration: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94],
+              },
+            }}
             direction="column"
             align="center"
             mr={{ base: 0, md: 3 }}
@@ -216,74 +227,140 @@ export default function Home() {
                 py: 2,
               }}
             >
-              <Button
-                onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-                bg={
-                  showCheatSheet
-                    ? "linear-gradient(135deg, rgba(232,131,58,0.25), rgba(232,131,58,0.15))"
-                    : "linear-gradient(135deg, rgba(45,55,72,0.8), rgba(26,32,44,0.6))"
-                }
-                color={showCheatSheet ? "orange.200" : "gray.300"}
-                borderRadius="12px"
-                borderWidth="1px"
-                borderColor={
-                  showCheatSheet
-                    ? "rgba(232,131,58,0.4)"
-                    : "rgba(255,255,255,0.15)"
-                }
-                p={0}
-                width={{ base: "48px", md: "52px" }}
-                height={{ base: "48px", md: "52px" }}
-                minW={{ base: "48px", md: "52px" }}
-                backdropFilter="blur(10px)"
-                position="relative"
-                boxShadow={
-                  showCheatSheet
-                    ? "0 4px 12px rgba(232,131,58,0.2), inset 0 1px 0 rgba(255,255,255,0.1)"
-                    : "0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)"
-                }
-                _hover={{
-                  bg: showCheatSheet
-                    ? "linear-gradient(135deg, rgba(232,131,58,0.35), rgba(232,131,58,0.2))"
-                    : "linear-gradient(135deg, rgba(55,65,81,0.9), rgba(31,41,55,0.7))",
-                  borderColor: showCheatSheet
-                    ? "rgba(232,131,58,0.5)"
-                    : "rgba(255,255,255,0.25)",
-                  transform: "translateY(-2px) scale(1.02)",
-                  boxShadow: showCheatSheet
-                    ? "0 6px 20px rgba(232,131,58,0.25), inset 0 1px 0 rgba(255,255,255,0.15)"
-                    : "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12)",
+              <MotionBox
+                whileHover={{
+                  y: -4,
+                  scale: 1.05,
+                  rotate: showCheatSheet ? 0 : 5,
+                  transition: {
+                    duration: 0.2,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  },
                 }}
-                _active={{
-                  transform: "translateY(0) scale(0.98)",
-                  transition: "transform 0.1s ease",
+                whileTap={{
+                  scale: 0.95,
+                  y: 0,
+                  transition: {
+                    duration: 0.1,
+                    ease: "easeOut",
+                  },
                 }}
-                _focus={{ outline: "none" }}
-                _focusVisible={{
-                  outline: "2px solid rgba(232,131,58,0.6)",
-                  outlineOffset: "2px",
-                }}
-                transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                aria-label={
-                  showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
-                }
               >
-                <Box
-                  width={{ base: "24px", md: "28px" }}
-                  height={{ base: "24px", md: "28px" }}
-                  backgroundImage="url('/manabyicon.png')"
-                  backgroundSize="contain"
-                  backgroundRepeat="no-repeat"
-                  backgroundPosition="center"
-                  filter={
-                    showCheatSheet ? "none" : "grayscale(0.3) brightness(0.8)"
+                <Button
+                  onClick={() => handleCheatSheetToggle(!showCheatSheet)}
+                  bg={
+                    showCheatSheet
+                      ? "linear-gradient(135deg, rgba(232,131,58,0.25), rgba(232,131,58,0.15))"
+                      : "linear-gradient(135deg, rgba(45,55,72,0.8), rgba(26,32,44,0.6))"
                   }
-                  transition="all 0.2s ease"
-                  transform={showCheatSheet ? "scale(1)" : "scale(0.9)"}
-                />
-              </Button>
+                  color={showCheatSheet ? "orange.200" : "gray.300"}
+                  borderRadius="16px"
+                  borderWidth="1px"
+                  borderColor={
+                    showCheatSheet
+                      ? "rgba(232,131,58,0.4)"
+                      : "rgba(255,255,255,0.15)"
+                  }
+                  p={0}
+                  width={{ base: "52px", md: "56px" }}
+                  height={{ base: "52px", md: "56px" }}
+                  minW={{ base: "52px", md: "56px" }}
+                  backdropFilter="blur(12px)"
+                  position="relative"
+                  boxShadow={
+                    showCheatSheet
+                      ? "0 6px 20px rgba(232,131,58,0.25), inset 0 1px 0 rgba(255,255,255,0.12)"
+                      : "0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)"
+                  }
+                  overflow="hidden"
+                  _hover={{
+                    bg: showCheatSheet
+                      ? "linear-gradient(135deg, rgba(232,131,58,0.35), rgba(232,131,58,0.2))"
+                      : "linear-gradient(135deg, rgba(55,65,81,0.9), rgba(31,41,55,0.7))",
+                    borderColor: showCheatSheet
+                      ? "rgba(232,131,58,0.5)"
+                      : "rgba(255,255,255,0.25)",
+                    boxShadow: showCheatSheet
+                      ? "0 8px 30px rgba(232,131,58,0.3), inset 0 1px 0 rgba(255,255,255,0.15)"
+                      : "0 6px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)",
+                  }}
+                  _active={{
+                    transform: "scale(0.95)",
+                    transition: "transform 0.1s ease",
+                  }}
+                  _focus={{ outline: "none" }}
+                  _focusVisible={{
+                    outline: "2px solid rgba(232,131,58,0.6)",
+                    outlineOffset: "2px",
+                  }}
+                  transition="all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+                  aria-label={
+                    showCheatSheet
+                      ? "チートシートを非表示"
+                      : "チートシートを表示"
+                  }
+                  // グラデーション背景エフェクト
+                  _before={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: showCheatSheet
+                      ? "linear-gradient(135deg, rgba(232,131,58,0.1), transparent)"
+                      : "linear-gradient(135deg, rgba(255,255,255,0.03), transparent)",
+                    opacity: 1,
+                    transition: "opacity 0.3s ease",
+                    pointerEvents: "none",
+                    borderRadius: "inherit",
+                  }}
+                  _after={{
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background:
+                      "linear-gradient(135deg, rgba(232,131,58,0.2), transparent)",
+                    opacity: 0,
+                    transition: "opacity 0.3s ease",
+                    pointerEvents: "none",
+                    borderRadius: "inherit",
+                  }}
+                  css={{
+                    "&:hover::after": {
+                      opacity: showCheatSheet ? 1 : 0.7,
+                    },
+                  }}
+                >
+                  <MotionBox
+                    width={{ base: "28px", md: "32px" }}
+                    height={{ base: "28px", md: "32px" }}
+                    backgroundImage="url('/manabyicon.png')"
+                    backgroundSize="contain"
+                    backgroundRepeat="no-repeat"
+                    backgroundPosition="center"
+                    filter={
+                      showCheatSheet ? "none" : "grayscale(0.3) brightness(0.8)"
+                    }
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    animate={{
+                      scale: showCheatSheet ? 1.1 : 1,
+                      filter: showCheatSheet
+                        ? "drop-shadow(0 0 8px rgba(232,131,58,0.4))"
+                        : "grayscale(0.3) brightness(0.8)",
+                    }}
+                    whileHover={{
+                      scale: showCheatSheet ? 1.15 : 1.05,
+                      rotate: showCheatSheet ? 0 : 5,
+                    }}
+                  />
+                </Button>
+              </MotionBox>
             </Tooltip>
-          </Flex>
+          </MotionFlex>
         )}
 
         {/* CheatSheet - 適切な比率とサイズ */}
