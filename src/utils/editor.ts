@@ -193,21 +193,21 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: prop,
         type: "property",
         detail: "CSS Property",
-        apply: `${prop}: ;`, // セミコロンを含める
+        apply: `${prop}:;`, // スペースを削除
         boost: 5,
       });
     });
 
     // CSS Emmet省略形
     const cssEmmetAbbr = [
-      { label: "m", detail: "margin", apply: "margin: ;" },
-      { label: "p", detail: "padding", apply: "padding: ;" },
-      { label: "w", detail: "width", apply: "width: ;" },
-      { label: "h", detail: "height", apply: "height: ;" },
-      { label: "bg", detail: "background", apply: "background: ;" },
-      { label: "c", detail: "color", apply: "color: ;" },
-      { label: "d", detail: "display", apply: "display: ;" },
-      { label: "pos", detail: "position", apply: "position: ;" },
+      { label: "m", detail: "margin", apply: "margin:;" },
+      { label: "p", detail: "padding", apply: "padding:;" },
+      { label: "w", detail: "width", apply: "width:;" },
+      { label: "h", detail: "height", apply: "height:;" },
+      { label: "bg", detail: "background", apply: "background:;" },
+      { label: "c", detail: "color", apply: "color:;" },
+      { label: "d", detail: "display", apply: "display:;" },
+      { label: "pos", detail: "position", apply: "position:;" },
     ];
 
     cssEmmetAbbr.forEach((abbr) => {
@@ -790,7 +790,23 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
             label: comp.label,
             type: comp.type,
             detail: comp.detail,
-            apply: comp.apply,
+            apply: (view: any, completion: any, from: number, to: number) => {
+              const text = comp.apply;
+              // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
+              if (text.includes(":;")) {
+                const insertText = text;
+                const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
+                view.dispatch({
+                  changes: { from, to, insert: insertText },
+                  selection: { anchor: cursorPos },
+                });
+              } else {
+                view.dispatch({
+                  changes: { from, to, insert: text },
+                  selection: { anchor: from + text.length },
+                });
+              }
+            },
             boost: comp.boost || 0,
           })),
         };
