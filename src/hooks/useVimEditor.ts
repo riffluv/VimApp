@@ -91,16 +91,20 @@ export const useVimMode = () => {
         const cm = getCM(viewUpdate.view);
         if (cm?.state?.vim) {
           const vimState = cm.state.vim;
-          
+
           // より詳細な状態チェック
-          if (vimState.visualMode || vimState.visualLine || vimState.visualBlock) {
+          if (
+            vimState.visualMode ||
+            vimState.visualLine ||
+            vimState.visualBlock
+          ) {
             nextVimMode = "visual";
           } else if (vimState.insertMode || vimState.mode === "insert") {
             nextVimMode = "insert";
           } else {
             nextVimMode = "normal";
           }
-          
+
           // デバッグログを追加（開発時のみ）
           if (process.env.NODE_ENV === "development") {
             console.log("Vim state:", {
@@ -109,7 +113,7 @@ export const useVimMode = () => {
               visualMode: vimState.visualMode,
               visualLine: vimState.visualLine,
               visualBlock: vimState.visualBlock,
-              detected: nextVimMode
+              detected: nextVimMode,
             });
           }
         } else {
