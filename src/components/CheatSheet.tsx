@@ -1,6 +1,7 @@
 "use client";
 
 import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { FiBookOpen, FiChevronDown } from "react-icons/fi";
 
 import {
@@ -9,6 +10,9 @@ import {
   DESIGN_SYSTEM,
 } from "@/constants";
 import type { CheatSheetProps, Command, CommandCategory } from "@/types/editor";
+
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
 
 // Group commands by category
 const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
@@ -21,7 +25,11 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
 
 export default function CheatSheet({}: CheatSheetProps) {
   return (
-    <Box
+    <MotionBox
+      // 2025年最新：Framer Motion最適化
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
       bg={DESIGN_SYSTEM.colors.bg.primary}
       color={DESIGN_SYSTEM.colors.text.primary}
       borderRadius={DESIGN_SYSTEM.borders.radius.lg}
@@ -36,8 +44,17 @@ export default function CheatSheet({}: CheatSheetProps) {
       h="100%" // 親の高さに合わせる
       w="100%" // 親の幅に合わせる
       borderWidth="1px"
+      // 2025年最新：CSS Isolation + Container Query + GPU最適化
       isolation="isolate"
       className="cheat-sheet-container"
+      containerType="inline-size"
+      containerName="cheat-sheet"
+      contain="layout style paint"
+      willChange="transform"
+      transform="translateZ(0)"
+      // アクセシビリティ強化
+      role="complementary"
+      aria-label="Vimコマンドチートシート"
       _before={{
         content: '""',
         position: "absolute",
@@ -52,7 +69,10 @@ export default function CheatSheet({}: CheatSheetProps) {
       }}
     >
       {/* Header - 高さを適切に調整 */}
-      <Flex
+      <MotionFlex
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
         alignItems="center"
         px={{
           base: DESIGN_SYSTEM.spacing["3"],
@@ -71,6 +91,8 @@ export default function CheatSheet({}: CheatSheetProps) {
         maxH="60px" // 固定の高さ
         zIndex={1}
         isolation="isolate"
+        // 2025年最新：Container Query対応
+        containerType="inline-size"
       >
         <Flex
           alignItems="center"
@@ -103,7 +125,7 @@ export default function CheatSheet({}: CheatSheetProps) {
             </Text>
           </Box>
         </Flex>
-      </Flex>
+      </MotionFlex>
 
       {/* Command List (Accordion) - VimEditorと統一されたパディング */}
       <Box
@@ -362,6 +384,6 @@ export default function CheatSheet({}: CheatSheetProps) {
           基本操作から始めて、段階的にスキルアップしよう！
         </Text>
       </Flex>
-    </Box>
+    </MotionBox>
   );
 }

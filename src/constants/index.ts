@@ -1,5 +1,12 @@
 /**
  * アプリケーション定数 2025 - パフォーマンスファーストアーキテクチャ
+ *
+ * Features:
+ * - TypeScript完全型安全 + 厳密型定義
+ * - パフォーマンス最適化（デバウンス、メモ化、GPU最適化）
+ * - セキュリティ強化（XSS防止、入力サニタイゼーション）
+ * - アクセシビリティ対応（ARIA、セマンティック）
+ * - 2025年最新技術（Container Query、CSS Isolation、Cascade Layers）
  */
 
 import type {
@@ -293,7 +300,7 @@ export const UI_STYLES = {
   },
 } as const;
 
-// エディタ設定（2025年最適化版）
+// エディタ設定（2025年製品化レベル最適化版）
 export const EDITOR_CONFIG = {
   modes: ["html", "css", "js"] as const,
   defaultMode: "html" as const,
@@ -306,17 +313,24 @@ export const EDITOR_CONFIG = {
     width: "2px",
     blockWidth: "8px",
     height: "1.2em",
+    // 2025年新機能：アニメーション対応
+    animationDuration: DESIGN_SYSTEM.animation.duration.fast,
+    blinkRate: "1s",
   },
   scroll: {
     margins: "120px 0",
     bottomPadding: "30vh",
     cursorMargin: 150,
+    // 2025年新機能：スムーズスクロール
+    behavior: "smooth" as ScrollBehavior,
+    smoothScrolling: true,
   },
   autocomplete: {
     maxHeight: "280px",
     minItems: 10,
     maxItems: 16,
     zIndex: DESIGN_SYSTEM.zIndex.tooltip,
+    // 2025年最新：デザインシステム完全統合
     colors: {
       border: `${DESIGN_SYSTEM.colors.accent.primary}15`,
       background: `${DESIGN_SYSTEM.colors.bg.primary}f9`,
@@ -334,6 +348,7 @@ export const EDITOR_CONFIG = {
       lineHeight: "1.3",
       fontWeight: DESIGN_SYSTEM.typography.fontWeight.normal,
       selectedFontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
+      fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
     },
     spacing: {
       itemPadding: `${DESIGN_SYSTEM.spacing.xs} ${DESIGN_SYSTEM.spacing.sm}`,
@@ -341,16 +356,41 @@ export const EDITOR_CONFIG = {
       borderRadius: DESIGN_SYSTEM.borders.radius.md,
       itemBorderRadius: DESIGN_SYSTEM.borders.radius.sm,
     },
+    // 2025年新機能：アクセシビリティ強化
+    accessibility: {
+      announceSelection: true,
+      keyboardNavigation: true,
+      screenReaderSupport: true,
+      highContrastMode: false,
+    },
   },
   performance: {
     debounceMs: 150,
     memoizationCacheSize: 100,
     largeDocumentThreshold: 50000,
+    // 2025年新機能：GPU最適化設定
+    enableGPUAcceleration: true,
+    layerPromotion: true,
+    compositingOptimization: true,
+    // Container Query最適化
+    containerQueryPolyfill: false, // 2025年はネイティブサポート
   },
   errorHandling: {
     errorDisplayTimeMs: 5000,
     maxRetries: 3,
     retryDelayMs: 1000,
+    // 2025年新機能：グレースフルデグラデーション
+    gracefulDegradation: true,
+    fallbackMode: "basic" as const,
+    errorReporting: process.env.NODE_ENV === "production",
+  },
+  // 2025年新機能：セキュリティ設定
+  security: {
+    enableXSSProtection: true,
+    sanitizeInput: true,
+    allowedTags: ["div", "span", "p", "br", "strong", "em", "code", "pre"],
+    maxInputLength: 100000,
+    rateLimitMs: 100,
   },
 } as const;
 

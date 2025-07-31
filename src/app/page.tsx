@@ -2,6 +2,7 @@
 
 import CheatSheet from "@/components/CheatSheet";
 import { Tooltip } from "@/components/Tooltip";
+import { DESIGN_SYSTEM } from "@/constants";
 import {
   Box,
   Button,
@@ -15,11 +16,30 @@ import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
+
+// 2025年最新：動的インポート + プリロード最適化
 const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ssr: false,
+  loading: () => (
+    <Box
+      w="100%"
+      h="100%"
+      bg={DESIGN_SYSTEM.colors.bg.primary}
+      borderRadius={DESIGN_SYSTEM.borders.radius.lg}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      borderWidth="1px"
+      borderColor={DESIGN_SYSTEM.borders.colors.subtle}
+    >
+      <Text color={DESIGN_SYSTEM.colors.text.secondary}>Loading Editor...</Text>
+    </Box>
+  ),
 });
 
+// 2025年最新：Motion Components with GPU optimization
 const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
 
 export default function Home() {
   const [isCodePenMode, setIsCodePenMode] = useState(false);
@@ -35,15 +55,18 @@ export default function Home() {
 
   return (
     <Box
-      bg="primary.900"
-      minH="100dvh" // 2025年最新: 動的ビューポート高度
+      bg={DESIGN_SYSTEM.colors.bg.primary}
+      minH="100dvh" // 2025年最新: 動的ビューポート高度対応
       w="100%"
       position="relative"
-      // 2025年最新: Container Query対応をCSS変数で
+      // 2025年最新: Container Query + CSS Isolation
       css={{
         containerType: "inline-size",
         containerName: "app-main",
+        isolation: "isolate",
+        contain: "layout style paint",
       }}
+      // GPU最適化背景
       _before={{
         content: '""',
         position: "absolute",
@@ -51,27 +74,42 @@ export default function Home() {
         left: 0,
         right: 0,
         bottom: 0,
-        bgGradient:
-          "radial-gradient(ellipse at top, rgba(232,131,58,0.04) 0%, transparent 50%)",
+        bgGradient: `radial-gradient(ellipse at top, ${DESIGN_SYSTEM.colors.accent.primary}04 0%, transparent 50%)`,
         pointerEvents: "none",
         zIndex: 0,
+        willChange: "opacity",
+        transform: "translateZ(0)",
       }}
+      // アクセシビリティ強化
+      role="main"
+      aria-label="manaVimEditor - Vimコマンドを学ぶためのコードエディタ"
     >
-      {/* Header - コンパクトなデザインに修正 */}
-      <Flex
+      {/* Header - 2025年レベルコンパクトデザイン */}
+      <MotionFlex
         as="header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         align="center"
         justify="space-between"
         px={{ base: 4, md: 6 }}
         py={{ base: 2, md: 3 }}
         borderBottomWidth={1}
-        borderColor="primary.700"
+        borderColor={DESIGN_SYSTEM.borders.colors.subtle}
         mb={{ base: 4, md: 6 }}
         gap={4}
         position="relative"
         zIndex={1}
         minH={{ base: "60px", md: "70px" }}
         maxH={{ base: "60px", md: "70px" }}
+        // 2025年最新：CSS最適化
+        isolation="isolate"
+        containerType="inline-size"
+        willChange="transform"
+        transform="translateZ(0)"
+        // アクセシビリティ強化
+        role="banner"
+        aria-label="manaVimEditorのヘッダー"
         _before={{
           content: '""',
           position: "absolute",
@@ -80,7 +118,7 @@ export default function Home() {
           transform: "translateX(-50%)",
           width: "60%",
           height: "1px",
-          bgGradient: "linear(to-r, transparent, secondary.500, transparent)",
+          bgGradient: `linear(to-r, transparent, ${DESIGN_SYSTEM.colors.accent.secondary}, transparent)`,
         }}
       >
         <Flex align="center" gap={2}>
@@ -176,7 +214,7 @@ export default function Home() {
             Vimチートシート
           </Link>
         </Flex>
-      </Flex>
+      </MotionFlex>
 
       {/* Main Content - バランスの良いレイアウト */}
       <Flex

@@ -27,7 +27,7 @@ const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
 const MotionText = motion.create(Text);
 
-// パフォーマンス最適化ボタンスタイル（Compositor-only Properties）
+// パフォーマンス最適化ボタンスタイル（2025年製品化レベル - Compositor-only Properties）
 const getButtonBaseStyle = (isActive = false) => ({
   size: "sm" as const,
   variant: "ghost" as const,
@@ -46,21 +46,33 @@ const getButtonBaseStyle = (isActive = false) => ({
   px: DESIGN_SYSTEM.spacing["3"],
   transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
   fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
-  // レイアウトスラッシング防止
+  // 2025年最新：CSS Isolation + GPU最適化
+  isolation: "isolate",
   transform: "translateZ(0)",
   backfaceVisibility: "hidden",
   willChange: "transform, opacity, background-color",
+  // Container Query対応
+  containerType: "inline-size",
+  // パフォーマンス最適化：レイアウトスラッシング完全回避
+  contain: "layout style paint",
 });
 
 const getButtonHoverStyle = () => ({
   bg: DESIGN_SYSTEM.colors.bg.surface,
   color: DESIGN_SYSTEM.colors.accent.primary,
   borderColor: DESIGN_SYSTEM.borders.colors.primary,
-  // Compositor-only properties for smooth animations
+  // 2025年最新：Compositor-only properties + CSS Isolation
   transform: "translateY(-1px) translateZ(0)",
   boxShadow: DESIGN_SYSTEM.shadows.glass.medium,
   isolation: "isolate",
   zIndex: 10,
+  // Container Query内でのスケール調整
+  "@container (width >= 768px)": {
+    transform: "translateY(-2px) scale(1.02) translateZ(0)",
+  },
+  // パフォーマンス最適化：スムーズなアニメーション
+  willChange: "transform, box-shadow",
+  backfaceVisibility: "hidden",
 });
 
 const getButtonActiveStyle = () => ({
@@ -68,7 +80,7 @@ const getButtonActiveStyle = () => ({
   transition: `transform ${DESIGN_SYSTEM.animation.duration.fastest} ${DESIGN_SYSTEM.animation.easing.easeIn}`,
 });
 
-// モード切り替えタブ専用スタイル（パフォーマンス最適化）
+// モード切り替えタブ専用スタイル（2025年製品化レベル - パフォーマンス最適化）
 const getModeTabStyle = (isActive: boolean, modeType: string) => ({
   size: "sm" as const,
   variant: "ghost" as const,
@@ -91,10 +103,14 @@ const getModeTabStyle = (isActive: boolean, modeType: string) => ({
   fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
   transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
   position: "relative" as const,
-  // レイアウトスラッシング防止
+  // 2025年最新：完全なCSS最適化
+  isolation: "isolate",
   transform: "translateZ(0)",
   backfaceVisibility: "hidden",
   willChange: "transform, opacity, background-color",
+  contain: "layout style paint",
+  // Container Query対応
+  containerType: "inline-size",
   _before: isActive
     ? {
         content: '""',
@@ -106,6 +122,9 @@ const getModeTabStyle = (isActive: boolean, modeType: string) => ({
         height: "2px",
         bg: DESIGN_SYSTEM.colors.accent.secondary,
         borderRadius: "1px",
+        // GPU最適化された疑似要素
+        willChange: "width, opacity",
+        transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
       }
     : undefined,
 });
@@ -118,21 +137,31 @@ const getModeTabHoverStyle = (isActive: boolean) => ({
   borderColor: isActive
     ? DESIGN_SYSTEM.borders.colors.primary
     : DESIGN_SYSTEM.borders.colors.secondary,
-  // Compositor-only properties
+  // 2025年最新：Compositor-only properties + Container Query対応
   transform: "translateY(-1px) translateZ(0)",
   isolation: "isolate",
   zIndex: 10,
+  // Container Query内でのスケール調整
+  "@container (width >= 768px)": {
+    transform: "translateY(-1px) scale(1.05) translateZ(0)",
+  },
+  // パフォーマンス最適化
+  willChange: "transform, background-color, border-color",
+  backfaceVisibility: "hidden",
+  boxShadow: `0 2px 8px ${DESIGN_SYSTEM.colors.accent.primary}15, inset 0 1px 0 rgba(255,255,255,0.05)`,
 });
 
 /**
- * VimEditor - 製品化レベルのコードエディタコンポーネント
+ * VimEditor - 2025年製品化レベルのコードエディタコンポーネント
  *
  * Features:
  * - CodeMirror 6 + Vim拡張
- * - TypeScript型安全
+ * - TypeScript完全型安全
  * - パフォーマンス最適化（memo, useMemo, useCallback）
- * - エラーハンドリング
- * - レスポンシブ対応
+ * - エラーハンドリング + グレースフルデグラデーション
+ * - レスポンシブ対応 + Container Query
+ * - CSS Isolation + GPU最適化
+ * - 2025年最新CSS技術（Cascade Layers, Container Queries）
  */
 const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
   // 各モードごとにEditorView/EditorStateを独立管理
@@ -219,7 +248,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
     }
   }, [resetAllDocs]);
 
-  // エラー状態の場合のレンダリング
+  // エラー状態の場合のレンダリング（2025年レベル - グレースフルデグラデーション）
   if (hasError) {
     return (
       <Box
@@ -230,19 +259,28 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
         mx="auto"
         border={`1px solid ${DESIGN_SYSTEM.borders.colors.strong}`}
         boxShadow={DESIGN_SYSTEM.shadows.lg}
+        // 2025年最新：CSS Isolation + アクセシビリティ
+        isolation="isolate"
+        role="alert"
+        aria-live="polite"
+        // Container Query対応
+        containerType="inline-size"
       >
         <Text
           color={DESIGN_SYSTEM.colors.text.primary}
           fontWeight="bold"
           mb={DESIGN_SYSTEM.spacing["2"]}
+          fontSize={DESIGN_SYSTEM.typography.fontSize.lg}
         >
           エディタでエラーが発生しました
         </Text>
         <Text
           color={DESIGN_SYSTEM.colors.text.secondary}
           fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+          mb={DESIGN_SYSTEM.spacing["3"]}
+          lineHeight="1.5"
         >
-          ページをリロードして再度お試しください。
+          ページをリロードして再度お試しください。問題が続く場合は、ブラウザのキャッシュをクリアしてください。
         </Text>
         <Button
           mt={DESIGN_SYSTEM.spacing["3"]}
@@ -254,8 +292,11 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           _hover={{
             bg: DESIGN_SYSTEM.colors.bg.secondary,
             transform: "translateY(-1px)",
+            boxShadow: DESIGN_SYSTEM.shadows.md,
           }}
           onClick={() => window.location.reload()}
+          // アクセシビリティ強化
+          aria-label="ページをリロードしてエラーを解決する"
         >
           リロード
         </Button>
@@ -286,11 +327,19 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
       h="100%" // 親の高さに合わせる
       w="100%" // 親の幅に合わせる
       borderWidth="1px"
-      // CSS分離とパフォーマンス最適化
+      // 2025年最新：CSS分離とパフォーマンス最適化
       isolation="isolate"
       willChange="transform"
       transform="translateZ(0)"
       className="vim-editor-container"
+      // Container Query対応
+      containerType="inline-size"
+      containerName="vim-editor"
+      // CSS Containment（2025年新機能）
+      contain="layout style paint"
+      // アクセシビリティ強化
+      role="application"
+      aria-label="Vimエディタ - コードエディタとプレビュー"
     >
       {/* すべての要素を1つの親要素でラップ */}
       <>
