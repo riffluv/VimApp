@@ -161,16 +161,46 @@ svg {
   max-width: 100% !important;
   overflow-x: auto !important;
   box-sizing: border-box !important;
+  z-index: 10 !important; /* responsive-debuggerより高く */
+  position: relative !important;
+  border: none !important; /* 全てのボーダーを無効化 */
+  margin: 0 !important; /* 全てのマージンを無効化 */
+  padding: 0 !important; /* 全てのパディングを無効化 */
 }
 
 .cm-scroller {
   max-width: 100% !important;
   overflow-x: auto !important;
+  z-index: 10 !important;
+  position: relative !important;
+  border: none !important; /* スクローラーのボーダーも無効化 */
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .cm-content {
   max-width: none !important; /* コンテンツは自由に拡張 */
   min-width: 100% !important; /* 最小幅は親と同じ */
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+/* CodeMirrorの重要な要素のz-index確保 */
+.cm-cursor,
+.cm-cursor.cm-fat-cursor,
+.cm-cursor.cm-visual-cursor {
+  z-index: 15 !important; /* カーソルは最前面 */
+  position: relative !important;
+}
+
+.cm-lineNumbers {
+  z-index: 12 !important; /* 行番号も確実に表示 */
+  position: relative !important;
+}
+
+.cm-gutters {
+  z-index: 12 !important;
+  position: relative !important;
 }
 
 .cm-editor,
@@ -180,7 +210,6 @@ svg {
   box-shadow: none !important;
   isolation: isolate !important;
   position: relative !important;
-  z-index: 2 !important;
 }
 
 .cm-editor * {
@@ -300,12 +329,11 @@ svg {
   box-shadow: inset 0 0 8px rgba(232, 131, 58, 0.1) !important;
 }
 
-/* フォーカス時のエディター輪郭 */
+/* フォーカス時のエディター輪郭を無効化 */
 .cm-editor.cm-focused .cm-scroller {
-  border: 1px solid rgba(232, 131, 58, 0.3) !important;
-  border-radius: 6px !important;
-  box-shadow: 0 0 0 2px rgba(232, 131, 58, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 /* モーション設定を尊重 */

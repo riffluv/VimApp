@@ -507,6 +507,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
               borderColor="gray.700"
               maxW="50%" // 確実に50%以下に制限
               minW="0" // flexアイテムの最小幅を0に設定
+              className="codemirror-isolated-container" // CodeMirror専用の分離クラス
             >
               <CodeMirror
                 key={mode} // モードが変わったら新しいインスタンスを作成
@@ -549,6 +550,7 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
             zIndex={1} // スタッキングコンテキストを作成
             maxW="100%" // 確実に親の幅以下に制限
             minW="0" // flexアイテムの最小幅を0に設定
+            className="codemirror-isolated-container" // CodeMirror専用の分離クラス
           >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
