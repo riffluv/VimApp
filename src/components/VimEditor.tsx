@@ -5,7 +5,7 @@ import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
@@ -22,7 +22,7 @@ import {
   useUIState,
   useVimMode,
 } from "@/hooks/useVimEditor";
-import type { EditorMode } from "@/types/editor";
+import type { EditorMode, VimEditorProps } from "@/types/editor";
 import { generatePreviewHTML, getSandboxAttributes } from "@/utils/editor";
 
 const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
@@ -105,30 +105,33 @@ const getModeTabHoverStyle = (isActive: boolean) => ({
   zIndex: 10,
 });
 
-type VimEditorProps = {
-  onCodePenModeChange?: (isCodePenMode: boolean) => void;
-};
-
-function VimEditor({ onCodePenModeChange }: VimEditorProps) {
+/**
+ * VimEditor - 製品化レベルのコードエディタコンポーネント
+ *
+ * Features:
+ * - CodeMirror 6 + Vim拡張
+ * - TypeScript型安全
+ * - パフォーマンス最適化（memo, useMemo, useCallback）
+ * - エラーハンドリング
+ * - レスポンシブ対応
+ */
+const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
   // 各モードごとにEditorView/EditorStateを独立管理
   const [editorStates, setEditorStates] = useState<{
     html: EditorState | undefined;
     css: EditorState | undefined;
     js: EditorState | undefined;
   }>({ html: undefined, css: undefined, js: undefined });
+
+  const [hasError, setHasError] = useState(false);
+
   const editorViews = useRef<{
     html: EditorView | null;
     css: EditorView | null;
     js: EditorView | null;
   }>({ html: null, css: null, js: null });
-  // EditorView/EditorState保存
-  const handleCreateEditor = useCallback(
-    (view: EditorView, state: EditorState, mode: EditorMode) => {
-      setEditorStates((prev) => ({ ...prev, [mode]: state }));
-      editorViews.current[mode] = view;
-    },
-    []
-  );
+
+  // フックからの状態とメソッド
   const { docs, cleanDocs, updateDoc, clearDoc, resetAllDocs } = useDocs();
   const { vimMode, onUpdate } = useVimMode();
   const { getCurrentExtensions } = useEditorExtensions();
@@ -141,28 +144,53 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     handleCodePenToggle,
   } = useUIState(onCodePenModeChange);
 
-  // モード切替時に現モードのstateを保存
+  // EditorView/EditorState保存 - メモ化
+  const handleCreateEditor = useCallback(
+    (view: EditorView, state: EditorState, mode: EditorMode) => {
+      try {
+        setEditorStates((prev) => ({ ...prev, [mode]: state }));
+        editorViews.current[mode] = view;
+        setHasError(false);
+      } catch (error) {
+        console.error("Editor creation error:", error);
+        setHasError(true);
+      }
+    },
+    []
+  );
+
+  // モード切替時に現モードのstateを保存 - メモ化
   const handleModeChangeWithStateSave = useCallback(
     (newMode: EditorMode) => {
-      if (editorViews.current[mode]) {
-        setEditorStates((prev) => ({
-          ...prev,
-          [mode]: editorViews.current[mode]!.state,
-        }));
+      try {
+        if (editorViews.current[mode]) {
+          setEditorStates((prev) => ({
+            ...prev,
+            [mode]: editorViews.current[mode]!.state,
+          }));
+        }
+        handleModeChange(newMode);
+      } catch (error) {
+        console.error("Mode change error:", error);
+        setHasError(true);
       }
-      handleModeChange(newMode);
     },
     [mode, handleModeChange]
   );
 
-  const previewSrcDoc = generatePreviewHTML(docs.html, docs.css, docs.js);
-  const codePenSrcDoc = generatePreviewHTML(
-    cleanDocs.html,
-    cleanDocs.css,
-    cleanDocs.js
+  // プレビューHTML生成 - メモ化
+  const previewSrcDoc = useMemo(
+    () => generatePreviewHTML(docs.html, docs.css, docs.js),
+    [docs.html, docs.css, docs.js]
   );
 
-  const handleResetAllWithConfirm = () => {
+  const codePenSrcDoc = useMemo(
+    () => generatePreviewHTML(cleanDocs.html, cleanDocs.css, cleanDocs.js),
+    [cleanDocs.html, cleanDocs.css, cleanDocs.js]
+  );
+
+  // リセット確認ダイアログ - メモ化
+  const handleResetAllWithConfirm = useCallback(() => {
     if (
       window.confirm(
         "本当に全てのサンプルを初期状態に戻しますか？\nこの操作は元に戻せません。"
@@ -170,7 +198,30 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
     ) {
       resetAllDocs();
     }
-  };
+  }, [resetAllDocs]);
+
+  // エラー状態の場合のレンダリング
+  if (hasError) {
+    return (
+      <Box p={4} bg="red.100" borderRadius="md" maxW="800px" mx="auto">
+        <Text color="red.700" fontWeight="bold" mb={2}>
+          エディタでエラーが発生しました
+        </Text>
+        <Text color="red.600" fontSize="sm">
+          ページをリロードして再度お試しください。
+        </Text>
+        <Button
+          mt={3}
+          size="sm"
+          colorScheme="red"
+          variant="outline"
+          onClick={() => window.location.reload()}
+        >
+          リロード
+        </Button>
+      </Box>
+    );
+  }
 
   const currentVimModeInfo = VIM_MODE_INFO[vimMode];
 
@@ -584,6 +635,9 @@ function VimEditor({ onCodePenModeChange }: VimEditorProps) {
       </>
     </MotionBox>
   );
-}
+});
+
+// 開発環境での表示名設定
+VimEditor.displayName = "VimEditor";
 
 export default VimEditor;

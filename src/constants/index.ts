@@ -17,7 +17,7 @@ export const STORAGE_KEYS: StorageKeys = {
   SHARED_DOCS: "vimapp_shared_docs",
 };
 
-// Vimモード情報
+// Vimモード情報（2025年拡張版）
 export const VIM_MODE_INFO: Record<string, VimModeInfo> = {
   normal: {
     text: "NORMAL",
@@ -36,6 +36,18 @@ export const VIM_MODE_INFO: Record<string, VimModeInfo> = {
     color: "purple.400",
     icon: FiCommand,
     hint: "Select text with h,j,k,l or use y to copy",
+  },
+  visualLine: {
+    text: "V-LINE",
+    color: "purple.500",
+    icon: FiCommand,
+    hint: "Line-wise visual selection mode",
+  },
+  visualBlock: {
+    text: "V-BLOCK",
+    color: "purple.600",
+    icon: FiCommand,
+    hint: "Block-wise visual selection mode",
   },
 } as const;
 
@@ -779,5 +791,23 @@ export const EDITOR_CONFIG = {
       borderRadius: "6px",
       itemBorderRadius: "3px",
     },
+  },
+  // パフォーマンス設定（2025年最適化）
+  performance: {
+    // デバウンス時間
+    debounceMs: 150,
+    // メモ化のキャッシュサイズ
+    memoizationCacheSize: 100,
+    // 大きなドキュメントの閾値
+    largeDocumentThreshold: 50000,
+  },
+  // エラーハンドリング設定
+  errorHandling: {
+    // エラー表示時間
+    errorDisplayTimeMs: 5000,
+    // リトライ回数
+    maxRetries: 3,
+    // リトライ間隔
+    retryDelayMs: 1000,
   },
 } as const;

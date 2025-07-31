@@ -7,8 +7,24 @@ import type { IconType } from "react-icons";
 // エディターモード
 export type EditorMode = "html" | "css" | "js";
 
-// Vimモード
-export type VimMode = "normal" | "insert" | "visual";
+// Vimモード (2025年拡張版)
+export type VimMode =
+  | "normal"
+  | "insert"
+  | "visual"
+  | "visualLine"
+  | "visualBlock";
+
+// 型ガード関数
+export const isValidEditorMode = (mode: string): mode is EditorMode => {
+  return ["html", "css", "js"].includes(mode);
+};
+
+export const isValidVimMode = (mode: string): mode is VimMode => {
+  return ["normal", "insert", "visual", "visualLine", "visualBlock"].includes(
+    mode
+  );
+};
 
 // ドキュメント状態
 export interface DocsState {

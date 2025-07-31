@@ -1,11 +1,17 @@
 /**
- * VimEditorで使用するカスタムフック
+ * VimEditorで使用するカスタムフック（2025年製品化レベル）
+ *
+ * Features:
+ * - TypeScript型安全
+ * - エラーハンドリング
+ * - パフォーマンス最適化
+ * - メモ化とデバウンス
  */
 
 import { getCM } from "@replit/codemirror-vim";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { DEFAULT_SAMPLE_CODE } from "@/constants";
+import { DEFAULT_SAMPLE_CODE, EDITOR_CONFIG } from "@/constants";
 import type { DocsState, EditorMode, VimMode } from "@/types/editor";
 import { getEditorExtensions } from "@/utils/editor";
 import {
@@ -16,28 +22,49 @@ import {
 } from "@/utils/storage";
 
 /**
- * ドキュメント状態管理フック
+ * ドキュメント状態管理フック（エラーハンドリング対応）
  */
 export const useDocs = () => {
   const [docs, setDocs] = useState<DocsState>(DEFAULT_SAMPLE_CODE);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 初期化
+  // 初期化（エラーハンドリング付き）
   useEffect(() => {
-    const initialDocs = initializeStorage();
-    setDocs(initialDocs);
+    try {
+      const initialDocs = initializeStorage();
+      setDocs(initialDocs);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to initialize storage:", err);
+      setError("ストレージの初期化に失敗しました");
+      // フォールバックとしてデフォルト値を使用
+      setDocs(DEFAULT_SAMPLE_CODE);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // デバウンス付き保存関数
-  const debouncedSave = useMemo(() => debounce(saveDocsToStorage, 300), []);
+  // デバウンス付き保存関数（設定可能な遅延時間）
+  const debouncedSave = useMemo(
+    () => debounce(saveDocsToStorage, EDITOR_CONFIG.performance.debounceMs),
+    []
+  );
 
-  // ドキュメント更新関数
+  // ドキュメント更新関数（エラーハンドリング付き）
   const updateDoc = useCallback(
     (mode: EditorMode, value: string) => {
-      setDocs((prev) => {
-        const updated = { ...prev, [mode]: value };
-        debouncedSave(updated);
-        return updated;
-      });
+      try {
+        setDocs((prev) => {
+          const updated = { ...prev, [mode]: value };
+          debouncedSave(updated);
+          return updated;
+        });
+        setError(null);
+      } catch (err) {
+        console.error("Failed to update document:", err);
+        setError("ドキュメントの更新に失敗しました");
+      }
     },
     [debouncedSave]
   );
@@ -73,6 +100,8 @@ export const useDocs = () => {
     updateDoc,
     clearDoc,
     resetAllDocs,
+    isLoading,
+    error,
   };
 };
 

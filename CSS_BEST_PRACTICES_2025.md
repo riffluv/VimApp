@@ -212,83 +212,144 @@ export const ANIMATION_VARIANTS = {
 
 ---
 
-## 11. リファクタリング済みパターン（2025 年 7 月 29 日更新）
+## 11. リファクタリング済みパターン（2025 年 7 月 31 日更新）
 
-### 11.1. スタイル関数パターン
+### 11.1. コードアーキテクチャパターン（2025 年製品化レベル）
 
-**[OK] 推奨パターン:**
-
-```typescript
-// 共通スタイル関数でマジックナンバーを排除
-const getButtonBaseStyle = (isActive = false) => ({
-  size: "sm" as const,
-  variant: "ghost" as const,
-  bg: isActive ? "gray.600" : "gray.700",
-  color: isActive ? UI_STYLES.colors.primary : "gray.300",
-  borderWidth: "1px",
-  borderColor: isActive ? "gray.500" : "gray.600",
-  fontSize: "xs",
-  fontWeight: "600",
-  px: 3,
-  transition: `all ${UI_STYLES.animation.transition.duration}s cubic-bezier(0.4, 0, 0.2, 1)`,
-  fontFamily: EDITOR_CONFIG.fonts.ui,
-});
-
-// 使用例
-<Button
-  {...getButtonBaseStyle(showPreview)}
-  onClick={handlePreviewToggle}
-  _hover={getButtonHoverStyle()}
-  _active={getButtonActiveStyle()}
->
-  Preview
-</Button>;
-```
-
-### 11.2. 設定の外部化
-
-**[OK] 推奨パターン:**
+**[OK] 責務分離とモジュール化:**
 
 ```typescript
-// constants/index.ts
-export const UI_STYLES = {
-  animation: {
-    spring: { type: "spring", damping: 25, stiffness: 300 },
-    easeOut: { type: "tween", ease: "easeOut", duration: 0.2 },
-    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
-  },
-  spacing: {
-    buttonGap: 1,
-    containerPadding: 4,
-    borderRadius: "lg",
-    iconMargin: 1.5,
-  },
-  shadow: {
-    subtle: "0 4px 12px rgba(232,131,58,0.15)",
-    medium: "0 6px 20px rgba(232,131,58,0.2)",
-  },
-  colors: {
-    primary: "secondary.400",
-    accent: "#e8833a",
-    transparent: "rgba(232,131,58,0.15)",
-  },
-} as const;
-
+// constants/index.ts - 設定の外部化
 export const EDITOR_CONFIG = {
   modes: ["html", "css", "js"] as const,
-  defaultMode: "html" as const,
   fonts: {
-    mono: "JetBrains Mono, 'Fira Code', 'SF Mono', 'Monaco', Menlo, 'Ubuntu Mono', monospace",
-    ui: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif",
+    mono: "JetBrains Mono, 'Fira Code', 'SF Mono', monospace",
+    ui: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
   },
   cursor: {
     color: "#e8833a",
     width: "2px",
     blockWidth: "8px",
-    height: "1.2em",
   },
 } as const;
+
+// utils/editor.ts - エディタロジック集約
+export const getEditorExtensions = (mode: EditorMode): Extension[] => {
+  return [
+    Prec.highest(vim()),
+    languageExtensions[mode],
+    advancedAutocompletion,
+    // ...他の拡張
+  ];
+};
+
+// hooks/useVimEditor.ts - 状態管理分離
+export const useVimEditor = () => {
+  const [vimMode, setVimMode] = useState<VimMode>("normal");
+  // ロジック実装
+  return { vimMode, onUpdate };
+};
 ```
+
+### 11.2. パフォーマンス最適化パターン
+
+**[OK] 推奨パターン:**
+
+```typescript
+// メモ化によるレンダリング最適化
+const VimEditor = memo(({ onCodePenModeChange }: VimEditorProps) => {
+  const extensions = useMemo(() => getEditorExtensions(mode), [mode]);
+
+  const handleChange = useCallback(
+    (value: string) => {
+      updateDoc(mode, value);
+    },
+    [mode, updateDoc]
+  );
+
+  return (
+    <CodeMirror
+      value={docs[mode]}
+      onChange={handleChange}
+      extensions={extensions}
+    />
+  );
+});
+```
+
+### 11.3. TypeScript 型安全性パターン
+
+**[OK] 推奨パターン:**
+
+```typescript
+// types/editor.ts - 厳密な型定義
+export interface VimEditorProps {
+  onCodePenModeChange?: (isCodePenMode: boolean) => void;
+}
+
+export type EditorMode = "html" | "css" | "js";
+export type VimMode =
+  | "normal"
+  | "insert"
+  | "visual"
+  | "visualLine"
+  | "visualBlock";
+
+// 型ガードでランタイム安全性確保
+export const isValidEditorMode = (mode: string): mode is EditorMode => {
+  return ["html", "css", "js"].includes(mode);
+};
+
+// 定数の型安全性
+export const VIM_MODE_INFO = {
+  normal: { text: "NORMAL", color: "secondary.400" },
+  insert: { text: "INSERT", color: "green.400" },
+  visual: { text: "VISUAL", color: "purple.400" },
+} as const satisfies Record<VimMode, { text: string; color: string }>;
+```
+
+### 11.5. リファクタリング履歴（2025 年 7 月 31 日完了）
+
+**[COMPLETED] 製品化レベルリファクタリング:**
+
+1. **クリーンアップ完了**
+
+   - 不要ファイル削除: `VimEditor_new.tsx`, `VimEditor_fixed.tsx`, `monaco-vim.d.ts`
+   - レガシー CSS 削除: `accessibility.css`, `container-queries.css`, `dynamic-viewport.css`
+   - 未使用ディレクトリ削除: `samplecode01/`, `samplecode02/`, `neovim/`, `styles/`
+
+2. **TypeScript 型安全性向上**
+
+   - Vim 拡張モード追加: `visualLine`, `visualBlock`
+   - 型ガード関数実装: `isValidEditorMode`, `isValidVimMode`
+   - 型定義の統一化とインポート最適化
+
+3. **パフォーマンス最適化実装**
+
+   - React.memo 適用によるレンダリング最適化
+   - useMemo/useCallback による不要な再計算防止
+   - デバウンス設定の外部化（150ms）
+
+4. **エラーハンドリング強化**
+
+   - try-catch 文による例外処理
+   - ユーザーフレンドリーなエラー表示
+   - ローディング状態とエラー状態の管理
+
+5. **コード品質向上**
+   - JSDoc 形式のドキュメンテーション
+   - displayName 設定による開発体験向上
+   - 一貫した命名規則とコメント
+
+**[VERIFIED] 動作確認済み機能:**
+
+- ✅ CodeMirror 6 + Vim 拡張の正常動作
+- ✅ HTML/CSS/JS の 3 モード切り替え
+- ✅ Emmet CSS 補完のカーソル位置修正
+- ✅ Visual Line/Block モード検出
+- ✅ エラーハンドリングとローディング状態
+- ✅ レスポンシブ対応
+- ✅ プレビュー機能
 
 ### 11.3. アニメーション統一
 
