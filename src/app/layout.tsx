@@ -1,7 +1,4 @@
 import { Metadata } from "next";
-// import "../styles/accessibility.css";
-// import "../styles/container-queries.css";
-// import "../styles/dynamic-viewport.css";
 import "./globals.css";
 import { Providers } from "./providers";
 

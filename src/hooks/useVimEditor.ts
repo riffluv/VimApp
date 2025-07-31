@@ -87,19 +87,40 @@ export const useVimMode = () => {
       let nextVimMode: VimMode = "normal";
 
       if (viewUpdate?.view) {
+        // Vimの状態を直接取得する方法を試す
         const cm = getCM(viewUpdate.view);
-        if (cm?.state?.vim?.mode) {
-          const vimModeRaw = cm.state.vim.mode;
-          switch (vimModeRaw) {
-            case "insert":
-              nextVimMode = "insert";
-              break;
-            case "visual":
-              nextVimMode = "visual";
-              break;
-            default:
-              nextVimMode = "normal";
-              break;
+        if (cm?.state?.vim) {
+          const vimState = cm.state.vim;
+          
+          // より詳細な状態チェック
+          if (vimState.visualMode || vimState.visualLine || vimState.visualBlock) {
+            nextVimMode = "visual";
+          } else if (vimState.insertMode || vimState.mode === "insert") {
+            nextVimMode = "insert";
+          } else {
+            nextVimMode = "normal";
+          }
+          
+          // デバッグログを追加（開発時のみ）
+          if (process.env.NODE_ENV === "development") {
+            console.log("Vim state:", {
+              mode: vimState.mode,
+              insertMode: vimState.insertMode,
+              visualMode: vimState.visualMode,
+              visualLine: vimState.visualLine,
+              visualBlock: vimState.visualBlock,
+              detected: nextVimMode
+            });
+          }
+        } else {
+          // fallback: DOM要素のクラス名からも判定を試す
+          const editorEl = viewUpdate.view.dom;
+          if (editorEl.classList.contains("cm-fat-cursor")) {
+            nextVimMode = "normal";
+          } else if (editorEl.classList.contains("cm-vim-insert")) {
+            nextVimMode = "insert";
+          } else if (editorEl.classList.contains("cm-vim-visual")) {
+            nextVimMode = "visual";
           }
         }
       }

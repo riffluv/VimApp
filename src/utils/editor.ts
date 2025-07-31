@@ -193,7 +193,7 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: prop,
         type: "property",
         detail: "CSS Property",
-        apply: `${prop}: ;`,
+        apply: `${prop}: ;`, // セミコロンを含める
         boost: 5,
       });
     });
