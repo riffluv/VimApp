@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAVIM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* 完璧なマリオの空の色 #5C94FC */
+            background:
+                /* 空のドット絵パターン - より細かく */
+                repeating-linear-gradient(0deg,
+                    #5C94FC 0px, #5C94FC 1px,
+                    #6BA6FF 1px, #6BA6FF 2px,
+                    #5C94FC 2px, #5C94FC 3px,
+                    #4A82E8 3px, #4A82E8 4px),
+                repeating-linear-gradient(90deg,
+                    #5C94FC 0px, #5C94FC 1px,
+                    #6BA6FF 1px, #6BA6FF 2px,
+                    #5C94FC 2px, #5C94FC 3px,
+                    #4A82E8 3px, #4A82E8 4px),
+                /* 地面部分 - 正確なマリオの色 */
+                linear-gradient(180deg, #5C94FC 0%, #5C94FC 75%, #00AA00 75%, #00AA00 100%);
+            background-size: 4px 4px, 4px 4px, 100% 100%;
+            min-height: 100vh;
+            font-family: 'Press Start 2P', monospace;
+            overflow: hidden;
+            position: relative;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        /* 完璧なドット絵の雲 */
+        .cloud {
+            position: absolute;
+            animation: float 25s infinite linear;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .cloud1 {
+            width: 64px;
+            height: 24px;
+            top: 15%;
+            left: -100px;
+            background:
+                /* ドット絵の雲パターン - 完璧なマリオスタイル */
+                conic-gradient(from 0deg, transparent 0deg, transparent 0deg),
+                /* 雲の本体部分をドットで描画 */
+                repeating-linear-gradient(0deg,
+                    white 0px, white 4px,
+                    transparent 4px, transparent 8px),
+                repeating-linear-gradient(90deg,
+                    white 0px, white 4px,
+                    transparent 4px, transparent 8px);
+            background-size: 4px 4px;
+            /* SVGパターンで完璧な雲を作成 */
+            background-image: url("data:image/svg+xml,%3Csvg width='64' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='16' y='8' width='32' height='8'/%3E%3Crect x='8' y='12' width='48' height='4'/%3E%3Crect x='12' y='16' width='40' height='4'/%3E%3Crect x='20' y='4' width='8' height='4'/%3E%3Crect x='36' y='4' width='8' height='4'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .cloud2 {
+            width: 48px;
+            height: 20px;
+            top: 25%;
+            left: -80px;
+            animation-delay: -12s;
+            background-image: url("data:image/svg+xml,%3Csvg width='48' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='12' y='6' width='24' height='6'/%3E%3Crect x='6' y='10' width='36' height='4'/%3E%3Crect x='8' y='14' width='32' height='4'/%3E%3Crect x='16' y='2' width='6' height='4'/%3E%3Crect x='26' y='2' width='6' height='4'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .cloud3 {
+            width: 80px;
+            height: 28px;
+            top: 10%;
+            left: -120px;
+            animation-delay: -18s;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='28' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='20' y='10' width='40' height='8'/%3E%3Crect x='10' y='14' width='60' height='6'/%3E%3Crect x='16' y='20' width='48' height='4'/%3E%3Crect x='24' y='6' width='8' height='4'/%3E%3Crect x='40' y='4' width='8' height='6'/%3E%3Crect x='52' y='6' width='8' height='4'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(-150px);
+            }
+
+            100% {
+                transform: translateX(calc(100vw + 150px));
+            }
+        }
+
+        /* 完璧なドット絵ブロック */
+        .brick-block {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 完璧なマリオのレンガブロック */
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect width='32' height='32' fill='%23D2691E'/%3E%3Crect x='2' y='2' width='28' height='28' fill='%23CD853F'/%3E%3Crect x='4' y='4' width='24' height='24' fill='%23DEB887'/%3E%3Crect x='2' y='2' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='18' y='2' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='6' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='16' y='6' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='10' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='18' y='10' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='14' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='16' y='14' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='18' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='18' y='18' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='22' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='16' y='22' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='26' width='14' height='2' fill='%23A0522D'/%3E%3Crect x='18' y='26' width='12' height='2' fill='%23A0522D'/%3E%3Crect x='2' y='30' width='28' height='2' fill='%238B4513'/%3E%3Crect x='30' y='2' width='2' height='28' fill='%238B4513'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .block1 {
+            top: 65%;
+            left: 8%;
+        }
+
+        .block2 {
+            top: 65%;
+            left: 12%;
+        }
+
+        .block3 {
+            top: 65%;
+            left: 16%;
+        }
+
+        .block4 {
+            top: 50%;
+            left: 75%;
+        }
+
+        .block5 {
+            top: 50%;
+            left: 79%;
+        }
+
+        .block6 {
+            top: 50%;
+            left: 83%;
+        }
+
+        .block7 {
+            top: 35%;
+            left: 25%;
+        }
+
+        .block8 {
+            top: 35%;
+            left: 29%;
+        }
+
+        .block9 {
+            top: 20%;
+            left: 60%;
+        }
+
+        .block10 {
+            top: 75%;
+            left: 45%;
+        }
+
+        /* クエスチョンブロック */
+        .question-block {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            animation: questionGlow 2s ease-in-out infinite;
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect width='32' height='32' fill='%23FFAA00'/%3E%3Crect x='2' y='2' width='28' height='28' fill='%23FFCC00'/%3E%3Crect x='4' y='4' width='24' height='24' fill='%23FFDD00'/%3E%3C!-- ボーダー --%3E%3Crect x='0' y='0' width='32' height='2' fill='%23FFFF00'/%3E%3Crect x='0' y='30' width='32' height='2' fill='%23CC8800'/%3E%3Crect x='0' y='0' width='2' height='32' fill='%23FFFF00'/%3E%3Crect x='30' y='0' width='2' height='32' fill='%23CC8800'/%3E%3C!-- クエスチョンマーク --%3E%3Crect x='10' y='8' width='12' height='2' fill='%23FFFFFF'/%3E%3Crect x='10' y='10' width='2' height='2' fill='%23FFFFFF'/%3E%3Crect x='20' y='10' width='2' height='4' fill='%23FFFFFF'/%3E%3Crect x='18' y='14' width='4' height='2' fill='%23FFFFFF'/%3E%3Crect x='16' y='16' width='2' height='2' fill='%23FFFFFF'/%3E%3Crect x='14' y='18' width='4' height='2' fill='%23FFFFFF'/%3E%3Crect x='14' y='22' width='4' height='2' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .question1 {
+            top: 40%;
+            left: 50%;
+        }
+
+        .question2 {
+            top: 55%;
+            left: 65%;
+        }
+
+        @keyframes questionGlow {
+
+            0%,
+            100% {
+                filter: brightness(1);
+                transform: scale(1);
+            }
+
+            50% {
+                filter: brightness(1.2);
+                transform: scale(1.05);
+            }
+        }
+
+        /* コインブロック */
+        .coin-block {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect width='32' height='32' fill='%23D2691E'/%3E%3Crect x='2' y='2' width='28' height='28' fill='%23CD853F'/%3E%3Crect x='4' y='4' width='24' height='24' fill='%23DEB887'/%3E%3C!-- コイン --%3E%3Crect x='10' y='8' width='12' height='2' fill='%23FFFF00'/%3E%3Crect x='8' y='10' width='16' height='12' fill='%23FFFF00'/%3E%3Crect x='10' y='22' width='12' height='2' fill='%23FFFF00'/%3E%3Crect x='12' y='12' width='8' height='8' fill='%23FFD700'/%3E%3Crect x='14' y='14' width='4' height='4' fill='%23FFA500'/%3E%3Crect x='10' y='10' width='2' height='12' fill='%23FFD700'/%3E%3Crect x='20' y='10' width='2' height='12' fill='%23CC8800'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .coin1 {
+            top: 30%;
+            left: 40%;
+        }
+
+        /* 完璧なドット絵パイプ */
+        .pipe {
+            position: absolute;
+            bottom: 0;
+            width: 64px;
+            height: 120px;
+            right: 5%;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 完璧なマリオのパイプ */
+            background-image: url("data:image/svg+xml,%3Csvg width='64' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3C!-- パイプの頭部 --%3E%3Crect x='0' y='0' width='64' height='16' fill='%2300CC00'/%3E%3Crect x='4' y='4' width='56' height='8' fill='%2300AA00'/%3E%3Crect x='8' y='6' width='48' height='4' fill='%23006600'/%3E%3C!-- パイプの本体 --%3E%3Crect x='8' y='16' width='48' height='104' fill='%2300AA00'/%3E%3Crect x='12' y='20' width='40' height='96' fill='%23008800'/%3E%3Crect x='16' y='24' width='32' height='88' fill='%23006600'/%3E%3C!-- ハイライト --%3E%3Crect x='12' y='20' width='4' height='96' fill='%2300CC00'/%3E%3Crect x='48' y='20' width='4' height='96' fill='%23004400'/%3E%3C!-- 縦のライン --%3E%3Crect x='20' y='24' width='2' height='88' fill='%23004400'/%3E%3Crect x='24' y='24' width='2' height='88' fill='%23004400'/%3E%3Crect x='28' y='24' width='2' height='88' fill='%23004400'/%3E%3Crect x='32' y='24' width='2' height='88' fill='%23004400'/%3E%3Crect x='36' y='24' width='2' height='88' fill='%23004400'/%3E%3Crect x='40' y='24' width='2' height='88' fill='%23004400'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* 完璧なドット絵地面 */
+        .ground-pattern {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 完璧なマリオの地面パターン */
+            background:
+                repeating-linear-gradient(0deg,
+                    #00AA00 0px, #00AA00 4px,
+                    #008800 4px, #008800 8px,
+                    #00CC00 8px, #00CC00 12px,
+                    #006600 12px, #006600 16px),
+                repeating-linear-gradient(90deg,
+                    #00AA00 0px, #00AA00 4px,
+                    #008800 4px, #008800 8px,
+                    #00CC00 8px, #00CC00 12px,
+                    #006600 12px, #006600 16px);
+            background-size: 16px 16px;
+            opacity: 0.8;
+            /* 草のドット絵パターンを追加 */
+            background-image:
+                repeating-linear-gradient(90deg,
+                    transparent 0px, transparent 14px,
+                    #228B22 14px, #228B22 16px),
+                repeating-linear-gradient(0deg,
+                    transparent 0px, transparent 6px,
+                    #32CD32 6px, #32CD32 8px,
+                    transparent 8px, transparent 14px,
+                    #228B22 14px, #228B22 16px);
+        }
+
+        /* マリオ風の山 */
+        .mountain {
+            position: absolute;
+            bottom: 100px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .mountain1 {
+            width: 120px;
+            height: 80px;
+            left: 15%;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect x='56' y='0' width='8' height='8' fill='%2300AA00'/%3E%3Crect x='48' y='8' width='24' height='8' fill='%2300AA00'/%3E%3Crect x='40' y='16' width='40' height='8' fill='%2300AA00'/%3E%3Crect x='32' y='24' width='56' height='8' fill='%2300AA00'/%3E%3Crect x='24' y='32' width='72' height='8' fill='%2300AA00'/%3E%3Crect x='16' y='40' width='88' height='8' fill='%2300AA00'/%3E%3Crect x='8' y='48' width='104' height='8' fill='%2300AA00'/%3E%3Crect x='0' y='56' width='120' height='24' fill='%2300AA00'/%3E%3C!-- 影 --%3E%3Crect x='64' y='8' width='8' height='72' fill='%23008800'/%3E%3Crect x='72' y='16' width='8' height='64' fill='%23008800'/%3E%3Crect x='80' y='24' width='8' height='56' fill='%23008800'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .mountain2 {
+            width: 80px;
+            height: 60px;
+            right: 20%;
+            background-image: url("data:image/svg+xml,%3Csvg width='80' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect x='36' y='0' width='8' height='8' fill='%2300AA00'/%3E%3Crect x='28' y='8' width='24' height='8' fill='%2300AA00'/%3E%3Crect x='20' y='16' width='40' height='8' fill='%2300AA00'/%3E%3Crect x='12' y='24' width='56' height='8' fill='%2300AA00'/%3E%3Crect x='4' y='32' width='72' height='8' fill='%2300AA00'/%3E%3Crect x='0' y='40' width='80' height='20' fill='%2300AA00'/%3E%3C!-- 影 --%3E%3Crect x='44' y='8' width='8' height='52' fill='%23008800'/%3E%3Crect x='52' y='16' width='8' height='44' fill='%23008800'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* マリオ風の城 */
+        .castle {
+            position: absolute;
+            bottom: 100px;
+            right: 8%;
+            width: 96px;
+            height: 120px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            background-image: url("data:image/svg+xml,%3Csvg width='96' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3C!-- 城の本体 --%3E%3Crect x='8' y='40' width='80' height='80' fill='%23CCCCCC'/%3E%3Crect x='12' y='44' width='72' height='72' fill='%23AAAAAA'/%3E%3C!-- 塔 --%3E%3Crect x='0' y='20' width='24' height='100' fill='%23CCCCCC'/%3E%3Crect x='72' y='20' width='24' height='100' fill='%23CCCCCC'/%3E%3Crect x='36' y='0' width='24' height='120' fill='%23CCCCCC'/%3E%3C!-- 屋根 --%3E%3Crect x='4' y='16' width='16' height='8' fill='%23FF0000'/%3E%3Crect x='76' y='16' width='16' height='8' fill='%23FF0000'/%3E%3Crect x='40' y='0' width='16' height='4' fill='%23FF0000'/%3E%3C!-- 窓 --%3E%3Crect x='16' y='60' width='8' height='12' fill='%23000000'/%3E%3Crect x='32' y='60' width='8' height='12' fill='%23000000'/%3E%3Crect x='56' y='60' width='8' height='12' fill='%23000000'/%3E%3Crect x='72' y='60' width='8' height='12' fill='%23000000'/%3E%3C!-- ドア --%3E%3Crect x='40' y='80' width='16' height='40' fill='%23654321'/%3E%3Crect x='44' y='84' width='8' height='32' fill='%23543210'/%3E%3C!-- 旗 --%3E%3Crect x='46' y='4' width='4' height='20' fill='%23654321'/%3E%3Crect x='50' y='8' width='12' height='8' fill='%23FF0000'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* ファイアフラワー */
+        .fire-flower {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            animation: flowerBob 3s ease-in-out infinite;
+            background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3C!-- 茎 --%3E%3Crect x='10' y='16' width='4' height='8' fill='%2300AA00'/%3E%3C!-- 花びら --%3E%3Crect x='8' y='4' width='8' height='4' fill='%23FF4500'/%3E%3Crect x='4' y='8' width='4' height='8' fill='%23FF4500'/%3E%3Crect x='16' y='8' width='4' height='8' fill='%23FF4500'/%3E%3Crect x='8' y='12' width='8' height='4' fill='%23FF4500'/%3E%3C!-- 中心 --%3E%3Crect x='10' y='8' width='4' height='4' fill='%23FFFF00'/%3E%3Crect x='8' y='10' width='8' height='2' fill='%23FFFF00'/%3E%3C!-- 顔 --%3E%3Crect x='9' y='9' width='1' height='1' fill='%23000000'/%3E%3Crect x='14' y='9' width='1' height='1' fill='%23000000'/%3E%3Crect x='10' y='11' width='4' height='1' fill='%23000000'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .flower1 {
+            top: 45%;
+            left: 35%;
+        }
+
+        .flower2 {
+            top: 55%;
+            right: 45%;
+        }
+
+        @keyframes flowerBob {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #FFFF00;
+            /* 完璧なマリオ風の立体文字 */
+            text-shadow:
+                2px 0px 0px #FF0000,
+                4px 0px 0px #CC0000,
+                0px 2px 0px #FF0000,
+                2px 2px 0px #CC0000,
+                4px 2px 0px #990000,
+                0px 4px 0px #CC0000,
+                2px 4px 0px #990000,
+                4px 4px 0px #660000,
+                6px 6px 20px rgba(0, 0, 0, 0.8);
+            margin-bottom: 2rem;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+            letter-spacing: 0.1em;
+            /* ドット絵風のアウトライン */
+            -webkit-text-stroke: 1px #000000;
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow:
+                    2px 0px 0px #FF0000,
+                    4px 0px 0px #CC0000,
+                    0px 2px 0px #FF0000,
+                    2px 2px 0px #CC0000,
+                    4px 2px 0px #990000,
+                    0px 4px 0px #CC0000,
+                    2px 4px 0px #990000,
+                    4px 4px 0px #660000,
+                    6px 6px 20px rgba(0, 0, 0, 0.8);
+            }
+
+            100% {
+                text-shadow:
+                    2px 0px 0px #FF4444,
+                    4px 0px 0px #FF0000,
+                    0px 2px 0px #FF4444,
+                    2px 2px 0px #FF0000,
+                    4px 2px 0px #CC0000,
+                    0px 4px 0px #FF0000,
+                    2px 4px 0px #CC0000,
+                    4px 4px 0px #990000,
+                    6px 6px 30px rgba(255, 255, 0, 0.9);
+            }
+        }
+
+        .character {
+            width: 200px;
+            height: 200px;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            position: relative;
+        }
+
+        .character img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .character:hover {
+            transform: scale(1.1);
+        }
+
+        .character.jumping {
+            animation: jump 0.6s ease-in-out;
+        }
+
+        @keyframes jump {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            25% {
+                transform: translateY(-30px) scale(1.1) rotate(-5deg);
+            }
+
+            50% {
+                transform: translateY(-50px) scale(1.2) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-30px) scale(1.1) rotate(5deg);
+            }
+
+            100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+        }
+
+        .menu {
+            color: white;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 0px #000;
+            margin-top: 1rem;
+        }
+
+        .menu-item {
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+            border: 4px solid #000;
+            background:
+                /* ドット絵風のボタン背景 */
+                repeating-linear-gradient(0deg,
+                    #333 0px, #333 2px,
+                    #555 2px, #555 4px),
+                repeating-linear-gradient(90deg,
+                    #333 0px, #333 2px,
+                    #555 2px, #555 4px);
+            background-size: 4px 4px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* ピクセルボーダー */
+            box-shadow:
+                inset 2px 2px 0px #666,
+                inset -2px -2px 0px #111;
+        }
+
+        .menu-item:hover {
+            color: #FFFF00;
+            background:
+                /* ホバー時のドット絵パターン */
+                repeating-linear-gradient(0deg,
+                    #FF0000 0px, #FF0000 2px,
+                    #CC0000 2px, #CC0000 4px),
+                repeating-linear-gradient(90deg,
+                    #FF0000 0px, #FF0000 2px,
+                    #CC0000 2px, #CC0000 4px);
+            background-size: 4px 4px;
+            transform: scale(1.05);
+            text-shadow: 2px 2px 0px #000, 0 0 8px #FFFF00;
+            box-shadow:
+                inset 2px 2px 0px #FF4444,
+                inset -2px -2px 0px #990000,
+                0 0 16px rgba(255, 255, 0, 0.5);
+            border-color: #FFFF00;
+        }
+
+        .menu-item:active {
+            transform: scale(0.95);
+            box-shadow:
+                inset 4px 4px 0px #990000,
+                inset -1px -1px 0px #FF4444;
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 20px;
+            color: white;
+            font-size: 0.7rem;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        /* 完璧なドット絵コイン */
+        .particle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+            animation: coinSparkle 1.5s ease-out forwards;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 完璧なマリオのコイン */
+            background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect x='2' y='0' width='12' height='2' fill='%23FFD700'/%3E%3Crect x='0' y='2' width='16' height='12' fill='%23FFFF00'/%3E%3Crect x='2' y='14' width='12' height='2' fill='%23FFD700'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23FFA500'/%3E%3Crect x='6' y='6' width='4' height='4' fill='%23FF8C00'/%3E%3Crect x='2' y='2' width='2' height='12' fill='%23FFD700'/%3E%3Crect x='12' y='2' width='2' height='12' fill='%23CC8800'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes coinSparkle {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg) translateY(0);
+            }
+
+            25% {
+                transform: scale(1.2) rotate(90deg) translateY(-20px);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.4) rotate(180deg) translateY(-40px);
+            }
+
+            75% {
+                transform: scale(1.2) rotate(270deg) translateY(-60px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8) rotate(360deg) translateY(-80px);
+            }
+        }
+
+        /* 完璧なドット絵星 */
+        .star-particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            pointer-events: none;
+            animation: starSparkle 1.2s ease-out forwards;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 完璧なマリオの星 */
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect x='4' y='0' width='4' height='2' fill='%23FFFF00'/%3E%3Crect x='2' y='2' width='8' height='2' fill='%23FFFF00'/%3E%3Crect x='0' y='4' width='12' height='4' fill='%23FFFF00'/%3E%3Crect x='2' y='8' width='8' height='2' fill='%23FFFF00'/%3E%3Crect x='4' y='10' width='4' height='2' fill='%23FFFF00'/%3E%3Crect x='5' y='1' width='2' height='10' fill='%23FFD700'/%3E%3Crect x='1' y='5' width='10' height='2' fill='%23FFD700'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes starSparkle {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5) rotate(360deg) translateY(-30px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.5) rotate(720deg) translateY(-60px);
+            }
+        }
+
+        /* 1UPキノコパーティクル */
+        .mushroom-particle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+            animation: mushroomFloat 2s ease-out forwards;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            /* 1UPキノコ */
+            background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cg%3E%3Crect x='2' y='0' width='12' height='8' fill='%2300FF00'/%3E%3Crect x='0' y='2' width='16' height='4' fill='%2300FF00'/%3E%3Crect x='4' y='8' width='8' height='8' fill='%23FFEEAA'/%3E%3Crect x='6' y='10' width='4' height='4' fill='%23FFDDAA'/%3E%3Crect x='4' y='2' width='2' height='2' fill='%23FFFFFF'/%3E%3Crect x='10' y='2' width='2' height='2' fill='%23FFFFFF'/%3E%3Crect x='6' y='4' width='4' height='2' fill='%23008800'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        @keyframes mushroomFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.2);
+            }
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .character {
+                width: 150px;
+                height: 150px;
+            }
+
+            .menu {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 雲の背景 -->
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+    <!-- 背景の山と城 -->
+    <div class="mountain mountain1"></div>
+    <div class="mountain mountain2"></div>
+    <div class="castle"></div>
+
+    <!-- 完璧なドット絵ブロック -->
+    <div class="brick-block block1"></div>
+    <div class="brick-block block2"></div>
+    <div class="brick-block block3"></div>
+    <div class="brick-block block4"></div>
+    <div class="brick-block block5"></div>
+    <div class="brick-block block6"></div>
+    <div class="brick-block block7"></div>
+    <div class="brick-block block8"></div>
+    <div class="brick-block block9"></div>
+    <div class="brick-block block10"></div>
+
+    <!-- 特殊ブロック -->
+    <div class="question-block question1"></div>
+    <div class="question-block question2"></div>
+    <div class="coin-block coin1"></div>
+
+    <!-- ファイアフラワー -->
+    <div class="fire-flower flower1"></div>
+    <div class="fire-flower flower2"></div>
+
+    <!-- パイプ -->
+    <div class="pipe"></div>
+
+    <!-- 地面のパターン -->
+    <div class="ground-pattern"></div>
+
+    <div class="container">
+        <h1 class="title">MANAVIM</h1>
+
+        <div class="character" id="character">
+            <img src="public/manaby-jump2.png" alt="Manaby Character">
+        </div>
+
+        <div class="menu">
+            <div class="menu-item" onclick="startGame()">START GAME</div>
+            <div class="menu-item" onclick="showOptions()">OPTIONS</div>
+            <div class="menu-item" onclick="showCredits()">CREDITS</div>
+        </div>
+
+        <div class="copyright">© 2025 MANAVIM GAME</div>
+    </div>
+
+    <script>
+        const character = document.getElementById('character');
+        let isJumping = false;
+
+        // キャラクタークリック時のジャンプアニメーション
+        character.addEventListener('click', function () {
+            if (!isJumping) {
+                isJumping = true;
+                character.classList.add('jumping');
+
+                // パーティクル効果を追加
+                createParticles(character);
+
+                // ジャンプ音をシミュレート（実際の音は追加できませんが、視覚効果で表現）
+                setTimeout(() => {
+                    character.classList.remove('jumping');
+                    isJumping = false;
+                }, 600);
+            }
+        });
+
+        // パーティクル効果の作成 
+        function createParticles(element) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                const rand = Math.random();
+
+                // より多様なパーティクル
+                if (rand > 0.7) {
+                    particle.className = 'mushroom-particle';
+                } else if (rand > 0.4) {
+                    particle.className = 'particle';
+                } else {
+                    particle.className = 'star-particle';
+                }
+
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                particle.style.left = centerX + Math.random() * 80 - 40 + 'px';
+                particle.style.top = centerY + Math.random() * 80 - 40 + 'px';
+
+                document.body.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 2000);
+            }
+        }
+
+        // メニュー機能
+        function startGame() {
+            // スタート時のエフェクト
+            createMenuEffect();
+            setTimeout(() => {
+                alert('ゲームスタート！🎮\n\nWorld 1-1\nMANABY\'S ADVENTURE');
+            }, 500);
+        }
+
+        function showOptions() {
+            createMenuEffect();
+            setTimeout(() => {
+                alert('オプション画面 ⚙️\n\n音量: ████████░░ 80%\n効果音: ████████░░ 80%\n難易度: NORMAL');
+            }, 300);
+        }
+
+        function showCredits() {
+            createMenuEffect();
+            setTimeout(() => {
+                alert('クレジット:\n\n制作: MANAVIM TEAM\nキャラクターデザイン: AI\n音楽: チップチューン 🎵\nSpecial Thanks: Nintendo\n\n© 2025 MANAVIM GAME');
+            }, 300);
+        }
+
+        // メニュー選択時のエフェクト
+        function createMenuEffect() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const effect = document.createElement('div');
+                    effect.className = 'star-particle';
+                    effect.style.left = (window.innerWidth / 2 + Math.random() * 100 - 50) + 'px';
+                    effect.style.top = (window.innerHeight / 2 + Math.random() * 100 - 50) + 'px';
+                    document.body.appendChild(effect);
+
+                    setTimeout(() => effect.remove(), 1200);
+                }, i * 100);
+            }
+        }
+
+        // キーボード操作
+        document.addEventListener('keydown', function (event) {
+            if (event.code === 'Space' || event.code === 'Enter') {
+                event.preventDefault();
+                character.click();
+            }
+        });
+
+        // 完璧なドット絵雲を動的に生成
+        function createClouds() {
+            const cloudPatterns = [
+                "data:image/svg+xml,%3Csvg width='48' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='12' y='6' width='24' height='6'/%3E%3Crect x='6' y='10' width='36' height='4'/%3E%3Crect x='8' y='14' width='32' height='4'/%3E%3Crect x='16' y='2' width='6' height='4'/%3E%3Crect x='26' y='2' width='6' height='4'/%3E%3C/g%3E%3C/svg%3E",
+                "data:image/svg+xml,%3Csvg width='56' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='14' y='8' width='28' height='6'/%3E%3Crect x='8' y='12' width='40' height='4'/%3E%3Crect x='10' y='16' width='36' height='4'/%3E%3Crect x='18' y='4' width='8' height='4'/%3E%3Crect x='30' y='4' width='8' height='4'/%3E%3C/g%3E%3C/svg%3E",
+                "data:image/svg+xml,%3Csvg width='40' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='white'%3E%3Crect x='10' y='5' width='20' height='5'/%3E%3Crect x='5' y='8' width='30' height='4'/%3E%3Crect x='7' y='12' width='26' height='3'/%3E%3Crect x='14' y='2' width='5' height='3'/%3E%3Crect x='21' y='2' width='5' height='3'/%3E%3C/g%3E%3C/svg%3E"
+            ];
+
+            setInterval(() => {
+                if (Math.random() < 0.4) {
+                    const cloud = document.createElement('div');
+                    cloud.className = 'cloud';
+
+                    const pattern = cloudPatterns[Math.floor(Math.random() * cloudPatterns.length)];
+                    const size = 40 + Math.random() * 40;
+
+                    cloud.style.width = size + 'px';
+                    cloud.style.height = (size * 0.5) + 'px';
+                    cloud.style.top = (5 + Math.random() * 35) + '%';
+                    cloud.style.left = '-100px';
+                    cloud.style.backgroundImage = `url("${pattern}")`;
+                    cloud.style.backgroundSize = 'contain';
+                    cloud.style.backgroundRepeat = 'no-repeat';
+                    cloud.style.animation = 'float ' + (20 + Math.random() * 15) + 's linear';
+                    cloud.style.imageRendering = 'pixelated';
+
+                    document.body.appendChild(cloud);
+
+                    setTimeout(() => {
+                        cloud.remove();
+                    }, 35000);
+                }
+            }, 4000);
+        }
+
+        // ブロックのクリック機能
+        function addBlockInteractions() {
+            // クエスチョンブロックのクリック
+            document.querySelectorAll('.question-block').forEach(block => {
+                block.addEventListener('click', function () {
+                    // コイン出現エフェクト
+                    const coin = document.createElement('div');
+                    coin.className = 'particle';
+                    const rect = block.getBoundingClientRect();
+                    coin.style.left = rect.left + 'px';
+                    coin.style.top = rect.top + 'px';
+                    document.body.appendChild(coin);
+
+                    // ブロックを使用済みに変更
+                    block.style.backgroundImage = block.style.backgroundImage.replace(/%23FFAA00/g, '%23888888').replace(/%23FFCC00/g, '%23999999').replace(/%23FFDD00/g, '%23AAAAAA');
+                    block.style.animation = 'none';
+
+                    setTimeout(() => coin.remove(), 1500);
+                });
+            });
+
+            // レンガブロックのクリック
+            document.querySelectorAll('.brick-block').forEach(block => {
+                block.addEventListener('click', function () {
+                    // 破壊エフェクト
+                    for (let i = 0; i < 4; i++) {
+                        const fragment = document.createElement('div');
+                        fragment.style.position = 'absolute';
+                        fragment.style.width = '8px';
+                        fragment.style.height = '8px';
+                        fragment.style.backgroundColor = '#D2691E';
+                        fragment.style.imageRendering = 'pixelated';
+
+                        const rect = block.getBoundingClientRect();
+                        fragment.style.left = rect.left + Math.random() * 32 + 'px';
+                        fragment.style.top = rect.top + Math.random() * 32 + 'px';
+
+                        document.body.appendChild(fragment);
+
+                        // 破片のアニメーション
+                        fragment.animate([
+                            { transform: 'translateY(0px) rotate(0deg)', opacity: 1 },
+                            { transform: `translateY(-${50 + Math.random() * 50}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                        ], {
+                            duration: 800,
+                            easing: 'ease-out'
+                        }).onfinish = () => fragment.remove();
+                    }
+
+                    // ブロックを非表示
+                    block.style.opacity = '0';
+                    setTimeout(() => {
+                        block.style.opacity = '1';
+                    }, 3000);
+                });
+            });
+        }
+
+        // タイトル画面の初期化
+        document.addEventListener('DOMContentLoaded', function () {
+            createClouds();
+            addBlockInteractions();
+
+            // 初期アニメーション
+            setTimeout(() => {
+                character.style.animation = 'none';
+            }, 1000);
+        });
+
+        // ウィンドウサイズ変更時の対応
+        window.addEventListener('resize', function () {
+            // レスポンシブ対応の調整
+        });
+    </script>
+</body>
+
+</html>

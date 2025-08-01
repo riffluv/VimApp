@@ -354,15 +354,21 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 variant="ghost"
                 size="sm"
                 // Chakra UI v3 対応 - styleではなくpropsで設定
-                bg={showPreview
-                  ? DESIGN_SYSTEM.colors.bg.surface
-                  : DESIGN_SYSTEM.colors.bg.tertiary}
-                color={showPreview
-                  ? DESIGN_SYSTEM.colors.accent.primary
-                  : DESIGN_SYSTEM.colors.text.tertiary}
-                borderColor={showPreview
-                  ? DESIGN_SYSTEM.borders.colors.primary
-                  : DESIGN_SYSTEM.borders.colors.subtle}
+                bg={
+                  showPreview
+                    ? DESIGN_SYSTEM.colors.bg.surface
+                    : DESIGN_SYSTEM.colors.bg.tertiary
+                }
+                color={
+                  showPreview
+                    ? DESIGN_SYSTEM.colors.accent.primary
+                    : DESIGN_SYSTEM.colors.text.tertiary
+                }
+                borderColor={
+                  showPreview
+                    ? DESIGN_SYSTEM.borders.colors.primary
+                    : DESIGN_SYSTEM.borders.colors.subtle
+                }
                 borderWidth="1px"
                 // 確実にサイズを確保
                 minH="2.25rem"
@@ -404,15 +410,21 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 variant="ghost"
                 size="sm"
                 // Chakra UI v3 対応
-                bg={showCodePenMode
-                  ? DESIGN_SYSTEM.colors.bg.surface
-                  : DESIGN_SYSTEM.colors.bg.tertiary}
-                color={showCodePenMode
-                  ? DESIGN_SYSTEM.colors.accent.primary
-                  : DESIGN_SYSTEM.colors.text.tertiary}
-                borderColor={showCodePenMode
-                  ? DESIGN_SYSTEM.borders.colors.primary
-                  : DESIGN_SYSTEM.borders.colors.subtle}
+                bg={
+                  showCodePenMode
+                    ? DESIGN_SYSTEM.colors.bg.surface
+                    : DESIGN_SYSTEM.colors.bg.tertiary
+                }
+                color={
+                  showCodePenMode
+                    ? DESIGN_SYSTEM.colors.accent.primary
+                    : DESIGN_SYSTEM.colors.text.tertiary
+                }
+                borderColor={
+                  showCodePenMode
+                    ? DESIGN_SYSTEM.borders.colors.primary
+                    : DESIGN_SYSTEM.borders.colors.subtle
+                }
                 borderWidth="1px"
                 minH="2.25rem"
                 px="0.75rem"

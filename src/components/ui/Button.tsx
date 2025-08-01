@@ -56,50 +56,51 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getButtonStyles = () => {
       const sizeConfig = DESIGN_SYSTEM.components.button.sizes[size];
       const variantConfig = DESIGN_SYSTEM.components.button.variants[variant];
-      
+
       // paddingを適切に解析
       const getPaddingValues = (padding: string) => {
-        const parts = padding.split(' ');
+        const parts = padding.split(" ");
         return {
           py: parts[0] || "0.5rem",
           px: parts[1] || parts[0] || "0.75rem",
         };
       };
-      
+
       const paddingValues = getPaddingValues(sizeConfig.padding);
-      
+
       return {
         // 基本スタイル
         fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
         fontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
         borderRadius: DESIGN_SYSTEM.borders.radius.md,
         cursor: disabled || isLoading ? "not-allowed" : "pointer",
-        
+
         // サイズ設定（Chakra UI v3形式）
         fontSize: sizeConfig.fontSize,
         px: paddingValues.px,
         py: paddingValues.py,
         minH: sizeConfig.minHeight, // 最小高さを確実に設定
         lineHeight: sizeConfig.lineHeight,
-        
+
         // Variant設定
         bg: variantConfig.bg,
         color: variantConfig.color,
         borderWidth: variantConfig.border !== "none" ? "1px" : "0",
-        borderColor: variantConfig.border !== "none" ? "transparent" : undefined,
+        borderColor:
+          variantConfig.border !== "none" ? "transparent" : undefined,
         borderStyle: variantConfig.border !== "none" ? "solid" : undefined,
-        
+
         // ホバー効果
         _hover: disabled || isLoading ? {} : variantConfig._hover,
         _active: disabled || isLoading ? {} : variantConfig._active,
-        
+
         // パフォーマンス最適化
         isolation: "isolate",
         position: "relative",
         transform: "translateZ(0)",
         backfaceVisibility: "hidden",
         transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
-        
+
         // 無効状態
         opacity: disabled && !isLoading ? 0.6 : 1,
       };
@@ -166,15 +167,15 @@ export const EditorActionButton = forwardRef<
   HTMLButtonElement,
   ButtonProps // variant プロパティを許可
 >((props, ref) => (
-  <Button 
-    ref={ref} 
+  <Button
+    ref={ref}
     variant="ghost" // デフォルトvariant
     size="sm"
     // 確実にサイズを強制
     minH="2.25rem"
     px="0.75rem"
     py="0.5rem"
-    {...props} 
+    {...props}
   />
 ));
 
@@ -207,12 +208,16 @@ export const ModeTabButton = forwardRef<
     size="sm"
     // Chakra UI v3 対応 - styleではなくpropsで設定
     bg={isActive ? DESIGN_SYSTEM.colors.bg.surface : "transparent"}
-    color={isActive
-      ? DESIGN_SYSTEM.colors.accent.secondary
-      : DESIGN_SYSTEM.colors.text.muted}
-    borderColor={isActive
-      ? DESIGN_SYSTEM.borders.colors.secondary
-      : DESIGN_SYSTEM.borders.colors.subtle}
+    color={
+      isActive
+        ? DESIGN_SYSTEM.colors.accent.secondary
+        : DESIGN_SYSTEM.colors.text.muted
+    }
+    borderColor={
+      isActive
+        ? DESIGN_SYSTEM.borders.colors.secondary
+        : DESIGN_SYSTEM.borders.colors.subtle
+    }
     textTransform="uppercase"
     letterSpacing="0.05em"
     fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
