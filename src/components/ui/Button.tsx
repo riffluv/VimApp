@@ -56,8 +56,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getButtonStyles = () => {
       const sizeConfig = DESIGN_SYSTEM.components.button.sizes[size];
       const variantConfig = DESIGN_SYSTEM.components.button.variants[variant];
-
-      // paddingを適切に解析
       const getPaddingValues = (padding: string) => {
         const parts = padding.split(" ");
         return {
@@ -65,43 +63,38 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           px: parts[1] || parts[0] || "0.75rem",
         };
       };
-
       const paddingValues = getPaddingValues(sizeConfig.padding);
-
       return {
-        // 基本スタイル
         fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
         fontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
         borderRadius: DESIGN_SYSTEM.borders.radius.md,
         cursor: disabled || isLoading ? "not-allowed" : "pointer",
-
-        // サイズ設定（Chakra UI v3形式）
         fontSize: sizeConfig.fontSize,
         px: paddingValues.px,
         py: paddingValues.py,
-        minH: sizeConfig.minHeight, // 最小高さを確実に設定
+        minH: sizeConfig.minHeight,
         lineHeight: sizeConfig.lineHeight,
-
-        // Variant設定
         bg: variantConfig.bg,
         color: variantConfig.color,
         borderWidth: variantConfig.border !== "none" ? "1px" : "0",
-        borderColor:
-          variantConfig.border !== "none" ? "transparent" : undefined,
+        borderColor: variantConfig.border !== "none" ? "#d1bfa3" : undefined,
         borderStyle: variantConfig.border !== "none" ? "solid" : undefined,
-
-        // ホバー効果
-        _hover: disabled || isLoading ? {} : variantConfig._hover,
-        _active: disabled || isLoading ? {} : variantConfig._active,
-
-        // パフォーマンス最適化
+        // 控えめなhover/active
+        _hover:
+          disabled || isLoading
+            ? {}
+            : {
+                bg: "#f5e9d7",
+                color: variantConfig.color,
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              },
+        _active:
+          disabled || isLoading
+            ? {}
+            : { bg: "#e9dcc3", color: variantConfig.color },
         isolation: "isolate",
         position: "relative",
-        transform: "translateZ(0)",
-        backfaceVisibility: "hidden",
-        transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
-
-        // 無効状態
+        transition: "all 0.15s cubic-bezier(0.4,0,0.2,1)",
         opacity: disabled && !isLoading ? 0.6 : 1,
       };
     };
@@ -169,57 +162,22 @@ export const EditorActionButton = forwardRef<
 >((props, ref) => (
   <Button
     ref={ref}
-    variant="ghost" // デフォルトvariant
+    variant="ghost"
     size="sm"
-    // 確実にサイズを強制
     minH="2.25rem"
     px="0.75rem"
     py="0.5rem"
-    // 2025年レベルの3D効果とマイクロインタラクション
     position="relative"
-    isolation="isolate"
-    transform="translateZ(0)" // GPU最適化
-    willChange="transform, box-shadow"
-    transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-    boxShadow="0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)"
-    bg="rgba(255, 255, 255, 0.8)"
-    backdropFilter="blur(10px)"
-    border="1px solid"
-    borderColor="rgba(255, 255, 255, 0.2)"
-    color="gray.700"
+    borderColor="#d1bfa3"
     fontWeight="500"
     fontSize="sm"
     letterSpacing="0.01em"
     _hover={{
-      transform: "translateY(-2px) scale(1.02) translateZ(0)",
-      boxShadow:
-        "0 8px 25px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(255, 152, 0, 0.15)",
-      bg: "rgba(255, 152, 0, 0.08)",
-      borderColor: "rgba(255, 152, 0, 0.3)",
-      color: "orange.600",
+      bg: "#f5e9d7",
+      color: "#a67c52",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
     }}
-    _active={{
-      transform: "translateY(1px) scale(0.95) translateZ(0)", // より強いプレス効果
-      boxShadow:
-        "0 1px 4px rgba(0, 0, 0, 0.2), inset 0 3px 6px rgba(255, 152, 0, 0.15)",
-      bg: "rgba(255, 152, 0, 0.15)",
-      transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)", // 素早いレスポンス
-    }}
-    _focus={{
-      outline: "none",
-      boxShadow:
-        "0 0 0 3px rgba(255, 152, 0, 0.3), 0 8px 25px rgba(0, 0, 0, 0.12)",
-    }}
-    css={{
-      "@supports (backdrop-filter: blur(10px))": {
-        backdropFilter: "blur(10px)",
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        transition: "none",
-        transform: "none",
-        willChange: "auto",
-      },
-    }}
+    _active={{ bg: "#e9dcc3", color: "#a67c52" }}
     {...props}
   />
 ));
@@ -251,94 +209,21 @@ export const ModeTabButton = forwardRef<
     ref={ref}
     variant="ghost"
     size="sm"
-    // Chakra UI v3 対応 - styleではなくpropsで設定
-    bg={isActive ? DESIGN_SYSTEM.colors.bg.surface : "transparent"}
-    color={
-      isActive
-        ? DESIGN_SYSTEM.colors.accent.secondary
-        : DESIGN_SYSTEM.colors.text.muted
-    }
-    borderColor={
-      isActive
-        ? DESIGN_SYSTEM.borders.colors.secondary
-        : DESIGN_SYSTEM.borders.colors.subtle
-    }
+    bg={isActive ? "#f5e9d7" : "transparent"}
+    color={isActive ? "#a67c52" : "#b0a18f"}
+    borderColor={isActive ? "#d1bfa3" : "#e5e0d6"}
     textTransform="uppercase"
     letterSpacing="0.05em"
     fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
     fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
     fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
     position="relative"
-    isolation="isolate"
-    // 2025年レベルの3D効果とGPU最適化
-    transform="translateZ(0)"
-    willChange="transform, box-shadow"
-    transition="all 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
-    // サイズ保証 - 高さを他のボタンと統一
-    minH="2rem" // 統一感のために2remに調整
+    minH="2rem"
     maxH="2rem"
-    px="0.75rem" // パディングを少し増加
-    py="0.25rem" // 縦パディングを削減
-    // 深度感のある影
-    boxShadow={
-      isActive
-        ? "0 4px 12px rgba(255, 152, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)"
-        : "0 1px 3px rgba(0, 0, 0, 0.05)"
-    }
-    backdropFilter="blur(8px)"
-    border="1px solid"
-    borderRadius="md"
-    _hover={{
-      backgroundColor: DESIGN_SYSTEM.colors.bg.surface,
-      color: isActive
-        ? DESIGN_SYSTEM.colors.accent.primary
-        : DESIGN_SYSTEM.colors.accent.secondary,
-      borderColor: isActive
-        ? DESIGN_SYSTEM.borders.colors.primary
-        : DESIGN_SYSTEM.borders.colors.secondary,
-      transform: "translateY(-3px) scale(1.05) translateZ(0)",
-      boxShadow:
-        "0 8px 20px rgba(255, 152, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.15)",
-    }}
-    _active={{
-      transform: "translateY(0px) scale(0.95) translateZ(0)", // より強いプレス効果
-      boxShadow:
-        "0 1px 4px rgba(255, 152, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15)",
-      transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)", // 素早いレスポンス
-    }}
-    _focus={{
-      outline: "none",
-      boxShadow:
-        "0 0 0 3px rgba(255, 152, 0, 0.3), 0 8px 20px rgba(255, 152, 0, 0.2)",
-    }}
-    // アクティブ状態の下線（3D効果付き）
-    _after={
-      isActive
-        ? {
-            content: '""',
-            position: "absolute",
-            bottom: "-1px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "60%",
-            height: "3px",
-            backgroundColor: DESIGN_SYSTEM.colors.accent.secondary,
-            borderRadius: "2px",
-            boxShadow: "0 2px 6px rgba(255, 152, 0, 0.4)",
-            transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-          }
-        : undefined
-    }
-    css={{
-      "@supports (backdrop-filter: blur(8px))": {
-        backdropFilter: "blur(8px)",
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        transition: "none",
-        transform: "none",
-        willChange: "auto",
-      },
-    }}
+    px="0.75rem"
+    py="0.25rem"
+    _hover={{ bg: "#f5e9d7", color: "#a67c52" }}
+    _active={{ bg: "#e9dcc3", color: "#a67c52" }}
     {...props}
   >
     {children}
