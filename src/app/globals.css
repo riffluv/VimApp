@@ -407,7 +407,6 @@
     button:hover,
     [role="button"]:hover {
       cursor: pointer;
-      /* Only use compositor-friendly properties */
       transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -415,11 +414,7 @@
 
   /* Touch Device Optimization */
   @media (hover: none) and (pointer: coarse) {
-    button,
-    [role="button"] {
-      min-height: 44px;
-      min-width: 44px;
-    }
+    /* コンポーネントレベルで管理するため、globals.cssでの指定を削除 */
   }
 
   /* Reduced Motion Support */
@@ -441,22 +436,26 @@
 
   /* Force CSS Isolation for Interactive Components */
   .chakra-button,
-  .chakra-tooltip,
-  [data-theme] button {
+  .chakra-tooltip {
     isolation: isolate;
     position: relative;
     z-index: auto;
   }
 
-  /* Prevent Layout Thrashing in Hover States */
-  .chakra-button:hover,
-  [data-theme] button:hover {
-    /* Use only compositor-friendly properties */
-    transform: translateY(-1px);
-    /* Ensure isolation */
-    isolation: isolate;
-    /* Contain layout changes */
-    contain: layout style;
+  /* Performance optimized hover */
+  .chakra-button:hover {
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+  }
+
+  /* Spinner animation for loading buttons */
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 

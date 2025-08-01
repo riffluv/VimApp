@@ -260,20 +260,29 @@ export const COMPONENT_STYLES = {
     },
 
     sizes: {
+      xs: {
+        fontSize: TYPOGRAPHY.fontSize.xs,
+        padding: "0.375rem 0.5rem",
+        minHeight: "1.75rem", // 28px - 最小タッチサイズ確保
+        lineHeight: "1.2",
+      },
       sm: {
         fontSize: TYPOGRAPHY.fontSize.sm,
         padding: "0.5rem 0.75rem",
-        minHeight: "2rem",
+        minHeight: "2.25rem", // 36px - モバイル対応
+        lineHeight: "1.3",
       },
       md: {
         fontSize: TYPOGRAPHY.fontSize.base,
         padding: "0.75rem 1rem",
-        minHeight: "2.5rem",
+        minHeight: "2.75rem", // 44px - アクセシビリティ準拠
+        lineHeight: "1.4",
       },
       lg: {
         fontSize: TYPOGRAPHY.fontSize.lg,
         padding: "1rem 1.5rem",
-        minHeight: "3rem",
+        minHeight: "3.25rem", // 52px - 大型ボタン
+        lineHeight: "1.5",
       },
     },
 
@@ -281,18 +290,31 @@ export const COMPONENT_STYLES = {
       solid: {
         bg: COLORS.accent.primary,
         color: COLORS.text.primary,
+        border: "none",
         _hover: {
           bg: COLORS.accent.secondary,
-          transform: "translateY(-1px)", // Compositor-only
+          transform: "translateY(-1px) translateZ(0)", // GPU最適化
+          boxShadow: "0 4px 12px rgba(232, 131, 58, 0.15)",
+        },
+        _active: {
+          transform: "translateY(0) translateZ(0)",
+          bg: COLORS.accent.tertiary,
         },
       },
       ghost: {
         bg: "transparent",
         color: COLORS.text.secondary,
+        border: `${BORDERS.width.thin} ${BORDERS.style.solid} transparent`,
         _hover: {
           bg: COLORS.interactive.hover,
           color: COLORS.text.primary,
-          transform: "translateY(-1px)", // Compositor-only
+          borderColor: BORDERS.colors.subtle,
+          transform: "translateY(-1px) translateZ(0)", // GPU最適化
+          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.1)",
+        },
+        _active: {
+          transform: "translateY(0) translateZ(0)",
+          bg: COLORS.interactive.active,
         },
       },
       outline: {
@@ -301,7 +323,33 @@ export const COMPONENT_STYLES = {
         border: `${BORDERS.width.thin} ${BORDERS.style.solid} ${COLORS.accent.primary}`,
         _hover: {
           bg: COLORS.interactive.hover,
-          transform: "translateY(-1px)", // Compositor-only
+          borderColor: COLORS.accent.secondary,
+          transform: "translateY(-1px) translateZ(0)", // GPU最適化
+          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.1)",
+        },
+        _active: {
+          transform: "translateY(0) translateZ(0)",
+          bg: COLORS.interactive.active,
+        },
+      },
+      // 新しい専用variant: エディタボタン用
+      editorAction: {
+        bg: COLORS.bg.tertiary,
+        color: COLORS.text.tertiary,
+        border: `${BORDERS.width.thin} ${BORDERS.style.solid} ${BORDERS.colors.subtle}`,
+        minHeight: "2.25rem",
+        padding: "0.5rem 0.75rem",
+        fontSize: TYPOGRAPHY.fontSize.xs,
+        _hover: {
+          bg: COLORS.bg.surface,
+          color: COLORS.accent.primary,
+          borderColor: BORDERS.colors.primary,
+          transform: "translateY(-1px) translateZ(0)",
+          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.15)",
+        },
+        _active: {
+          transform: "translateY(0) translateZ(0)",
+          bg: COLORS.interactive.active,
         },
       },
     },
@@ -393,13 +441,14 @@ export const CONTAINER_QUERIES = {
 } as const;
 
 // =============================================================================
-// ACCESSIBILITY - WCAG Compliance
+// ACCESSIBILITY - WCAG Compliance + Touch Target Optimization
 // =============================================================================
 export const ACCESSIBILITY = {
-  // Minimum touch target sizes (iOS/Android HIG)
+  // Minimum touch target sizes (iOS/Android HIG + WCAG AAA)
   touchTarget: {
-    minSize: "44px",
-    comfortable: "48px",
+    minSize: "44px", // WCAG AAA minimum
+    comfortable: "48px", // iOS HIG recommendation
+    spacious: "56px", // Material Design 3
   },
 
   // Focus indicators
@@ -414,6 +463,12 @@ export const ACCESSIBILITY = {
     normal: 4.5, // Normal text
     large: 3, // Large text (18pt+ or 14pt+ bold)
     ui: 3, // UI components
+  },
+
+  // Reduced motion support
+  reducedMotion: {
+    prefersReducedMotion: "(prefers-reduced-motion: reduce)",
+    fastTransition: "0.01ms",
   },
 } as const;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,6 +9,11 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
+import {
+  EditorActionButton,
+  ModeTabButton,
+  SecondaryButton,
+} from "./ui/Button";
 
 import { DESIGN_SYSTEM, EDITOR_CONFIG, VIM_MODE_INFO } from "@/constants";
 import {
@@ -26,130 +31,6 @@ const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
 const MotionText = motion.create(Text);
-
-// パフォーマンス最適化ボタンスタイル（2025年製品化レベル - Compositor-only Properties）
-const getButtonBaseStyle = (isActive = false) => ({
-  size: "sm" as const,
-  variant: "ghost" as const,
-  bg: isActive
-    ? DESIGN_SYSTEM.colors.bg.surface
-    : DESIGN_SYSTEM.colors.bg.tertiary,
-  color: isActive
-    ? DESIGN_SYSTEM.colors.accent.primary
-    : DESIGN_SYSTEM.colors.text.tertiary,
-  borderWidth: "1px",
-  borderColor: isActive
-    ? DESIGN_SYSTEM.borders.colors.primary
-    : DESIGN_SYSTEM.borders.colors.subtle,
-  fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
-  fontWeight: DESIGN_SYSTEM.typography.fontWeight.semibold,
-  px: DESIGN_SYSTEM.spacing["3"],
-  transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
-  fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
-  // 2025年最新：CSS Isolation + GPU最適化
-  isolation: "isolate",
-  transform: "translateZ(0)",
-  backfaceVisibility: "hidden",
-  willChange: "transform, opacity, background-color",
-  // Container Query対応
-  containerType: "inline-size",
-  // パフォーマンス最適化：レイアウトスラッシング完全回避
-  contain: "layout style paint",
-});
-
-const getButtonHoverStyle = () => ({
-  bg: DESIGN_SYSTEM.colors.bg.surface,
-  color: DESIGN_SYSTEM.colors.accent.primary,
-  borderColor: DESIGN_SYSTEM.borders.colors.primary,
-  // 2025年最新：Compositor-only properties + CSS Isolation
-  transform: "translateY(-1px) translateZ(0)",
-  boxShadow: DESIGN_SYSTEM.shadows.glass.medium,
-  isolation: "isolate",
-  zIndex: 10,
-  // Container Query内でのスケール調整
-  "@container (width >= 768px)": {
-    transform: "translateY(-2px) scale(1.02) translateZ(0)",
-  },
-  // パフォーマンス最適化：スムーズなアニメーション
-  willChange: "transform, box-shadow",
-  backfaceVisibility: "hidden",
-});
-
-const getButtonActiveStyle = () => ({
-  transform: "translateY(0) translateZ(0)",
-  transition: `transform ${DESIGN_SYSTEM.animation.duration.fastest} ${DESIGN_SYSTEM.animation.easing.easeIn}`,
-});
-
-// モード切り替えタブ専用スタイル（2025年製品化レベル - パフォーマンス最適化）
-const getModeTabStyle = (isActive: boolean, modeType: string) => ({
-  size: "sm" as const,
-  variant: "ghost" as const,
-  bg: isActive ? DESIGN_SYSTEM.colors.bg.surface : "transparent",
-  color: isActive
-    ? DESIGN_SYSTEM.colors.accent.secondary
-    : DESIGN_SYSTEM.colors.text.muted,
-  borderWidth: "1px",
-  borderColor: isActive
-    ? DESIGN_SYSTEM.borders.colors.secondary
-    : DESIGN_SYSTEM.borders.colors.subtle,
-  borderRadius: DESIGN_SYSTEM.borders.radius.md,
-  fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
-  fontWeight: DESIGN_SYSTEM.typography.fontWeight.semibold,
-  px: DESIGN_SYSTEM.spacing["3"],
-  py: DESIGN_SYSTEM.spacing["1"],
-  h: "auto",
-  textTransform: "uppercase" as const,
-  letterSpacing: "wide",
-  fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
-  transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
-  position: "relative" as const,
-  // 2025年最新：完全なCSS最適化
-  isolation: "isolate",
-  transform: "translateZ(0)",
-  backfaceVisibility: "hidden",
-  willChange: "transform, opacity, background-color",
-  contain: "layout style paint",
-  // Container Query対応
-  containerType: "inline-size",
-  _before: isActive
-    ? {
-        content: '""',
-        position: "absolute",
-        bottom: "-1px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "60%",
-        height: "2px",
-        bg: DESIGN_SYSTEM.colors.accent.secondary,
-        borderRadius: "1px",
-        // GPU最適化された疑似要素
-        willChange: "width, opacity",
-        transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
-      }
-    : undefined,
-});
-
-const getModeTabHoverStyle = (isActive: boolean) => ({
-  bg: DESIGN_SYSTEM.colors.bg.surface,
-  color: isActive
-    ? DESIGN_SYSTEM.colors.accent.primary
-    : DESIGN_SYSTEM.colors.accent.secondary,
-  borderColor: isActive
-    ? DESIGN_SYSTEM.borders.colors.primary
-    : DESIGN_SYSTEM.borders.colors.secondary,
-  // 2025年最新：Compositor-only properties + Container Query対応
-  transform: "translateY(-1px) translateZ(0)",
-  isolation: "isolate",
-  zIndex: 10,
-  // Container Query内でのスケール調整
-  "@container (width >= 768px)": {
-    transform: "translateY(-1px) scale(1.05) translateZ(0)",
-  },
-  // パフォーマンス最適化
-  willChange: "transform, background-color, border-color",
-  backfaceVisibility: "hidden",
-  boxShadow: `0 2px 8px ${DESIGN_SYSTEM.colors.accent.primary}15, inset 0 1px 0 rgba(255,255,255,0.05)`,
-});
 
 /**
  * VimEditor - 2025年製品化レベルのコードエディタコンポーネント
@@ -282,24 +163,18 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
         >
           ページをリロードして再度お試しください。問題が続く場合は、ブラウザのキャッシュをクリアしてください。
         </Text>
-        <Button
-          mt={DESIGN_SYSTEM.spacing["3"]}
-          size="sm"
-          bg={DESIGN_SYSTEM.colors.bg.primary}
-          color={DESIGN_SYSTEM.colors.text.primary}
-          borderColor={DESIGN_SYSTEM.borders.colors.primary}
-          borderWidth="1px"
-          _hover={{
-            bg: DESIGN_SYSTEM.colors.bg.secondary,
-            transform: "translateY(-1px)",
-            boxShadow: DESIGN_SYSTEM.shadows.md,
-          }}
+        <SecondaryButton
           onClick={() => window.location.reload()}
-          // アクセシビリティ強化
           aria-label="ページをリロードしてエラーを解決する"
+          style={{
+            marginTop: DESIGN_SYSTEM.spacing["3"],
+            backgroundColor: DESIGN_SYSTEM.colors.bg.primary,
+            color: DESIGN_SYSTEM.colors.text.primary,
+            borderColor: DESIGN_SYSTEM.borders.colors.primary,
+          }}
         >
           リロード
-        </Button>
+        </SecondaryButton>
       </Box>
     );
   }
@@ -465,8 +340,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
-              <Button
-                {...getButtonBaseStyle(showPreview)}
+              <EditorActionButton
                 onClick={handlePreviewToggle}
                 disabled={showCodePenMode}
                 aria-label={
@@ -477,18 +351,26 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                     : "HTMLプレビューを表示する"
                 }
                 aria-pressed={showPreview}
-                _hover={getButtonHoverStyle()}
-                _active={getButtonActiveStyle()}
-                _disabled={{
-                  bg: "gray.700",
-                  color: "gray.500",
-                  borderColor: "gray.600",
-                  transform: "none",
-                  boxShadow: "none",
-                }}
+                variant="ghost"
+                size="sm"
+                // Chakra UI v3 対応 - styleではなくpropsで設定
+                bg={showPreview
+                  ? DESIGN_SYSTEM.colors.bg.surface
+                  : DESIGN_SYSTEM.colors.bg.tertiary}
+                color={showPreview
+                  ? DESIGN_SYSTEM.colors.accent.primary
+                  : DESIGN_SYSTEM.colors.text.tertiary}
+                borderColor={showPreview
+                  ? DESIGN_SYSTEM.borders.colors.primary
+                  : DESIGN_SYSTEM.borders.colors.subtle}
+                borderWidth="1px"
+                // 確実にサイズを確保
+                minH="2.25rem"
+                px="0.75rem"
+                py="0.5rem"
               >
                 Preview
-              </Button>
+              </EditorActionButton>
             </Tooltip>
             <Tooltip
               content={
@@ -510,8 +392,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
-              <Button
-                {...getButtonBaseStyle(showCodePenMode)}
+              <EditorActionButton
                 onClick={handleCodePenToggle}
                 aria-label={
                   showCodePenMode
@@ -519,12 +400,26 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                     : "エディタとプレビューを並べて表示する"
                 }
                 aria-pressed={showCodePenMode}
-                _hover={getButtonHoverStyle()}
-                _active={getButtonActiveStyle()}
+                leftIcon={<Icon as={FiBookOpen} />}
+                variant="ghost"
+                size="sm"
+                // Chakra UI v3 対応
+                bg={showCodePenMode
+                  ? DESIGN_SYSTEM.colors.bg.surface
+                  : DESIGN_SYSTEM.colors.bg.tertiary}
+                color={showCodePenMode
+                  ? DESIGN_SYSTEM.colors.accent.primary
+                  : DESIGN_SYSTEM.colors.text.tertiary}
+                borderColor={showCodePenMode
+                  ? DESIGN_SYSTEM.borders.colors.primary
+                  : DESIGN_SYSTEM.borders.colors.subtle}
+                borderWidth="1px"
+                minH="2.25rem"
+                px="0.75rem"
+                py="0.5rem"
               >
-                <Icon as={FiBookOpen} mr={DESIGN_SYSTEM.spacing["1"]} />
                 CodePen
-              </Button>
+              </EditorActionButton>
             </Tooltip>
             <Tooltip
               content="現在のコードをクリア"
@@ -542,16 +437,18 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
-              <Button
-                {...getButtonBaseStyle(false)}
+              <EditorActionButton
                 onClick={() => clearDoc(mode)}
                 aria-label="現在のエディタのコードをクリアする"
-                _hover={getButtonHoverStyle()}
-                _active={getButtonActiveStyle()}
-                px={DESIGN_SYSTEM.spacing["2"]}
+                leftIcon={<GiBroom />}
+                variant="ghost"
+                size="xs"
+                minH="2rem"
+                px="0.5rem"
+                py="0.375rem"
               >
-                <GiBroom />
-              </Button>
+                Clear
+              </EditorActionButton>
             </Tooltip>
             <Tooltip
               content="全てリセット（初期状態に戻す）"
@@ -569,21 +466,19 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 boxShadow: DESIGN_SYSTEM.shadows.lg,
               }}
             >
-              <Button
-                {...getButtonBaseStyle(false)}
-                color={DESIGN_SYSTEM.colors.accent.secondary}
+              <EditorActionButton
                 onClick={handleResetAllWithConfirm}
                 aria-label="全てのエディタをリセットして初期状態に戻す"
-                _hover={getButtonHoverStyle()}
-                _active={getButtonActiveStyle()}
+                leftIcon={<Icon as={FiRefreshCw} className="reset-icon" />}
+                variant="ghost"
+                size="sm"
+                color={DESIGN_SYSTEM.colors.accent.secondary}
+                minH="2.25rem"
+                px="0.75rem"
+                py="0.5rem"
               >
-                <Icon
-                  as={FiRefreshCw}
-                  mr={DESIGN_SYSTEM.spacing["1"]}
-                  className="reset-icon"
-                />
                 Reset
-              </Button>
+              </EditorActionButton>
             </Tooltip>
           </HStack>
         </MotionFlex>
@@ -605,15 +500,13 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           {/* 左側: HTML/CSS/JSタブ */}
           <HStack gap={DESIGN_SYSTEM.spacing["1"]}>
             {EDITOR_CONFIG.modes.map((modeType) => (
-              <Button
+              <ModeTabButton
                 key={modeType}
-                {...getModeTabStyle(mode === modeType, modeType)}
+                isActive={mode === modeType}
                 onClick={() => handleModeChangeWithStateSave(modeType)}
-                _hover={getModeTabHoverStyle(mode === modeType)}
-                _active={getButtonActiveStyle()}
               >
                 {modeType}
-              </Button>
+              </ModeTabButton>
             ))}
           </HStack>
 
