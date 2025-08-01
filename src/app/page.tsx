@@ -134,20 +134,6 @@ export default function Home() {
               }}
             >
               manaVimEditor
-              {/* 微細な装飾要素 - 人間的なクラフト感 */}
-              <Box
-                position="absolute"
-                top="-2px"
-                right="-4px"
-                width="4px"
-                height="4px"
-                borderRadius="full"
-                bg="secondary.400"
-                opacity={0.6}
-                transform="scale(0.8)"
-                transition="all 0.3s ease"
-                _groupHover={{ transform: "scale(1)", opacity: 1 }}
-              />
             </Heading>
             <Text
               fontSize={{ base: "xs", md: "sm" }}
