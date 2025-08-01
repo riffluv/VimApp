@@ -162,7 +162,7 @@ Button.displayName = "Button";
  * 使用頻度の高いパターンを事前定義
  */
 
-// エディタアクションボタン
+// エディタアクションボタン（2025年スタイルの3D効果付き）
 export const EditorActionButton = forwardRef<
   HTMLButtonElement,
   ButtonProps // variant プロパティを許可
@@ -175,6 +175,51 @@ export const EditorActionButton = forwardRef<
     minH="2.25rem"
     px="0.75rem"
     py="0.5rem"
+    // 2025年レベルの3D効果とマイクロインタラクション
+    position="relative"
+    isolation="isolate"
+    transform="translateZ(0)" // GPU最適化
+    willChange="transform, box-shadow"
+    transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+    boxShadow="0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)"
+    bg="rgba(255, 255, 255, 0.8)"
+    backdropFilter="blur(10px)"
+    border="1px solid"
+    borderColor="rgba(255, 255, 255, 0.2)"
+    color="gray.700"
+    fontWeight="500"
+    fontSize="sm"
+    letterSpacing="0.01em"
+    _hover={{
+      transform: "translateY(-2px) scale(1.02) translateZ(0)",
+      boxShadow:
+        "0 8px 25px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(255, 152, 0, 0.15)",
+      bg: "rgba(255, 152, 0, 0.08)",
+      borderColor: "rgba(255, 152, 0, 0.3)",
+      color: "orange.600",
+    }}
+    _active={{
+      transform: "translateY(1px) scale(0.95) translateZ(0)", // より強いプレス効果
+      boxShadow:
+        "0 1px 4px rgba(0, 0, 0, 0.2), inset 0 3px 6px rgba(255, 152, 0, 0.15)",
+      bg: "rgba(255, 152, 0, 0.15)",
+      transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)", // 素早いレスポンス
+    }}
+    _focus={{
+      outline: "none",
+      boxShadow:
+        "0 0 0 3px rgba(255, 152, 0, 0.3), 0 8px 25px rgba(0, 0, 0, 0.12)",
+    }}
+    css={{
+      "@supports (backdrop-filter: blur(10px))": {
+        backdropFilter: "blur(10px)",
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        transition: "none",
+        transform: "none",
+        willChange: "auto",
+      },
+    }}
     {...props}
   />
 ));
@@ -197,7 +242,7 @@ export const SecondaryButton = forwardRef<
 
 SecondaryButton.displayName = "SecondaryButton";
 
-// モードタブボタン（特殊なスタイリング）
+// モードタブボタン（2025年レベルの3D効果付き特殊スタイリング）
 export const ModeTabButton = forwardRef<
   HTMLButtonElement,
   Omit<ButtonProps, "variant"> & { isActive: boolean }
@@ -224,10 +269,25 @@ export const ModeTabButton = forwardRef<
     fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
     fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
     position="relative"
-    // サイズ保証
-    minH="1.875rem"
-    px="0.625rem"
-    py="0.3125rem"
+    isolation="isolate"
+    // 2025年レベルの3D効果とGPU最適化
+    transform="translateZ(0)"
+    willChange="transform, box-shadow"
+    transition="all 0.25s cubic-bezier(0.4, 0, 0.2, 1)"
+    // サイズ保証 - 高さを他のボタンと統一
+    minH="2rem" // 統一感のために2remに調整
+    maxH="2rem"
+    px="0.75rem" // パディングを少し増加
+    py="0.25rem" // 縦パディングを削減
+    // 深度感のある影
+    boxShadow={
+      isActive
+        ? "0 4px 12px rgba(255, 152, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1)"
+        : "0 1px 3px rgba(0, 0, 0, 0.05)"
+    }
+    backdropFilter="blur(8px)"
+    border="1px solid"
+    borderRadius="md"
     _hover={{
       backgroundColor: DESIGN_SYSTEM.colors.bg.surface,
       color: isActive
@@ -236,9 +296,22 @@ export const ModeTabButton = forwardRef<
       borderColor: isActive
         ? DESIGN_SYSTEM.borders.colors.primary
         : DESIGN_SYSTEM.borders.colors.secondary,
-      transform: "translateY(-1px) translateZ(0)",
+      transform: "translateY(-3px) scale(1.05) translateZ(0)",
+      boxShadow:
+        "0 8px 20px rgba(255, 152, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.15)",
     }}
-    // アクティブ状態の下線
+    _active={{
+      transform: "translateY(0px) scale(0.95) translateZ(0)", // より強いプレス効果
+      boxShadow:
+        "0 1px 4px rgba(255, 152, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.15)",
+      transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)", // 素早いレスポンス
+    }}
+    _focus={{
+      outline: "none",
+      boxShadow:
+        "0 0 0 3px rgba(255, 152, 0, 0.3), 0 8px 20px rgba(255, 152, 0, 0.2)",
+    }}
+    // アクティブ状態の下線（3D効果付き）
     _after={
       isActive
         ? {
@@ -248,12 +321,24 @@ export const ModeTabButton = forwardRef<
             left: "50%",
             transform: "translateX(-50%)",
             width: "60%",
-            height: "2px",
+            height: "3px",
             backgroundColor: DESIGN_SYSTEM.colors.accent.secondary,
-            borderRadius: "1px",
+            borderRadius: "2px",
+            boxShadow: "0 2px 6px rgba(255, 152, 0, 0.4)",
+            transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
           }
         : undefined
     }
+    css={{
+      "@supports (backdrop-filter: blur(8px))": {
+        backdropFilter: "blur(8px)",
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        transition: "none",
+        transform: "none",
+        willChange: "auto",
+      },
+    }}
     {...props}
   >
     {children}

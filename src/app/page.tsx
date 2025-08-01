@@ -3,15 +3,7 @@
 import CheatSheet from "@/components/CheatSheet";
 import { Tooltip } from "@/components/Tooltip";
 import { DESIGN_SYSTEM } from "@/constants";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Image,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -59,26 +51,16 @@ export default function Home() {
       minH="100dvh" // 2025年最新: 動的ビューポート高度対応
       w="100%"
       position="relative"
-      // 2025年最新: Container Query + CSS Isolation
+      // 2025年最新CSS: カスタムプロパティとアニメーション
       css={{
         containerType: "inline-size",
         containerName: "app-main",
         isolation: "isolate",
         contain: "layout style paint",
-      }}
-      // GPU最適化背景
-      _before={{
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        bgGradient: `radial-gradient(ellipse at top, ${DESIGN_SYSTEM.colors.accent.primary}04 0%, transparent 50%)`,
-        pointerEvents: "none",
-        zIndex: 0,
-        willChange: "opacity",
-        transform: "translateZ(0)",
+        "@keyframes subtleFloat": {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-2px) rotate(0.5deg)" },
+        },
       }}
       // アクセシビリティ強化
       role="main"
@@ -94,7 +76,7 @@ export default function Home() {
         justify="space-between"
         px={{ base: 4, md: 6 }}
         py={{ base: 2, md: 3 }}
-        borderBottomWidth={1}
+        borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
         mb={{ base: 4, md: 6 }}
         gap={4}
@@ -102,24 +84,25 @@ export default function Home() {
         zIndex={1}
         minH={{ base: "60px", md: "70px" }}
         maxH={{ base: "60px", md: "70px" }}
-        // 2025年最新：CSS最適化
+        // 2025年最新：CSS最適化 + 人間らしいクラフト感
         isolation="isolate"
         containerType="inline-size"
         willChange="transform"
         transform="translateZ(0)"
+        // 微細な背景パターン
+        background={`
+          linear-gradient(135deg, 
+            rgba(255,255,255,0.02) 0%, 
+            transparent 50%, 
+            rgba(232,131,58,0.01) 100%
+          )
+        `}
+        // ヘッダー全体の微細なボックスシャドウ
+        boxShadow="0 1px 3px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04)"
+        backdropFilter="blur(8px)"
         // アクセシビリティ強化
         role="banner"
         aria-label="manaVimEditorのヘッダー"
-        _before={{
-          content: '""',
-          position: "absolute",
-          bottom: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "60%",
-          height: "1px",
-          bgGradient: `linear(to-r, transparent, ${DESIGN_SYSTEM.colors.accent.secondary}, transparent)`,
-        }}
       >
         <Flex align="center" gap={2}>
           <Image
@@ -129,7 +112,7 @@ export default function Home() {
             w="auto"
             objectFit="contain"
           />
-          <Box>
+          <Box position="relative">
             <Heading
               as="h1"
               fontSize={{ base: "lg", md: "xl" }}
@@ -137,16 +120,50 @@ export default function Home() {
               fontWeight="600"
               letterSpacing="tight"
               fontFamily="Inter"
-              textShadow="0 2px 4px rgba(0,0,0,0.4)"
+              position="relative"
+              // 人間らしいテキスト効果 - AIっぽくない微細なグロー
+              textShadow="0 0 20px rgba(232,131,58,0.15), 0 2px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.08)"
+              // 微細な3D効果
+              transform="perspective(1000px) rotateX(1deg)"
+              // ホバー時の微細なインタラクション
+              transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
+              _hover={{
+                transform: "perspective(1000px) rotateX(0deg) translateY(-1px)",
+                textShadow:
+                  "0 0 30px rgba(232,131,58,0.25), 0 4px 12px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.12)",
+              }}
             >
               manaVimEditor
+              {/* 微細な装飾要素 - 人間的なクラフト感 */}
+              <Box
+                position="absolute"
+                top="-2px"
+                right="-4px"
+                width="4px"
+                height="4px"
+                borderRadius="full"
+                bg="secondary.400"
+                opacity={0.6}
+                transform="scale(0.8)"
+                transition="all 0.3s ease"
+                _groupHover={{ transform: "scale(1)", opacity: 1 }}
+              />
             </Heading>
             <Text
               fontSize={{ base: "xs", md: "sm" }}
               color="gray.400"
-              mt={0}
+              mt={1}
               fontWeight="400"
               letterSpacing="wide"
+              // 微細なアニメーション効果
+              opacity={0.9}
+              transition="opacity 0.3s ease"
+              _hover={{ opacity: 1 }}
+              // 人間らしいテキストレンダリング
+              style={{
+                fontFeatureSettings: "'liga' 1, 'kern' 1",
+                textRendering: "optimizeLegibility",
+              }}
             >
               コードを書きながらVimを覚える実践的エディタ
             </Text>
@@ -162,23 +179,39 @@ export default function Home() {
             color="gray.300"
             fontSize="sm"
             fontWeight="500"
-            transition="all 0.2s ease"
+            borderRadius="8px"
+            px={3}
+            py={2}
+            position="relative"
+            overflow="hidden"
+            // 2025年モダンホバー効果
+            transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
             _hover={{
               color: "secondary.400",
               textDecoration: "none",
-              transform: "translateY(-1px)",
+              transform: "translateY(-2px) scale(1.02)",
+              bg: "rgba(255,255,255,0.05)",
+              boxShadow:
+                "0 8px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+            }}
+            _active={{
+              transform: "translateY(0) scale(0.98)",
             }}
             _focus={{ outline: "none" }}
-            _focusVisible={{ outline: "none" }}
-            px={2}
-            py={1}
-            borderRadius="md"
+            _focusVisible={{
+              outline: "2px solid rgba(232,131,58,0.6)",
+              outlineOffset: "2px",
+            }}
+            // GPU最適化
+            willChange="transform"
+            transform="translateZ(0)"
           >
             <FiGithub
               style={{
                 marginRight: "8px",
                 fontSize: "16px",
                 color: "inherit",
+                transition: "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
               }}
             />
             GitHub
@@ -192,23 +225,39 @@ export default function Home() {
             color="gray.300"
             fontSize="sm"
             fontWeight="500"
-            transition="all 0.2s ease"
+            borderRadius="8px"
+            px={3}
+            py={2}
+            position="relative"
+            overflow="hidden"
+            // 2025年モダンホバー効果
+            transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
             _hover={{
               color: "secondary.400",
               textDecoration: "none",
-              transform: "translateY(-1px)",
+              transform: "translateY(-2px) scale(1.02)",
+              bg: "rgba(255,255,255,0.05)",
+              boxShadow:
+                "0 8px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1)",
+            }}
+            _active={{
+              transform: "translateY(0) scale(0.98)",
             }}
             _focus={{ outline: "none" }}
-            _focusVisible={{ outline: "none" }}
-            px={2}
-            py={1}
-            borderRadius="md"
+            _focusVisible={{
+              outline: "2px solid rgba(232,131,58,0.6)",
+              outlineOffset: "2px",
+            }}
+            // GPU最適化
+            willChange="transform"
+            transform="translateZ(0)"
           >
             <FiExternalLink
               style={{
                 marginRight: "8px",
                 fontSize: "16px",
                 color: "inherit",
+                transition: "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
               }}
             />
             Vimチートシート
@@ -254,7 +303,8 @@ export default function Home() {
                 py: 2,
               }}
             >
-              <Button
+              <Box
+                as="button"
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
                 bg={
                   showCheatSheet
@@ -262,7 +312,7 @@ export default function Home() {
                     : "linear-gradient(135deg, rgba(45,55,72,0.8), rgba(26,32,44,0.6))"
                 }
                 color={showCheatSheet ? "orange.200" : "gray.300"}
-                borderRadius="12px"
+                borderRadius="16px" // より現代的な角丸
                 borderWidth="1px"
                 borderColor={
                   showCheatSheet
@@ -270,79 +320,98 @@ export default function Home() {
                     : "rgba(255,255,255,0.15)"
                 }
                 p={0}
-                width={{ base: "48px", md: "52px" }}
-                height={{ base: "48px", md: "52px" }}
-                minW={{ base: "48px", md: "52px" }}
-                backdropFilter="blur(10px)"
+                width={{ base: "52px", md: "56px" }} // 黄金比を意識したサイズ調整
+                height={{ base: "52px", md: "56px" }}
+                minW={{ base: "52px", md: "56px" }}
+                backdropFilter="blur(12px)" // より強力なブラー
                 position="relative"
+                cursor="pointer"
                 boxShadow={
                   showCheatSheet
-                    ? "0 4px 12px rgba(232,131,58,0.2), inset 0 1px 0 rgba(255,255,255,0.1)"
-                    : "0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)"
+                    ? "0 8px 24px rgba(232,131,58,0.25), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 20px rgba(232,131,58,0.1)"
+                    : "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 rgba(232,131,58,0)"
                 }
+                // 2025年モダンホバー効果
                 _hover={{
                   bg: showCheatSheet
-                    ? "linear-gradient(135deg, rgba(232,131,58,0.35), rgba(232,131,58,0.2))"
+                    ? "linear-gradient(135deg, rgba(232,131,58,0.4), rgba(232,131,58,0.25))"
                     : "linear-gradient(135deg, rgba(55,65,81,0.9), rgba(31,41,55,0.7))",
                   borderColor: showCheatSheet
-                    ? "rgba(232,131,58,0.5)"
+                    ? "rgba(232,131,58,0.6)"
                     : "rgba(255,255,255,0.25)",
-                  transform: "translateY(-2px) scale(1.02)",
+                  transform: "translateY(-3px) scale(1.05) rotateY(5deg)", // 3D効果
                   boxShadow: showCheatSheet
-                    ? "0 6px 20px rgba(232,131,58,0.25), inset 0 1px 0 rgba(255,255,255,0.15)"
-                    : "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12)",
+                    ? "0 12px 32px rgba(232,131,58,0.35), inset 0 2px 0 rgba(255,255,255,0.2), 0 0 40px rgba(232,131,58,0.2)"
+                    : "0 8px 24px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.12), 0 0 20px rgba(232,131,58,0.05)",
                 }}
                 _active={{
-                  transform: "translateY(0) scale(0.98)",
-                  transition: "transform 0.1s ease",
+                  transform: "translateY(-1px) scale(0.98) rotateY(0deg)",
+                  transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
                 _focus={{ outline: "none" }}
                 _focusVisible={{
-                  outline: "2px solid rgba(232,131,58,0.6)",
-                  outlineOffset: "2px",
+                  outline: "3px solid rgba(232,131,58,0.6)",
+                  outlineOffset: "3px",
                 }}
-                transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                // 2025年最新: GPU最適化とパフォーマンス向上
+                transition="all 0.4s cubic-bezier(0.23, 1, 0.32, 1)"
+                willChange="transform, box-shadow, background"
+                transform="perspective(1000px) translateZ(0)"
                 aria-label={
                   showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
                 }
+                // マウスムーブ時の微細な3D効果は必要に応じて追加可能
               >
-                <Box
-                  width={{ base: "24px", md: "28px" }}
-                  height={{ base: "24px", md: "28px" }}
-                  backgroundImage="url('/manabyicon.png')"
-                  backgroundSize="contain"
-                  backgroundRepeat="no-repeat"
-                  backgroundPosition="center"
-                  filter={
-                    showCheatSheet ? "none" : "grayscale(0.3) brightness(0.8)"
-                  }
-                  transition="all 0.2s ease"
-                  transform={showCheatSheet ? "scale(1)" : "scale(0.9)"}
-                />
-              </Button>
+                <Flex
+                  width="100%"
+                  height="100%"
+                  align="center"
+                  justify="center"
+                >
+                  <Box
+                    width={{ base: "28px", md: "32px" }} // 黄金比を意識したアイコンサイズ
+                    height={{ base: "28px", md: "32px" }}
+                    backgroundImage="url('/manabyicon.png')"
+                    backgroundSize="contain"
+                    backgroundRepeat="no-repeat"
+                    backgroundPosition="center"
+                    filter={
+                      showCheatSheet ? "none" : "grayscale(0.3) brightness(0.8)"
+                    }
+                    transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
+                    transform={showCheatSheet ? "scale(1)" : "scale(0.9)"}
+                    // 親ボタンのホバー時にアイコンも軽く回転
+                    _groupHover={{
+                      transform: showCheatSheet
+                        ? "scale(1.1) rotate(5deg)"
+                        : "scale(1) rotate(-5deg)",
+                    }}
+                  />
+                </Flex>
+              </Box>
             </Tooltip>
           </Flex>
         )}
 
-        {/* CheatSheet - 適切な比率とサイズ */}
+        {/* CheatSheet - 黄金比に基づく比率とサイズ */}
         <AnimatePresence>
           {!isCodePenMode && showCheatSheet && (
             <MotionBox
               key="cheatsheet"
               flex={{
                 base: "none",
-                md: "0 0 340px", // 少し広げる
-                lg: "0 0 380px", // lg時も調整
+                md: "0 0 361px", // 黄金比: 585px ÷ 1.618 ≈ 361px
+                lg: "0 0 397px", // 黄金比: 643px ÷ 1.618 ≈ 397px
               }}
               w={{
                 base: "100%",
-                md: "340px",
-                lg: "380px",
+                md: "361px", // 黄金比ベース
+                lg: "397px", // 黄金比ベース
               }}
               h={{
-                base: "min(600px, 70vh)", // モバイルでは画面の70%または600px
-                md: "min(700px, 75vh)", // タブレットでは画面の75%または700px
-                lg: "min(800px, 80vh)", // デスクトップでは画面の80%または800px
+                base: "min(600px, 70vh)", // モバイルは現状維持
+                md: "min(720px, 75vh)", // 黄金比: 1165px ÷ 1.618 ≈ 720px
+                lg: "min(794px, 80vh)", // 黄金比: 1285px ÷ 1.618 ≈ 794px
               }}
               mb={{ base: 4, md: 0 }}
               mr={{ base: 0, md: 4 }}
@@ -356,14 +425,14 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* VimEditor - 横幅制限を確実に */}
+        {/* VimEditor - 黄金比に基づく横幅制限を確実に */}
         <MotionBox
           flex="1 1 0"
           w="100%"
           h={{
             base: "min(600px, 70vh)", // CheatSheetと同じ高さ
-            md: "min(700px, 75vh)",
-            lg: "min(800px, 80vh)",
+            md: "min(720px, 75vh)", // 黄金比ベース
+            lg: "min(794px, 80vh)", // 黄金比ベース
           }}
           minW="0" // flexアイテムの最小幅を0に設定
           maxW={
@@ -371,8 +440,8 @@ export default function Home() {
               ? "100%"
               : {
                   base: "100%",
-                  md: "calc(100% - 370px)", // ボタン + CheatSheet + マージンを考慮
-                  lg: "calc(100% - 410px)",
+                  md: "calc(100% - 391px)", // ボタン + CheatSheet(361px) + マージン(30px)
+                  lg: "calc(100% - 427px)", // ボタン + CheatSheet(397px) + マージン(30px)
                 }
           }
           initial={{ opacity: 0, y: 20 }}
