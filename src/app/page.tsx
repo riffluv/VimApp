@@ -6,7 +6,7 @@ import { DESIGN_SYSTEM } from "@/constants";
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
 
 // 2025年最新：動的インポート + プリロード最適化
@@ -36,6 +36,7 @@ const MotionFlex = motion.create(Flex);
 export default function Home() {
   const [isCodePenMode, setIsCodePenMode] = useState(false);
   const [showCheatSheet, setShowCheatSheet] = useState(true);
+  const [isTogglePressed, setIsTogglePressed] = useState(false);
 
   const handleCodePenModeChange = (isCodePenMode: boolean) => {
     setIsCodePenMode(isCodePenMode);
@@ -44,6 +45,14 @@ export default function Home() {
   const handleCheatSheetToggle = (showCheatSheet: boolean) => {
     setShowCheatSheet(showCheatSheet);
   };
+
+  const handleToggleMouseDown = useCallback(() => {
+    setIsTogglePressed(true);
+  }, []);
+
+  const handleToggleMouseUp = useCallback(() => {
+    setIsTogglePressed(false);
+  }, []);
 
   return (
     <Box
@@ -125,13 +134,6 @@ export default function Home() {
               textShadow="0 0 20px rgba(232,131,58,0.15), 0 2px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.08)"
               // 微細な3D効果
               transform="perspective(1000px) rotateX(1deg)"
-              // ホバー時の微細なインタラクション
-              transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
-              _hover={{
-                transform: "perspective(1000px) rotateX(0deg) translateY(-1px)",
-                textShadow:
-                  "0 0 30px rgba(232,131,58,0.25), 0 4px 12px rgba(0,0,0,0.4), 0 2px 0 rgba(255,255,255,0.12)",
-              }}
             >
               manaVimEditor
             </Heading>
@@ -143,8 +145,6 @@ export default function Home() {
               letterSpacing="wide"
               // 微細なアニメーション効果
               opacity={0.9}
-              transition="opacity 0.3s ease"
-              _hover={{ opacity: 1 }}
               // 人間らしいテキストレンダリング
               style={{
                 fontFeatureSettings: "'liga' 1, 'kern' 1",
@@ -289,92 +289,66 @@ export default function Home() {
                 py: 2,
               }}
             >
-              <Box
-                as="button"
+              <button
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-                bg={
-                  showCheatSheet
+                onMouseDown={handleToggleMouseDown}
+                onMouseUp={handleToggleMouseUp}
+                onMouseLeave={handleToggleMouseUp}
+                style={{
+                  background: showCheatSheet
                     ? "linear-gradient(135deg, rgba(232,131,58,0.25), rgba(232,131,58,0.15))"
-                    : "linear-gradient(135deg, rgba(45,55,72,0.8), rgba(26,32,44,0.6))"
-                }
-                color={showCheatSheet ? "orange.200" : "gray.300"}
-                borderRadius="16px" // より現代的な角丸
-                borderWidth="1px"
-                borderColor={
-                  showCheatSheet
-                    ? "rgba(232,131,58,0.4)"
-                    : "rgba(255,255,255,0.15)"
-                }
-                p={0}
-                width={{ base: "52px", md: "56px" }} // 黄金比を意識したサイズ調整
-                height={{ base: "52px", md: "56px" }}
-                minW={{ base: "52px", md: "56px" }}
-                backdropFilter="blur(12px)" // より強力なブラー
-                position="relative"
-                cursor="pointer"
-                boxShadow={
-                  showCheatSheet
+                    : "linear-gradient(135deg, rgba(45,55,72,0.8), rgba(26,32,44,0.6))",
+                  color: showCheatSheet ? "#FED7AA" : "#CBD5E0",
+                  borderRadius: "16px",
+                  border: `1px solid ${
+                    showCheatSheet
+                      ? "rgba(232,131,58,0.4)"
+                      : "rgba(255,255,255,0.15)"
+                  }`,
+                  padding: "0",
+                  width: "56px",
+                  height: "56px",
+                  minWidth: "56px",
+                  backdropFilter: "blur(12px)",
+                  position: "relative",
+                  cursor: "pointer",
+                  boxShadow: isTogglePressed
+                    ? showCheatSheet
+                      ? "0 2px 8px rgba(232,131,58,0.3), inset 0 2px 4px rgba(0,0,0,0.2)"
+                      : "0 2px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(0,0,0,0.3)"
+                    : showCheatSheet
                     ? "0 8px 24px rgba(232,131,58,0.25), inset 0 1px 0 rgba(255,255,255,0.15), 0 0 20px rgba(232,131,58,0.1)"
-                    : "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 rgba(232,131,58,0)"
-                }
-                // 2025年モダンホバー効果
-                _hover={{
-                  bg: showCheatSheet
-                    ? "linear-gradient(135deg, rgba(232,131,58,0.4), rgba(232,131,58,0.25))"
-                    : "linear-gradient(135deg, rgba(55,65,81,0.9), rgba(31,41,55,0.7))",
-                  borderColor: showCheatSheet
-                    ? "rgba(232,131,58,0.6)"
-                    : "rgba(255,255,255,0.25)",
-                  transform: "translateY(-3px) scale(1.05) rotateY(5deg)", // 3D効果
-                  boxShadow: showCheatSheet
-                    ? "0 12px 32px rgba(232,131,58,0.35), inset 0 2px 0 rgba(255,255,255,0.2), 0 0 40px rgba(232,131,58,0.2)"
-                    : "0 8px 24px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.12), 0 0 20px rgba(232,131,58,0.05)",
+                    : "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 rgba(232,131,58,0)",
+                  transition: "all 0.08s cubic-bezier(0.4, 0, 0.2, 1)",
+                  willChange: "transform, box-shadow, background",
+                  transform: isTogglePressed
+                    ? "perspective(1000px) translateZ(0) translateY(2px) scale(0.95)"
+                    : "perspective(1000px) translateZ(0)",
+                  outline: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                _active={{
-                  transform: "translateY(-1px) scale(0.98) rotateY(0deg)",
-                  transition: "all 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
-                _focus={{ outline: "none" }}
-                _focusVisible={{
-                  outline: "3px solid rgba(232,131,58,0.6)",
-                  outlineOffset: "3px",
-                }}
-                // 2025年最新: GPU最適化とパフォーマンス向上
-                transition="all 0.4s cubic-bezier(0.23, 1, 0.32, 1)"
-                willChange="transform, box-shadow, background"
-                transform="perspective(1000px) translateZ(0)"
                 aria-label={
                   showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
                 }
-                // マウスムーブ時の微細な3D効果は必要に応じて追加可能
               >
-                <Flex
-                  width="100%"
-                  height="100%"
-                  align="center"
-                  justify="center"
-                >
-                  <Box
-                    width={{ base: "28px", md: "32px" }} // 黄金比を意識したアイコンサイズ
-                    height={{ base: "28px", md: "32px" }}
-                    backgroundImage="url('/manabyicon.png')"
-                    backgroundSize="contain"
-                    backgroundRepeat="no-repeat"
-                    backgroundPosition="center"
-                    filter={
-                      showCheatSheet ? "none" : "grayscale(0.3) brightness(0.8)"
-                    }
-                    transition="all 0.3s cubic-bezier(0.23, 1, 0.32, 1)"
-                    transform={showCheatSheet ? "scale(1)" : "scale(0.9)"}
-                    // 親ボタンのホバー時にアイコンも軽く回転
-                    _groupHover={{
-                      transform: showCheatSheet
-                        ? "scale(1.1) rotate(5deg)"
-                        : "scale(1) rotate(-5deg)",
-                    }}
-                  />
-                </Flex>
-              </Box>
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    backgroundImage: "url('/manabyicon.png')",
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    filter: showCheatSheet
+                      ? "none"
+                      : "grayscale(0.3) brightness(0.8)",
+                    transition: "all 0.3s cubic-bezier(0.23, 1, 0.32, 1)",
+                    transform: showCheatSheet ? "scale(1)" : "scale(0.9)",
+                  }}
+                />
+              </button>
             </Tooltip>
           </Flex>
         )}

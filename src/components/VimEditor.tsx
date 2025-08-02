@@ -28,6 +28,8 @@ import { generatePreviewHTML, getSandboxAttributes } from "@/utils/editor";
 const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
   ssr: false,
 });
+
+// Framer Motion components
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
 const MotionText = motion.create(Text);
@@ -351,29 +353,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                     : "HTMLプレビューを表示する"
                 }
                 aria-pressed={showPreview}
-                variant="ghost"
+                variant={showPreview ? "solid" : "outline"}
                 size="sm"
-                // Chakra UI v3 対応 - styleではなくpropsで設定
-                bg={
-                  showPreview
-                    ? DESIGN_SYSTEM.colors.bg.surface
-                    : DESIGN_SYSTEM.colors.bg.tertiary
-                }
-                color={
-                  showPreview
-                    ? DESIGN_SYSTEM.colors.accent.primary
-                    : DESIGN_SYSTEM.colors.text.tertiary
-                }
-                borderColor={
-                  showPreview
-                    ? DESIGN_SYSTEM.borders.colors.primary
-                    : DESIGN_SYSTEM.borders.colors.subtle
-                }
-                borderWidth="1px"
-                // 確実にサイズを確保
-                minH="2.25rem"
-                px="0.75rem"
-                py="0.5rem"
               >
                 Preview
               </EditorActionButton>
@@ -407,28 +388,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 }
                 aria-pressed={showCodePenMode}
                 leftIcon={<Icon as={FiBookOpen} />}
-                variant="ghost"
+                variant={showCodePenMode ? "solid" : "outline"}
                 size="sm"
-                // Chakra UI v3 対応
-                bg={
-                  showCodePenMode
-                    ? DESIGN_SYSTEM.colors.bg.surface
-                    : DESIGN_SYSTEM.colors.bg.tertiary
-                }
-                color={
-                  showCodePenMode
-                    ? DESIGN_SYSTEM.colors.accent.primary
-                    : DESIGN_SYSTEM.colors.text.tertiary
-                }
-                borderColor={
-                  showCodePenMode
-                    ? DESIGN_SYSTEM.borders.colors.primary
-                    : DESIGN_SYSTEM.borders.colors.subtle
-                }
-                borderWidth="1px"
-                minH="2.25rem"
-                px="0.75rem"
-                py="0.5rem"
               >
                 CodePen
               </EditorActionButton>
@@ -453,11 +414,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={() => clearDoc(mode)}
                 aria-label="現在のエディタのコードをクリアする"
                 leftIcon={<GiBroom />}
-                variant="ghost"
-                size="xs"
-                minH="2rem"
-                px="0.5rem"
-                py="0.375rem"
+                variant="outline"
+                size="sm"
               >
                 Clear
               </EditorActionButton>
@@ -482,12 +440,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={handleResetAllWithConfirm}
                 aria-label="全てのエディタをリセットして初期状態に戻す"
                 leftIcon={<Icon as={FiRefreshCw} className="reset-icon" />}
-                variant="ghost"
+                variant="solid"
                 size="sm"
-                color={DESIGN_SYSTEM.colors.accent.secondary}
-                minH="2.25rem"
-                px="0.75rem"
-                py="0.5rem"
               >
                 Reset
               </EditorActionButton>

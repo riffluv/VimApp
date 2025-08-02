@@ -120,16 +120,36 @@ export default function CheatSheet({}: CheatSheetProps) {
         zIndex={1}
         isolation="isolate"
         css={{
-          "&::-webkit-scrollbar": { width: "8px" },
+          "&::-webkit-scrollbar": { width: "12px" },
           "&::-webkit-scrollbar-track": {
-            background: DESIGN_SYSTEM.colors.bg.tertiary,
-            borderRadius: "4px",
-            border: `1px solid ${DESIGN_SYSTEM.borders.colors.subtle}`,
+            background: "#1a1a1e",
+            borderRadius: "6px",
+            border: "1px solid rgba(232, 131, 58, 0.15)",
+            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.3)",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: DESIGN_SYSTEM.colors.bg.secondary,
-            borderRadius: "4px",
-            border: `1px solid ${DESIGN_SYSTEM.borders.colors.primary}`,
+            background:
+              "linear-gradient(135deg, rgba(232, 131, 58, 0.8), rgba(232, 131, 58, 0.6))",
+            borderRadius: "6px",
+            border: "2px solid rgba(232, 131, 58, 0.4)",
+            boxShadow:
+              "0 2px 4px rgba(232, 131, 58, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+            transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background:
+              "linear-gradient(135deg, rgba(232, 131, 58, 1), rgba(232, 131, 58, 0.8))",
+            borderColor: "rgba(232, 131, 58, 0.6)",
+            boxShadow:
+              "0 4px 8px rgba(232, 131, 58, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 12px rgba(232, 131, 58, 0.3)",
+            transform: "scale(1.05)",
+          },
+          "&::-webkit-scrollbar-thumb:active": {
+            background:
+              "linear-gradient(135deg, rgba(232, 131, 58, 0.9), rgba(232, 131, 58, 0.7))",
+            transform: "scale(0.95)",
+            boxShadow:
+              "0 1px 2px rgba(232, 131, 58, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2)",
           },
         }}
       >

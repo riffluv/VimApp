@@ -100,6 +100,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         DESIGN_SYSTEM.components.button.sizes[
           size as keyof typeof DESIGN_SYSTEM.components.button.sizes
         ];
+      const variantConfig =
+        DESIGN_SYSTEM.components.button.variants[
+          variant as keyof typeof DESIGN_SYSTEM.components.button.variants
+        ];
 
       const getPaddingValues = (padding: string) => {
         const parts = padding.split(" ");
@@ -111,67 +115,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
       const paddingValues = getPaddingValues(sizeConfig.padding);
 
-      // 2025年プレミアムボタンデザイン - バリアント別高級スタイリング
-      let variantStyles = {};
-
-      switch (variant) {
-        case "solid":
-          variantStyles = {
-            background: isPressed
-              ? "linear-gradient(135deg, #d97434 0%, #c25d1c 100%)"
-              : "linear-gradient(135deg, #e8833a 0%, #ff6b35 100%)",
-            color: "#ffffff",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            boxShadow: isPressed
-              ? "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.15)"
-              : "0 4px 12px rgba(232, 131, 58, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-          };
-          break;
-
-        case "ghost":
-          variantStyles = {
-            background: isPressed
-              ? "rgba(232, 131, 58, 0.25)"
-              : "rgba(26, 32, 44, 0.85)",
-            color: "#e8833a",
-            border: "1px solid rgba(232, 131, 58, 0.3)",
-            boxShadow: isPressed
-              ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)"
-              : "0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
-          };
-          break;
-
-        case "outline":
-          variantStyles = {
-            background: isPressed
-              ? "rgba(232, 131, 58, 0.15)"
-              : "rgba(15, 15, 18, 0.9)",
-            color: "#e8833a",
-            border: "2px solid #e8833a",
-            boxShadow: isPressed
-              ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)"
-              : "0 0 0 1px rgba(232, 131, 58, 0.2), 0 2px 8px rgba(232, 131, 58, 0.15)",
-          };
-          break;
-
-        case "editorAction":
-          variantStyles = {
-            background: isPressed
-              ? "linear-gradient(135deg, rgba(232, 131, 58, 0.3) 0%, rgba(232, 131, 58, 0.2) 100%)"
-              : "linear-gradient(135deg, rgba(45, 55, 72, 0.95) 0%, rgba(26, 32, 44, 0.85) 100%)",
-            color: isPressed ? "#ffffff" : "#cbd5e0",
-            border: "1px solid rgba(255, 255, 255, 0.12)",
-            boxShadow: isPressed
-              ? "0 1px 3px rgba(0, 0, 0, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.15)"
-              : "0 3px 8px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-          };
-          break;
-      }
-
-      // 押し込み状態のトランスフォーム
+      // 押し込み状態のスタイル計算
       const pressedTransform =
         isPressed && !disabled && !isLoading
-          ? "translateY(1px) translateZ(0) scale(0.98)"
+          ? "translateY(1px) translateZ(0)"
+          : "translateZ(0)";
+
+      const pressedBoxShadow =
+        isPressed && !disabled && !isLoading
+          ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)"
+          : "boxShadow" in variantConfig
+          ? variantConfig.boxShadow
+          : "none";
+
+      // ホバー効果のための基本スタイル
+      const baseHoverTransform =
+        !isPressed && !disabled && !isLoading
+          ? "translateZ(0)"
           : "translateZ(0)";
 
       return {
@@ -185,8 +145,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         textDecoration: "none",
         userSelect: "none" as const,
         WebkitUserSelect: "none" as const,
-        fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
-        fontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
+        fontFamily: "inherit",
 
         // サイズ設定
         fontSize: sizeConfig.fontSize,
@@ -195,13 +154,25 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         lineHeight: sizeConfig.lineHeight,
         width: isFullWidth ? "100%" : "auto",
 
-        // バリアント設定適用
-        ...variantStyles,
-        borderRadius: "8px",
+        // バリアント設定
+        backgroundColor: variantConfig.bg,
+        color: variantConfig.color,
+        borderWidth: variantConfig.border !== "none" ? "1px" : "0",
+        borderColor:
+          variantConfig.border !== "none" &&
+          variantConfig.border.includes("solid")
+            ? variantConfig.border.split(" ")[3]
+            : "transparent",
+        borderStyle: variantConfig.border !== "none" ? "solid" : "none",
+        borderRadius: DESIGN_SYSTEM.borders.radius.md,
 
         // リアルタイム押し込み効果の適用
         transform: pressedTransform,
-        backdropFilter: "blur(8px)",
+        boxShadow: pressedBoxShadow,
+        backdropFilter:
+          "backdropFilter" in variantConfig
+            ? variantConfig.backdropFilter
+            : "none",
 
         // トランジション（押し込み感のため）
         transition: isPressed
@@ -211,11 +182,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         // GPU最適化
         backfaceVisibility: "hidden" as const,
         isolation: "isolate" as const,
-        willChange: "transform, box-shadow, background",
+        willChange: "transform, box-shadow",
 
         // 状態管理
-        opacity: disabled && !isLoading ? 0.5 : 1,
-        gap: DESIGN_SYSTEM.spacing["2"],
+        opacity: disabled && !isLoading ? 0.6 : 1,
+        gap: DESIGN_SYSTEM.spacing["1"],
 
         // カスタムスタイルを適用
         ...style,
@@ -224,56 +195,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     // ホバー効果をCSS-in-JSで実装
     const buttonStyles = getButtonStyles();
+    const variantConfig =
+      DESIGN_SYSTEM.components.button.variants[
+        variant as keyof typeof DESIGN_SYSTEM.components.button.variants
+      ];
 
-    const getHoverStyles = () => {
-      if (disabled || isLoading || isPressed) return {};
-
-      switch (variant) {
-        case "solid":
-          return {
-            background: "linear-gradient(135deg, #ff7a42 0%, #ff5722 100%)",
-            transform: "translateY(-2px) translateZ(0) scale(1.02)",
-            boxShadow:
-              "0 8px 20px rgba(232, 131, 58, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
-          };
-
-        case "ghost":
-          return {
-            background: "rgba(232, 131, 58, 0.2)",
-            color: "#ff7a42",
+    const hoverStyles =
+      !disabled && !isLoading && !isPressed
+        ? {
+            backgroundColor:
+              variant === "ghost" ? "rgba(255, 107, 53, 0.12)" : undefined,
             transform: "translateY(-1px) translateZ(0)",
             boxShadow:
-              "0 4px 12px rgba(232, 131, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-            borderColor: "rgba(232, 131, 58, 0.5)",
-          };
-
-        case "outline":
-          return {
-            background: "rgba(232, 131, 58, 0.1)",
-            color: "#ff7a42",
-            transform: "translateY(-1px) translateZ(0)",
-            boxShadow:
-              "0 0 0 2px rgba(232, 131, 58, 0.4), 0 4px 12px rgba(232, 131, 58, 0.25)",
-            borderColor: "#ff7a42",
-          };
-
-        case "editorAction":
-          return {
-            background:
-              "linear-gradient(135deg, rgba(232, 131, 58, 0.15) 0%, rgba(232, 131, 58, 0.08) 100%)",
-            color: "#e8833a",
-            transform: "translateY(-1px) translateZ(0)",
-            boxShadow:
-              "0 4px 12px rgba(232, 131, 58, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-            borderColor: "rgba(232, 131, 58, 0.3)",
-          };
-
-        default:
-          return {};
-      }
-    };
-
-    const hoverStyles = getHoverStyles();
+              variant === "solid"
+                ? "0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)"
+                : "0 4px 12px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          }
+        : {};
 
     return (
       <button
@@ -299,18 +237,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         }}
         onMouseLeave={(e) => {
           if (!disabled && !isLoading) {
-            // 通常のスタイルに戻す - バリアント別の元スタイル
-            const currentTarget = e.currentTarget;
-            const originalStyles = getButtonStyles();
-
-            Object.assign(currentTarget.style, {
-              background: originalStyles.background,
-              color: originalStyles.color,
-              transform: isPressed
-                ? "translateY(1px) translateZ(0) scale(0.98)"
-                : "translateZ(0)",
-              boxShadow: originalStyles.boxShadow,
-            });
+            // 通常のスタイルに戻す
+            e.currentTarget.style.backgroundColor = variantConfig.bg;
+            e.currentTarget.style.transform = isPressed
+              ? "translateY(1px) translateZ(0)"
+              : "translateZ(0)";
+            e.currentTarget.style.boxShadow = isPressed
+              ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)"
+              : "boxShadow" in variantConfig
+              ? variantConfig.boxShadow
+              : "none";
           }
           handleMouseLeave(e);
         }}
