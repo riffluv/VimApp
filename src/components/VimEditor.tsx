@@ -30,9 +30,9 @@ const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
 });
 
 // Framer Motion components
-const MotionBox = motion.create(Box);
-const MotionFlex = motion.create(Flex);
-const MotionText = motion.create(Text);
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
+const MotionText = motion(Text);
 
 /**
  * VimEditor - 2025年製品化レベルのコードエディタコンポーネント
@@ -320,6 +320,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
 
           {/* 右側: ボタングループ - ヘッダーボタンとの統一感を保つ */}
           <HStack gap={1}>
+            {/* ボタン幅を揃えるためminWを全ボタンに指定 */}
             <Tooltip
               content={
                 showCodePenMode
@@ -355,6 +356,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 aria-pressed={showPreview}
                 variant={showPreview ? "solid" : "outline"}
                 size="sm"
+                minW="80px"
               >
                 Preview
               </EditorActionButton>
@@ -390,6 +392,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 leftIcon={<Icon as={FiBookOpen} />}
                 variant={showCodePenMode ? "solid" : "outline"}
                 size="sm"
+                minW="80px"
               >
                 CodePen
               </EditorActionButton>
@@ -416,6 +419,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 leftIcon={<GiBroom />}
                 variant="outline"
                 size="sm"
+                minW="80px"
               >
                 Clear
               </EditorActionButton>
@@ -442,6 +446,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 leftIcon={<Icon as={FiRefreshCw} className="reset-icon" />}
                 variant="solid"
                 size="sm"
+                minW="80px"
               >
                 Reset
               </EditorActionButton>
@@ -534,9 +539,12 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           // CodePenモード時は左プレビュー・右エディタ
           <Flex flex="1" h="100%" overflow="hidden">
             <Box
-              flex="1"
+              flexBasis="50%"
+              flexShrink={0}
+              flexGrow={1}
               bg={DESIGN_SYSTEM.colors.text.primary}
               overflow="hidden"
+              minW="0"
             >
               <iframe
                 srcDoc={codePenSrcDoc}
@@ -546,20 +554,20 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               />
             </Box>
             <Box
-              flex="1"
+              flexBasis="50%"
+              flexShrink={0}
+              flexGrow={1}
               position="relative"
               overflow="hidden"
-              bg={DESIGN_SYSTEM.colors.bg.editor} // エディター専用背景
+              bg={DESIGN_SYSTEM.colors.bg.editor}
               borderLeft="1px solid"
               borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-              maxW="50%" // 確実に50%以下に制限
-              minW="0" // flexアイテムの最小幅を0に設定
-              className="codemirror-isolated-container" // CodeMirror専用の分離クラス
-              // 内側にプレミアムなシャドウ効果を追加
+              minW="0"
+              className="codemirror-isolated-container"
               boxShadow="inset 2px 0 8px rgba(0, 0, 0, 0.1)"
             >
               <CodeMirror
-                key={mode} // モードが変わったら新しいインスタンスを作成
+                key={mode}
                 value={docs[mode]}
                 onChange={(value) => updateDoc(mode, value)}
                 onUpdate={onUpdate}
@@ -570,9 +578,9 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 style={{
                   fontSize: "14px",
                   height: "100%",
-                  width: "100%", // 親コンテナに合わせる
-                  maxWidth: "100%", // 絶対に親を超えない
-                  backgroundColor: DESIGN_SYSTEM.colors.bg.editor, // 専用エディター背景色
+                  width: "100%",
+                  maxWidth: "100%",
+                  backgroundColor: DESIGN_SYSTEM.colors.bg.editor,
                   fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
                 }}
                 autoFocus

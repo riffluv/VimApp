@@ -11,8 +11,8 @@ import {
 } from "@/constants";
 import type { CheatSheetProps, Command, CommandCategory } from "@/types/editor";
 
-const MotionBox = motion.create(Box);
-const MotionFlex = motion.create(Flex);
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
 
 // Group commands by category
 const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {

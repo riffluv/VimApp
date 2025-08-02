@@ -1,7 +1,7 @@
 "use client";
 
-import { Box } from "@chakra-ui/react";
-import type { ComponentProps } from "react";
+import type { ButtonProps as ChakraButtonProps } from "@chakra-ui/react";
+import { Button as ChakraButton } from "@chakra-ui/react";
 import { forwardRef, useCallback, useState } from "react";
 
 import { DESIGN_SYSTEM } from "@/constants";
@@ -11,11 +11,12 @@ import { DESIGN_SYSTEM } from "@/constants";
  *
  * 2025年製品化レベル - 最高の拡張性とパフォーマンス
  */
-export type ButtonVariant = "solid" | "ghost" | "outline" | "editorAction";
+export type ButtonVariant = ChakraButtonProps["variant"] | "editorAction";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
-export interface ButtonProps extends ComponentProps<"button"> {
+export interface ButtonProps
+  extends Omit<ChakraButtonProps, "ref" | "variant"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   isFullWidth?: boolean;
@@ -56,29 +57,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const [isPressed, setIsPressed] = useState(false);
 
     // リアルタイム押し込み効果のイベントハンドラー
+    const { onMouseDown, onMouseUp, onMouseLeave } = rest;
     const handleMouseDown = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         if (disabled || isLoading) return;
         setIsPressed(true);
-        rest.onMouseDown?.(e);
+        onMouseDown?.(e);
       },
-      [disabled, isLoading, rest.onMouseDown]
+      [disabled, isLoading, onMouseDown]
     );
 
     const handleMouseUp = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         setIsPressed(false);
-        rest.onMouseUp?.(e);
+        onMouseUp?.(e);
       },
-      [rest.onMouseUp]
+      [onMouseUp]
     );
 
     const handleMouseLeave = useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         setIsPressed(false); // マウスが離れたら押し込み状態をリセット
-        rest.onMouseLeave?.(e);
+        onMouseLeave?.(e);
       },
-      [rest.onMouseLeave]
+      [onMouseLeave]
     );
 
     const handleClick = useCallback(
@@ -92,7 +94,29 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Chakra UI v3対応：デザインシステムから直接スタイルを取得
     const getButtonStyles = () => {
       const sizeConfig = DESIGN_SYSTEM.components.button.sizes[size];
-      const variantConfig = DESIGN_SYSTEM.components.button.variants[variant];
+      // editorActionのみ独自定義、それ以外はDESIGN_SYSTEMから取得
+      const variantConfig =
+        variant === "editorAction"
+          ? {
+              bg: "#ff6b35",
+              color: "#fff",
+              border: "1px solid #ff6b35",
+              boxShadow:
+                "0 2px 8px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+              _hover: {
+                bg: "#ff8757",
+                color: "#fff",
+                borderColor: "#ff8757",
+              },
+              _active: {
+                bg: "#ffa379",
+                color: "#fff",
+                borderColor: "#ffa379",
+              },
+            }
+          : DESIGN_SYSTEM.components.button.variants[
+              variant as keyof typeof DESIGN_SYSTEM.components.button.variants
+            ];
 
       const getPaddingValues = (padding: string) => {
         const parts = padding.split(" ");
@@ -267,38 +291,39 @@ export const ModeTabButton = forwardRef<
   const [isPressed, setIsPressed] = useState(false);
 
   // リアルタイム押し込み効果のイベントハンドラー
+  const { onMouseDown, onMouseUp, onMouseLeave, disabled: tabDisabled } = props;
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (props.disabled) return;
+      if (tabDisabled) return;
       setIsPressed(true);
-      props.onMouseDown?.(e);
+      onMouseDown?.(e);
     },
-    [props.disabled, props.onMouseDown]
+    [tabDisabled, onMouseDown]
   );
 
   const handleMouseUp = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsPressed(false);
-      props.onMouseUp?.(e);
+      onMouseUp?.(e);
     },
-    [props.onMouseUp]
+    [onMouseUp]
   );
 
   const handleMouseLeave = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsPressed(false);
-      props.onMouseLeave?.(e);
+      onMouseLeave?.(e);
     },
-    [props.onMouseLeave]
+    [onMouseLeave]
   );
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (props.disabled) return;
+      if (tabDisabled) return;
       setIsPressed(false);
       onClick?.(e);
     },
-    [props.disabled, onClick]
+    [tabDisabled, onClick]
   );
 
   return (

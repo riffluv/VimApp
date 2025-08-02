@@ -310,7 +310,7 @@ function dynamicScrollMargin(view: EditorView) {
   const lineCount = view.state.doc.lines;
   const padding = lineCount < 10 ? "2vh" : "8vh";
   const scroller = view.scrollDOM.querySelector(".cm-scroller");
-  if (scroller) {
+  if (scroller && scroller instanceof HTMLElement) {
     scroller.style.setProperty("padding-bottom", padding, "important");
   }
 }
