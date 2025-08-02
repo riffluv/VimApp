@@ -1,149 +1,31 @@
-# CSS ベストプラクティス 2025 (vimapp プロジェクト) - プレミアムデザイン実装版
+# CSS ベストプラクティス 2025 (vimapp) - プレミアムデザイン最新版
 
-このドキュメントは、`vimapp`プロジェクトにおける CSS/スタイリングのコーディング規約とベストプラクティスを定義します。
-**2025 年 8 月最新のモダン CSS 技術**を基盤として、リッチブラック＋オレンジのプレミアムカラーパレット、黄金比ベースのスペーシング、一流 UI/UX デザイナー品質のデザインシステムを実現しています。
+このドキュメントは、`vimapp`プロジェクトの CSS/スタイリング規約・デザイン思想・実装ベストプラクティスをまとめたものです。
+**2025 年 8 月時点の最新実装・思想に完全準拠**しています。
+
+---
+
+## 🎨 デザインコンセプトと注意点（2025 年 8 月最新版）
+
+- **プライマリーカラー：リッチブラック**（#0a0a0a）
+- **セカンダリーカラー：オレンジ**（#ff6b35）
+- 黄金比ベースのスペーシング、プロフェッショナルなタイポグラフィ、深みのあるシャドウ
+- **AI 感・自動生成感のあるデザイン（特にグラデーション多用や不自然な装飾）は NG**
+  - Claude 系 AI や自動生成ツールがよく使う「安易なグラデーション」「AI っぽい装飾」は絶対に避ける
+  - あくまで**プロの UI/UX デザイナーが“人の手”で作ったような、温かみ・緻密さ・人間的な美しさ**を徹底
+- **ブランド・プロダクトの世界観を守ること**
+  - カラーパレット・余白・角丸・シャドウ・アニメーションすべてに一貫性
+  - マジックナンバーやインラインスタイル、!important、BEM/Tailwind 等は原則禁止
+- **次回以降、エージェントに UI/UX デザインを依頼する際は必ずこのコンセプトを明記すること**
+
+---
 
 ## 1. 基本方針：Premium Rich Black & Orange デザインシステム
 
-当プロジェクトでは、**リッチブラック (#0a0a0a) とプレミアムオレンジ (#ff6b35)** をベースとした洗練されたカラーパレットを採用し、最新のモダン CSS 技術と組み合わせています：
+当プロジェクトは、**リッチブラック（#0a0a0a）を基調とし、オレンジ（#ff6b35）をアクセントにした一流ブランド品質の UI/UX**を徹底しています。
+黄金比ベースのスペーシング、プロフェッショナルなタイポグラフィ、深みのあるシャドウ、Apple HIG 準拠のアニメーションなど、すべてに一貫性と人間的な美しさを追求します。
 
-### 1.1 Premium Design Principles（実装済み）
-
-- ✅ **Rich Black Foundation**: 深みのあるブラック階層システム
-- ✅ **Premium Orange Accents**: 洗練されたオレンジアクセントカラー
-- ✅ **Golden Ratio Spacing**: 黄金比(φ = 1.618)ベースの美しいプロポーション
-- ✅ **Professional Typography**: 完璧な可読性とブランド表現
-- ✅ **Sophisticated Shadows**: リッチブラック対応の深度表現
-- ✅ **Modern Motion Design**: Apple HIG 準拠のプレミアムアニメーション
-
-**[✅ 実装済み] プレミアムデザイン例:**
-
-````jsx
-<Box
-  bg="COLORS.bg.primary" // #0a0a0a - リッチブラック
-  color="COLORS.text.primary" // #ffffff - 最高コントラスト
-  b### 🔧 根本的解決：HTMLネイティブButton実装（2025年8月2日 最終解決）
-
-#### 問題の特定と根本原因
-
-**発見された問題:**
-- ユーザー報告：「押し込みは実装されてません。ホバーしたときだけです状態が変わるのは。」
-- Chakra UIのButtonコンポーネントとカスタムイベントハンドラーの競合
-- CSS `:active` 擬似クラスのみでは本物の押し込み感を実現できない制限
-
-**根本原因の調査結果:**
-- Chakra UIが内部的に独自のイベント処理とスタイル管理を行っている
-- カスタム `onMouseDown`/`onMouseUp` ハンドラーが正しく機能しない
-- フレームワーク固有の制約による本質的な制限
-
-#### 根本的解決策の実装
-
-**🆕 HTMLネイティブ button 要素による完全カスタム実装:**
-
-```typescript
-// ✅ 根本的解決：Chakra UI依存を完全排除
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "ghost", size = "sm", ...props }, ref) => {
-    const [isPressed, setIsPressed] = useState(false);
-
-    // ✅ 完全なイベント制御（競合なし）
-    const handleMouseDown = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-      if (disabled || isLoading) return;
-      setIsPressed(true); // 即座に押し込み状態
-    }, [disabled, isLoading]);
-
-    const handleMouseUp = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-      setIsPressed(false); // 押し込み解除 + クリック発火
-    }, []);
-
-    return (
-      <button
-        ref={ref}
-        type="button"
-        // ✅ HTMLネイティブイベントで完全制御
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={() => setIsPressed(false)}
-        // ✅ デザインシステム直接適用
-        style={{
-          transform: isPressed ? "translateY(1px) translateZ(0)" : "translateZ(0)",
-          boxShadow: isPressed
-            ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)"
-            : variantConfig.boxShadow,
-          transition: isPressed ? "all 80ms cubic-bezier(0.4, 0, 0.6, 1)" : "all 150ms ease",
-          // ... デザインシステムの全スタイル適用
-        }}
-      >
-        {children}
-      </button>
-    );
-  }
-);
-````
-
-#### 技術的ブレークスルー
-
-**🎯 達成された改善:**
-
-1. **完全なイベント制御**: Chakra UI 内部処理との競合を 100%排除
-2. **リアルタイム押し込み**: mousedown 瞬間からの即座の視覚フィードバック
-3. **本物の操作感**: 物理ボタンと同等の押し込み → 離す → クリック発火フロー
-4. **パフォーマンス向上**: HTML ネイティブ要素による軽量化
-5. **完全型安全**: `ComponentProps<"button">` による堅牢な TypeScript 対応
-
-**🚀 UX 体験の質的変化:**
-
-| 項目           | Before (Chakra UI Button) | After (HTML ネイティブ)            |
-| -------------- | ------------------------- | ---------------------------------- |
-| **押し込み感** | CSS `:active` のみ        | **リアルタイム mousedown/mouseup** |
-| **レスポンス** | CSS 擬似クラス依存        | **80ms 即座の状態変化**            |
-| **制御度**     | フレームワーク制約あり    | **100% カスタム制御**              |
-| **本物感**     | 不自然                    | **物理ボタン完全再現**             |
-| **競合リスク** | Chakra UI 内部処理と衝突  | **ゼロ競合**                       |
-
-#### 実装の証明
-
-**Before（問題のあった実装）:**
-
-```typescript
-// ❌ Chakra UIとの競合で動作しない
-<ChakraButton
-  onMouseDown={handleMouseDown} // 内部処理で上書きされる
-  _active={{ transform: "translateY(1px)" }} // CSS擬似クラス依存
->
-```
-
-**After（根本的解決後）:**
-
-```typescript
-// ✅ 完全に動作する
-<button
-  onMouseDown={handleMouseDown} // HTMLネイティブで確実に動作
-  style={{
-    transform: isPressed ? "translateY(1px) translateZ(0)" : "translateZ(0)" // React state による即座の反映
-  }}
->
-```
-
-#### 検証結果
-
-**ユーザーテスト結果:**
-
-- ✅ マウスボタンを押した瞬間に押し込み効果が発生
-- ✅ マウスボタンを離すまで押し込み状態を維持
-- ✅ マウスボタンを離した時にクリック機能が発火
-- ✅ マウスがボタンから離れた時の自動リセット機能
-- ✅ 本物の物理ボタンと同等の操作感を実現
-
-**技術メトリクス:**
-
-- 🚀 **イベント応答速度**: 80ms（業界最高水準）
-- 🎯 **成功率**: 100%（競合ゼロ）
-- ⚡ **パフォーマンス**: GPU 最適化済み
-- 🔒 **型安全性**: TypeScript 完全対応
-- 🎨 **デザイン統合**: DESIGN_SYSTEM 100%活用
-
-**結論: 2025 年業界最高水準のプレミアムボタン UX を完全実現** 🏆
+> **注意：グラデーションや AI 感のある装飾は NG。必ず“人の手”によるプロ品質を意識すること。**
 
 ---
 
