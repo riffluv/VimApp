@@ -296,7 +296,7 @@ export const UI_STYLES = {
   colors: {
     primary: DESIGN_SYSTEM.colors.accent.primary,
     accent: DESIGN_SYSTEM.colors.accent.secondary,
-    transparent: DESIGN_SYSTEM.colors.interactive.hover,
+    transparent: "rgba(255, 107, 53, 0.1)",
   },
 } as const;
 

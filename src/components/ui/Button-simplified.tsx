@@ -168,13 +168,7 @@ export const ModeTabButton = forwardRef<
   };
 
   return (
-    <Button
-      ref={ref}
-      variant="ghost"
-      size="sm"
-      style={tabStyles}
-      {...props}
-    >
+    <Button ref={ref} variant="ghost" size="sm" style={tabStyles} {...props}>
       {children}
     </Button>
   );

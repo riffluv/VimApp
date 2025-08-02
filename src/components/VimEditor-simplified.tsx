@@ -3,6 +3,7 @@
 import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
@@ -27,6 +28,9 @@ import { generatePreviewHTML, getSandboxAttributes } from "@/utils/editor";
 const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
   ssr: false,
 });
+
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
 
 /**
  * VimEditor - Simplified, maintainable code editor component
