@@ -13,7 +13,6 @@ import { history } from "@codemirror/commands";
 import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
-import { language } from "@codemirror/language";
 import type { Extension } from "@codemirror/state";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -248,7 +247,7 @@ const advancedAutocompletion = autocompletion({
   activateOnTyping: true,
   closeOnBlur: true,
   tooltipClass: () => "cm-tooltip-no-animation cm-tooltip-unified",
-  selectOnOpen: true,
+  selectOnOpen: false, // 初期選択状態を未選択に
   override: [], // 統一的なcompletionソースを使用
 });
 
@@ -372,90 +371,10 @@ const emmetKeymap = Prec.highest(
     {
       key: "Tab",
       run: (view) => {
+        // TabでのみEmmet展開（補完がactiveならmoveCompletionSelection、そうでなければEmmet展開）
         const completion = completionStatus(view.state);
         if (completion === "active") return moveCompletionSelection(true)(view);
-        const lang = view.state.facet(language);
-        const mode = lang?.name || "";
-        const line = view.state.doc.lineAt(view.state.selection.main.head).text;
-        const cursorPos =
-          view.state.selection.main.head -
-          view.state.doc.lineAt(view.state.selection.main.from).from;
-        let beforeCursor = line.slice(0, cursorPos);
-        // タグ直後の省略形も検出
-        let abbr = beforeCursor.trim();
-        // 直前がタグ閉じ > なら、その直後の省略形だけを抽出
-        const tagCloseIdx = beforeCursor.lastIndexOf(">");
-        if (tagCloseIdx !== -1 && tagCloseIdx < beforeCursor.length - 1) {
-          const afterTag = beforeCursor.slice(tagCloseIdx + 1).trim();
-          if (/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(afterTag)) {
-            abbr = afterTag;
-          }
-        }
-        const isValidEmmetAbbreviation = (text: string): boolean => {
-          if (!text || text.length === 0) return false;
-          // html:5展開用の!は特別扱い
-          if (mode === "html" && text.trim() === "!") return true;
-          const htmlElementPattern =
-            /^[a-zA-Z][a-zA-Z0-9_-]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
-          const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
-          if (mode === "css") return cssPropertyPattern.test(text);
-          if (mode === "html") {
-            const commonHtmlTags = [
-              "div",
-              "span",
-              "p",
-              "a",
-              "img",
-              "ul",
-              "li",
-              "ol",
-              "h1",
-              "h2",
-              "h3",
-              "h4",
-              "h5",
-              "h6",
-              "section",
-              "article",
-              "header",
-              "footer",
-              "nav",
-              "main",
-              "aside",
-              "form",
-              "input",
-              "button",
-              "textarea",
-              "select",
-              "option",
-              "table",
-              "tr",
-              "td",
-              "th",
-              "thead",
-              "tbody",
-              "tfoot",
-              "script",
-              "style",
-              "link",
-              "meta",
-              "title",
-              "head",
-              "body",
-              "html",
-            ];
-            const baseTag = text.split(/[.#\[\{*+>]/)[0];
-            if (!commonHtmlTags.includes(baseTag.toLowerCase())) return false;
-            return htmlElementPattern.test(text);
-          }
-          if (mode === "javascript" || mode === "jsx")
-            return /^\s*<.*/.test(text);
-          return false;
-        };
-        if (isValidEmmetAbbreviation(abbr)) {
-          if (expandAbbreviation(view)) return true;
-        }
-        return false; // インデントは一切発生させない
+        return expandAbbreviation(view);
       },
       preventDefault: true,
     },
@@ -465,89 +384,19 @@ const emmetKeymap = Prec.highest(
         const completion = completionStatus(view.state);
         if (completion === "active")
           return moveCompletionSelection(false)(view);
-        return false; // インデントは一切発生させない
+        return false;
       },
       preventDefault: true,
     },
     {
       key: "Enter",
       run: (view) => {
+        // 補完がactiveかつ選択状態ならaccept、それ以外は通常の改行
         const completion = completionStatus(view.state);
         if (completion === "active") return acceptCompletion(view);
-        const lang = view.state.facet(language);
-        const mode = lang?.name || "";
-        const line = view.state.doc.lineAt(view.state.selection.main.head).text;
-        const cursorPos =
-          view.state.selection.main.head -
-          view.state.doc.lineAt(view.state.selection.main.from).from;
-        const beforeCursor = line.slice(0, cursorPos).trim();
-        const isValidEmmetAbbreviation = (text: string): boolean => {
-          if (!text || text.length === 0) return false;
-          // html:5展開用の!は特別扱い
-          if (mode === "html" && text.trim() === "!") return true;
-          const htmlElementPattern =
-            /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z0-9_-]+)*(\#[a-zA-Z0-9_-]+)*(\[[^\]]*\])*(\{[^}]*\})*(\*[0-9]+)*(\+[a-zA-Z0-9][a-zA-Z0-9]*)*(\>[a-zA-Z0-9][a-zA-Z0-9]*)*$/;
-          const cssPropertyPattern = /^[a-zA-Z-]+:[^;]*$/;
-          if (mode === "css") return cssPropertyPattern.test(text);
-          if (mode === "html") {
-            const commonHtmlTags = [
-              "div",
-              "span",
-              "p",
-              "a",
-              "img",
-              "ul",
-              "li",
-              "ol",
-              "h1",
-              "h2",
-              "h3",
-              "h4",
-              "h5",
-              "h6",
-              "section",
-              "article",
-              "header",
-              "footer",
-              "nav",
-              "main",
-              "aside",
-              "form",
-              "input",
-              "button",
-              "textarea",
-              "select",
-              "option",
-              "table",
-              "tr",
-              "td",
-              "th",
-              "thead",
-              "tbody",
-              "tfoot",
-              "script",
-              "style",
-              "link",
-              "meta",
-              "title",
-              "head",
-              "body",
-              "html",
-            ];
-            const baseTag = text.split(/[.#\[\{*+>]/)[0];
-            if (!commonHtmlTags.includes(baseTag.toLowerCase())) return false;
-            return htmlElementPattern.test(text);
-          }
-          if (mode === "javascript" || mode === "jsx")
-            return /^\s*<.*/.test(text);
-          return false;
-        };
-        if (isValidEmmetAbbreviation(beforeCursor)) {
-          if (expandAbbreviation(view)) return true;
-        }
-        return false;
+        return false; // 通常の改行
       },
-      preventDefault: true,
+      preventDefault: false, // Enterは通常の改行を許可
     },
     { key: "Ctrl-e", run: expandAbbreviation },
     { key: "Cmd-e", run: expandAbbreviation },
@@ -817,6 +666,7 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
     closeOnBlur: false,
     maxRenderedOptions: 20,
     defaultKeymap: true,
+    selectOnOpen: false, // 初期選択状態を未選択に
   });
 
   // Emmet設定（モード別・統一UI）
