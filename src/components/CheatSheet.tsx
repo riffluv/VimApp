@@ -112,14 +112,16 @@ export default function CheatSheet({}: CheatSheetProps) {
 
       {/* Command List (Accordion) - VimEditorと統一されたパディング */}
       <Box
-        overflowY="auto"
+        overflowY="scroll" // 常時スクロールバー領域を確保
         flex={1}
         px={DESIGN_SYSTEM.spacing["3"]}
         py={DESIGN_SYSTEM.spacing["3"]}
+        pr="18px" // スクロールバー分の余白を常時確保（12px+α）
         position="relative"
         zIndex={1}
         isolation="isolate"
         css={{
+          scrollbarGutter: "stable", // Chrome/Edge/Firefox対応
           "&::-webkit-scrollbar": { width: "12px" },
           "&::-webkit-scrollbar-track": {
             background: "#1a1a1e",
