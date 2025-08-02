@@ -297,12 +297,14 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
   }
 
   .cm-scroller {
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
     z-index: var(--z-dropdown);
 

@@ -1,13 +1,20 @@
 // ==============================
-// 型・定数
+// 型・定数・言語拡張
 // ==============================
 import { EDITOR_CONFIG } from "@/constants";
 import type { EditorMode } from "@/types/editor";
-
-// ==============================
-// CodeMirror 本体・コア拡張
-// ==============================
+import {
+  acceptCompletion,
+  autocompletion,
+  completionStatus,
+  moveCompletionSelection,
+} from "@codemirror/autocomplete";
 import { history } from "@codemirror/commands";
+import { css } from "@codemirror/lang-css";
+import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { language } from "@codemirror/language";
+import type { Extension } from "@codemirror/state";
 import { Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import {
@@ -16,24 +23,6 @@ import {
   keymap,
   scrollPastEnd,
 } from "@codemirror/view";
-
-// ==============================
-// 言語拡張
-// ==============================
-import { css } from "@codemirror/lang-css";
-import { html } from "@codemirror/lang-html";
-import { javascript } from "@codemirror/lang-javascript";
-import { language } from "@codemirror/language";
-
-// ==============================
-// 補完・Emmet・Vim
-// ==============================
-import {
-  acceptCompletion,
-  autocompletion,
-  completionStatus,
-  moveCompletionSelection,
-} from "@codemirror/autocomplete";
 import {
   abbreviationTracker,
   emmetConfig,
@@ -42,11 +31,7 @@ import {
 } from "@emmetio/codemirror6-plugin";
 import { vim } from "@replit/codemirror-vim";
 
-/**
- * 各エディタモードに対応するCodeMirror言語拡張セット
- * @type {Record<EditorMode, Extension>}
- */
-import type { Extension } from "@codemirror/state";
+// 言語拡張セット
 export const languageExtensions: Record<EditorMode, Extension> = {
   html: html(),
   css: css(),
@@ -58,7 +43,6 @@ export const languageExtensions: Record<EditorMode, Extension> = {
  * - 言語/テーマ/補完/Emmet/Vim/スクロール/ユーティリティを厳密に責務分離
  * - 型安全・拡張性・保守性・UI/UX・競合防止を徹底
  */
-// ...（この壊れたオブジェクトリテラル全体を削除）
 
 /**
  * HTML/CSS/JS共通Emmet候補生成関数
@@ -316,19 +300,36 @@ const smartPositioning = EditorView.updateListener.of((update) => {
 });
 
 // ==============================
-// スクロール拡張（下部余白・カーソル追従）
+// スクロール・UI拡張（下部余白・カーソル追従）
 // ==============================
 /**
- * スクロールマージン拡張（下部余白を確保）
+ * 行数に応じて下部余白を動的に切り替える（Emmet候補が隠れないUX＋空時はバー非表示）
+ * - 10行未満: 2vh, 10行以上: 8vh
+ * - 初期化時も必ず1回実行
  */
-const scrollMargins = EditorView.theme({
-  "&": { scrollMargin: EDITOR_CONFIG.scroll.margins },
-  ".cm-scroller": {
-    paddingBottom: `${EDITOR_CONFIG.scroll.bottomPadding} !important`,
-  },
+function dynamicScrollMargin(view: EditorView) {
+  const lineCount = view.state.doc.lines;
+  const padding = lineCount < 10 ? "2vh" : "8vh";
+  const scroller = view.scrollDOM.querySelector(".cm-scroller");
+  if (scroller) {
+    scroller.style.setProperty("padding-bottom", padding, "important");
+  }
+}
+
+const dynamicScrollMarginListener = EditorView.updateListener.of((update) => {
+  if (update.docChanged || update.viewportChanged) {
+    dynamicScrollMargin(update.view);
+  }
 });
+
+// 初期化時にも必ず余白をセット
+const dynamicScrollMarginInit = EditorView.domEventHandlers({
+  focus: (event, view) => dynamicScrollMargin(view),
+  blur: (event, view) => dynamicScrollMargin(view),
+});
+
 /**
- * カーソル追従スクロール拡張
+ * カーソル追従スクロール拡張（Emmet候補や入力時にカーソルが下に張り付かない）
  */
 const livecodesScrolling = EditorView.updateListener.of((update) => {
   if (update.selectionSet || update.docChanged) {
@@ -852,28 +853,20 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
   return [
     // 1. Vimキーマップ（最優先）
     Prec.highest(vim()),
-    // 2. Vim保護用キーマップ
     vimProtectionKeymap,
-    // 3. Emmet/補完/インデント競合ゼロキーマップ
     emmetKeymap,
-    // 4. 基本編集機能
     drawSelection(),
-    // 5. 言語拡張
     languageExtensions[mode],
-    // 6. 履歴（Undo/Redo）
     modeHistory,
-    // 7. 統一自動補完（美しいUI）
     unifiedAutocompletion,
-    // 8. Emmet拡張（統一UI）
     ...emmetExtension,
-    // 9. テーマ・スタイル
     oneDark,
     subtleActiveLineHighlight,
     autocompleteTheme,
-    // 10. UI/UX拡張
     smartPositioning,
     scrollPastEnd(),
-    scrollMargins,
+    dynamicScrollMarginListener,
+    dynamicScrollMarginInit,
     livecodesScrolling,
   ];
 };
