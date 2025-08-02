@@ -1,8 +1,8 @@
 "use client";
 
-import { DESIGN_SYSTEM } from "@/constants";
 import type { ComponentProps } from "react";
 import { forwardRef } from "react";
+import { DESIGN_SYSTEM } from "../../constants";
 
 export type ButtonVariant = "solid" | "ghost" | "outline" | "editorAction";
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
@@ -168,13 +168,7 @@ export const ModeTabButton = forwardRef<
   };
 
   return (
-    <Button
-      ref={ref}
-      variant="ghost"
-      size="sm"
-      style={tabStyles}
-      {...props}
-    >
+    <Button ref={ref} variant="ghost" size="sm" style={tabStyles} {...props}>
       {children}
     </Button>
   );

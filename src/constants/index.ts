@@ -351,8 +351,8 @@ export const EDITOR_CONFIG = {
       fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
     },
     spacing: {
-      itemPadding: `${DESIGN_SYSTEM.spacing.xs} ${DESIGN_SYSTEM.spacing.sm}`,
-      listPadding: `${DESIGN_SYSTEM.spacing.xs} 0`,
+      itemPadding: `${DESIGN_SYSTEM.spacing["1"]} ${DESIGN_SYSTEM.spacing["3"]}`,
+      listPadding: `${DESIGN_SYSTEM.spacing["1"]} 0`,
       borderRadius: DESIGN_SYSTEM.borders.radius.md,
       itemBorderRadius: DESIGN_SYSTEM.borders.radius.sm,
     },

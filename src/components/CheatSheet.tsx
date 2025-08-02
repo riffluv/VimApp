@@ -7,8 +7,12 @@ import {
   CATEGORY_INFO,
   CHEAT_SHEET_COMMANDS,
   DESIGN_SYSTEM,
-} from "@/constants";
-import type { CheatSheetProps, Command, CommandCategory } from "@/types/editor";
+} from "../constants";
+import type {
+  CheatSheetProps,
+  Command,
+  CommandCategory,
+} from "../types/editor";
 
 // Group commands by category
 const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
@@ -219,7 +223,10 @@ export default function CheatSheet({}: CheatSheetProps) {
           color={DESIGN_SYSTEM.colors.accent.secondary}
           boxSize="16px"
         />
-        <Text lineHeight="1.4" fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}>
+        <Text
+          lineHeight="1.4"
+          fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+        >
           基本操作から始めて、段階的にスキルアップしよう！
         </Text>
       </Flex>

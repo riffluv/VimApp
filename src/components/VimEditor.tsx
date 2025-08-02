@@ -14,15 +14,15 @@ import {
   SecondaryButton,
 } from "./ui/Button";
 
-import { DESIGN_SYSTEM, EDITOR_CONFIG, VIM_MODE_INFO } from "@/constants";
+import { DESIGN_SYSTEM, EDITOR_CONFIG, VIM_MODE_INFO } from "../constants";
 import {
   useDocs,
   useEditorExtensions,
   useUIState,
   useVimMode,
-} from "@/hooks/useVimEditor";
-import type { EditorMode, VimEditorProps } from "@/types/editor";
-import { generatePreviewHTML, getSandboxAttributes } from "@/utils/editor";
+} from "../hooks/useVimEditor";
+import type { EditorMode, VimEditorProps } from "../types/editor";
+import { generatePreviewHTML, getSandboxAttributes } from "../utils/editor";
 
 const CodeMirror = dynamic(() => import("@uiw/react-codemirror"), {
   ssr: false,
