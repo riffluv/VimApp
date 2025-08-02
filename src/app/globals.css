@@ -321,12 +321,20 @@
     /* Layout containment */
     contain: layout style;
 
-    /* Size management */
+    /* Size management - ピッタリサイズを実現 */
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Emmet Autocomplete Popup Visibility Fix - CSS :has() selector */
+  .cm-editor:has(.cm-tooltip-autocomplete) {
+    overflow: visible;
   }
 
   .cm-scroller {
@@ -344,9 +352,11 @@
 
   .cm-content {
     max-width: none;
-    /* min-width: 100%; ← 削除 */
     position: relative;
     z-index: var(--z-dropdown);
+    margin: 0;
+    padding: 0;
+    border: 0;
   }
 
   /* CodeMirror cursor optimization */
@@ -472,10 +482,10 @@
     *,
     *::before,
     *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+      transition-duration: 0.01ms;
+      scroll-behavior: auto;
     }
   }
 
@@ -520,9 +530,9 @@
 
   /* Real-time Button Press Effects - mousedown/mouseup対応 */
   .realtime-button-pressed {
-    transform: translateY(1px) translateZ(0) !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-    transition: all 80ms cubic-bezier(0.4, 0, 0.6, 1) !important;
+    transform: translateY(1px) translateZ(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 80ms cubic-bezier(0.4, 0, 0.6, 1);
   }
 
   .realtime-button-released {
@@ -532,10 +542,10 @@
 
   /* Tab Button Real-time Press Effects */
   .realtime-tab-pressed {
-    transform: translateY(0.5px) translateZ(0) !important;
+    transform: translateY(0.5px) translateZ(0);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15),
-      inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-    transition: all 80ms cubic-bezier(0.4, 0, 0.6, 1) !important;
+      inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 80ms cubic-bezier(0.4, 0, 0.6, 1);
   }
 
   /* Glass Effect Animation - プレミアムガラス効果 */
@@ -705,6 +715,39 @@
   transform: translateZ(0); /* GPU layer promotion */
   isolation: isolate;
   will-change: transform; /* Hint for composite layer */
+
+  /* ピッタリサイズを実現するための追加スタイル */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* CodeMirrorコンテナ内の要素を確実にピッタリフィット */
+.codemirror-isolated-container .cm-editor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.codemirror-isolated-container .cm-scroller {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 /* Tooltip Containers - Prevent Layout Thrashing */
