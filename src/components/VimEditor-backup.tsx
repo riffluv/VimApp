@@ -192,7 +192,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
       bg={DESIGN_SYSTEM.colors.bg.primary}
       color={DESIGN_SYSTEM.colors.text.primary}
       borderRadius={DESIGN_SYSTEM.borders.radius.lg}
-      boxShadow={DESIGN_SYSTEM.shadows.glass.strong}
+      boxShadow={DESIGN_SYSTEM.shadows.premium.overlay}
       display="flex"
       flexDirection="column"
       borderColor={DESIGN_SYSTEM.borders.colors.subtle}

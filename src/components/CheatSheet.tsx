@@ -206,7 +206,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                           _active={{
                             bg: DESIGN_SYSTEM.colors.bg.tertiary,
                           }}
-                          transition={`all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeInOut}`}
+                          transition={`all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`}
                           cursor="pointer"
                           position="relative"
                           willChange="transform"

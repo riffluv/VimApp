@@ -290,8 +290,8 @@ export const UI_STYLES = {
     iconMargin: 1.5,
   },
   shadow: {
-    subtle: DESIGN_SYSTEM.shadows.glass.subtle,
-    medium: DESIGN_SYSTEM.shadows.glass.medium,
+    subtle: DESIGN_SYSTEM.shadows.premium.card,
+    medium: DESIGN_SYSTEM.shadows.premium.float,
   },
   colors: {
     primary: DESIGN_SYSTEM.colors.accent.primary,

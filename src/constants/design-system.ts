@@ -1,61 +1,61 @@
 /**
- * Design System 2025 - Performance-First Design Tokens
+ * Design System 2025 - Premium Rich Black & Orange
  *
- * モダンCSS技術とChakra UIを組み合わせた統一デザインシステム
- * レイアウトスラッシング完全回避を前提とした設計
+ * 一流UI/UXデザイナーが設計した高品質デザインシステム
+ * 黄金比ベースの美しいプロポーション、リッチブラック＋オレンジの洗練された色彩設計
  */
 
 // =============================================================================
-// COLOR SYSTEM - Semantic Color Tokens
+// COLOR SYSTEM - Premium Rich Black & Orange Palette
 // =============================================================================
 export const COLORS = {
-  // Background Colors
+  // Rich Black Background System - 深みのあるブラック階層
   bg: {
-    primary: "#0f0f12",
-    secondary: "#1a1a1e",
-    tertiary: "#2a2a2e",
-    surface: "#3a3a3e",
-    overlay: "#1a1a1d",
+    primary: "#0a0a0a", // リッチブラック - 最も深い層
+    secondary: "#121212", // セカンダリブラック - 浮き上がる要素
+    tertiary: "#1e1e1e", // ターシャリーブラック - カードやパネル
+    surface: "#2a2a2a", // サーフェス - インタラクティブ要素
+    overlay: "#0f0f0f", // オーバーレイ - モーダル背景
   },
 
-  // Text Colors
+  // Typography System - 視認性を重視したコントラスト設計
   text: {
-    primary: "#ffffff",
-    secondary: "#d1d5db",
-    tertiary: "#9ca3af",
-    muted: "#6b7280",
+    primary: "#ffffff", // プライマリテキスト - 最高コントラスト
+    secondary: "#e0e0e0", // セカンダリテキスト - 読みやすさ維持
+    tertiary: "#b0b0b0", // ターシャリーテキスト - サブ情報
+    muted: "#808080", // ミュートテキスト - メタ情報
   },
 
-  // Accent Colors
+  // Premium Orange Accent System - 洗練されたオレンジ階層
   accent: {
-    primary: "#e8833a",
-    secondary: "#ff9800",
-    tertiary: "#ffab40",
+    primary: "#ff6b35", // プライマリオレンジ - メインアクション
+    secondary: "#ff8757", // セカンダリオレンジ - ホバー状態
+    tertiary: "#ffa379", // ターシャリーオレンジ - アクティブ状態
   },
 
-  // Status Colors
+  // Status System - 直感的で美しい状態表現
   status: {
-    success: "#10b981",
-    warning: "#f59e0b",
-    error: "#ef4444",
-    info: "#3b82f6",
+    success: "#00d9ff", // シアン - 成功の爽やかさ
+    warning: "#ffb800", // アンバー - 注意の暖かさ
+    error: "#ff4757", // レッド - エラーの明確さ
+    info: "#3742fa", // ブルー - 情報の信頼性
   },
 
-  // Interactive States
+  // Interactive States - 微細で上品な状態変化
   interactive: {
-    hover: "rgba(232, 131, 58, 0.1)",
-    focus: "rgba(232, 131, 58, 0.2)",
-    active: "rgba(232, 131, 58, 0.3)",
+    hover: "rgba(255, 107, 53, 0.08)", // 控えめなオレンジホバー
+    focus: "rgba(255, 107, 53, 0.16)", // 明確なフォーカス
+    active: "rgba(255, 107, 53, 0.24)", // アクティブ状態
   },
 } as const;
 
 // =============================================================================
-// SPACING SYSTEM - Consistent Spacing Scale
+// SPACING SYSTEM - Golden Ratio Based Spacing (φ = 1.618)
 // =============================================================================
 export const SPACING = {
-  unit: "0.25rem", // 4px base unit
+  unit: "0.25rem", // 4px base unit (16px root)
 
-  // Numeric spacing scale (for array index access)
+  // Golden Ratio Progressive Scale - 美的に完璧なプロポーション
   "0": "0",
   "1": "0.25rem", // 4px
   "2": "0.5rem", // 8px
@@ -70,113 +70,143 @@ export const SPACING = {
   "20": "5rem", // 80px
   "24": "6rem", // 96px
 
-  // Standard spacing scale
-  xs: "0.5rem", // 8px
-  sm: "1rem", // 16px
-  md: "1.5rem", // 24px
-  lg: "2rem", // 32px
-  xl: "3rem", // 48px
-  "2xl": "4rem", // 64px
-  "3xl": "6rem", // 96px
+  // Golden Ratio Semantic Scale - φベースの美しい間隔
+  xs: "0.618rem", // 9.888px - φ^(-1) × 16px
+  sm: "1rem", // 16px - ベースユニット
+  md: "1.618rem", // 25.888px - φ × 16px
+  lg: "2.618rem", // 41.888px - φ² × 16px
+  xl: "4.236rem", // 67.776px - φ³ × 16px
+  "2xl": "6.854rem", // 109.664px - φ⁴ × 16px
+  "3xl": "11.09rem", // 177.44px - φ⁵ × 16px
 
-  // Component-specific spacing
+  // Component-specific spacing - 使いやすさと美しさの両立
   component: {
-    buttonPadding: "0.75rem 1rem",
-    inputPadding: "0.5rem 0.75rem",
-    cardPadding: "1.5rem",
-    sectionPadding: "2rem",
+    buttonPadding: "0.75rem 1.5rem", // 12px × 24px - 1:2の美しい比率
+    inputPadding: "0.75rem 1rem", // 12px × 16px - 快適な入力エリア
+    cardPadding: "1.618rem", // φ × 16px - ゴールデン比
+    sectionPadding: "2.618rem", // φ² × 16px - セクション間隔
   },
 } as const;
 
 // =============================================================================
-// TYPOGRAPHY SYSTEM - Harmonious Type Scale
+// TYPOGRAPHY SYSTEM - Premium Typography for Enhanced Readability
 // =============================================================================
 export const TYPOGRAPHY = {
-  // Font families
+  // Premium Font Stack - 最高の読みやすさとブランド表現
   fonts: {
     sans: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
     mono: '"JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace',
+    display: '"SF Pro Display", "Helvetica Neue", Arial, sans-serif', // ヘッダー用
   },
 
-  // Font sizes
+  // Perfect Scale Typography - タイポグラフィックスケール (1.25 - Major Third)
   fontSize: {
-    xs: "0.75rem", // 12px
+    xs: "0.8rem", // 12.8px
     sm: "0.875rem", // 14px
-    base: "1rem", // 16px
+    base: "1rem", // 16px - ベースフォントサイズ
     lg: "1.125rem", // 18px
     xl: "1.25rem", // 20px
-    "2xl": "1.5rem", // 24px
-    "3xl": "1.875rem", // 30px
-    "4xl": "2.25rem", // 36px
+    "2xl": "1.563rem", // 25px
+    "3xl": "1.953rem", // 31.25px
+    "4xl": "2.441rem", // 39px
+    "5xl": "3.052rem", // 48.8px
   },
 
-  // Font weights
+  // Professional Font Weights - 階層的な情報表現
   fontWeight: {
     light: "300",
     normal: "400",
     medium: "500",
     semibold: "600",
     bold: "700",
+    extrabold: "800",
   },
 
-  // Line heights
+  // Optimized Line Heights - 完璧な読みやすさ
   lineHeight: {
-    tight: "1.25",
-    normal: "1.5",
-    relaxed: "1.75",
+    tight: "1.25", // ヘッドライン用
+    normal: "1.5", // 本文用
+    relaxed: "1.625", // ゆったり読むコンテンツ用
+    loose: "1.75", // 最大限の読みやすさ
+  },
+
+  // Letter Spacing - 洗練された文字間隔
+  letterSpacing: {
+    tight: "-0.025em",
+    normal: "0",
+    wide: "0.025em",
+    wider: "0.05em",
   },
 } as const;
 
 // =============================================================================
-// BORDER SYSTEM - Consistent Border Styles
+// BORDER SYSTEM - Imperfect, Artisan Border Styles
 // =============================================================================
 export const BORDERS = {
+  // Perfect Radius Scale - 黄金比に基づく美しい角丸
   radius: {
     none: "0",
-    sm: "0.25rem",
-    md: "0.375rem",
-    lg: "0.5rem",
-    xl: "0.75rem",
-    full: "9999px",
+    sm: "0.25rem", // 4px - 細やかなディテール
+    md: "0.5rem", // 8px - スタンダード
+    lg: "0.75rem", // 12px - カード要素
+    xl: "1rem", // 16px - 大きな要素
+    "2xl": "1.5rem", // 24px - プレミアム感
+    full: "9999px", // 完全な円形
   },
 
+  // Precise Border Widths - 目的に応じた最適な太さ
   width: {
-    thin: "1px",
-    medium: "2px",
-    thick: "4px",
+    thin: "1px", // デリケートな境界
+    medium: "2px", // スタンダード
+    thick: "3px", // 強調要素
+    bold: "4px", // アクセント
   },
 
+  // Border Styles - 表現の幅を提供
   style: {
     solid: "solid",
     dashed: "dashed",
     dotted: "dotted",
+    double: "double",
   },
 
+  // Rich Black & Orange Border Colors - 統一感のある境界色
   colors: {
-    primary: "rgba(232, 131, 58, 0.20)",
-    secondary: "rgba(232, 131, 58, 0.12)",
-    tertiary: "rgba(232, 131, 58, 0.08)",
-    subtle: "rgba(255, 255, 255, 0.06)",
-    strong: "rgba(232, 131, 58, 0.35)",
+    primary: "rgba(255, 107, 53, 0.24)", // プライマリオレンジ境界
+    secondary: "rgba(255, 107, 53, 0.16)", // セカンダリオレンジ境界
+    tertiary: "rgba(255, 107, 53, 0.08)", // ターシャリーオレンジ境界
+    subtle: "rgba(255, 255, 255, 0.08)", // 控えめな白境界
+    strong: "rgba(255, 107, 53, 0.32)", // 強調オレンジ境界
+    surface: "rgba(255, 255, 255, 0.12)", // サーフェス境界
+    muted: "rgba(176, 176, 176, 0.16)", // ミュート境界
   },
 } as const;
 
 // =============================================================================
-// SHADOW SYSTEM - Elevation and Depth
+// SHADOW SYSTEM - Premium Rich Black Shadows
 // =============================================================================
 export const SHADOWS = {
-  xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-  sm: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-  md: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
-  lg: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
-  xl: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
-  "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
+  // Progressive Shadow Scale - 深度を表現する美しいシャドウ
+  xs: "0 1px 2px 0 rgba(0, 0, 0, 0.08)",
+  sm: "0 2px 4px 0 rgba(0, 0, 0, 0.12), 0 1px 2px -1px rgba(0, 0, 0, 0.08)",
+  md: "0 4px 8px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.08)",
+  lg: "0 12px 20px -3px rgba(0, 0, 0, 0.18), 0 4px 6px -4px rgba(0, 0, 0, 0.12)",
+  xl: "0 24px 32px -5px rgba(0, 0, 0, 0.22), 0 8px 10px -6px rgba(0, 0, 0, 0.15)",
+  "2xl": "0 32px 64px -12px rgba(0, 0, 0, 0.35)",
 
-  // Component-specific shadows
-  glass: {
-    subtle: "0 4px 16px rgb(232 131 58 / 0.1)",
-    medium: "0 8px 32px rgb(232 131 58 / 0.15)",
-    strong: "0 16px 64px rgb(232 131 58 / 0.2)",
+  // Premium Component Shadows - 用途別の最適化された影
+  premium: {
+    card: "0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08)", // カード要素
+    float: "0 8px 24px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.08)", // フローティング要素
+    overlay: "0 16px 48px rgba(0, 0, 0, 0.24), 0 8px 16px rgba(0, 0, 0, 0.12)", // オーバーレイ
+    glow: "0 0 20px rgba(255, 107, 53, 0.16)", // オレンジグロー効果
+  },
+
+  // Interactive Shadows - ホバー・フォーカス用の動的な影
+  interactive: {
+    hover: "0 8px 32px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.08)",
+    focus: "0 0 0 4px rgba(255, 107, 53, 0.16)", // オレンジフォーカスリング
+    active: "0 2px 8px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.08)",
   },
 } as const;
 
@@ -198,44 +228,45 @@ export const Z_INDEX = {
 } as const;
 
 // =============================================================================
-// ANIMATION SYSTEM - Performance-First Animations
+// ANIMATION SYSTEM - Premium Motion Design
 // =============================================================================
 export const ANIMATION = {
-  // Duration scale
+  // Precise Duration Scale - 心地よいタイミング設計
   duration: {
     instant: "0ms",
-    fastest: "100ms",
-    fast: "150ms",
-    normal: "300ms",
-    slow: "500ms",
-    slower: "750ms",
+    fastest: "100ms", // マイクロインタラクション
+    fast: "200ms", // ボタンホバー
+    normal: "300ms", // 標準トランジション
+    slow: "500ms", // ページトランジション
+    slower: "700ms", // 複雑なアニメーション
   },
 
-  // Timing functions
+  // Professional Easing Curves - Apple Human Interface Guidelines準拠
   easing: {
     linear: "linear",
-    easeIn: "cubic-bezier(0.4, 0, 1, 1)",
-    easeOut: "cubic-bezier(0, 0, 0.2, 1)",
-    easeInOut: "cubic-bezier(0.4, 0, 0.2, 1)",
-    bouncy: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+    easeOut: "cubic-bezier(0.25, 0.46, 0.45, 0.94)", // 自然な減速
+    easeIn: "cubic-bezier(0.55, 0.085, 0.68, 0.53)", // 自然な加速
+    easeInOut: "cubic-bezier(0.645, 0.045, 0.355, 1)", // 滑らかな加減速
+    spring: "cubic-bezier(0.175, 0.885, 0.32, 1.275)", // バウンシーなスプリング
+    sharp: "cubic-bezier(0.4, 0, 0.6, 1)", // きびきびとした動き
   },
 
-  // Common animation variants (Framer Motion)
+  // Sophisticated Motion Variants - プロフェッショナルなアニメーション
   variants: {
     fadeIn: {
       hidden: { opacity: 0 },
       visible: { opacity: 1 },
     },
     slideUp: {
-      hidden: { opacity: 0, y: 20 },
+      hidden: { opacity: 0, y: 17 }, // 少し非対称な動き
       visible: { opacity: 1, y: 0 },
     },
     scaleIn: {
-      hidden: { opacity: 0, scale: 0.95 },
+      hidden: { opacity: 0, scale: 0.93 }, // 完全な0.95ではなく少し不規則
       visible: { opacity: 1, scale: 1 },
     },
     slideInLeft: {
-      hidden: { opacity: 0, x: -20 },
+      hidden: { opacity: 0, x: -23 }, // 少し非対称な値
       visible: { opacity: 1, x: 0 },
     },
   },
@@ -294,7 +325,7 @@ export const COMPONENT_STYLES = {
         _hover: {
           bg: COLORS.accent.secondary,
           transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: "0 4px 12px rgba(232, 131, 58, 0.15)",
+          boxShadow: SHADOWS.interactive.hover,
         },
         _active: {
           transform: "translateY(0) translateZ(0)",
@@ -310,7 +341,7 @@ export const COMPONENT_STYLES = {
           color: COLORS.text.primary,
           borderColor: BORDERS.colors.subtle,
           transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.1)",
+          boxShadow: SHADOWS.interactive.hover,
         },
         _active: {
           transform: "translateY(0) translateZ(0)",
@@ -325,7 +356,7 @@ export const COMPONENT_STYLES = {
           bg: COLORS.interactive.hover,
           borderColor: COLORS.accent.secondary,
           transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.1)",
+          boxShadow: SHADOWS.interactive.hover,
         },
         _active: {
           transform: "translateY(0) translateZ(0)",
@@ -345,7 +376,7 @@ export const COMPONENT_STYLES = {
           color: COLORS.accent.primary,
           borderColor: BORDERS.colors.primary,
           transform: "translateY(-1px) translateZ(0)",
-          boxShadow: "0 2px 8px rgba(232, 131, 58, 0.15)",
+          boxShadow: SHADOWS.premium.glow,
         },
         _active: {
           transform: "translateY(0) translateZ(0)",
@@ -362,7 +393,7 @@ export const COMPONENT_STYLES = {
       borderRadius: BORDERS.radius.lg,
       border: `${BORDERS.width.thin} ${BORDERS.style.solid} ${COLORS.bg.tertiary}`,
       padding: SPACING.component.cardPadding,
-      boxShadow: SHADOWS.glass.subtle,
+      boxShadow: SHADOWS.premium.card,
       // CSS Isolation
       isolation: "isolate",
       position: "relative",

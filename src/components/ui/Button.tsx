@@ -52,10 +52,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    // Chakra UI v3対応：直接プロパティを設定
+    // Chakra UI v3対応：デザインシステムから直接スタイルを取得
     const getButtonStyles = () => {
       const sizeConfig = DESIGN_SYSTEM.components.button.sizes[size];
       const variantConfig = DESIGN_SYSTEM.components.button.variants[variant];
+
       const getPaddingValues = (padding: string) => {
         const parts = padding.split(" ");
         return {
@@ -63,38 +64,37 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           px: parts[1] || parts[0] || "0.75rem",
         };
       };
+
       const paddingValues = getPaddingValues(sizeConfig.padding);
+
       return {
-        fontFamily: DESIGN_SYSTEM.typography.fonts.sans,
-        fontWeight: DESIGN_SYSTEM.typography.fontWeight.medium,
-        borderRadius: DESIGN_SYSTEM.borders.radius.md,
-        cursor: disabled || isLoading ? "not-allowed" : "pointer",
+        // 基本スタイル（デザインシステムから）
+        ...DESIGN_SYSTEM.components.button.base,
+
+        // サイズ設定
         fontSize: sizeConfig.fontSize,
         px: paddingValues.px,
         py: paddingValues.py,
         minH: sizeConfig.minHeight,
         lineHeight: sizeConfig.lineHeight,
+
+        // バリアント設定（手作り感のある新しいスタイル）
         bg: variantConfig.bg,
         color: variantConfig.color,
         borderWidth: variantConfig.border !== "none" ? "1px" : "0",
-        borderColor: variantConfig.border !== "none" ? "#d1bfa3" : undefined,
+        borderColor:
+          variantConfig.border !== "none" &&
+          variantConfig.border.includes("solid")
+            ? variantConfig.border.split(" ")[3]
+            : undefined,
         borderStyle: variantConfig.border !== "none" ? "solid" : undefined,
-        // 控えめなhover/active
-        _hover:
-          disabled || isLoading
-            ? {}
-            : {
-                bg: "#f5e9d7",
-                color: variantConfig.color,
-                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-              },
-        _active:
-          disabled || isLoading
-            ? {}
-            : { bg: "#e9dcc3", color: variantConfig.color },
-        isolation: "isolate",
-        position: "relative",
-        transition: "all 0.15s cubic-bezier(0.4,0,0.2,1)",
+
+        // 手作り感のあるホバー効果（デザインシステムから）
+        _hover: disabled || isLoading ? {} : variantConfig._hover,
+        _active: disabled || isLoading ? {} : variantConfig._active,
+
+        // 状態管理
+        cursor: disabled || isLoading ? "not-allowed" : "pointer",
         opacity: disabled && !isLoading ? 0.6 : 1,
       };
     };
