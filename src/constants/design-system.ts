@@ -16,6 +16,8 @@ export const COLORS = {
     tertiary: "#1e1e1e", // ターシャリーブラック - カードやパネル
     surface: "#2a2a2a", // サーフェス - インタラクティブ要素
     overlay: "#0f0f0f", // オーバーレイ - モーダル背景
+    editor: "#0d1117", // エディター専用背景 - GitHubライク
+    editorGutter: "#161b22", // エディターガター - 行番号領域
   },
 
   // Typography System - 視認性を重視したコントラスト設計
@@ -288,6 +290,9 @@ export const COMPONENT_STYLES = {
       transform: "translateZ(0)",
       backfaceVisibility: "hidden",
       isolation: "isolate",
+      // プレミアム3D押し込み効果の基盤
+      position: "relative",
+      willChange: "transform, box-shadow",
     },
 
     sizes: {
@@ -322,67 +327,94 @@ export const COMPONENT_STYLES = {
         bg: COLORS.accent.primary,
         color: COLORS.text.primary,
         border: "none",
+        boxShadow:
+          "0 3px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
         _hover: {
           bg: COLORS.accent.secondary,
-          transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: SHADOWS.interactive.hover,
+          transform: "translateY(-2px) translateZ(0)", // より明確な浮上感
+          boxShadow:
+            "0 6px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
         },
         _active: {
-          transform: "translateY(0) translateZ(0)",
+          transform: "translateY(1px) translateZ(0)", // 明確な押し込み感
+          boxShadow:
+            "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)",
           bg: COLORS.accent.tertiary,
+          transition: `all ${ANIMATION.duration.fastest} ${ANIMATION.easing.sharp}`,
         },
-      },
+      } as const,
       ghost: {
-        bg: "transparent",
+        bg: "rgba(42, 42, 42, 0.3)", // 半透明のサーフェス
         color: COLORS.text.secondary,
-        border: `${BORDERS.width.thin} ${BORDERS.style.solid} transparent`,
+        border: `${BORDERS.width.thin} ${BORDERS.style.solid} rgba(255, 255, 255, 0.1)`,
+        backdropFilter: "blur(8px)", // プレミアムなガラス効果
+        boxShadow:
+          "0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
         _hover: {
-          bg: COLORS.interactive.hover,
-          color: COLORS.text.primary,
-          borderColor: BORDERS.colors.subtle,
-          transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: SHADOWS.interactive.hover,
+          bg: "rgba(255, 107, 53, 0.12)", // オレンジのホバー
+          color: COLORS.accent.primary,
+          borderColor: "rgba(255, 107, 53, 0.3)",
+          transform: "translateY(-1px) translateZ(0)",
+          boxShadow:
+            "0 4px 16px rgba(255, 107, 53, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(12px)",
         },
         _active: {
-          transform: "translateY(0) translateZ(0)",
-          bg: COLORS.interactive.active,
+          transform: "translateY(0.5px) translateZ(0)", // 微細な押し込み
+          bg: "rgba(255, 107, 53, 0.2)",
+          boxShadow:
+            "0 1px 4px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.08)",
+          transition: `all ${ANIMATION.duration.fastest} ${ANIMATION.easing.sharp}`,
         },
-      },
+      } as const,
       outline: {
         bg: "transparent",
         color: COLORS.accent.primary,
-        border: `${BORDERS.width.thin} ${BORDERS.style.solid} ${COLORS.accent.primary}`,
+        border: `${BORDERS.width.medium} ${BORDERS.style.solid} ${COLORS.accent.primary}`,
+        boxShadow: "0 2px 4px rgba(255, 107, 53, 0.1)",
         _hover: {
-          bg: COLORS.interactive.hover,
+          bg: "rgba(255, 107, 53, 0.08)",
           borderColor: COLORS.accent.secondary,
-          transform: "translateY(-1px) translateZ(0)", // GPU最適化
-          boxShadow: SHADOWS.interactive.hover,
+          transform: "translateY(-1px) translateZ(0)",
+          boxShadow: "0 4px 12px rgba(255, 107, 53, 0.2)",
         },
         _active: {
-          transform: "translateY(0) translateZ(0)",
-          bg: COLORS.interactive.active,
+          transform: "translateY(0.5px) translateZ(0)",
+          bg: "rgba(255, 107, 53, 0.15)",
+          boxShadow:
+            "0 1px 3px rgba(255, 107, 53, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.1)",
+          transition: `all ${ANIMATION.duration.fastest} ${ANIMATION.easing.sharp}`,
         },
-      },
-      // 新しい専用variant: エディタボタン用
+      } as const,
+      // 新しい専用variant: エディタボタン用 - プレミアム3D効果
       editorAction: {
-        bg: COLORS.bg.tertiary,
+        bg: "rgba(30, 30, 30, 0.8)", // より深いサーフェス
         color: COLORS.text.tertiary,
-        border: `${BORDERS.width.thin} ${BORDERS.style.solid} ${BORDERS.colors.subtle}`,
+        border: `${BORDERS.width.thin} ${BORDERS.style.solid} rgba(255, 255, 255, 0.08)`,
         minHeight: "2.25rem",
         padding: "0.5rem 0.75rem",
         fontSize: TYPOGRAPHY.fontSize.xs,
+        backdropFilter: "blur(4px)",
+        boxShadow:
+          "0 2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.03)",
         _hover: {
-          bg: COLORS.bg.surface,
+          bg: "rgba(42, 42, 42, 0.9)",
           color: COLORS.accent.primary,
-          borderColor: BORDERS.colors.primary,
+          borderColor: "rgba(255, 107, 53, 0.4)",
           transform: "translateY(-1px) translateZ(0)",
-          boxShadow: SHADOWS.premium.glow,
+          boxShadow:
+            "0 4px 12px rgba(255, 107, 53, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+          backdropFilter: "blur(8px)",
         },
         _active: {
-          transform: "translateY(0) translateZ(0)",
-          bg: COLORS.interactive.active,
+          transform: "translateY(0.5px) translateZ(0)", // 繊細な押し込み
+          bg: "rgba(255, 107, 53, 0.15)",
+          borderColor: "rgba(255, 107, 53, 0.6)",
+          boxShadow:
+            "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+          transition: `all ${ANIMATION.duration.fastest} ${ANIMATION.easing.sharp}`,
         },
-      },
+      } as const,
     },
   },
 

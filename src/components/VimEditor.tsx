@@ -595,11 +595,14 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               flex="1"
               position="relative"
               overflow="hidden"
+              bg={DESIGN_SYSTEM.colors.bg.editor} // エディター専用背景
               borderLeft="1px solid"
               borderColor={DESIGN_SYSTEM.borders.colors.subtle}
               maxW="50%" // 確実に50%以下に制限
               minW="0" // flexアイテムの最小幅を0に設定
               className="codemirror-isolated-container" // CodeMirror専用の分離クラス
+              // 内側にプレミアムなシャドウ効果を追加
+              boxShadow="inset 2px 0 8px rgba(0, 0, 0, 0.1)"
             >
               <CodeMirror
                 key={mode} // モードが変わったら新しいインスタンスを作成
@@ -615,7 +618,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                   height: "100%",
                   width: "100%", // 親コンテナに合わせる
                   maxWidth: "100%", // 絶対に親を超えない
-                  backgroundColor: DESIGN_SYSTEM.colors.bg.secondary, // 新しいデザインシステムに合わせて調整
+                  backgroundColor: DESIGN_SYSTEM.colors.bg.editor, // 専用エディター背景色
                   fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
                 }}
                 autoFocus
@@ -636,13 +639,16 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
             flex="1"
             position="relative"
             overflow="hidden"
-            bg={DESIGN_SYSTEM.colors.bg.primary}
+            bg={DESIGN_SYSTEM.colors.bg.editor} // エディター専用背景
             borderRadius={`0 0 ${DESIGN_SYSTEM.borders.radius.lg} ${DESIGN_SYSTEM.borders.radius.lg}`}
+            border={`2px solid ${DESIGN_SYSTEM.colors.bg.tertiary}`} // より強い境界線
             isolation="isolate" // CSS分離を強制してホバー効果の影響を防ぐ
             zIndex={1} // スタッキングコンテキストを作成
             maxW="100%" // 確実に親の幅以下に制限
             minW="0" // flexアイテムの最小幅を0に設定
             className="codemirror-isolated-container" // CodeMirror専用の分離クラス
+            // 内側にプレミアムなシャドウ効果を追加
+            boxShadow="inset 0 2px 8px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(255, 107, 53, 0.1)"
           >
             <CodeMirror
               key={mode} // モードが変わったら新しいインスタンスを作成
@@ -658,7 +664,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 height: "100%",
                 width: "100%", // 親コンテナに合わせる
                 maxWidth: "100%", // 絶対に親を超えない
-                backgroundColor: DESIGN_SYSTEM.colors.bg.secondary, // 新しいデザインシステムに合わせて調整
+                backgroundColor: DESIGN_SYSTEM.colors.bg.editor, // 専用エディター背景色
                 fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
               }}
               autoFocus

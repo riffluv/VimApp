@@ -27,10 +27,11 @@ export interface ButtonProps
 }
 
 /**
- * 最適化されたボタンコンポーネント
+ * 最適化されたボタンコンポーネント - 2025年プレミアム3D効果対応
  *
  * Features:
  * - 2025年CSS最適化（GPU accelerated, CSS isolation）
+ * - プレミアム3D押し込み効果
  * - 完全型安全
  * - 拡張性の高いvariant/sizeシステム
  * - アクセシビリティ準拠
@@ -68,7 +69,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       const paddingValues = getPaddingValues(sizeConfig.padding);
 
       return {
-        // 基本スタイル（デザインシステムから）
+        // 基本スタイル（デザインシステムから - プレミアム3D効果対応）
         ...DESIGN_SYSTEM.components.button.base,
 
         // サイズ設定
@@ -78,7 +79,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         minH: sizeConfig.minHeight,
         lineHeight: sizeConfig.lineHeight,
 
-        // バリアント設定（手作り感のある新しいスタイル）
+        // バリアント設定（プレミアム3D効果付き）
         bg: variantConfig.bg,
         color: variantConfig.color,
         borderWidth: variantConfig.border !== "none" ? "1px" : "0",
@@ -89,9 +90,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : undefined,
         borderStyle: variantConfig.border !== "none" ? "solid" : undefined,
 
-        // 手作り感のあるホバー効果（デザインシステムから）
-        _hover: disabled || isLoading ? {} : variantConfig._hover,
-        _active: disabled || isLoading ? {} : variantConfig._active,
+        // プレミアム3D効果の追加（型安全な方法）
+        boxShadow:
+          "boxShadow" in variantConfig ? variantConfig.boxShadow : undefined,
+        backdropFilter:
+          "backdropFilter" in variantConfig
+            ? variantConfig.backdropFilter
+            : undefined,
+
+        // プレミアム3D押し込み効果（デザインシステムから）
+        _hover:
+          disabled || isLoading
+            ? {}
+            : {
+                ...variantConfig._hover,
+                transition: `all ${DESIGN_SYSTEM.animation.duration.fast} ${DESIGN_SYSTEM.animation.easing.easeOut}`,
+              },
+        _active:
+          disabled || isLoading
+            ? {}
+            : {
+                ...variantConfig._active,
+                // アクティブ時は即座に反応する
+                transition: `all ${DESIGN_SYSTEM.animation.duration.fastest} ${DESIGN_SYSTEM.animation.easing.sharp}`,
+              },
 
         // 状態管理
         cursor: disabled || isLoading ? "not-allowed" : "pointer",
@@ -155,29 +177,15 @@ Button.displayName = "Button";
  * 使用頻度の高いパターンを事前定義
  */
 
-// エディタアクションボタン（2025年スタイルの3D効果付き）
+// エディタアクションボタン（2025年プレミアム3D効果付き）
 export const EditorActionButton = forwardRef<
   HTMLButtonElement,
   ButtonProps // variant プロパティを許可
 >((props, ref) => (
   <Button
     ref={ref}
-    variant="ghost"
+    variant="editorAction" // 新しいプレミアムvariantを使用
     size="sm"
-    minH="2.25rem"
-    px="0.75rem"
-    py="0.5rem"
-    position="relative"
-    borderColor="#d1bfa3"
-    fontWeight="500"
-    fontSize="sm"
-    letterSpacing="0.01em"
-    _hover={{
-      bg: "#f5e9d7",
-      color: "#a67c52",
-      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-    }}
-    _active={{ bg: "#e9dcc3", color: "#a67c52" }}
     {...props}
   />
 ));
@@ -200,7 +208,7 @@ export const SecondaryButton = forwardRef<
 
 SecondaryButton.displayName = "SecondaryButton";
 
-// モードタブボタン（2025年レベルの3D効果付き特殊スタイリング）
+// モードタブボタン（2025年プレミアム3D効果付き特殊スタイリング）
 export const ModeTabButton = forwardRef<
   HTMLButtonElement,
   Omit<ButtonProps, "variant"> & { isActive: boolean }
@@ -209,9 +217,17 @@ export const ModeTabButton = forwardRef<
     ref={ref}
     variant="ghost"
     size="sm"
-    bg={isActive ? "#f5e9d7" : "transparent"}
-    color={isActive ? "#a67c52" : "#b0a18f"}
-    borderColor={isActive ? "#d1bfa3" : "#e5e0d6"}
+    // プレミアム3D効果付きのスタイル設定
+    bg={isActive ? "rgba(255, 107, 53, 0.15)" : "rgba(30, 30, 30, 0.6)"}
+    color={
+      isActive
+        ? DESIGN_SYSTEM.colors.accent.primary
+        : DESIGN_SYSTEM.colors.text.tertiary
+    }
+    borderColor={
+      isActive ? "rgba(255, 107, 53, 0.4)" : "rgba(255, 255, 255, 0.08)"
+    }
+    borderWidth="1px"
     textTransform="uppercase"
     letterSpacing="0.05em"
     fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
@@ -222,8 +238,29 @@ export const ModeTabButton = forwardRef<
     maxH="2rem"
     px="0.75rem"
     py="0.25rem"
-    _hover={{ bg: "#f5e9d7", color: "#a67c52" }}
-    _active={{ bg: "#e9dcc3", color: "#a67c52" }}
+    // プレミアム3D効果
+    boxShadow={
+      isActive
+        ? "0 2px 8px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+        : "0 1px 4px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.03)"
+    }
+    backdropFilter="blur(6px)"
+    _hover={{
+      bg: "rgba(255, 107, 53, 0.12)",
+      color: DESIGN_SYSTEM.colors.accent.primary,
+      borderColor: "rgba(255, 107, 53, 0.5)",
+      transform: "translateY(-1px) translateZ(0)",
+      boxShadow:
+        "0 4px 12px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+      backdropFilter: "blur(8px)",
+    }}
+    _active={{
+      transform: "translateY(0.5px) translateZ(0)", // 繊細な押し込み
+      bg: "rgba(255, 107, 53, 0.2)",
+      boxShadow:
+        "0 1px 3px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.1)",
+      transition: `all ${DESIGN_SYSTEM.animation.duration.fastest} ${DESIGN_SYSTEM.animation.easing.sharp}`,
+    }}
     {...props}
   >
     {children}
