@@ -296,13 +296,13 @@
     /* Size management */
     width: 100%;
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
     box-sizing: border-box;
   }
 
   .cm-scroller {
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
     position: relative;
     z-index: var(--z-dropdown);
 
@@ -314,7 +314,7 @@
 
   .cm-content {
     max-width: none;
-    min-width: 100%;
+    /* min-width: 100%; ← 削除 */
     position: relative;
     z-index: var(--z-dropdown);
   }
