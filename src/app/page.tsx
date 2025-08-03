@@ -29,9 +29,9 @@ const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ),
 });
 
-// ページレベルのMotion Components（MDガイドライン準拠）
-const MotionBox = motion.create(Box);
-const MotionFlex = motion.create(Flex);
+// ページレベルのMotion Components（Framer Motion標準API使用）
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
 
 export default function Home() {
   // 状態管理 - 必要最小限

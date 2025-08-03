@@ -1,7 +1,18 @@
 "use client";
 
-import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
-import { FiBookOpen, FiChevronDown } from "react-icons/fi";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Flex,
+  Icon,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { FiBookOpen } from "react-icons/fi";
 
 import {
   CATEGORY_INFO,
@@ -23,7 +34,7 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
   return acc;
 }, {} as Record<CommandCategory, Command[]>);
 
-export default function CheatSheet({ }: CheatSheetProps) {
+export default function CheatSheet({}: CheatSheetProps) {
   return (
     <Box
       bg={DESIGN_SYSTEM.colors.bg.primary}
@@ -127,17 +138,12 @@ export default function CheatSheet({ }: CheatSheetProps) {
           },
         }}
       >
-        <Accordion.Root multiple defaultValue={["basic", "movement"]}>
-          {Object.entries(groupedCommands).map(([category, commands]) => {
+        <Accordion allowMultiple defaultIndex={[0, 1]}>
+          {Object.entries(groupedCommands).map(([category, commands], idx) => {
             const catInfo = CATEGORY_INFO[category as CommandCategory];
             return (
-              <Accordion.Item
-                key={category}
-                value={category}
-                border="none"
-                mb={2}
-              >
-                <Accordion.ItemTrigger
+              <AccordionItem key={category} border="none" mb={2}>
+                <AccordionButton
                   bg={DESIGN_SYSTEM.colors.bg.tertiary}
                   borderRadius={DESIGN_SYSTEM.borders.radius.md}
                   border="1px solid"
@@ -165,62 +171,53 @@ export default function CheatSheet({ }: CheatSheetProps) {
                       {catInfo.title}
                     </Text>
                   </Flex>
-                  <Accordion.ItemIndicator>
-                    <Icon
-                      as={FiChevronDown}
-                      color={DESIGN_SYSTEM.colors.text.tertiary}
-                      transition="transform 0.2s ease"
-                      _open={{ transform: "rotate(180deg)" }}
-                    />
-                  </Accordion.ItemIndicator>
-                </Accordion.ItemTrigger>
-                <Accordion.ItemContent>
-                  <Accordion.ItemBody pb={2} pt={2} px={1}>
-                    <Stack gap={1} align="stretch">
-                      {commands.map((item, index) => (
-                        <Flex
-                          key={index}
-                          py="6px"
-                          px={3}
-                          alignItems="center"
-                          borderRadius={DESIGN_SYSTEM.borders.radius.md}
-                          _hover={{
-                            bg: DESIGN_SYSTEM.colors.bg.secondary,
-                          }}
-                          transition="all 0.2s ease"
-                          cursor="pointer"
+                  <AccordionIcon color={DESIGN_SYSTEM.colors.text.tertiary} />
+                </AccordionButton>
+                <AccordionPanel pb={2} pt={2} px={1}>
+                  <Stack gap={1} align="stretch">
+                    {commands.map((item, index) => (
+                      <Flex
+                        key={index}
+                        py="6px"
+                        px={3}
+                        alignItems="center"
+                        borderRadius={DESIGN_SYSTEM.borders.radius.md}
+                        _hover={{
+                          bg: DESIGN_SYSTEM.colors.bg.secondary,
+                        }}
+                        transition="all 0.2s ease"
+                        cursor="pointer"
+                      >
+                        <Box
+                          fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
+                          fontWeight={
+                            DESIGN_SYSTEM.typography.fontWeight.semibold
+                          }
+                          color={DESIGN_SYSTEM.colors.accent.secondary}
+                          fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+                          mr={4}
+                          minW={14}
+                          textAlign="left"
                         >
-                          <Box
-                            fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
-                            fontWeight={
-                              DESIGN_SYSTEM.typography.fontWeight.semibold
-                            }
-                            color={DESIGN_SYSTEM.colors.accent.secondary}
-                            fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-                            mr={4}
-                            minW={14}
-                            textAlign="left"
-                          >
-                            {item.command}
-                          </Box>
-                          <Box
-                            fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-                            flex={1}
-                            color={DESIGN_SYSTEM.colors.text.tertiary}
-                            textAlign="left"
-                            lineHeight="1.4"
-                          >
-                            {item.description}
-                          </Box>
-                        </Flex>
-                      ))}
-                    </Stack>
-                  </Accordion.ItemBody>
-                </Accordion.ItemContent>
-              </Accordion.Item>
+                          {item.command}
+                        </Box>
+                        <Box
+                          fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+                          flex={1}
+                          color={DESIGN_SYSTEM.colors.text.tertiary}
+                          textAlign="left"
+                          lineHeight="1.4"
+                        >
+                          {item.description}
+                        </Box>
+                      </Flex>
+                    ))}
+                  </Stack>
+                </AccordionPanel>
+              </AccordionItem>
             );
           })}
-        </Accordion.Root>
+        </Accordion>
       </Box>
 
       {/* Footer */}

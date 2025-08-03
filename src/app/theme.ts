@@ -1,6 +1,6 @@
-import { createSystem, defaultConfig } from "@chakra-ui/react";
+import { defineConfig } from "@chakra-ui/react";
 
-const customTheme = createSystem(defaultConfig, {
+const config = defineConfig({
   theme: {
     tokens: {
       // 2025年最新: モダンビューポート単位とDPIスケーリング対応
@@ -163,7 +163,7 @@ const customTheme = createSystem(defaultConfig, {
           value:
             "0 12px 48px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
         },
-        "glass": {
+        glass: {
           value: "0 8px 24px rgba(0, 0, 0, 0.4)",
         },
         neo: {
