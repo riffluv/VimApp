@@ -83,10 +83,9 @@
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.25);
   --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.2);
 
-  /* Premium Shadows with Orange Glow */
-  --shadow-premium-card: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.1);
-  --shadow-premium-float: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.15);
-  --shadow-premium-glow: 0 0 20px rgba(255, 107, 53, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4);
+  /* Simple shadows */
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* Interactive Shadows */
   --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2);
@@ -184,7 +183,7 @@
     text-shadow: none;
   }
 
-  /* Premium Scrollbar Design */
+  /* Scrollbar Design */
   ::-webkit-scrollbar {
     width: 14px;
     height: 14px;
@@ -241,7 +240,7 @@
     isolation: isolate;
   }
 
-  /* CodeMirror editor styles - Premium Rich Black Theme */
+  /* CodeMirror editor styles */
   .cm-editor {
     width: 100%;
     height: 100%;
@@ -259,7 +258,7 @@
     outline: none;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-premium-card);
+    box-shadow: var(--shadow-card);
     backdrop-filter: blur(8px);
   }
 
@@ -349,12 +348,12 @@
     border-radius: 2px;
   }
 
-  /* Premium autocomplete tooltip styles */
+  /* Autocomplete tooltip styles */
   .cm-tooltip-autocomplete {
     border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-lg);
     background: var(--color-bg-overlay);
-    box-shadow: var(--shadow-premium-float);
+    box-shadow: var(--shadow-float);
     backdrop-filter: blur(16px);
     max-height: 320px;
     overflow: hidden;

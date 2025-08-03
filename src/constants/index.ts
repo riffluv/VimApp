@@ -290,8 +290,8 @@ export const UI_STYLES = {
     iconMargin: 1.5,
   },
   shadow: {
-    subtle: DESIGN_SYSTEM.shadows.premium.card,
-    medium: DESIGN_SYSTEM.shadows.premium.float,
+    subtle: DESIGN_SYSTEM.shadows.md,
+    medium: DESIGN_SYSTEM.shadows.lg,
   },
   colors: {
     primary: DESIGN_SYSTEM.colors.accent.primary,
@@ -396,3 +396,4 @@ export const EDITOR_CONFIG = {
 
 // Export design system for external use
 export { DESIGN_SYSTEM };
+

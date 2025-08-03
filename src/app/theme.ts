@@ -114,9 +114,8 @@ const customTheme = createSystem(defaultConfig, {
           accent: {
             value: "linear-gradient(135deg, #ff6b35 0%, #ff8757 100%)",
           },
-          premium: {
-            value:
-              "linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, transparent 50%, rgba(255, 107, 53, 0.05) 100%)",
+          subtle: {
+            value: "rgba(255, 107, 53, 0.1)",
           },
           "rich-black": {
             value:
@@ -164,9 +163,8 @@ const customTheme = createSystem(defaultConfig, {
           value:
             "0 12px 48px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
         },
-        "glass-premium": {
-          value:
-            "0 20px 60px 0 rgba(0, 0, 0, 0.5), 0 8px 25px 0 rgba(255, 107, 53, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+        "glass": {
+          value: "0 8px 24px rgba(0, 0, 0, 0.4)",
         },
         neo: {
           value:

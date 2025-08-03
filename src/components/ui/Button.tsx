@@ -262,10 +262,10 @@ export const ModeTabButton = forwardRef<
     if (isPressed) {
       return {
         background: isActive
-          ? `linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(255, 107, 53, 0.1))`
-          : `linear-gradient(135deg, #1a1a1a, #0f0f0f)`,
+          ? "rgba(255, 107, 53, 0.2)"
+          : "#1a1a1a",
         color: isActive ? "#ff6b35" : "#ffffff",
-        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.4)" : "rgba(255, 255, 255, 0.1)"}`,
+        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.5)" : "rgba(255, 255, 255, 0.1)"}`,
         transform: "translateY(0)",
         boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.3)",
       };
@@ -274,27 +274,27 @@ export const ModeTabButton = forwardRef<
     if (isHovered) {
       return {
         background: isActive
-          ? `linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 107, 53, 0.08))`
-          : `linear-gradient(135deg, #2a2a2a, #1e1e1e)`,
+          ? "rgba(255, 107, 53, 0.15)"
+          : "#2a2a2a",
         color: isActive ? "#ff6b35" : "#ffffff",
-        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.3)" : "rgba(255, 255, 255, 0.15)"}`,
-        transform: "translateY(-2px)",
+        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.4)" : "rgba(255, 255, 255, 0.2)"}`,
+        transform: "translateY(-1px)",
         boxShadow: isActive
-          ? "0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.15)"
-          : "0 4px 8px rgba(0, 0, 0, 0.3)",
+          ? "0 4px 12px rgba(255, 107, 53, 0.3)"
+          : "0 2px 8px rgba(0, 0, 0, 0.3)",
       };
     }
 
     return {
       background: isActive
-        ? `linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05))`
-        : `linear-gradient(135deg, #1e1e1e, #141414)`,
+        ? "rgba(255, 107, 53, 0.1)"
+        : "#1e1e1e",
       color: isActive ? "#ff6b35" : "#c4c4c4",
-      border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.3)" : "rgba(255, 255, 255, 0.05)"}`,
-      transform: isActive ? "translateY(-1px)" : "translateY(0)",
+      border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.3)" : "rgba(255, 255, 255, 0.1)"}`,
+      transform: "translateY(0)",
       boxShadow: isActive
-        ? "0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.1)"
-        : "0 2px 8px rgba(0, 0, 0, 0.4)",
+        ? "0 2px 8px rgba(255, 107, 53, 0.2)"
+        : "0 1px 4px rgba(0, 0, 0, 0.3)",
     };
   };
 

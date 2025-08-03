@@ -4,7 +4,7 @@
  */
 
 // =============================================================================
-// COLOR SYSTEM - Rich Black & Orange (Premium Edition)
+// COLOR SYSTEM - Rich Black & Orange
 // =============================================================================
 export const COLORS = {
   // Background Colors - Rich Black Variations
@@ -141,27 +141,8 @@ export const SHADOWS = {
   lg: "0 8px 16px rgba(0, 0, 0, 0.25)",
   xl: "0 16px 32px rgba(0, 0, 0, 0.2)",
 
-  // Premium shadows with orange glow
-  premium: {
-    card: "0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.1)",
-    float: "0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.15)",
-    overlay: "0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 107, 53, 0.2)",
-    glow: "0 0 20px rgba(255, 107, 53, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4)",
-  },
-
-  // Interactive shadows
-  interactive: {
-    hover: "0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2)",
-    active: "0 2px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2)",
-    focus: "0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3)",
-  },
-
-  // Inner shadows for depth
-  inset: {
-    subtle: "inset 0 1px 2px rgba(0, 0, 0, 0.2)",
-    medium: "inset 0 2px 4px rgba(0, 0, 0, 0.3)",
-    deep: "inset 0 4px 8px rgba(0, 0, 0, 0.4)",
-  },
+  // Simple focus shadow
+  focus: "0 0 0 3px rgba(255, 107, 53, 0.4)",
 } as const;
 
 // =============================================================================
@@ -229,34 +210,39 @@ export const COMPONENT_STYLES = {
     variants: {
       // Primary orange button
       solid: {
-        bg: `linear-gradient(135deg, ${COLORS.accent.primary}, ${COLORS.accent.secondary})`,
+        bg: COLORS.accent.primary,
         color: COLORS.text.primary,
         border: "none",
-        boxShadow: SHADOWS.premium.glow,
+        boxShadow: "0 2px 6px rgba(255, 107, 53, 0.3)",
         _hover: {
-          bg: `linear-gradient(135deg, ${COLORS.accent.secondary}, ${COLORS.accent.tertiary})`,
-          boxShadow: SHADOWS.interactive.hover,
+          bg: COLORS.accent.secondary,
+          boxShadow: "0 4px 12px rgba(255, 107, 53, 0.4)",
           transform: "translateY(-1px)",
         },
         _active: {
-          boxShadow: SHADOWS.interactive.active,
+          bg: COLORS.accent.tertiary,
+          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
           transform: "translateY(0)",
         },
       },
 
       // Subtle ghost button
       ghost: {
-        bg: `rgba(30, 30, 30, 0.6)`,
+        bg: COLORS.bg.tertiary,
         color: COLORS.text.secondary,
         border: `1px solid ${COLORS.border.subtle}`,
-        backdropFilter: "blur(8px)",
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
         _hover: {
-          bg: COLORS.interactive.hover,
+          bg: COLORS.bg.quaternary,
           color: COLORS.text.primary,
           border: `1px solid ${COLORS.border.secondary}`,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+          transform: "translateY(-1px)",
         },
         _active: {
-          bg: COLORS.interactive.active,
+          bg: COLORS.bg.secondary,
+          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
+          transform: "translateY(0)",
         },
       },
 
@@ -269,71 +255,71 @@ export const COMPONENT_STYLES = {
           bg: COLORS.accent.subtle,
           color: COLORS.accent.primary,
           border: `1px solid ${COLORS.accent.secondary}`,
+          boxShadow: "0 2px 8px rgba(255, 107, 53, 0.2)",
+          transform: "translateY(-1px)",
         },
         _active: {
           bg: COLORS.interactive.active,
+          boxShadow: "inset 0 2px 4px rgba(255, 107, 53, 0.2)",
+          transform: "translateY(0)",
         },
       },
 
-      // Premium Editor Actions - Professional & Rich Design
+      // Editor action button with natural hover effects
       editorAction: {
-        bg: `linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.9))`,
+        bg: COLORS.bg.tertiary,
         color: COLORS.text.secondary,
         border: `1px solid ${COLORS.border.subtle}`,
         minHeight: "2.25rem",
         padding: "0.625rem 1rem",
         fontSize: TYPOGRAPHY.fontSize.sm,
         fontWeight: TYPOGRAPHY.fontWeight.medium,
-        backdropFilter: "blur(12px)",
-        boxShadow: `0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)`,
         borderRadius: BORDERS.radius.md,
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
         _hover: {
-          bg: `linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.9))`,
+          bg: COLORS.bg.quaternary,
           color: COLORS.text.primary,
           border: `1px solid ${COLORS.border.secondary}`,
-          boxShadow: `0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
           transform: "translateY(-1px)",
         },
         _active: {
-          bg: `linear-gradient(135deg, rgba(15, 15, 15, 0.95), rgba(10, 10, 10, 0.9))`,
-          boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2)`,
+          bg: COLORS.bg.secondary,
+          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
           transform: "translateY(0)",
         },
       },
 
-      // Premium Primary Variant for Reset/Primary Actions
+      // Primary button with natural hover effects
       editorPrimary: {
-        bg: `linear-gradient(135deg, ${COLORS.accent.primary}, ${COLORS.accent.secondary})`,
+        bg: COLORS.accent.primary,
         color: COLORS.text.primary,
         border: "none",
         minHeight: "2.25rem",
         padding: "0.625rem 1rem",
         fontSize: TYPOGRAPHY.fontSize.sm,
         fontWeight: TYPOGRAPHY.fontWeight.semibold,
-        backdropFilter: "blur(12px)",
-        boxShadow: `0 4px 16px rgba(255, 107, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
         borderRadius: BORDERS.radius.md,
+        boxShadow: "0 2px 6px rgba(255, 107, 53, 0.3)",
         _hover: {
-          bg: `linear-gradient(135deg, ${COLORS.accent.secondary}, ${COLORS.accent.tertiary})`,
-          boxShadow: `0 6px 20px rgba(255, 107, 53, 0.5), 0 0 0 1px rgba(255, 107, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
-          transform: "translateY(-2px)",
+          bg: COLORS.accent.secondary,
+          boxShadow: "0 4px 12px rgba(255, 107, 53, 0.4)",
+          transform: "translateY(-1px)",
         },
         _active: {
-          bg: `linear-gradient(135deg, ${COLORS.accent.tertiary}, ${COLORS.accent.primary})`,
-          boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(255, 107, 53, 0.3)`,
+          bg: COLORS.accent.tertiary,
+          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.2)",
           transform: "translateY(0)",
         },
       },
 
       // Danger/destructive actions
       danger: {
-        bg: `linear-gradient(135deg, ${COLORS.status.error}, #dc2626)`,
+        bg: COLORS.status.error,
         color: COLORS.text.primary,
         border: "none",
-        boxShadow: `0 4px 16px rgba(239, 68, 68, 0.3)`,
         _hover: {
-          bg: `linear-gradient(135deg, #dc2626, #b91c1c)`,
-          boxShadow: `0 6px 20px rgba(239, 68, 68, 0.4)`,
+          bg: "#dc2626",
         },
       },
     },
@@ -346,22 +332,19 @@ export const COMPONENT_STYLES = {
         bg: COLORS.bg.tertiary,
         border: `1px solid ${COLORS.border.subtle}`,
         borderRadius: BORDERS.radius.lg,
-        boxShadow: SHADOWS.premium.card,
-        backdropFilter: "blur(8px)",
+        boxShadow: SHADOWS.md,
       },
       elevated: {
         bg: COLORS.bg.quaternary,
         border: `1px solid ${COLORS.border.secondary}`,
         borderRadius: BORDERS.radius.lg,
-        boxShadow: SHADOWS.premium.float,
-        backdropFilter: "blur(12px)",
+        boxShadow: SHADOWS.lg,
       },
       glass: {
         bg: "rgba(30, 30, 30, 0.4)",
         border: `1px solid ${COLORS.border.muted}`,
         borderRadius: BORDERS.radius.lg,
-        boxShadow: SHADOWS.premium.card,
-        backdropFilter: "blur(16px)",
+        boxShadow: SHADOWS.md,
       },
     },
   },
@@ -376,11 +359,8 @@ export const COMPONENT_STYLES = {
         borderRadius: BORDERS.radius.md,
         _focus: {
           border: `1px solid ${COLORS.accent.primary}`,
-          boxShadow: SHADOWS.interactive.focus,
+          boxShadow: SHADOWS.focus,
           outline: "none",
-        },
-        _hover: {
-          border: `1px solid ${COLORS.border.secondary}`,
         },
       },
     },

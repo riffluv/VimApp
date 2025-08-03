@@ -156,7 +156,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
       bg={DESIGN_SYSTEM.colors.bg.primary}
       color={DESIGN_SYSTEM.colors.text.primary}
       borderRadius={DESIGN_SYSTEM.borders.radius.lg}
-      boxShadow={DESIGN_SYSTEM.shadows.premium.overlay}
+      boxShadow={DESIGN_SYSTEM.shadows.md}
       display="flex"
       flexDirection="column"
       borderColor={DESIGN_SYSTEM.borders.colors.subtle}
@@ -168,74 +168,47 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
       borderWidth="1px"
       className="vim-editor-container"
     >
-      {/* Premium Header */}
+      {/* Header */}
       <Flex
         alignItems="center"
         px={4}
         py={3}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}, ${DESIGN_SYSTEM.colors.bg.tertiary})`}
+        bg={DESIGN_SYSTEM.colors.bg.secondary}
         justifyContent="space-between"
         minH="60px"
         maxH="60px"
         position="relative"
-        _before={{
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "1px",
-          background: `linear-gradient(90deg, transparent, ${DESIGN_SYSTEM.colors.accent.primary}, transparent)`,
-          opacity: 0.6,
-        }}
+
       >
         <Flex alignItems="center" gap={3}>
-          {/* Professional Window Controls */}
+          {/* Window Controls */}
           <HStack gap="8px">
             <Box
-              w="14px"
-              h="14px"
+              w="12px"
+              h="12px"
               borderRadius="full"
-              bg="linear-gradient(135deg, #ff6b6b, #ff5252)"
+              bg="#ff6b6b"
               cursor="pointer"
-              boxShadow="0 2px 4px rgba(255, 107, 107, 0.3)"
-              transition="all 0.2s ease"
-              _hover={{
-                transform: "scale(1.1)",
-                boxShadow: "0 4px 8px rgba(255, 107, 107, 0.4)",
-              }}
             />
             <Box
-              w="14px"
-              h="14px"
+              w="12px"
+              h="12px"
               borderRadius="full"
-              bg="linear-gradient(135deg, #ffb74d, #ffa726)"
+              bg="#ffb74d"
               cursor="pointer"
-              boxShadow="0 2px 4px rgba(255, 183, 77, 0.3)"
-              transition="all 0.2s ease"
-              _hover={{
-                transform: "scale(1.1)",
-                boxShadow: "0 4px 8px rgba(255, 183, 77, 0.4)",
-              }}
             />
             <Box
-              w="14px"
-              h="14px"
+              w="12px"
+              h="12px"
               borderRadius="full"
-              bg="linear-gradient(135deg, #66bb6a, #4caf50)"
+              bg="#66bb6a"
               cursor="pointer"
-              boxShadow="0 2px 4px rgba(102, 187, 106, 0.3)"
-              transition="all 0.2s ease"
-              _hover={{
-                transform: "scale(1.1)",
-                boxShadow: "0 4px 8px rgba(102, 187, 106, 0.4)",
-              }}
             />
           </HStack>
 
-          {/* Professional Editor Title */}
+          {/* Editor Title */}
           <Flex alignItems="center" gap={3}>
             <Icon
               as={FiTerminal}
@@ -257,7 +230,6 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                   h="6px"
                   borderRadius="full"
                   bg={DESIGN_SYSTEM.colors.accent.primary}
-                  boxShadow={`0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`}
                 />
                 <Text
                   fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
@@ -276,7 +248,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
           </Flex>
         </Flex>
 
-        {/* Premium Action Buttons */}
+        {/* Action Buttons */}
         <HStack gap={2}>
           <Tooltip
             content={showPreview ? "プレビューを非表示" : "プレビューを表示"}
