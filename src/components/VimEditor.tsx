@@ -177,31 +177,30 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
         bg={DESIGN_SYSTEM.colors.bg.secondary}
         justifyContent="space-between"
-        minH="60px"
-        maxH="60px"
+        minH="var(--header-height)"
+        maxH="var(--header-height)"
         position="relative"
-
       >
         <Flex alignItems="center" gap={3}>
           {/* Window Controls */}
-          <HStack gap="8px">
+          <HStack gap="var(--space-2xs)">
             <Box
-              w="12px"
-              h="12px"
+              w="var(--space-md)"
+              h="var(--space-md)"
               borderRadius="full"
               bg="#ff6b6b"
               cursor="pointer"
             />
             <Box
-              w="12px"
-              h="12px"
+              w="var(--space-md)"
+              h="var(--space-md)"
               borderRadius="full"
               bg="#ffb74d"
               cursor="pointer"
             />
             <Box
-              w="12px"
-              h="12px"
+              w="var(--space-md)"
+              h="var(--space-md)"
               borderRadius="full"
               bg="#66bb6a"
               cursor="pointer"
@@ -226,8 +225,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               </Text>
               <Flex alignItems="center" gap={2} mt={1}>
                 <Box
-                  w="6px"
-                  h="6px"
+                  w="var(--space-xs)"
+                  h="var(--space-xs)"
                   borderRadius="full"
                   bg={DESIGN_SYSTEM.colors.accent.primary}
                 />
@@ -240,8 +239,8 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                   {mode === "html"
                     ? "index.html"
                     : mode === "css"
-                      ? "style.css"
-                      : "script.js"}
+                    ? "style.css"
+                    : "script.js"}
                 </Text>
               </Flex>
             </Box>
@@ -258,7 +257,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={handlePreviewToggle}
                 disabled={showCodePenMode}
                 size="sm"
-                style={{ minWidth: "88px" }}
+                style={{ minWidth: "var(--button-min-width)" }}
               >
                 Preview
               </EditorPrimaryButton>
@@ -267,7 +266,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={handlePreviewToggle}
                 disabled={showCodePenMode}
                 size="sm"
-                style={{ minWidth: "88px" }}
+                style={{ minWidth: "var(--button-min-width)" }}
               >
                 Preview
               </EditorActionButton>
@@ -282,7 +281,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={handleCodePenToggle}
                 leftIcon={<Icon as={FiBookOpen} />}
                 size="sm"
-                style={{ minWidth: "88px" }}
+                style={{ minWidth: "var(--button-min-width)" }}
               >
                 CodePen
               </EditorPrimaryButton>
@@ -291,7 +290,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
                 onClick={handleCodePenToggle}
                 leftIcon={<Icon as={FiBookOpen} />}
                 size="sm"
-                style={{ minWidth: "88px" }}
+                style={{ minWidth: "var(--button-min-width)" }}
               >
                 CodePen
               </EditorActionButton>
@@ -303,7 +302,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               onClick={() => clearDoc(mode)}
               leftIcon={<GiBroom />}
               size="sm"
-              style={{ minWidth: "88px" }}
+              style={{ minWidth: "var(--button-min-width)" }}
             >
               Clear
             </EditorActionButton>
@@ -314,7 +313,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               onClick={handleResetAllWithConfirm}
               leftIcon={<Icon as={FiRefreshCw} />}
               size="sm"
-              style={{ minWidth: "88px" }}
+              style={{ minWidth: "var(--button-min-width)" }}
             >
               Reset
             </EditorPrimaryButton>
@@ -421,7 +420,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
               theme="dark"
               height="100%"
               style={{
-                fontSize: "14px",
+                fontSize: "var(--font-size-sm)",
                 height: "100%",
                 width: "100%",
                 backgroundColor: DESIGN_SYSTEM.colors.bg.editor,
@@ -466,7 +465,7 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
             theme="dark"
             height="100%"
             style={{
-              fontSize: "14px",
+              fontSize: "var(--font-size-sm)",
               height: "100%",
               width: "100%",
               backgroundColor: DESIGN_SYSTEM.colors.bg.editor,

@@ -66,8 +66,8 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
         bottom={placement === "top" ? "100%" : "auto"}
         left="50%"
         transform="translateX(-50%)"
-        mt={placement === "bottom" ? 2 : 0}
-        mb={placement === "top" ? 2 : 0}
+        mt={placement === "bottom" ? "var(--space-xs)" : 0}
+        mb={placement === "top" ? "var(--space-xs)" : 0}
         ref={ref}
         {...contentProps}
       >

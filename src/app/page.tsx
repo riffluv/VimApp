@@ -60,11 +60,20 @@ export default function Home() {
   return (
     <Box
       bg={DESIGN_SYSTEM.colors.bg.primary}
-      minH="100dvh" // 2025年標準: Dynamic Viewport Height
-      w="100%"
-      position="relative"
+      h="100vh" // DPI Scale対応: 固定高さ
+      maxH="100vh" // スクロール防止
+      w="100vw" // DPI Scale対応: 固定幅
+      maxW="100vw" // スクロール防止
+      overflow="hidden" // 確実にスクロール防止
+      position="fixed" // 位置固定
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+      display="flex"
+      flexDirection="column"
     >
-      {/* Header - シンプルで洗練されたデザイン */}
+      {/* Header - DPI Scale対応 */}
       <MotionFlex
         as="header"
         initial={{ opacity: 0, y: -20 }}
@@ -72,16 +81,18 @@ export default function Home() {
         transition={{ duration: 0.3 }}
         align="center"
         justify="space-between"
-        px={{ base: 4, md: 6 }}
-        py={{ base: 3, md: 4 }}
+        px={{ base: 3, md: 4 }}
+        py={{ base: 2, md: 3 }}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        mb={{ base: 4, md: 6 }}
-        gap={4}
+        gap={3}
         position="relative"
         zIndex={1}
-        h={{ base: "70px", md: "80px" }}
+        h={{ base: "clamp(3.5rem, 4vh, 4.5rem)", md: "clamp(4rem, 5vh, 5rem)" }} // DPI Scale対応
+        minH={{ base: "3.5rem", md: "4rem" }}
+        maxH={{ base: "4.5rem", md: "5rem" }}
         bg={DESIGN_SYSTEM.colors.bg.secondary}
+        flexShrink={0} // フレックス縮小防止
       >
         <Flex align="center" gap={3}>
           <Image
@@ -217,25 +228,30 @@ export default function Home() {
         </Flex>
       </MotionFlex>
 
-      {/* Main Content */}
+      {/* Main Content - DPI Scale対応 */}
       <Flex
         direction={{ base: "column", md: "row" }}
         align="flex-start"
-        justify={{ base: "flex-start", md: "center" }}
+        justify="flex-start"
         w="100%"
-        px={{ base: 4, md: 6 }}
-        py={0}
-        gap={{ base: 4, md: 6 }}
-        maxW={{ base: "100%", md: "7xl" }}
-        mx="auto"
+        h="100%" // 残り全体を使用
+        flex="1" // フレックス拡張
+        px={{ base: 3, md: 4 }}
+        py={{ base: 2, md: 3 }}
+        gap={{ base: 2, md: 3 }}
+        maxW="100vw"
+        overflow="hidden" // スクロール防止
+        position="relative"
       >
-        {/* チートシート切り替えボタン - シンプルで実用的 */}
+        {/* チートシート切り替えボタン - DPI Scale対応 */}
         {!isCodePenMode && (
           <Flex
             direction="column"
             align="center"
-            mr={{ base: 0, md: 4 }}
-            mb={{ base: 4, md: 0 }}
+            position="absolute"
+            left={{ base: 2, md: 3 }}
+            top={{ base: 2, md: 3 }}
+            zIndex={10}
           >
             <Tooltip
               content={
@@ -272,8 +288,8 @@ export default function Home() {
                     ? DESIGN_SYSTEM.colors.accent.primary
                     : DESIGN_SYSTEM.borders.colors.subtle
                 }`}
-                w="56px"
-                h="56px"
+                w={{ base: "3rem", md: "3.5rem" }} // DPI Scale対応サイズ
+                h={{ base: "3rem", md: "3.5rem" }}
                 cursor="pointer"
                 transition="all 0.2s ease"
                 transform={
@@ -292,8 +308,8 @@ export default function Home() {
                 }
               >
                 <Box
-                  w="28px"
-                  h="28px"
+                  w={{ base: "1.5rem", md: "1.75rem" }}
+                  h={{ base: "1.5rem", md: "1.75rem" }}
                   backgroundImage="url('/manabyicon.png')"
                   backgroundSize="contain"
                   backgroundRepeat="no-repeat"
@@ -312,7 +328,7 @@ export default function Home() {
                   ? DESIGN_SYSTEM.colors.accent.primary
                   : DESIGN_SYSTEM.colors.text.muted
               }
-              mt={2}
+              mt={1}
               fontWeight="500"
               transition="color 0.2s ease"
             >
@@ -321,50 +337,50 @@ export default function Home() {
           </Flex>
         )}
 
-        {/* CheatSheet - シンプルなアニメーション */}
+        {/* CheatSheet - DPI Scale対応 */}
         <AnimatePresence>
           {!isCodePenMode && showCheatSheet && (
             <MotionBox
               key="cheatsheet"
-              flex={{
-                base: "none",
-                md: "0 0 380px",
-                lg: "0 0 420px",
-              }}
+              flex="none"
               w={{
                 base: "100%",
-                md: "380px",
-                lg: "420px",
+                md: "clamp(20rem, 25vw, 26.25rem)", // DPI Scale対応: 320px-420px
               }}
-              h={{
-                base: "600px",
-                md: "700px",
-                lg: "750px",
-              }}
-              mb={{ base: 4, md: 0 }}
-              mr={{ base: 0, md: 6 }}
+              h="100%" // 親コンテナの高さを使用
+              maxH="100%"
+              position={{ base: "absolute", md: "relative" }}
+              top={{ base: 0, md: "auto" }}
+              left={{ base: 0, md: "auto" }}
+              right={{ base: 0, md: "auto" }}
+              bottom={{ base: 0, md: "auto" }}
+              zIndex={{ base: 5, md: "auto" }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
+              overflow="hidden"
             >
               <CheatSheet />
             </MotionBox>
           )}
         </AnimatePresence>
 
-        {/* VimEditor - シンプルなレイアウト */}
+        {/* VimEditor - DPI Scale対応 */}
         <MotionBox
-          flex="1"
+          flex="1" // 残りスペースを使用
           w="100%"
-          h={{
-            base: "600px",
-            md: "700px",
-            lg: "750px",
-          }}
+          h="100%" // 親コンテナの高さを使用
+          maxH="100%"
+          ml={{
+            base: 0,
+            md: showCheatSheet ? "clamp(1rem, 2vw, 1.5rem)" : 0,
+          }} // CheatSheet表示時のマージン
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          overflow="hidden"
+          position="relative"
         >
           <VimEditor onCodePenModeChange={handleCodePenModeChange} />
         </MotionBox>

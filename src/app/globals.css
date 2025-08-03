@@ -7,6 +7,7 @@
 
 /* =============================================================================
    2025年標準 CSS CUSTOM PROPERTIES - Modern Design Tokens
+   DPI Scale Responsive (100%, 125%, 150%, 175%, 200% 対応)
    ============================================================================= */
 :root {
   /* Color Scheme Support */
@@ -52,47 +53,49 @@
   --color-interactive-focus: rgba(255, 107, 53, 0.4);
   --color-interactive-disabled: rgba(255, 255, 255, 0.1);
 
-  /* 2025年標準: Modern Spacing System */
-  --space-3xs: 0.25rem;
-  /* 4px */
-  --space-2xs: 0.5rem;
-  /* 8px */
-  --space-xs: 0.75rem;
-  /* 12px */
-  --space-sm: 1rem;
-  /* 16px */
-  --space-md: 1.5rem;
-  /* 24px */
-  --space-lg: 2rem;
-  /* 32px */
-  --space-xl: 3rem;
-  /* 48px */
-  --space-2xl: 4rem;
-  /* 64px */
-  --space-3xl: 6rem;
-  /* 96px */
+  /* =================================================================
+     DPI Scale Responsive Spacing System
+     自動的にDPIスケールに適応 - viewport相対単位使用
+     ================================================================= */
+  --space-3xs: clamp(4px, 0.2vw + 4px, 6px);   /* 100%=4px, 125%=4.4px, 200%=6px */
+  --space-2xs: clamp(8px, 0.4vw + 8px, 12px);  /* 100%=8px, 125%=8.8px, 200%=12px */
+  --space-xs: clamp(12px, 0.6vw + 12px, 16px); /* 100%=12px, 125%=13px, 200%=16px */
+  --space-sm: clamp(16px, 0.8vw + 16px, 22px); /* 100%=16px, 125%=17px, 200%=22px */
+  --space-md: clamp(24px, 1.2vw + 24px, 32px); /* 100%=24px, 125%=25px, 200%=32px */
+  --space-lg: clamp(32px, 1.6vw + 32px, 44px); /* 100%=32px, 125%=34px, 200%=44px */
+  --space-xl: clamp(48px, 2.4vw + 48px, 64px); /* 100%=48px, 125%=51px, 200%=64px */
+  --space-2xl: clamp(64px, 3.2vw + 64px, 88px); /* 100%=64px, 125%=68px, 200%=88px */
+  --space-3xl: clamp(96px, 4.8vw + 96px, 128px); /* 100%=96px, 125%=102px, 200%=128px */
 
-  /* Typography */
-  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* DPI Scale対応 Layout Units - 100%DPI基準設計 */
+  --layout-header-height: clamp(56px, 3vh + 56px, 80px); /* 100%=56px, 125%=60px, 200%=80px */
+  --layout-sidebar-width: clamp(320px, 20vw + 320px, 420px); /* 100%=320px, 125%=340px, 200%=420px */
+  --layout-content-max: clamp(640px, 50vw + 640px, 1200px); /* Flexible content width */
+  --layout-gap: clamp(16px, 1vw + 16px, 24px); /* 100%=16px, 125%=17px, 200%=24px */
+
+  /* Typography - DPI Scale対応 */
+  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   --font-family-mono: "JetBrains Mono", "Fira Code", "Monaco", monospace;
-  --font-size-xs: 0.75rem;
-  /* 12px */
-  --font-size-sm: 0.875rem;
-  /* 14px */
-  --font-size-md: 1rem;
-  /* 16px */
-  --font-size-lg: 1.125rem;
-  /* 18px */
-  --font-size-xl: 1.25rem;
-  /* 20px */
 
-  /* Border Radius */
-  --radius-sm: 0.25rem;
-  /* 4px */
-  --radius-md: 0.5rem;
-  /* 8px */
-  --radius-lg: 0.75rem;
-  /* 12px */
+  /* Fluid Typography - 100%DPI基準設計 */
+  --font-size-xs: clamp(11px, 0.5vw + 11px, 14px);   /* 100%=11px, 125%=12px, 200%=14px */
+  --font-size-sm: clamp(13px, 0.75vw + 13px, 16px);  /* 100%=13px, 125%=14px, 200%=16px */
+  --font-size-md: clamp(14px, 1vw + 14px, 18px);     /* 100%=14px, 125%=15px, 200%=18px */
+  --font-size-lg: clamp(16px, 1.25vw + 16px, 20px);  /* 100%=16px, 125%=17px, 200%=20px */
+  --font-size-xl: clamp(18px, 1.5vw + 18px, 24px);   /* 100%=18px, 125%=19px, 200%=24px */
+
+  /* Border Radius - 100%DPI基準設計 */
+  --radius-sm: clamp(4px, 0.2vw + 4px, 6px);    /* 100%=4px, 125%=4.4px, 200%=6px */
+  --radius-md: clamp(8px, 0.4vw + 8px, 12px);   /* 100%=8px, 125%=8.8px, 200%=12px */
+  --radius-lg: clamp(12px, 0.6vw + 12px, 16px); /* 100%=12px, 125%=13px, 200%=16px */
+  --border-radius-lg: clamp(12px, 0.6vw + 12px, 16px); /* Legacy support */
+
+  /* Component Sizes - 100%DPI基準設計 */
+  --button-min-width: clamp(80px, 3vw + 80px, 120px);  /* 100%=80px, 125%=86px, 200%=120px */
+  --header-height: clamp(60px, 4vh + 60px, 80px);      /* 100%=60px, 125%=64px, 200%=80px */
+  --footer-height: clamp(64px, 4vh + 64px, 84px);      /* 100%=64px, 125%=68px, 200%=84px */
+  --scroll-width: clamp(12px, 0.8vw + 12px, 16px);     /* 100%=12px, 125%=13px, 200%=16px */
 
   /* Rich Shadow System */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -105,9 +108,12 @@
   --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.4);
 
   /* Interactive Shadows */
-  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2);
-  --shadow-active: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-focus: 0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 107, 53, 0.2);
+  --shadow-active: 0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-focus: 0 0 0 3px rgba(255, 107, 53, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Z-Index */
   --z-dropdown: 1000;
@@ -124,7 +130,6 @@
    LAYER: RESET - Modern CSS Reset
    ============================================================================= */
 @layer vimapp-reset {
-
   *,
   *::before,
   *::after {
@@ -134,7 +139,12 @@
   }
 
   html {
+    /* DPI Scale対応 - ブラウザスクロール防止 */
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic Viewport Height - モバイル対応 */
+    max-height: 100vh;
+    max-height: 100dvh; /* スクロール防止 */
+    overflow: hidden; /* ページ全体のスクロール防止 */
     font-family: var(--font-family-base);
     font-size: var(--font-size-md);
     line-height: 1.5;
@@ -144,9 +154,23 @@
   }
 
   body {
+    /* DPI Scale対応 - 完全フィット */
     min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    width: 100vw;
+    max-width: 100vw;
+    overflow: hidden; /* ボディレベルでスクロール防止 */
     background-color: var(--color-bg-primary);
     color: var(--color-text-primary);
+    margin: 0;
+    padding: 0;
+    position: fixed; /* 確実にスクロール防止 */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   img,
@@ -179,7 +203,6 @@
    LAYER: BASE - Foundation Styles
    ============================================================================= */
 @layer vimapp-base {
-
   /* Focus styles */
   :focus-visible {
     outline: 2px solid var(--color-accent-primary);
@@ -213,9 +236,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg,
-        var(--color-accent-primary),
-        var(--color-accent-secondary));
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary)
+    );
     border-radius: var(--radius-lg);
     border: 2px solid var(--color-bg-secondary);
     box-shadow: var(--shadow-sm);
@@ -223,17 +248,21 @@
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg,
-        var(--color-accent-secondary),
-        var(--color-accent-tertiary));
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-secondary),
+      var(--color-accent-tertiary)
+    );
     box-shadow: var(--shadow-md);
     transform: scale(1.05);
   }
 
   ::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(135deg,
-        var(--color-accent-tertiary),
-        var(--color-accent-primary));
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-tertiary),
+      var(--color-accent-primary)
+    );
     box-shadow: var(--shadow-active);
   }
 
@@ -246,7 +275,6 @@
    LAYER: COMPONENTS - 2025年標準 Container Queries対応
    ============================================================================= */
 @layer vimapp-components {
-
   /* 2025年標準: Container Queries Support */
   .main-layout {
     container-type: inline-size;
@@ -351,7 +379,6 @@
   }
 
   @keyframes cursor-blink {
-
     0%,
     50% {
       opacity: 1;
@@ -365,7 +392,6 @@
 
   /* Sophisticated UI Animations */
   @keyframes pulse {
-
     0%,
     100% {
       opacity: 1;
@@ -379,19 +405,18 @@
   }
 
   @keyframes glow {
-
     0%,
     100% {
       box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
     }
 
     50% {
-      box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 30px rgba(255, 107, 53, 0.2);
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.4),
+        0 0 30px rgba(255, 107, 53, 0.2);
     }
   }
 
   @keyframes float {
-
     0%,
     100% {
       transform: translateY(0px);
@@ -456,16 +481,18 @@
   }
 
   .sophisticated-hover::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(255, 107, 53, 0.1) 50%,
-        transparent 100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 107, 53, 0.1) 50%,
+      transparent 100%
+    );
     transition: left 0.5s ease;
   }
 
@@ -480,9 +507,7 @@
 
   .enhanced-focus:focus-visible {
     outline: none;
-    box-shadow:
-      0 0 0 3px rgba(255, 107, 53, 0.4),
-      0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
   }
 
@@ -493,15 +518,17 @@
   }
 
   .cm-activeLine::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
     width: 3px;
-    background: linear-gradient(180deg,
-        var(--color-accent-primary),
-        var(--color-accent-secondary));
+    background: linear-gradient(
+      180deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary)
+    );
     border-radius: 0 2px 2px 0;
   }
 
@@ -551,15 +578,17 @@
   }
 
   .cm-tooltip-autocomplete ul li::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
     width: 0;
-    background: linear-gradient(90deg,
-        var(--color-accent-primary),
-        var(--color-accent-secondary));
+    background: linear-gradient(
+      90deg,
+      var(--color-accent-primary),
+      var(--color-accent-secondary)
+    );
     transition: width 0.2s ease;
   }
 
@@ -606,7 +635,6 @@
    LAYER: UTILITIES - Utility Classes
    ============================================================================= */
 @layer vimapp-utilities {
-
   /* Screen reader only */
   .sr-only {
     position: absolute;
@@ -655,7 +683,8 @@
 
   .realtime-tab-pressed {
     transform: translateY(0.5px);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15),
+      inset 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 80ms ease;
   }
 }
@@ -707,7 +736,6 @@
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -861,16 +889,17 @@
   background: rgba(30, 30, 30, 0.4);
   backdrop-filter: blur(16px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Sophisticated gradient text */
 .gradient-text {
-  background: linear-gradient(135deg,
-      var(--color-accent-primary) 0%,
-      var(--color-accent-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-primary) 0%,
+    var(--color-accent-secondary) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -884,16 +913,18 @@
 }
 
 .interactive-element::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 107, 53, 0.1) 50%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 107, 53, 0.1) 50%,
+    transparent 100%
+  );
   transition: left 0.5s ease;
 }
 
@@ -904,9 +935,7 @@
 /* Sophisticated focus ring */
 .focus-ring:focus-visible {
   outline: none;
-  box-shadow:
-    0 0 0 3px rgba(255, 107, 53, 0.4),
-    0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
@@ -917,17 +946,17 @@
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 107, 53, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 107, 53, 0.1);
 }
 
 /* Sophisticated loading states */
 .loading-shimmer {
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 107, 53, 0.1) 50%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 107, 53, 0.1) 50%,
+    transparent 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }
@@ -938,9 +967,7 @@
 }
 
 .text-shadow-glow {
-  text-shadow:
-    0 0 10px rgba(255, 107, 53, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.3), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Enh
@@ -950,9 +977,7 @@ anced typography effects */
 }
 
 .text-shadow-glow {
-  text-shadow:
-    0 0 10px rgba(255, 107, 53, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.3), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Progress bar animations */

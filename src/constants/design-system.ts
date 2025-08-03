@@ -9,46 +9,46 @@
 export const COLORS = {
   // Background Colors - Rich Black Variations
   bg: {
-    primary: "#0a0a0a",      // Pure rich black
-    secondary: "#141414",    // Slightly lighter rich black
-    tertiary: "#1e1e1e",     // Card/component background
-    quaternary: "#2a2a2a",   // Elevated surfaces
-    editor: "#0f0f0f",       // Editor specific background
+    primary: "#0a0a0a", // Pure rich black
+    secondary: "#141414", // Slightly lighter rich black
+    tertiary: "#1e1e1e", // Card/component background
+    quaternary: "#2a2a2a", // Elevated surfaces
+    editor: "#0f0f0f", // Editor specific background
     overlay: "rgba(10, 10, 10, 0.95)", // Modal/overlay background
   },
 
   // Text Colors - High contrast hierarchy
   text: {
-    primary: "#ffffff",      // Pure white for primary text
-    secondary: "#e8e8e8",    // High contrast secondary
-    tertiary: "#c4c4c4",     // Medium contrast
-    muted: "#9a9a9a",        // Low contrast/disabled
-    inverse: "#0a0a0a",      // Black text on light backgrounds
+    primary: "#ffffff", // Pure white for primary text
+    secondary: "#e8e8e8", // High contrast secondary
+    tertiary: "#c4c4c4", // Medium contrast
+    muted: "#9a9a9a", // Low contrast/disabled
+    inverse: "#0a0a0a", // Black text on light backgrounds
   },
 
   // Orange Accent System - Professional gradient
   accent: {
-    primary: "#ff6b35",      // Main orange - vibrant but professional
-    secondary: "#ff8757",    // Lighter orange for hover states
-    tertiary: "#ff4500",     // Deeper orange for active states
-    subtle: "rgba(255, 107, 53, 0.1)",  // Very light orange tint
-    muted: "rgba(255, 107, 53, 0.6)",   // Semi-transparent orange
+    primary: "#ff6b35", // Main orange - vibrant but professional
+    secondary: "#ff8757", // Lighter orange for hover states
+    tertiary: "#ff4500", // Deeper orange for active states
+    subtle: "rgba(255, 107, 53, 0.1)", // Very light orange tint
+    muted: "rgba(255, 107, 53, 0.6)", // Semi-transparent orange
   },
 
   // Border System - Subtle but defined
   border: {
-    primary: "rgba(255, 107, 53, 0.3)",   // Orange borders
-    secondary: "rgba(255, 107, 53, 0.2)",  // Subtle orange borders
-    subtle: "rgba(255, 255, 255, 0.1)",    // Neutral borders
-    muted: "rgba(255, 255, 255, 0.05)",    // Very subtle borders
+    primary: "rgba(255, 107, 53, 0.3)", // Orange borders
+    secondary: "rgba(255, 107, 53, 0.2)", // Subtle orange borders
+    subtle: "rgba(255, 255, 255, 0.1)", // Neutral borders
+    muted: "rgba(255, 255, 255, 0.05)", // Very subtle borders
   },
 
   // Status Colors - Harmonized with orange theme
   status: {
-    success: "#10b981",      // Green that works with orange
-    warning: "#f59e0b",      // Amber that complements orange
-    error: "#ef4444",        // Red that doesn't clash
-    info: "#3b82f6",         // Blue for information
+    success: "#10b981", // Green that works with orange
+    warning: "#f59e0b", // Amber that complements orange
+    error: "#ef4444", // Red that doesn't clash
+    info: "#3b82f6", // Blue for information
   },
 
   // Interactive States
@@ -61,21 +61,22 @@ export const COLORS = {
 } as const;
 
 // =============================================================================
-// SPACING SYSTEM - 2025年標準（Logical Properties対応）
+// SPACING SYSTEM - DPI Scale対応（clamp()使用）
 // =============================================================================
 export const SPACING = {
   "0": "0",
-  "3xs": "0.25rem",  // 4px
-  "2xs": "0.5rem",   // 8px
-  "xs": "0.75rem",   // 12px
-  "sm": "1rem",      // 16px
-  "md": "1.5rem",    // 24px
-  "lg": "2rem",      // 32px
-  "xl": "3rem",      // 48px
-  "2xl": "4rem",     // 64px
-  "3xl": "6rem",     // 96px
+  // DPI Scale対応 - viewport相対単位使用
+  "3xs": "clamp(0.2rem, 0.25vw + 0.15rem, 0.3rem)", // ~4px responsive
+  "2xs": "clamp(0.4rem, 0.5vw + 0.3rem, 0.6rem)", // ~8px responsive
+  xs: "clamp(0.6rem, 0.75vw + 0.45rem, 0.9rem)", // ~12px responsive
+  sm: "clamp(0.8rem, 1vw + 0.6rem, 1.2rem)", // ~16px responsive
+  md: "clamp(1.2rem, 1.5vw + 0.9rem, 1.8rem)", // ~24px responsive
+  lg: "clamp(1.6rem, 2vw + 1.2rem, 2.4rem)", // ~32px responsive
+  xl: "clamp(2.4rem, 3vw + 1.8rem, 3.6rem)", // ~48px responsive
+  "2xl": "clamp(3.2rem, 4vw + 2.4rem, 4.8rem)", // ~64px responsive
+  "3xl": "clamp(4.8rem, 6vw + 3.6rem, 7.2rem)", // ~96px responsive
 
-  // Legacy support
+  // Legacy support（従来のrem単位）
   "1": "0.25rem",
   "2": "0.5rem",
   "3": "0.75rem",
@@ -90,7 +91,7 @@ export const SPACING = {
 } as const;
 
 // =============================================================================
-// TYPOGRAPHY SYSTEM
+// TYPOGRAPHY SYSTEM - DPI Scale対応
 // =============================================================================
 export const TYPOGRAPHY = {
   fonts: {
@@ -98,14 +99,15 @@ export const TYPOGRAPHY = {
     mono: '"JetBrains Mono", "Fira Code", monospace',
   },
 
+  // Fluid Typography - DPIスケール自動対応
   fontSize: {
-    xs: "0.75rem",   // 12px
-    sm: "0.875rem",  // 14px
-    base: "1rem",    // 16px
-    lg: "1.125rem",  // 18px
-    xl: "1.25rem",   // 20px
-    "2xl": "1.5rem", // 24px
-    "3xl": "1.875rem", // 30px
+    xs: "clamp(0.7rem, 0.75vw + 0.5rem, 0.8rem)", // 11px-13px responsive
+    sm: "clamp(0.8rem, 0.875vw + 0.6rem, 0.95rem)", // 13px-15px responsive
+    base: "clamp(0.9rem, 1vw + 0.7rem, 1.1rem)", // 14px-18px responsive
+    lg: "clamp(1rem, 1.125vw + 0.8rem, 1.25rem)", // 16px-20px responsive
+    xl: "clamp(1.1rem, 1.25vw + 0.9rem, 1.4rem)", // 18px-22px responsive
+    "2xl": "clamp(1.3rem, 1.5vw + 1rem, 1.7rem)", // 21px-27px responsive
+    "3xl": "clamp(1.6rem, 1.875vw + 1.2rem, 2.1rem)", // 26px-34px responsive
   },
 
   fontWeight: {
@@ -123,15 +125,15 @@ export const TYPOGRAPHY = {
 } as const;
 
 // =============================================================================
-// BORDER SYSTEM
+// BORDER SYSTEM - DPI Scale対応
 // =============================================================================
 export const BORDERS = {
   radius: {
     none: "0",
-    sm: "0.25rem",  // 4px
-    md: "0.5rem",   // 8px
-    lg: "0.75rem",  // 12px
-    xl: "1rem",     // 16px
+    sm: "clamp(0.2rem, 0.25vw + 0.15rem, 0.3rem)", // 3px-5px responsive
+    md: "clamp(0.4rem, 0.5vw + 0.3rem, 0.6rem)", // 6px-10px responsive
+    lg: "clamp(0.6rem, 0.75vw + 0.45rem, 0.9rem)", // 10px-14px responsive
+    xl: "clamp(0.8rem, 1vw + 0.6rem, 1.2rem)", // 13px-19px responsive
     full: "9999px",
   },
 

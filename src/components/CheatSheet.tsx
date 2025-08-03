@@ -60,8 +60,8 @@ export default function CheatSheet({}: CheatSheetProps) {
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
         bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}, ${DESIGN_SYSTEM.colors.bg.tertiary})`}
         justifyContent="flex-start"
-        minH="60px"
-        maxH="60px"
+        minH="var(--header-height)"
+        maxH="var(--header-height)"
         position="relative"
         _before={{
           content: '""',
@@ -116,15 +116,15 @@ export default function CheatSheet({}: CheatSheetProps) {
         px={3}
         py={3}
         css={{
-          "&::-webkit-scrollbar": { width: "12px" },
+          "&::-webkit-scrollbar": { width: "var(--scroll-width)" },
           "&::-webkit-scrollbar-track": {
             background: DESIGN_SYSTEM.colors.bg.secondary,
-            borderRadius: "8px",
+            borderRadius: "var(--border-radius-lg)",
             border: `1px solid ${DESIGN_SYSTEM.colors.border.muted}`,
           },
           "&::-webkit-scrollbar-thumb": {
             background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`,
-            borderRadius: "8px",
+            borderRadius: "var(--border-radius-lg)",
             border: `2px solid ${DESIGN_SYSTEM.colors.bg.secondary}`,
             boxShadow: DESIGN_SYSTEM.shadows.sm,
           },
@@ -231,7 +231,7 @@ export default function CheatSheet({}: CheatSheetProps) {
         color={DESIGN_SYSTEM.colors.text.muted}
         align="center"
         justify="center"
-        minH="64px"
+        minH="var(--footer-height)"
       >
         <Box
           mr={3}
