@@ -40,7 +40,6 @@ export default function Home() {
   const [isTogglePressed, setIsTogglePressed] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
-
   // イベントハンドラー
   const handleCodePenModeChange = useCallback((isCodePenMode: boolean) => {
     setIsCodePenMode(isCodePenMode);
@@ -118,26 +117,31 @@ export default function Home() {
             </Text>
           </Box>
         </Flex>
-        <Flex
-          gap={6}
-          align="center"
-          display={{ base: "none", md: "flex" }}
-        >
+        <Flex gap={6} align="center" display={{ base: "none", md: "flex" }}>
           <Link
             href="https://github.com/vim/vim"
             target="_blank"
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color={hoveredLink === 'github' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
+            color={
+              hoveredLink === "github"
+                ? DESIGN_SYSTEM.colors.accent.primary
+                : DESIGN_SYSTEM.colors.text.secondary
+            }
             fontSize="sm"
             fontWeight="500"
             px={2}
             py={1}
             transition="all 0.3s ease"
             outline="none"
-            textShadow={hoveredLink === 'github' ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}` : 'none'}
-            onMouseEnter={() => setHoveredLink('github')}
+            textShadow={
+              hoveredLink === "github"
+                ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
+                : "none"
+            }
+            textDecoration="none"
+            onMouseEnter={() => setHoveredLink("github")}
             onMouseLeave={() => setHoveredLink(null)}
             _focus={{
               outline: "none",
@@ -149,8 +153,16 @@ export default function Home() {
               mr={2}
               fontSize="16px"
               transition="all 0.3s ease"
-              color={hoveredLink === 'github' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
-              filter={hoveredLink === 'github' ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})` : 'none'}
+              color={
+                hoveredLink === "github"
+                  ? DESIGN_SYSTEM.colors.accent.primary
+                  : DESIGN_SYSTEM.colors.text.secondary
+              }
+              filter={
+                hoveredLink === "github"
+                  ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                  : "none"
+              }
             />
             GitHub
           </Link>
@@ -160,15 +172,24 @@ export default function Home() {
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color={hoveredLink === 'cheatsheet' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
+            color={
+              hoveredLink === "cheatsheet"
+                ? DESIGN_SYSTEM.colors.accent.primary
+                : DESIGN_SYSTEM.colors.text.secondary
+            }
             fontSize="sm"
             fontWeight="500"
             px={2}
             py={1}
             transition="all 0.3s ease"
             outline="none"
-            textShadow={hoveredLink === 'cheatsheet' ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}` : 'none'}
-            onMouseEnter={() => setHoveredLink('cheatsheet')}
+            textShadow={
+              hoveredLink === "cheatsheet"
+                ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
+                : "none"
+            }
+            textDecoration="none"
+            onMouseEnter={() => setHoveredLink("cheatsheet")}
             onMouseLeave={() => setHoveredLink(null)}
             _focus={{
               outline: "none",
@@ -180,8 +201,16 @@ export default function Home() {
               mr={2}
               fontSize="16px"
               transition="all 0.3s ease"
-              color={hoveredLink === 'cheatsheet' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
-              filter={hoveredLink === 'cheatsheet' ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})` : 'none'}
+              color={
+                hoveredLink === "cheatsheet"
+                  ? DESIGN_SYSTEM.colors.accent.primary
+                  : DESIGN_SYSTEM.colors.text.secondary
+              }
+              filter={
+                hoveredLink === "cheatsheet"
+                  ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                  : "none"
+              }
             />
             チートシート
           </Link>
@@ -232,14 +261,24 @@ export default function Home() {
                 onMouseDown={handleToggleMouseDown}
                 onMouseUp={handleToggleMouseUp}
                 onMouseLeave={handleToggleMouseUp}
-                bg={showCheatSheet ? DESIGN_SYSTEM.colors.bg.quaternary : DESIGN_SYSTEM.colors.bg.tertiary}
+                bg={
+                  showCheatSheet
+                    ? DESIGN_SYSTEM.colors.bg.quaternary
+                    : DESIGN_SYSTEM.colors.bg.tertiary
+                }
                 borderRadius={DESIGN_SYSTEM.borders.radius.lg}
-                border={`2px solid ${showCheatSheet ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.borders.colors.subtle}`}
+                border={`2px solid ${
+                  showCheatSheet
+                    ? DESIGN_SYSTEM.colors.accent.primary
+                    : DESIGN_SYSTEM.borders.colors.subtle
+                }`}
                 w="56px"
                 h="56px"
                 cursor="pointer"
                 transition="all 0.2s ease"
-                transform={isTogglePressed ? "translateY(1px)" : "translateY(0)"}
+                transform={
+                  isTogglePressed ? "translateY(1px)" : "translateY(0)"
+                }
                 outline="none"
                 display="flex"
                 alignItems="center"
@@ -248,7 +287,9 @@ export default function Home() {
                   transform: "translateY(-1px)",
                   boxShadow: DESIGN_SYSTEM.shadows.md,
                 }}
-                aria-label={showCheatSheet ? "チートシートを非表示" : "チートシートを表示"}
+                aria-label={
+                  showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
+                }
               >
                 <Box
                   w="28px"
@@ -257,14 +298,20 @@ export default function Home() {
                   backgroundSize="contain"
                   backgroundRepeat="no-repeat"
                   backgroundPosition="center"
-                  filter={showCheatSheet ? "brightness(1.2)" : "brightness(0.8)"}
+                  filter={
+                    showCheatSheet ? "brightness(1.2)" : "brightness(0.8)"
+                  }
                   transition="filter 0.2s ease"
                 />
               </Box>
             </Tooltip>
             <Text
               fontSize="xs"
-              color={showCheatSheet ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.muted}
+              color={
+                showCheatSheet
+                  ? DESIGN_SYSTEM.colors.accent.primary
+                  : DESIGN_SYSTEM.colors.text.muted
+              }
               mt={2}
               fontWeight="500"
               transition="color 0.2s ease"
