@@ -8,43 +8,44 @@
 
 ## ⚠️ 重要な警告
 
-### 🚨 **絶対に変更してはいけないファイル**
+### 🚨 **慎重に変更すべき核心ファイル**
 
-以下のファイルは、**デザインシステムの核心**であり、不用意な変更は全体の UI に深刻な影響を与えます：
+以下のファイルは、**デザインシステムの核心**であり、変更時は全体への影響を十分検討してください：
 
 ```
-❌ 変更禁止ファイル
-├── src/app/globals.css           # グローバルCSS - 既に最適化済み
-├── src/constants/design-system.ts # デザイントークン - 統一性の要
-├── src/components/ui/Button.tsx   # ボタンコンポーネント - 簡素化済み
-├── CSS_BEST_PRACTICES_2025.md    # プロジェクト設計原則
-└── src/utils/design-system.ts    # デザインユーティリティ
+⚠️ 慎重に変更すべきファイル
+├── src/app/globals.css           # グローバルCSS - Cascade Layers使用
+├── src/constants/design-system.ts # デザイントークン - 色・サイズの統一管理
+├── src/components/ui/Button.tsx   # ボタンコンポーネント - 状態管理実装済み
+├── src/app/page.tsx              # メインページ - framer-motion使用
+├── src/utils/editor.ts           # エディター設定 - !important使用許可
+└── src/app/theme.ts              # Chakra UIテーマ - カラーパレット定義
 ```
 
 ---
 
 ## 🎯 設計原則（絶対遵守）
 
-### 1. **シンプルさの維持**
+### 1. **実用的なシンプルさの維持**
 
-- ❌ 複雑なアニメーション（framer-motion 等）の追加禁止
-- ❌ 数学的計算（黄金比等）によるスタイリング禁止
-- ✅ 8px グリッドシステムの厳格な遵守
-- ✅ 最小限の CSS プロパティの使用
+- ✅ framer-motion: ページレベルのトランジションのみ使用
+- ❌ 複雑な数学的計算（黄金比等）によるスタイリング禁止
+- ✅ 8px グリッドシステムの遵守（design-system.tsで管理）
+- ✅ 必要最小限の CSS プロパティの使用
 
-### 2. **CSS 競合の防止**
+### 2. **CSS 競合の適切な管理**
 
-- ❌ `!important`の使用禁止
+- ✅ `!important`: CodeMirrorテーマでのみ使用許可
 - ❌ インラインスタイルの濫用禁止
-- ❌ Chakra UI の theme 上書き禁止
-- ✅ design-system.ts のトークンのみ使用
+- ✅ Chakra UI との適切な共存
+- ✅ design-system.ts のトークン優先使用
 
-### 3. **パフォーマンス優先**
+### 3. **パフォーマンスと UX のバランス**
 
-- ❌ GPU 最適化の過度な追加禁止
-- ❌ 複雑な hover/focus 状態の追加禁止
-- ❌ Container Queries の不必要な使用禁止
-- ✅ 基本的な transition のみ使用
+- ✅ React state による適度なインタラクティブ効果
+- ✅ ホバー・プレス状態の実装（ボタンコンポーネント）
+- ❌ 過度な GPU 最適化の追加禁止
+- ✅ 0.2s 程度の滑らかな transition 使用
 
 ---
 
@@ -53,33 +54,38 @@
 ### CSS/スタイリング
 
 ```css
-/* ❌ 禁止例 */
+/* ❌ 避けるべき例 */
 .component {
   /* 複雑な計算 */
   padding: calc(var(--golden-ratio) * 1.618rem);
 
-  /* GPU最適化の濫用 */
-  will-change: transform, opacity, filter;
-  transform: translateZ(0) scale3d(1, 1, 1);
+  /* 過度なGPU最適化 */
+  will-change: transform, opacity, filter, background;
+  transform: translateZ(0) scale3d(1, 1, 1) perspective(1000px);
 
-  /* 過度なアニメーション */
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* 複雑すぎるアニメーション */
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 /* ✅ 推奨例 */
 .component {
-  /* 8pxグリッド使用 */
-  padding: 1rem; /* 16px */
+  /* design-system.tsの値を使用 */
+  padding: var(--space-md); /* 1.5rem = 24px */
 
-  /* シンプルなトランジション */
-  transition: all 0.2s ease;
+  /* 適度なトランジション */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ✅ 例外: CodeMirrorでの!important使用 */
+.cm-cursor {
+  border-left: 2px solid var(--color-accent-primary) !important;
 }
 ```
 
 ### コンポーネント設計
 
 ```tsx
-/* ❌ 禁止例 */
+/* ❌ 避けるべき例 */
 import { motion } from "framer-motion";
 const MotionBox = motion(Box);
 
@@ -94,19 +100,39 @@ const Component = () => (
       staggerChildren: 0.1,
     }}
   >
-    複雑なアニメーション
+    過度に複雑なアニメーション
   </MotionBox>
 );
 
-/* ✅ 推奨例 */
-const Component = () => (
-  <Box
-    style={{
-      transition: "all 0.2s ease",
-    }}
+/* ✅ 推奨例1: React state使用 */
+const Component = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <Box
+      style={{
+        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: isHovered ? "translateY(-1px)" : "translateY(0)",
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      適度なインタラクション
+    </Box>
+  );
+};
+
+/* ✅ 推奨例2: 必要最小限のframer-motion */
+const MotionBox = motion.create(Box);
+
+const PageComponent = () => (
+  <MotionBox
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
   >
-    シンプルなコンポーネント
-  </Box>
+    ページレベルのシンプルなトランジション
+  </MotionBox>
 );
 ```
 
@@ -125,10 +151,11 @@ const Component = () => (
 
 ### ✅ 実装中チェック
 
-- [ ] `!important`を使用していないか？
+- [ ] `!important`をCodeMirror以外で使用していないか？
 - [ ] 複雑な計算式を使用していないか？
-- [ ] framer-motion を追加していないか？
-- [ ] 新しい CSS カスタムプロパティを定義していないか？
+- [ ] framer-motion をページレベル以外で追加していないか？
+- [ ] design-system.ts以外で新しいカラー値を定義していないか？
+- [ ] React stateでのインタラクション実装を検討したか？
 
 ### ✅ 完成後チェック
 
@@ -154,8 +181,17 @@ npm run dev  # 動作確認
 
 ```tsx
 // 新コンポーネント作成時は既存コンポーネントを参考に
-import { Button } from "./ui/Button"; // ✅ 既存使用
+import { Button, ModeTabButton } from "./ui/Button"; // ✅ 状態管理実装済み
 import { DESIGN_SYSTEM } from "@/constants"; // ✅ トークン使用
+
+// ✅ React stateによるインタラクション
+const [isHovered, setIsHovered] = useState(false);
+
+// ✅ design-system.tsの値を使用
+const styles = {
+  background: DESIGN_SYSTEM.colors.bg.primary,
+  color: DESIGN_SYSTEM.colors.accent.primary,
+};
 ```
 
 ### 3. **段階的な検証**
@@ -235,7 +271,11 @@ bg.tertiary: "#2a2a2a"        // サード背景
 ## 📝 更新履歴
 
 - **2025 年 8 月 3 日**: 初版作成（エラー修正とデザイン差異防止対策）
-- **目的**: 「AI が作ったような UI」を完全に排除し、プロフェッショナル品質を維持
+- **2025 年 8 月 3 日**: 現実のコードベースに合わせて更新
+  - framer-motionの適切な使用を明記
+  - !importantのCodeMirrorでの使用を許可
+  - React stateによるインタラクション実装を推奨
+- **目的**: 実用的で保守しやすいプロフェッショナル品質の維持
 
 ---
 

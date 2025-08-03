@@ -2,19 +2,19 @@
 
 ## 🎯 核心原則
 
-### 1. **シンプリシティ・ファースト**
+### 1. **実用的なシンプリシティ**
 - 過度な技術的複雑性を避ける
 - 実用性とメンテナンス性を最優先
-- パフォーマンスよりも可読性を重視
+- パフォーマンスと可読性のバランス
 
 ### 2. **統一されたデザインシステム**
-- CSS Cascade Layersによる優先度管理
-- **!important完全排除** → Cascade Layers使用
-- Chakra UIとの競合回避
+- design-system.tsによる一元管理
+- **!important最小限使用** → 必要な場合のみCodeMirrorテーマで使用
+- Chakra UIとの適切な共存
 
-### 3. **レスポンシブデザイン（シンプル統一）**
+### 3. **レスポンシブデザイン（実用的）**
 ```css
-/* 黄金比は廃止 - シンプルなブレークポイント */
+/* シンプルで実用的なブレークポイント */
 @media (max-width: 768px) { /* モバイル */ }
 @media (min-width: 769px) and (max-width: 1024px) { /* タブレット */ }
 @media (min-width: 1025px) { /* デスクトップ */ }
@@ -158,7 +158,7 @@
 }
 ```
 
-### **Chakra UIとの競合**
+### **Chakra UIとの適切な共存**
 ```css
 /* ❌ Chakra UI上書き */
 .chakra-button {
@@ -166,11 +166,17 @@
   z-index: 9999 !important;
 }
 
-/* ✅ CSS Layers使用 */
+/* ✅ 独自コンポーネント作成 */
 @layer vimapp-components {
   .custom-button {
-    /* カスタムスタイル */
+    /* design-system.tsの値を使用 */
+    background: var(--color-accent-primary);
   }
+}
+
+/* ✅ 例外: CodeMirrorテーマでの!important使用 */
+.cm-cursor {
+  border-left: 2px solid #ff6b35 !important;
 }
 ```
 
@@ -210,16 +216,16 @@
 ## 🎯 2025年の現実的なCSS
 
 ### **実用的なモダンCSS**
-- **Container Queries**: 必要な場合のみ
-- **CSS Cascade Layers**: 優先度管理に活用
-- **Custom Properties**: 一貫したデザインシステム
-- **Logical Properties**: 国際化対応
+- **framer-motion**: 必要最小限の使用（ページレベルのみ）
+- **CSS Cascade Layers**: globals.cssで活用
+- **Custom Properties**: design-system.tsで一元管理
+- **状態管理**: React stateによるインタラクティブ効果
 
-### **避けるべき「流行り」技術**
-- 過度なCSS-in-JS複雑性
-- 不必要なGPU最適化
-- 複雑すぎるアニメーション
-- 読みにくいCSSセレクタ
+### **現在使用中の技術**
+- framer-motion: ページトランジションとCheatSheet表示/非表示
+- React state: ボタンのホバー・プレス状態管理
+- Chakra UI: 基本UIコンポーネント
+- CodeMirror: エディター機能（!important使用許可）
 
 ---
 
