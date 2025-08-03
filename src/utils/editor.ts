@@ -268,7 +268,49 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: keyword,
         type: "keyword",
         detail: "JS Keyword",
-        apply: keyword.includes("(") ? keyword : `${keyword} `,
+        apply: (view: any, completion: any, from: number, to: number) => {
+          let insertText = keyword;
+          let cursorPos = from + keyword.length;
+
+          // 特別な処理が必要なキーワード
+          if (keyword === "function") {
+            insertText = "function () {}";
+            cursorPos = from + "function ".length; // 関数名の位置
+          } else if (keyword === "console.log") {
+            insertText = "console.log()";
+            cursorPos = from + "console.log(".length; // 括弧内
+          } else if (keyword === "document.querySelector") {
+            insertText = 'document.querySelector("")';
+            cursorPos = from + 'document.querySelector("'.length; // セレクター文字列内
+          } else if (keyword === "addEventListener") {
+            insertText = 'addEventListener("", )';
+            cursorPos = from + 'addEventListener("'.length; // イベント名の位置
+          } else if (keyword === "setTimeout") {
+            insertText = "setTimeout(() => {}, )";
+            cursorPos = from + "setTimeout(() => {".length; // 関数内
+          } else if (keyword === "setInterval") {
+            insertText = "setInterval(() => {}, )";
+            cursorPos = from + "setInterval(() => {".length; // 関数内
+          } else if (keyword === "if") {
+            insertText = "if () {}";
+            cursorPos = from + "if (".length; // 条件式内
+          } else if (keyword === "for") {
+            insertText = "for () {}";
+            cursorPos = from + "for (".length; // ループ条件内
+          } else if (keyword === "while") {
+            insertText = "while () {}";
+            cursorPos = from + "while (".length; // 条件式内
+          } else if (keyword === "class") {
+            insertText = "class  {}";
+            cursorPos = from + "class ".length; // クラス名の位置
+          }
+          // const, let, var, else, return はそのまま（スペースなし）
+
+          view.dispatch({
+            changes: { from, to, insert: insertText },
+            selection: { anchor: cursorPos },
+          });
+        },
         boost: 5,
       });
     });
