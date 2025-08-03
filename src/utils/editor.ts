@@ -53,7 +53,7 @@ const createEmmetCompletions = (mode: EditorMode) => {
     displayLabel?: string;
     type: string;
     detail: string;
-    apply: string;
+    apply: string | ((view: any, completion: any, from: number, to: number) => void);
     boost?: number;
   }> = [];
 
@@ -110,7 +110,17 @@ const createEmmetCompletions = (mode: EditorMode) => {
         displayLabel: tag,
         type: "element",
         detail: "HTML Element",
-        apply: `<${tag}></${tag}>`,
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const openTag = `<${tag}>`;
+          const closeTag = `</${tag}>`;
+          const fullText = openTag + closeTag;
+          const cursorPos = from + openTag.length; // 開始タグの直後にカーソル配置
+
+          view.dispatch({
+            changes: { from, to, insert: fullText },
+            selection: { anchor: cursorPos },
+          });
+        },
         boost: tag.length === 1 ? 10 : 0, // 単文字タグを優先
       });
     });
@@ -120,19 +130,50 @@ const createEmmetCompletions = (mode: EditorMode) => {
       {
         label: "!",
         detail: "HTML5 doctype",
-        apply:
-          '<!DOCTYPE html>\n<html lang="ja">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Document</title>\n</head>\n<body>\n\t\n</body>\n</html>',
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = '<!DOCTYPE html>\n<html lang="ja">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Document</title>\n</head>\n<body>\n\t\n</body>\n</html>';
+          const cursorPos = from + text.indexOf('\t\n') + 1; // body内のタブの後にカーソル配置
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos },
+          });
+        },
       },
       {
         label: "div.class",
         detail: "Div with class",
-        apply: '<div class="class"></div>',
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = '<div class="class"></div>';
+          const cursorPos = from + '<div class="'.length; // class属性値の中にカーソル配置
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos, head: cursorPos + 5 }, // "class"を選択状態に
+          });
+        },
       },
-      { label: "div#id", detail: "Div with ID", apply: '<div id="id"></div>' },
+      {
+        label: "div#id",
+        detail: "Div with ID",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = '<div id="id"></div>';
+          const cursorPos = from + '<div id="'.length; // id属性値の中にカーソル配置
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos, head: cursorPos + 2 }, // "id"を選択状態に
+          });
+        },
+      },
       {
         label: "ul>li*3",
         detail: "UL with 3 LI",
-        apply: "<ul>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ul>",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = "<ul>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ul>";
+          const cursorPos = from + text.indexOf('<li>') + 4; // 最初のli要素の中にカーソル配置
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos },
+          });
+        },
       },
     ];
 
@@ -640,23 +681,25 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
             label: comp.label,
             type: comp.type,
             detail: comp.detail,
-            apply: (view: any, completion: any, from: number, to: number) => {
-              const text = comp.apply;
-              // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
-              if (text.includes(":;")) {
-                const insertText = text;
-                const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
-                view.dispatch({
-                  changes: { from, to, insert: insertText },
-                  selection: { anchor: cursorPos },
-                });
-              } else {
-                view.dispatch({
-                  changes: { from, to, insert: text },
-                  selection: { anchor: from + text.length },
-                });
-              }
-            },
+            apply: typeof comp.apply === 'function'
+              ? comp.apply
+              : (view: any, completion: any, from: number, to: number) => {
+                const text = comp.apply as string;
+                // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
+                if (text.includes(":;")) {
+                  const insertText = text;
+                  const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
+                  view.dispatch({
+                    changes: { from, to, insert: insertText },
+                    selection: { anchor: cursorPos },
+                  });
+                } else {
+                  view.dispatch({
+                    changes: { from, to, insert: text },
+                    selection: { anchor: from + text.length },
+                  });
+                }
+              },
             boost: comp.boost || 0,
           })),
         };
