@@ -23,7 +23,7 @@ const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
   return acc;
 }, {} as Record<CommandCategory, Command[]>);
 
-export default function CheatSheet({}: CheatSheetProps) {
+export default function CheatSheet({ }: CheatSheetProps) {
   return (
     <Box
       bg={DESIGN_SYSTEM.colors.bg.primary}
@@ -40,61 +40,90 @@ export default function CheatSheet({}: CheatSheetProps) {
       w="100%"
       className="cheat-sheet-container"
     >
-      {/* Header */}
+      {/* Professional Header */}
       <Flex
         alignItems="center"
         px={4}
         py={3}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        bg={DESIGN_SYSTEM.colors.bg.secondary}
+        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}, ${DESIGN_SYSTEM.colors.bg.tertiary})`}
         justifyContent="flex-start"
         minH="60px"
         maxH="60px"
+        position="relative"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent, ${DESIGN_SYSTEM.colors.accent.primary}, transparent)`,
+          opacity: 0.6,
+        }}
       >
         <Flex alignItems="center" gap={3}>
           <Icon
             as={FiBookOpen}
-            color={DESIGN_SYSTEM.colors.accent.secondary}
-            fontSize="md"
+            color={DESIGN_SYSTEM.colors.accent.primary}
+            fontSize="xl"
           />
           <Box>
             <Text
-              fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-              fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
-              color={DESIGN_SYSTEM.colors.accent.secondary}
+              fontSize={DESIGN_SYSTEM.typography.fontSize.base}
+              fontWeight={DESIGN_SYSTEM.typography.fontWeight.bold}
+              color={DESIGN_SYSTEM.colors.text.primary}
+              letterSpacing="tight"
             >
               Vim Cheat Sheet
             </Text>
-            <Text
-              fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
-              color={DESIGN_SYSTEM.colors.text.tertiary}
-              mt={0}
-            >
-              vimコマンド早見表
-            </Text>
+            <Flex alignItems="center" gap={2} mt={1}>
+              <Box
+                w="6px"
+                h="6px"
+                borderRadius="full"
+                bg={DESIGN_SYSTEM.colors.accent.primary}
+                boxShadow={`0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`}
+              />
+              <Text
+                fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
+                color={DESIGN_SYSTEM.colors.text.secondary}
+                fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+              >
+                vimコマンド早見表
+              </Text>
+            </Flex>
           </Box>
         </Flex>
       </Flex>
 
-      {/* Command List (Accordion) */}
+      {/* Professional Command List (Accordion) */}
       <Box
         overflowY="auto"
         flex={1}
         px={3}
         py={3}
         css={{
-          "&::-webkit-scrollbar": { width: "8px" },
+          "&::-webkit-scrollbar": { width: "12px" },
           "&::-webkit-scrollbar-track": {
-            background: "#1a1a1e",
-            borderRadius: "4px",
+            background: DESIGN_SYSTEM.colors.bg.secondary,
+            borderRadius: "8px",
+            border: `1px solid ${DESIGN_SYSTEM.colors.border.muted}`,
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "rgba(232, 131, 58, 0.6)",
-            borderRadius: "4px",
+            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`,
+            borderRadius: "8px",
+            border: `2px solid ${DESIGN_SYSTEM.colors.bg.secondary}`,
+            boxShadow: DESIGN_SYSTEM.shadows.sm,
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "rgba(232, 131, 58, 0.8)",
+            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.secondary}, ${DESIGN_SYSTEM.colors.accent.tertiary})`,
+            boxShadow: DESIGN_SYSTEM.shadows.md,
+            transform: "scale(1.05)",
+          },
+          "&::-webkit-scrollbar-corner": {
+            background: DESIGN_SYSTEM.colors.bg.secondary,
           },
         }}
       >

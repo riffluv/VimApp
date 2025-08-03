@@ -4,37 +4,59 @@
  */
 
 // =============================================================================
-// COLOR SYSTEM - Rich Black & Orange
+// COLOR SYSTEM - Rich Black & Orange (Premium Edition)
 // =============================================================================
 export const COLORS = {
-  // Background Colors
+  // Background Colors - Rich Black Variations
   bg: {
-    primary: "#0a0a0a",
-    secondary: "#1a1a1a",
-    tertiary: "#2a2a2a",
-    editor: "#0d1117",
+    primary: "#0a0a0a",      // Pure rich black
+    secondary: "#141414",    // Slightly lighter rich black
+    tertiary: "#1e1e1e",     // Card/component background
+    quaternary: "#2a2a2a",   // Elevated surfaces
+    editor: "#0f0f0f",       // Editor specific background
+    overlay: "rgba(10, 10, 10, 0.95)", // Modal/overlay background
   },
 
-  // Text Colors
+  // Text Colors - High contrast hierarchy
   text: {
-    primary: "#ffffff",
-    secondary: "#e0e0e0",
-    tertiary: "#b0b0b0",
-    muted: "#808080",
+    primary: "#ffffff",      // Pure white for primary text
+    secondary: "#e8e8e8",    // High contrast secondary
+    tertiary: "#c4c4c4",     // Medium contrast
+    muted: "#9a9a9a",        // Low contrast/disabled
+    inverse: "#0a0a0a",      // Black text on light backgrounds
   },
 
-  // Accent Colors
+  // Orange Accent System - Professional gradient
   accent: {
-    primary: "#ff6b35",
-    secondary: "#ff8757",
+    primary: "#ff6b35",      // Main orange - vibrant but professional
+    secondary: "#ff8757",    // Lighter orange for hover states
+    tertiary: "#ff4500",     // Deeper orange for active states
+    subtle: "rgba(255, 107, 53, 0.1)",  // Very light orange tint
+    muted: "rgba(255, 107, 53, 0.6)",   // Semi-transparent orange
   },
 
-  // Status Colors
+  // Border System - Subtle but defined
+  border: {
+    primary: "rgba(255, 107, 53, 0.3)",   // Orange borders
+    secondary: "rgba(255, 107, 53, 0.2)",  // Subtle orange borders
+    subtle: "rgba(255, 255, 255, 0.1)",    // Neutral borders
+    muted: "rgba(255, 255, 255, 0.05)",    // Very subtle borders
+  },
+
+  // Status Colors - Harmonized with orange theme
   status: {
-    success: "#00d9ff",
-    warning: "#ffb800",
-    error: "#ff4757",
-    info: "#3742fa",
+    success: "#10b981",      // Green that works with orange
+    warning: "#f59e0b",      // Amber that complements orange
+    error: "#ef4444",        // Red that doesn't clash
+    info: "#3b82f6",         // Blue for information
+  },
+
+  // Interactive States
+  interactive: {
+    hover: "rgba(255, 107, 53, 0.15)",
+    active: "rgba(255, 107, 53, 0.25)",
+    focus: "rgba(255, 107, 53, 0.4)",
+    disabled: "rgba(255, 255, 255, 0.1)",
   },
 } as const;
 
@@ -110,18 +132,35 @@ export const BORDERS = {
 } as const;
 
 // =============================================================================
-// SHADOW SYSTEM
+// SHADOW SYSTEM - Rich Black & Orange Themed
 // =============================================================================
 export const SHADOWS = {
-  sm: "0 1px 3px rgba(0, 0, 0, 0.1)",
-  md: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  lg: "0 10px 15px rgba(0, 0, 0, 0.1)",
-  xl: "0 20px 25px rgba(0, 0, 0, 0.1)",
+  // Basic shadows with rich black depth
+  sm: "0 1px 3px rgba(0, 0, 0, 0.4)",
+  md: "0 4px 8px rgba(0, 0, 0, 0.3)",
+  lg: "0 8px 16px rgba(0, 0, 0, 0.25)",
+  xl: "0 16px 32px rgba(0, 0, 0, 0.2)",
 
+  // Premium shadows with orange glow
   premium: {
-    card: "0 4px 16px rgba(0, 0, 0, 0.12)",
-    float: "0 8px 24px rgba(0, 0, 0, 0.16)",
-    overlay: "0 16px 48px rgba(0, 0, 0, 0.24)",
+    card: "0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.1)",
+    float: "0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.15)",
+    overlay: "0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 107, 53, 0.2)",
+    glow: "0 0 20px rgba(255, 107, 53, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4)",
+  },
+
+  // Interactive shadows
+  interactive: {
+    hover: "0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2)",
+    active: "0 2px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2)",
+    focus: "0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3)",
+  },
+
+  // Inner shadows for depth
+  inset: {
+    subtle: "inset 0 1px 2px rgba(0, 0, 0, 0.2)",
+    medium: "inset 0 2px 4px rgba(0, 0, 0, 0.3)",
+    deep: "inset 0 4px 8px rgba(0, 0, 0, 0.4)",
   },
 } as const;
 
@@ -152,49 +191,197 @@ export const ANIMATION = {
 } as const;
 
 // =============================================================================
-// COMPONENT SYSTEM - Simplified Button Styles
+// COMPONENT SYSTEM - Professional Button & UI Styles
 // =============================================================================
 export const COMPONENT_STYLES = {
   button: {
     sizes: {
+      xs: {
+        fontSize: TYPOGRAPHY.fontSize.xs,
+        padding: "0.375rem 0.5rem",
+        minHeight: "1.75rem",
+        lineHeight: "1.3",
+        borderRadius: BORDERS.radius.sm,
+      },
       sm: {
         fontSize: TYPOGRAPHY.fontSize.sm,
         padding: "0.5rem 0.75rem",
         minHeight: "2rem",
         lineHeight: "1.4",
+        borderRadius: BORDERS.radius.md,
       },
       md: {
         fontSize: TYPOGRAPHY.fontSize.base,
         padding: "0.75rem 1rem",
         minHeight: "2.5rem",
         lineHeight: "1.5",
+        borderRadius: BORDERS.radius.md,
+      },
+      lg: {
+        fontSize: TYPOGRAPHY.fontSize.lg,
+        padding: "1rem 1.5rem",
+        minHeight: "3rem",
+        lineHeight: "1.5",
+        borderRadius: BORDERS.radius.lg,
       },
     },
 
     variants: {
+      // Primary orange button
       solid: {
-        bg: COLORS.accent.primary,
+        bg: `linear-gradient(135deg, ${COLORS.accent.primary}, ${COLORS.accent.secondary})`,
         color: COLORS.text.primary,
         border: "none",
-        boxShadow: SHADOWS.md,
+        boxShadow: SHADOWS.premium.glow,
+        _hover: {
+          bg: `linear-gradient(135deg, ${COLORS.accent.secondary}, ${COLORS.accent.tertiary})`,
+          boxShadow: SHADOWS.interactive.hover,
+          transform: "translateY(-1px)",
+        },
+        _active: {
+          boxShadow: SHADOWS.interactive.active,
+          transform: "translateY(0)",
+        },
       },
+
+      // Subtle ghost button
       ghost: {
-        bg: "rgba(42, 42, 42, 0.6)",
+        bg: `rgba(30, 30, 30, 0.6)`,
         color: COLORS.text.secondary,
-        border: `1px solid ${BORDERS.colors.subtle}`,
+        border: `1px solid ${COLORS.border.subtle}`,
+        backdropFilter: "blur(8px)",
+        _hover: {
+          bg: COLORS.interactive.hover,
+          color: COLORS.text.primary,
+          border: `1px solid ${COLORS.border.secondary}`,
+        },
+        _active: {
+          bg: COLORS.interactive.active,
+        },
       },
+
+      // Orange outline button
       outline: {
         bg: "transparent",
         color: COLORS.accent.primary,
         border: `1px solid ${COLORS.accent.primary}`,
+        _hover: {
+          bg: COLORS.accent.subtle,
+          color: COLORS.accent.primary,
+          border: `1px solid ${COLORS.accent.secondary}`,
+        },
+        _active: {
+          bg: COLORS.interactive.active,
+        },
       },
+
+      // Premium Editor Actions - Professional & Rich Design
       editorAction: {
-        bg: "rgba(30, 30, 30, 0.8)",
-        color: COLORS.text.tertiary,
-        border: `1px solid ${BORDERS.colors.subtle}`,
-        minHeight: "2rem",
-        padding: "0.5rem 0.75rem",
+        bg: `linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.9))`,
+        color: COLORS.text.secondary,
+        border: `1px solid ${COLORS.border.subtle}`,
+        minHeight: "2.25rem",
+        padding: "0.625rem 1rem",
         fontSize: TYPOGRAPHY.fontSize.sm,
+        fontWeight: TYPOGRAPHY.fontWeight.medium,
+        backdropFilter: "blur(12px)",
+        boxShadow: `0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)`,
+        borderRadius: BORDERS.radius.md,
+        _hover: {
+          bg: `linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.9))`,
+          color: COLORS.text.primary,
+          border: `1px solid ${COLORS.border.secondary}`,
+          boxShadow: `0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
+          transform: "translateY(-1px)",
+        },
+        _active: {
+          bg: `linear-gradient(135deg, rgba(15, 15, 15, 0.95), rgba(10, 10, 10, 0.9))`,
+          boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2)`,
+          transform: "translateY(0)",
+        },
+      },
+
+      // Premium Primary Variant for Reset/Primary Actions
+      editorPrimary: {
+        bg: `linear-gradient(135deg, ${COLORS.accent.primary}, ${COLORS.accent.secondary})`,
+        color: COLORS.text.primary,
+        border: "none",
+        minHeight: "2.25rem",
+        padding: "0.625rem 1rem",
+        fontSize: TYPOGRAPHY.fontSize.sm,
+        fontWeight: TYPOGRAPHY.fontWeight.semibold,
+        backdropFilter: "blur(12px)",
+        boxShadow: `0 4px 16px rgba(255, 107, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+        borderRadius: BORDERS.radius.md,
+        _hover: {
+          bg: `linear-gradient(135deg, ${COLORS.accent.secondary}, ${COLORS.accent.tertiary})`,
+          boxShadow: `0 6px 20px rgba(255, 107, 53, 0.5), 0 0 0 1px rgba(255, 107, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)`,
+          transform: "translateY(-2px)",
+        },
+        _active: {
+          bg: `linear-gradient(135deg, ${COLORS.accent.tertiary}, ${COLORS.accent.primary})`,
+          boxShadow: `inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(255, 107, 53, 0.3)`,
+          transform: "translateY(0)",
+        },
+      },
+
+      // Danger/destructive actions
+      danger: {
+        bg: `linear-gradient(135deg, ${COLORS.status.error}, #dc2626)`,
+        color: COLORS.text.primary,
+        border: "none",
+        boxShadow: `0 4px 16px rgba(239, 68, 68, 0.3)`,
+        _hover: {
+          bg: `linear-gradient(135deg, #dc2626, #b91c1c)`,
+          boxShadow: `0 6px 20px rgba(239, 68, 68, 0.4)`,
+        },
+      },
+    },
+  },
+
+  // Card component styles
+  card: {
+    variants: {
+      default: {
+        bg: COLORS.bg.tertiary,
+        border: `1px solid ${COLORS.border.subtle}`,
+        borderRadius: BORDERS.radius.lg,
+        boxShadow: SHADOWS.premium.card,
+        backdropFilter: "blur(8px)",
+      },
+      elevated: {
+        bg: COLORS.bg.quaternary,
+        border: `1px solid ${COLORS.border.secondary}`,
+        borderRadius: BORDERS.radius.lg,
+        boxShadow: SHADOWS.premium.float,
+        backdropFilter: "blur(12px)",
+      },
+      glass: {
+        bg: "rgba(30, 30, 30, 0.4)",
+        border: `1px solid ${COLORS.border.muted}`,
+        borderRadius: BORDERS.radius.lg,
+        boxShadow: SHADOWS.premium.card,
+        backdropFilter: "blur(16px)",
+      },
+    },
+  },
+
+  // Input component styles
+  input: {
+    variants: {
+      default: {
+        bg: COLORS.bg.secondary,
+        color: COLORS.text.primary,
+        border: `1px solid ${COLORS.border.subtle}`,
+        borderRadius: BORDERS.radius.md,
+        _focus: {
+          border: `1px solid ${COLORS.accent.primary}`,
+          boxShadow: SHADOWS.interactive.focus,
+          outline: "none",
+        },
+        _hover: {
+          border: `1px solid ${COLORS.border.secondary}`,
+        },
       },
     },
   },

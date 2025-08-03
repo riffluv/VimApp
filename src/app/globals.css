@@ -6,45 +6,92 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /* =============================================================================
-   CSS CUSTOM PROPERTIES - Simple Design Token System
+   CSS CUSTOM PROPERTIES - Rich Black & Orange Design System
    ============================================================================= */
 :root {
-  /* Colors */
+  /* Rich Black Background System */
   --color-bg-primary: #0a0a0a;
-  --color-bg-secondary: #1a1a1a;
-  --color-bg-tertiary: #2a2a2a;
+  --color-bg-secondary: #141414;
+  --color-bg-tertiary: #1e1e1e;
+  --color-bg-quaternary: #2a2a2a;
+  --color-bg-editor: #0f0f0f;
+  --color-bg-overlay: rgba(10, 10, 10, 0.95);
+
+  /* Professional Orange Accent System */
   --color-accent-primary: #ff6b35;
   --color-accent-secondary: #ff8757;
+  --color-accent-tertiary: #ff4500;
+  --color-accent-subtle: rgba(255, 107, 53, 0.1);
+  --color-accent-muted: rgba(255, 107, 53, 0.6);
+
+  /* High Contrast Text System */
   --color-text-primary: #ffffff;
-  --color-text-secondary: #e0e0e0;
-  --color-text-tertiary: #b0b0b0;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-text-secondary: #e8e8e8;
+  --color-text-tertiary: #c4c4c4;
+  --color-text-muted: #9a9a9a;
+  --color-text-inverse: #0a0a0a;
+
+  /* Sophisticated Border System */
+  --color-border-primary: rgba(255, 107, 53, 0.3);
+  --color-border-secondary: rgba(255, 107, 53, 0.2);
+  --color-border-subtle: rgba(255, 255, 255, 0.1);
+  --color-border-muted: rgba(255, 255, 255, 0.05);
+
+  /* Interactive State Colors */
+  --color-interactive-hover: rgba(255, 107, 53, 0.15);
+  --color-interactive-active: rgba(255, 107, 53, 0.25);
+  --color-interactive-focus: rgba(255, 107, 53, 0.4);
+  --color-interactive-disabled: rgba(255, 255, 255, 0.1);
 
   /* Spacing (8px grid) */
-  --space-xs: 0.5rem;   /* 8px */
-  --space-sm: 1rem;     /* 16px */
-  --space-md: 1.5rem;   /* 24px */
-  --space-lg: 2rem;     /* 32px */
-  --space-xl: 3rem;     /* 48px */
+  --space-xs: 0.5rem;
+  /* 8px */
+  --space-sm: 1rem;
+  /* 16px */
+  --space-md: 1.5rem;
+  /* 24px */
+  --space-lg: 2rem;
+  /* 32px */
+  --space-xl: 3rem;
+  /* 48px */
 
   /* Typography */
   --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-family-mono: "JetBrains Mono", "Fira Code", "Monaco", monospace;
-  --font-size-xs: 0.75rem;   /* 12px */
-  --font-size-sm: 0.875rem;  /* 14px */
-  --font-size-md: 1rem;      /* 16px */
-  --font-size-lg: 1.125rem;  /* 18px */
-  --font-size-xl: 1.25rem;   /* 20px */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-md: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
 
   /* Border Radius */
-  --radius-sm: 0.25rem;  /* 4px */
-  --radius-md: 0.5rem;   /* 8px */
-  --radius-lg: 0.75rem;  /* 12px */
+  --radius-sm: 0.25rem;
+  /* 4px */
+  --radius-md: 0.5rem;
+  /* 8px */
+  --radius-lg: 0.75rem;
+  /* 12px */
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  /* Rich Shadow System */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.2);
+
+  /* Premium Shadows with Orange Glow */
+  --shadow-premium-card: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.1);
+  --shadow-premium-float: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.15);
+  --shadow-premium-glow: 0 0 20px rgba(255, 107, 53, 0.3), 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* Interactive Shadows */
+  --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 107, 53, 0.2);
+  --shadow-active: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-focus: 0 0 0 3px rgba(255, 107, 53, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
 
   /* Z-Index */
   --z-dropdown: 1000;
@@ -61,6 +108,7 @@
    LAYER: RESET - Modern CSS Reset
    ============================================================================= */
 @layer vimapp-reset {
+
   *,
   *::before,
   *::after {
@@ -115,6 +163,7 @@
    LAYER: BASE - Foundation Styles
    ============================================================================= */
 @layer vimapp-base {
+
   /* Focus styles */
   :focus-visible {
     outline: 2px solid var(--color-accent-primary);
@@ -122,38 +171,58 @@
     border-radius: var(--radius-sm);
   }
 
-  /* Selection styles */
+  /* Professional Selection Styles */
   ::selection {
-    background: rgba(255, 107, 53, 0.3);
+    background: var(--color-interactive-active);
     color: var(--color-text-primary);
+    text-shadow: none;
   }
 
-  /* Scrollbar styles */
+  ::-moz-selection {
+    background: var(--color-interactive-active);
+    color: var(--color-text-primary);
+    text-shadow: none;
+  }
+
+  /* Premium Scrollbar Design */
   ::-webkit-scrollbar {
-    width: 12px;
+    width: 14px;
+    height: 14px;
   }
 
   ::-webkit-scrollbar-track {
     background: var(--color-bg-secondary);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-muted);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 107, 53, 0.8),
-      rgba(255, 107, 53, 0.6)
-    );
-    border-radius: var(--radius-md);
+    background: linear-gradient(135deg,
+        var(--color-accent-primary),
+        var(--color-accent-secondary));
+    border-radius: var(--radius-lg);
     border: 2px solid var(--color-bg-secondary);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 107, 53, 1),
-      rgba(255, 107, 53, 0.8)
-    );
+    background: linear-gradient(135deg,
+        var(--color-accent-secondary),
+        var(--color-accent-tertiary));
+    box-shadow: var(--shadow-md);
+    transform: scale(1.05);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(135deg,
+        var(--color-accent-tertiary),
+        var(--color-accent-primary));
+    box-shadow: var(--shadow-active);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: var(--color-bg-secondary);
   }
 }
 
@@ -161,6 +230,7 @@
    LAYER: COMPONENTS - CodeMirror and Custom Components
    ============================================================================= */
 @layer vimapp-components {
+
   /* CodeMirror container isolation */
   .codemirror-isolated-container {
     position: relative;
@@ -171,7 +241,7 @@
     isolation: isolate;
   }
 
-  /* CodeMirror editor styles */
+  /* CodeMirror editor styles - Premium Rich Black Theme */
   .cm-editor {
     width: 100%;
     height: 100%;
@@ -182,13 +252,15 @@
     bottom: 0;
     font-family: var(--font-family-mono);
     font-size: 14px;
-    line-height: 1.5;
-    background: var(--color-bg-primary);
+    line-height: 1.6;
+    background: var(--color-bg-editor);
     color: var(--color-text-primary);
-    border: none;
+    border: 1px solid var(--color-border-subtle);
     outline: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: var(--shadow-premium-card);
+    backdrop-filter: blur(8px);
   }
 
   /* Emmet autocomplete popup visibility */
@@ -219,75 +291,146 @@
     border: 0;
   }
 
-  /* Vim cursor styles */
+  /* Professional Vim cursor styles */
   .cm-cursor {
     border-left: 2px solid var(--color-accent-primary);
+    animation: cursor-blink 1.2s ease-in-out infinite;
   }
 
   .cm-cursor.cm-fat-cursor {
-    background: rgba(255, 107, 53, 0.8);
+    background: var(--color-accent-muted);
     border: 1px solid var(--color-accent-primary);
     border-radius: 3px;
     width: 0.6em;
+    box-shadow: 0 0 8px rgba(255, 107, 53, 0.4);
   }
 
-  /* Active line highlight */
+  @keyframes cursor-blink {
+
+    0%,
+    50% {
+      opacity: 1;
+    }
+
+    51%,
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Enhanced active line highlight */
   .cm-activeLine {
-    background: rgba(255, 107, 53, 0.05);
+    background: var(--color-accent-subtle);
+    position: relative;
+  }
+
+  .cm-activeLine::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg,
+        var(--color-accent-primary),
+        var(--color-accent-secondary));
+    border-radius: 0 2px 2px 0;
   }
 
   .cm-activeLineGutter {
-    background: rgba(255, 107, 53, 0.08);
+    background: var(--color-accent-subtle);
+    color: var(--color-accent-primary);
+    font-weight: 600;
   }
 
-  /* Selection background */
+  /* Professional selection background */
   .cm-selectionBackground {
-    background: rgba(255, 107, 53, 0.2);
+    background: var(--color-interactive-active);
+    border-radius: 2px;
   }
 
-  /* Autocomplete tooltip styles */
+  /* Premium autocomplete tooltip styles */
   .cm-tooltip-autocomplete {
-    border: 1px solid rgba(255, 107, 53, 0.3);
-    border-radius: var(--radius-md);
-    background: rgba(8, 8, 10, 0.95);
-    box-shadow: var(--shadow-lg);
-    max-height: 280px;
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-overlay);
+    box-shadow: var(--shadow-premium-float);
+    backdrop-filter: blur(16px);
+    max-height: 320px;
     overflow: hidden;
     z-index: var(--z-tooltip);
     font-family: var(--font-family-mono);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     margin: 0;
-    padding: 6px;
+    padding: 8px;
+  }
+
+  .cm-tooltip-autocomplete ul {
+    margin: 0;
+    padding: 0;
   }
 
   .cm-tooltip-autocomplete ul li {
-    padding: 8px 10px;
-    margin: 1px 0;
-    border-radius: var(--radius-sm);
-    transition: all 0.15s ease;
+    padding: 10px 12px;
+    margin: 2px 0;
+    border-radius: var(--radius-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cm-tooltip-autocomplete ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg,
+        var(--color-accent-primary),
+        var(--color-accent-secondary));
+    transition: width 0.2s ease;
   }
 
   .cm-tooltip-autocomplete ul li[aria-selected] {
-    background: rgba(255, 107, 53, 0.2);
+    background: var(--color-interactive-hover);
     color: var(--color-text-primary);
-    font-weight: 500;
+    font-weight: 600;
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .cm-tooltip-autocomplete ul li[aria-selected]::before {
+    width: 3px;
   }
 
   .cm-completionLabel {
     color: var(--color-text-secondary);
     font-weight: 500;
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     flex: 1;
+    transition: color 0.2s ease;
+  }
+
+  .cm-tooltip-autocomplete ul li[aria-selected] .cm-completionLabel {
+    color: var(--color-text-primary);
   }
 
   .cm-completionDetail {
-    color: var(--color-text-tertiary);
+    color: var(--color-text-muted);
     font-size: var(--font-size-xs);
     font-style: italic;
-    margin-left: 10px;
-    opacity: 0.7;
+    margin-left: 12px;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+  }
+
+  .cm-tooltip-autocomplete ul li[aria-selected] .cm-completionDetail {
+    color: var(--color-accent-secondary);
+    opacity: 1;
   }
 }
 
@@ -295,6 +438,7 @@
    LAYER: UTILITIES - Utility Classes
    ============================================================================= */
 @layer vimapp-utilities {
+
   /* Screen reader only */
   .sr-only {
     position: absolute;
@@ -357,27 +501,38 @@
 /* Tablet */
 @media (min-width: 769px) and (max-width: 1024px) {
   :root {
-    --space-xs: 0.625rem;  /* 10px */
-    --space-sm: 1.125rem;  /* 18px */
-    --space-md: 1.75rem;   /* 28px */
-    --space-lg: 2.25rem;   /* 36px */
-    --space-xl: 3.5rem;    /* 56px */
+    --space-xs: 0.625rem;
+    /* 10px */
+    --space-sm: 1.125rem;
+    /* 18px */
+    --space-md: 1.75rem;
+    /* 28px */
+    --space-lg: 2.25rem;
+    /* 36px */
+    --space-xl: 3.5rem;
+    /* 56px */
   }
 }
 
 /* Desktop */
 @media (min-width: 1025px) {
   :root {
-    --space-xs: 0.75rem;   /* 12px */
-    --space-sm: 1.25rem;   /* 20px */
-    --space-md: 2rem;      /* 32px */
-    --space-lg: 2.5rem;    /* 40px */
-    --space-xl: 4rem;      /* 64px */
+    --space-xs: 0.75rem;
+    /* 12px */
+    --space-sm: 1.25rem;
+    /* 20px */
+    --space-md: 2rem;
+    /* 32px */
+    --space-lg: 2.5rem;
+    /* 40px */
+    --space-xl: 4rem;
+    /* 64px */
   }
 }
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

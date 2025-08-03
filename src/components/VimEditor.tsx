@@ -10,6 +10,7 @@ import { GiBroom } from "react-icons/gi";
 import { Tooltip } from "./Tooltip";
 import {
   EditorActionButton,
+  EditorPrimaryButton,
   ModeTabButton,
   SecondaryButton,
 } from "./ui/Button";
@@ -167,126 +168,184 @@ const VimEditor = memo<VimEditorProps>(({ onCodePenModeChange }) => {
       borderWidth="1px"
       className="vim-editor-container"
     >
-      {/* Header */}
+      {/* Premium Header */}
       <Flex
         alignItems="center"
         px={4}
         py={3}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        bg={DESIGN_SYSTEM.colors.bg.secondary}
+        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}, ${DESIGN_SYSTEM.colors.bg.tertiary})`}
         justifyContent="space-between"
         minH="60px"
         maxH="60px"
+        position="relative"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent, ${DESIGN_SYSTEM.colors.accent.primary}, transparent)`,
+          opacity: 0.6,
+        }}
       >
         <Flex alignItems="center" gap={3}>
-          {/* Window Controls */}
-          <HStack gap="6px">
+          {/* Professional Window Controls */}
+          <HStack gap="8px">
             <Box
-              w="12px"
-              h="12px"
+              w="14px"
+              h="14px"
               borderRadius="full"
-              bg="#ff5f57"
+              bg="linear-gradient(135deg, #ff6b6b, #ff5252)"
               cursor="pointer"
+              boxShadow="0 2px 4px rgba(255, 107, 107, 0.3)"
+              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.1)",
+                boxShadow: "0 4px 8px rgba(255, 107, 107, 0.4)",
+              }}
             />
             <Box
-              w="12px"
-              h="12px"
+              w="14px"
+              h="14px"
               borderRadius="full"
-              bg="#ffbd2e"
+              bg="linear-gradient(135deg, #ffb74d, #ffa726)"
               cursor="pointer"
+              boxShadow="0 2px 4px rgba(255, 183, 77, 0.3)"
+              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.1)",
+                boxShadow: "0 4px 8px rgba(255, 183, 77, 0.4)",
+              }}
             />
             <Box
-              w="12px"
-              h="12px"
+              w="14px"
+              h="14px"
               borderRadius="full"
-              bg="#28ca42"
+              bg="linear-gradient(135deg, #66bb6a, #4caf50)"
               cursor="pointer"
+              boxShadow="0 2px 4px rgba(102, 187, 106, 0.3)"
+              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.1)",
+                boxShadow: "0 4px 8px rgba(102, 187, 106, 0.4)",
+              }}
             />
           </HStack>
 
-          {/* Editor Title */}
-          <Flex alignItems="center" gap={2}>
+          {/* Professional Editor Title */}
+          <Flex alignItems="center" gap={3}>
             <Icon
               as={FiTerminal}
-              color={DESIGN_SYSTEM.colors.accent.secondary}
-              fontSize="md"
+              color={DESIGN_SYSTEM.colors.accent.primary}
+              fontSize="xl"
             />
             <Box>
               <Text
-                fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-                fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
-                color={DESIGN_SYSTEM.colors.accent.secondary}
+                fontSize={DESIGN_SYSTEM.typography.fontSize.base}
+                fontWeight={DESIGN_SYSTEM.typography.fontWeight.bold}
+                color={DESIGN_SYSTEM.colors.text.primary}
+                letterSpacing="tight"
               >
                 manaVimEditor
               </Text>
-              <Text
-                fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
-                color={DESIGN_SYSTEM.colors.text.tertiary}
-                mt={0}
-              >
-                {mode === "html"
-                  ? "index.html"
-                  : mode === "css"
-                  ? "style.css"
-                  : "script.js"}
-              </Text>
+              <Flex alignItems="center" gap={2} mt={1}>
+                <Box
+                  w="6px"
+                  h="6px"
+                  borderRadius="full"
+                  bg={DESIGN_SYSTEM.colors.accent.primary}
+                  boxShadow={`0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`}
+                />
+                <Text
+                  fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
+                  color={DESIGN_SYSTEM.colors.text.secondary}
+                  fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
+                  fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+                >
+                  {mode === "html"
+                    ? "index.html"
+                    : mode === "css"
+                      ? "style.css"
+                      : "script.js"}
+                </Text>
+              </Flex>
             </Box>
           </Flex>
         </Flex>
 
-        {/* Action Buttons */}
-        <HStack gap={1}>
+        {/* Premium Action Buttons */}
+        <HStack gap={2}>
           <Tooltip
             content={showPreview ? "プレビューを非表示" : "プレビューを表示"}
           >
-            <EditorActionButton
-              onClick={handlePreviewToggle}
-              disabled={showCodePenMode}
-              variant={showPreview ? "solid" : "outline"}
-              size="sm"
-              style={{ minWidth: "80px" }}
-            >
-              Preview
-            </EditorActionButton>
+            {showPreview ? (
+              <EditorPrimaryButton
+                onClick={handlePreviewToggle}
+                disabled={showCodePenMode}
+                size="sm"
+                style={{ minWidth: "88px" }}
+              >
+                Preview
+              </EditorPrimaryButton>
+            ) : (
+              <EditorActionButton
+                onClick={handlePreviewToggle}
+                disabled={showCodePenMode}
+                size="sm"
+                style={{ minWidth: "88px" }}
+              >
+                Preview
+              </EditorActionButton>
+            )}
           </Tooltip>
 
           <Tooltip
             content={showCodePenMode ? "通常モードに戻す" : "分割表示モード"}
           >
-            <EditorActionButton
-              onClick={handleCodePenToggle}
-              leftIcon={<Icon as={FiBookOpen} />}
-              variant={showCodePenMode ? "solid" : "outline"}
-              size="sm"
-              style={{ minWidth: "80px" }}
-            >
-              CodePen
-            </EditorActionButton>
+            {showCodePenMode ? (
+              <EditorPrimaryButton
+                onClick={handleCodePenToggle}
+                leftIcon={<Icon as={FiBookOpen} />}
+                size="sm"
+                style={{ minWidth: "88px" }}
+              >
+                CodePen
+              </EditorPrimaryButton>
+            ) : (
+              <EditorActionButton
+                onClick={handleCodePenToggle}
+                leftIcon={<Icon as={FiBookOpen} />}
+                size="sm"
+                style={{ minWidth: "88px" }}
+              >
+                CodePen
+              </EditorActionButton>
+            )}
           </Tooltip>
 
           <Tooltip content="現在のコードをクリア">
             <EditorActionButton
               onClick={() => clearDoc(mode)}
               leftIcon={<GiBroom />}
-              variant="outline"
               size="sm"
-              style={{ minWidth: "80px" }}
+              style={{ minWidth: "88px" }}
             >
               Clear
             </EditorActionButton>
           </Tooltip>
 
           <Tooltip content="全てリセット">
-            <EditorActionButton
+            <EditorPrimaryButton
               onClick={handleResetAllWithConfirm}
               leftIcon={<Icon as={FiRefreshCw} />}
-              variant="solid"
               size="sm"
-              style={{ minWidth: "80px" }}
+              style={{ minWidth: "88px" }}
             >
               Reset
-            </EditorActionButton>
+            </EditorPrimaryButton>
           </Tooltip>
         </HStack>
       </Flex>

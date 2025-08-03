@@ -51,33 +51,33 @@ const customTheme = createSystem(defaultConfig, {
         "dpi-lg": { value: "clamp(1.2rem, 1.5vw + 0.15rem, 1.4rem)" },
       },
       colors: {
-        // Rich Black (Primary) - より深みと洗練度を増したブラック
+        // Rich Black (Primary) - Professional Rich Black System
         primary: {
-          50: { value: "#fafafa" }, // 純白に近いグレー
-          100: { value: "#f4f4f5" }, // 非常に薄いグレー
-          200: { value: "#e4e4e7" }, // 薄いグレー
-          300: { value: "#d1d1d6" }, // ライトグレー
-          400: { value: "#a8a8b3" }, // ミディアムグレー
-          500: { value: "#737380" }, // ニュートラルグレー
-          600: { value: "#52525f" }, // ダークグレー
-          700: { value: "#3a3a44" }, // より深いグレー
-          800: { value: "#1a1a1e" }, // Rich Black - メイン（わずかに紫がかった深いブラック）
-          900: { value: "#0f0f12" }, // Deeper Black（より深い紫がかったブラック）
-          950: { value: "#08080a" }, // Ultra Deep Black（最も深いブラック）
+          50: { value: "#ffffff" }, // Pure white
+          100: { value: "#f8f8f8" }, // Near white
+          200: { value: "#e8e8e8" }, // Light gray
+          300: { value: "#c4c4c4" }, // Medium light gray
+          400: { value: "#9a9a9a" }, // Medium gray
+          500: { value: "#6b6b6b" }, // Neutral gray
+          600: { value: "#4a4a4a" }, // Dark gray
+          700: { value: "#2a2a2a" }, // Darker gray
+          800: { value: "#1e1e1e" }, // Rich black tertiary
+          900: { value: "#141414" }, // Rich black secondary
+          950: { value: "#0a0a0a" }, // Rich black primary
         },
-        // Orange (Secondary) - より洗練されたオレンジ（色彩心理学に基づく調整）
+        // Orange (Secondary) - Professional Orange System
         secondary: {
-          50: { value: "#fffbf4" }, // より温かい白
-          100: { value: "#fef5e7" }, // 柔らかいクリーム
-          200: { value: "#fde8cc" }, // 穏やかなベージュ
-          300: { value: "#fbd7a8" }, // 上品なライトオレンジ
-          400: { value: "#f39c3d" }, // 落ち着いたミディアムオレンジ
-          500: { value: "#e8833a" }, // メインオレンジ - より洗練され目に優しい色合い
-          600: { value: "#d4741f" }, // 深みのあるダークオレンジ
-          700: { value: "#b86118" }, // リッチなブラウンオレンジ
-          800: { value: "#9a4e14" }, // 高級感のあるダークブラウン
-          900: { value: "#7d3c11" }, // 深いエスプレッソ
-          950: { value: "#5a2a0c" }, // 最も深いブラウン
+          50: { value: "#fff8f1" }, // Warm white
+          100: { value: "#feecdc" }, // Light cream
+          200: { value: "#fcd9bd" }, // Soft peach
+          300: { value: "#fdba8c" }, // Light orange
+          400: { value: "#ff8757" }, // Medium orange
+          500: { value: "#ff6b35" }, // Primary orange
+          600: { value: "#ff4500" }, // Deep orange
+          700: { value: "#e63900" }, // Darker orange
+          800: { value: "#c73100" }, // Dark orange-red
+          900: { value: "#9c2a00" }, // Deep orange-red
+          950: { value: "#7a1f00" }, // Darkest orange
         },
         // アクセントカラー
         accent: {
@@ -89,19 +89,19 @@ const customTheme = createSystem(defaultConfig, {
           pink: { value: "#ec4899" },
           cyan: { value: "#06b6d4" },
         },
-        // グラデーション用カラー
+        // Professional Gradient System
         gradient: {
           primary: {
             value:
-              "linear-gradient(135deg, #0a0a0b 0%, #18181b 50%, #27272a 100%)",
+              "linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #1e1e1e 100%)",
           },
           secondary: {
             value:
-              "linear-gradient(135deg, #ff8c42 0%, #e67e22 50%, #d35400 100%)",
+              "linear-gradient(135deg, #ff6b35 0%, #ff8757 50%, #ff4500 100%)",
           },
           "secondary-subtle": {
             value:
-              "linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(230, 126, 34, 0.05) 100%)",
+              "linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 135, 87, 0.05) 100%)",
           },
           glass: {
             value:
@@ -109,24 +109,32 @@ const customTheme = createSystem(defaultConfig, {
           },
           "glass-warm": {
             value:
-              "linear-gradient(135deg, rgba(255, 140, 66, 0.08) 0%, rgba(255, 140, 66, 0.02) 100%)",
+              "linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(255, 107, 53, 0.02) 100%)",
           },
           accent: {
-            value: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+            value: "linear-gradient(135deg, #ff6b35 0%, #ff8757 100%)",
           },
           premium: {
             value:
-              "linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, transparent 50%, rgba(255, 140, 66, 0.05) 100%)",
+              "linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, transparent 50%, rgba(255, 107, 53, 0.05) 100%)",
+          },
+          "rich-black": {
+            value:
+              "linear-gradient(135deg, #0a0a0a 0%, #141414 25%, #1e1e1e 75%, #2a2a2a 100%)",
           },
         },
-        // 特殊エフェクト用
+        // Professional Effects System
         effects: {
-          glow: { value: "rgba(255, 152, 0, 0.3)" },
+          glow: { value: "rgba(255, 107, 53, 0.3)" },
+          "glow-subtle": { value: "rgba(255, 107, 53, 0.15)" },
+          "glow-intense": { value: "rgba(255, 107, 53, 0.5)" },
           shadow: { value: "rgba(0, 0, 0, 0.8)" },
+          "shadow-soft": { value: "rgba(0, 0, 0, 0.4)" },
           shimmer: { value: "rgba(255, 255, 255, 0.1)" },
-          blur: { value: "rgba(24, 24, 27, 0.8)" },
+          blur: { value: "rgba(10, 10, 10, 0.8)" },
+          "blur-light": { value: "rgba(20, 20, 20, 0.6)" },
         },
-        bgDark: { value: "#121214" },
+        bgDark: { value: "#0a0a0a" },
       },
       // 2025年最新: Container Query対応ブレークポイント
       breakpoints: {
@@ -142,12 +150,12 @@ const customTheme = createSystem(defaultConfig, {
         "container-lg": { value: "48em" }, // 768px
         "container-xl": { value: "64em" }, // 1024px
       },
-      // カスタムシャドウ
+      // Professional Shadow System
       shadows: {
-        glow: { value: "0 0 20px rgba(255, 140, 66, 0.3)" },
-        "glow-sm": { value: "0 0 10px rgba(255, 140, 66, 0.2)" },
-        "glow-lg": { value: "0 0 40px rgba(255, 140, 66, 0.4)" },
-        "glow-subtle": { value: "0 0 30px rgba(255, 140, 66, 0.15)" },
+        glow: { value: "0 0 20px rgba(255, 107, 53, 0.3)" },
+        "glow-sm": { value: "0 0 10px rgba(255, 107, 53, 0.2)" },
+        "glow-lg": { value: "0 0 40px rgba(255, 107, 53, 0.4)" },
+        "glow-subtle": { value: "0 0 30px rgba(255, 107, 53, 0.15)" },
         glass: {
           value:
             "0 8px 32px 0 rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
@@ -158,7 +166,7 @@ const customTheme = createSystem(defaultConfig, {
         },
         "glass-premium": {
           value:
-            "0 20px 60px 0 rgba(0, 0, 0, 0.5), 0 8px 25px 0 rgba(255, 140, 66, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+            "0 20px 60px 0 rgba(0, 0, 0, 0.5), 0 8px 25px 0 rgba(255, 107, 53, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
         },
         neo: {
           value:
@@ -166,7 +174,15 @@ const customTheme = createSystem(defaultConfig, {
         },
         elevated: {
           value:
-            "0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 140, 66, 0.1)",
+            "0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 107, 53, 0.1)",
+        },
+        "rich-black": {
+          value:
+            "0 4px 16px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 107, 53, 0.1)",
+        },
+        "rich-black-hover": {
+          value:
+            "0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 107, 53, 0.2)",
         },
       },
       // カスタムフォント - より洗練されたフォントスタック
