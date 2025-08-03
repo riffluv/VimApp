@@ -2,10 +2,11 @@
 
 ## 🎯 核心原則
 
-### 1. **実用的なシンプリシティ**
-- 過度な技術的複雑性を避ける
+### 1. **人の手によるクラフト感重視**
+- **AI感を排除** → 自然で温かみのあるデザイン
+- **リッチブラック×オレンジ** → 高級感と親しみやすさの両立
+- **手作り感のある細部** → 過度な完璧さを避け、人間らしい温かさを演出
 - 実用性とメンテナンス性を最優先
-- パフォーマンスと可読性のバランス
 
 ### 2. **統一されたデザインシステム**
 - design-system.tsによる一元管理
@@ -20,16 +21,31 @@
 @media (min-width: 1025px) { /* デスクトップ */ }
 ```
 
-## 🎨 デザインシステム仕様
+## 🎨 デザインシステム仕様（リッチブラック×オレンジ）
 
-### **カラーパレット（統一）**
+### **デザインコンセプト**
+- **プライマリーカラー**: リッチブラック - 深み、高級感、落ち着き
+- **セカンダリーカラー**: オレンジ - 温かみ、活力、親しみやすさ
+- **AI感を排除**: 機械的な完璧さではなく、人の手による自然な美しさ
+- **製品レベル品質**: プロフェッショナルでありながら親しみやすい
+
+### **カラーパレット（リッチブラック×オレンジ）**
 ```css
-/* Primary: Rich Black + Orange */
---color-bg-primary: #0a0a0a;
---color-bg-secondary: #1a1a1a;
---color-accent-primary: #ff6b35;
---color-text-primary: #ffffff;
---color-text-secondary: #e0e0e0;
+/* プライマリーカラー: リッチブラック - 深みと高級感 */
+--color-bg-primary: #0a0a0a;      /* Pure rich black */
+--color-bg-secondary: #141414;    /* Slightly lighter rich black */
+--color-bg-tertiary: #1e1e1e;     /* Card/component background */
+--color-bg-quaternary: #2a2a2a;   /* Elevated surfaces */
+
+/* セカンダリーカラー: オレンジ - 温かみと活力 */
+--color-accent-primary: #ff6b35;  /* Main orange - vibrant but professional */
+--color-accent-secondary: #ff8757; /* Lighter orange for hover states */
+--color-accent-tertiary: #ff4500;  /* Deeper orange for active states */
+
+/* テキストカラー: 高コントラスト階層 */
+--color-text-primary: #ffffff;    /* Pure white for primary text */
+--color-text-secondary: #e8e8e8;  /* High contrast secondary */
+--color-text-tertiary: #c4c4c4;   /* Medium contrast */
 ```
 
 ### **スペーシング（8px Grid）**
@@ -135,9 +151,9 @@
 
 ## 🚫 避けるべきパターン
 
-### **過度な複雑性**
+### **AI感のある機械的なデザイン**
 ```css
-/* ❌ 複雑すぎ */
+/* ❌ AI感のある機械的すぎるデザイン */
 .component {
   background: linear-gradient(135deg, 
     rgba(255,255,255,0.02) 0%, 
@@ -150,11 +166,19 @@
   transform: perspective(1000px) rotateX(1deg) translateZ(0);
 }
 
-/* ✅ シンプル */
+/* ✅ 人の手による自然なデザイン */
 .component {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary); /* リッチブラック */
+  border: 1px solid rgba(255, 107, 53, 0.2); /* 控えめなオレンジボーダー */
   border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); /* 自然な深み */
+}
+
+/* ✅ オレンジアクセントの効果的な使用 */
+.interactive-element {
+  background: linear-gradient(135deg, #ff6b35, #ff8757);
+  color: #ffffff;
+  transition: all 0.2s ease; /* 自然な動き */
 }
 ```
 
@@ -227,8 +251,44 @@
 - Chakra UI: 基本UIコンポーネント
 - CodeMirror: エディター機能（!important使用許可）
 
+### **オレンジ（セカンダリーカラー）の効果的な使用法**
+```css
+/* ✅ アクティブ状態・重要な要素 */
+.active-tab {
+  background: linear-gradient(135deg, #ff6b35, #ff8757);
+  color: #ffffff;
+}
+
+/* ✅ ホバー効果・インタラクション */
+.button:hover {
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+/* ✅ アクセント・強調 */
+.highlight {
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+}
+
+/* ❌ 過度な使用は避ける */
+.everything-orange {
+  background: #ff6b35;
+  border: 2px solid #ff6b35;
+  color: #ff6b35; /* 読みにくい */
+}
+```
+
 ---
 
 ## 💡 まとめ
 
-**シンプルで保守しやすく、実用的なCSSを書く**ことが2025年の真のベストプラクティスです。技術的な複雑性よりも、開発チームの生産性とユーザー体験を重視しましょう。
+**リッチブラック×オレンジで、AI感のない人の手による自然なデザイン**を実現することが、このプロジェクトの核心です。
+
+### 🎯 デザインの指針
+- **リッチブラック**: 深み、高級感、落ち着きを演出
+- **オレンジ**: 温かみ、活力、親しみやすさを追加
+- **自然な美しさ**: 機械的な完璧さではなく、人間らしい温かさ
+- **製品レベル品質**: プロフェッショナルでありながら親しみやすい
+
+技術的な複雑性よりも、**ユーザーが感じる温かさと使いやすさ**を最優先に考えましょう。
