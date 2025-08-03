@@ -175,6 +175,54 @@ const createEmmetCompletions = (mode: EditorMode) => {
           });
         },
       },
+      {
+        label: "ol>li*3",
+        detail: "OL with 3 LI",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = "<ol>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ol>";
+          const cursorPos = from + text.indexOf('<li>') + 4;
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos },
+          });
+        },
+      },
+      {
+        label: "table>tr*3>td*3",
+        detail: "Table 3x3",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = "<table>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n</table>";
+          const cursorPos = from + text.indexOf('<td>') + 4;
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos },
+          });
+        },
+      },
+      {
+        label: "form>input*3",
+        detail: "Form with 3 inputs",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = '<form>\n\t<input type="text" name="" id="">\n\t<input type="text" name="" id="">\n\t<input type="submit" value="Submit">\n</form>';
+          const cursorPos = from + text.indexOf('type="text"') + 'type="'.length;
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos, head: cursorPos + 4 }, // "text"を選択
+          });
+        },
+      },
+      {
+        label: "nav>ul>li*5>a",
+        detail: "Navigation menu",
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = "<nav>\n\t<ul>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t</ul>\n</nav>";
+          const cursorPos = from + text.indexOf('href="') + 6;
+          view.dispatch({
+            changes: { from, to, insert: text },
+            selection: { anchor: cursorPos },
+          });
+        },
+      },
     ];
 
     emmetAbbreviations.forEach((abbr) => {
@@ -222,22 +270,113 @@ const createEmmetCompletions = (mode: EditorMode) => {
       });
     });
 
-    // CSS Emmet省略形
+    // CSS Emmet省略形（実際のEmmet記法に準拠）
     const cssEmmetAbbr = [
+      // 基本プロパティ
       { label: "m", detail: "margin", apply: "margin:;" },
+      { label: "mt", detail: "margin-top", apply: "margin-top:;" },
+      { label: "mr", detail: "margin-right", apply: "margin-right:;" },
+      { label: "mb", detail: "margin-bottom", apply: "margin-bottom:;" },
+      { label: "ml", detail: "margin-left", apply: "margin-left:;" },
       { label: "p", detail: "padding", apply: "padding:;" },
+      { label: "pt", detail: "padding-top", apply: "padding-top:;" },
+      { label: "pr", detail: "padding-right", apply: "padding-right:;" },
+      { label: "pb", detail: "padding-bottom", apply: "padding-bottom:;" },
+      { label: "pl", detail: "padding-left", apply: "padding-left:;" },
+
+      // サイズ
       { label: "w", detail: "width", apply: "width:;" },
       { label: "h", detail: "height", apply: "height:;" },
-      { label: "bg", detail: "background", apply: "background:;" },
-      { label: "c", detail: "color", apply: "color:;" },
+      { label: "maw", detail: "max-width", apply: "max-width:;" },
+      { label: "mah", detail: "max-height", apply: "max-height:;" },
+      { label: "miw", detail: "min-width", apply: "min-width:;" },
+      { label: "mih", detail: "min-height", apply: "min-height:;" },
+
+      // 表示・位置
       { label: "d", detail: "display", apply: "display:;" },
+      { label: "db", detail: "display: block", apply: "display: block;" },
+      { label: "di", detail: "display: inline", apply: "display: inline;" },
+      { label: "dib", detail: "display: inline-block", apply: "display: inline-block;" },
+      { label: "df", detail: "display: flex", apply: "display: flex;" },
+      { label: "dg", detail: "display: grid", apply: "display: grid;" },
+      { label: "dn", detail: "display: none", apply: "display: none;" },
+
       { label: "pos", detail: "position", apply: "position:;" },
+      { label: "posa", detail: "position: absolute", apply: "position: absolute;" },
+      { label: "posr", detail: "position: relative", apply: "position: relative;" },
+      { label: "posf", detail: "position: fixed", apply: "position: fixed;" },
+      { label: "poss", detail: "position: sticky", apply: "position: sticky;" },
+
+      // Flexbox
+      { label: "fxd", detail: "flex-direction", apply: "flex-direction:;" },
+      { label: "fxdr", detail: "flex-direction: row", apply: "flex-direction: row;" },
+      { label: "fxdc", detail: "flex-direction: column", apply: "flex-direction: column;" },
+      { label: "jc", detail: "justify-content", apply: "justify-content:;" },
+      { label: "jcc", detail: "justify-content: center", apply: "justify-content: center;" },
+      { label: "jcsb", detail: "justify-content: space-between", apply: "justify-content: space-between;" },
+      { label: "ai", detail: "align-items", apply: "align-items:;" },
+      { label: "aic", detail: "align-items: center", apply: "align-items: center;" },
+
+      // 色・背景
+      { label: "c", detail: "color", apply: "color:;" },
+      { label: "bg", detail: "background", apply: "background:;" },
+      { label: "bgc", detail: "background-color", apply: "background-color:;" },
+      { label: "bgi", detail: "background-image", apply: "background-image:;" },
+      { label: "bgs", detail: "background-size", apply: "background-size:;" },
+      { label: "bgr", detail: "background-repeat", apply: "background-repeat:;" },
+
+      // ボーダー
+      { label: "bd", detail: "border", apply: "border:;" },
+      { label: "bdt", detail: "border-top", apply: "border-top:;" },
+      { label: "bdr", detail: "border-right", apply: "border-right:;" },
+      { label: "bdb", detail: "border-bottom", apply: "border-bottom:;" },
+      { label: "bdl", detail: "border-left", apply: "border-left:;" },
+      { label: "bdrs", detail: "border-radius", apply: "border-radius:;" },
+
+      // フォント・テキスト
+      { label: "fz", detail: "font-size", apply: "font-size:;" },
+      { label: "fw", detail: "font-weight", apply: "font-weight:;" },
+      { label: "ff", detail: "font-family", apply: "font-family:;" },
+      { label: "lh", detail: "line-height", apply: "line-height:;" },
+      { label: "ta", detail: "text-align", apply: "text-align:;" },
+      { label: "tac", detail: "text-align: center", apply: "text-align: center;" },
+      { label: "tal", detail: "text-align: left", apply: "text-align: left;" },
+      { label: "tar", detail: "text-align: right", apply: "text-align: right;" },
+      { label: "td", detail: "text-decoration", apply: "text-decoration:;" },
+      { label: "tdn", detail: "text-decoration: none", apply: "text-decoration: none;" },
+
+      // その他
+      { label: "op", detail: "opacity", apply: "opacity:;" },
+      { label: "zi", detail: "z-index", apply: "z-index:;" },
+      { label: "ov", detail: "overflow", apply: "overflow:;" },
+      { label: "ovh", detail: "overflow: hidden", apply: "overflow: hidden;" },
+      { label: "ova", detail: "overflow: auto", apply: "overflow: auto;" },
+      { label: "trf", detail: "transform", apply: "transform:;" },
+      { label: "trs", detail: "transition", apply: "transition:;" },
     ];
 
     cssEmmetAbbr.forEach((abbr) => {
       completions.push({
-        ...abbr,
+        label: abbr.label,
         type: "emmet",
+        detail: abbr.detail,
+        apply: (view: any, completion: any, from: number, to: number) => {
+          const text = abbr.apply;
+          // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
+          if (text.includes(":;")) {
+            const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
+            view.dispatch({
+              changes: { from, to, insert: text },
+              selection: { anchor: cursorPos },
+            });
+          } else {
+            // 既に値が設定されている場合はそのまま
+            view.dispatch({
+              changes: { from, to, insert: text },
+              selection: { anchor: from + text.length },
+            });
+          }
+        },
         boost: 15,
       });
     });
