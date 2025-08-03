@@ -1,6 +1,6 @@
 /**
- * Design System 2025 - Simplified & Maintainable
- * Simple design tokens for practical development
+ * Design System 2025 - Modern CSS Standards Compliant
+ * Container Queries, CSS Custom Properties, Logical Properties
  */
 
 // =============================================================================
@@ -61,21 +61,32 @@ export const COLORS = {
 } as const;
 
 // =============================================================================
-// SPACING SYSTEM - 8px Grid
+// SPACING SYSTEM - 2025年標準（Logical Properties対応）
 // =============================================================================
 export const SPACING = {
   "0": "0",
-  "1": "0.25rem",  // 4px
-  "2": "0.5rem",   // 8px
-  "3": "0.75rem",  // 12px
-  "4": "1rem",     // 16px
-  "5": "1.25rem",  // 20px
-  "6": "1.5rem",   // 24px
-  "8": "2rem",     // 32px
-  "10": "2.5rem",  // 40px
-  "12": "3rem",    // 48px
-  "16": "4rem",    // 64px
-  "20": "5rem",    // 80px
+  "3xs": "0.25rem",  // 4px
+  "2xs": "0.5rem",   // 8px
+  "xs": "0.75rem",   // 12px
+  "sm": "1rem",      // 16px
+  "md": "1.5rem",    // 24px
+  "lg": "2rem",      // 32px
+  "xl": "3rem",      // 48px
+  "2xl": "4rem",     // 64px
+  "3xl": "6rem",     // 96px
+
+  // Legacy support
+  "1": "0.25rem",
+  "2": "0.5rem",
+  "3": "0.75rem",
+  "4": "1rem",
+  "5": "1.25rem",
+  "6": "1.5rem",
+  "8": "2rem",
+  "10": "2.5rem",
+  "12": "3rem",
+  "16": "4rem",
+  "20": "5rem",
 } as const;
 
 // =============================================================================

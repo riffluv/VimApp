@@ -9,7 +9,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
 import { FiExternalLink, FiGithub } from "react-icons/fi";
 
-// 動的インポート
+// 動的インポート - パフォーマンス最適化
 const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ssr: false,
   loading: () => (
@@ -29,22 +29,26 @@ const VimEditor = dynamic(() => import("@/components/VimEditor"), {
   ),
 });
 
-// Motion Components
+// ページレベルのMotion Components（MDガイドライン準拠）
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
 
 export default function Home() {
+  // 状態管理 - 必要最小限
   const [isCodePenMode, setIsCodePenMode] = useState(false);
   const [showCheatSheet, setShowCheatSheet] = useState(true);
   const [isTogglePressed, setIsTogglePressed] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
-  const handleCodePenModeChange = (isCodePenMode: boolean) => {
+
+  // イベントハンドラー
+  const handleCodePenModeChange = useCallback((isCodePenMode: boolean) => {
     setIsCodePenMode(isCodePenMode);
-  };
+  }, []);
 
-  const handleCheatSheetToggle = (showCheatSheet: boolean) => {
+  const handleCheatSheetToggle = useCallback((showCheatSheet: boolean) => {
     setShowCheatSheet(showCheatSheet);
-  };
+  }, []);
 
   const handleToggleMouseDown = useCallback(() => {
     setIsTogglePressed(true);
@@ -57,88 +61,97 @@ export default function Home() {
   return (
     <Box
       bg={DESIGN_SYSTEM.colors.bg.primary}
-      minH="100dvh" // 2025年最新: 動的ビューポート高度対応
+      minH="100dvh" // 2025年標準: Dynamic Viewport Height
       w="100%"
       position="relative"
-
-
     >
-      {/* Header */}
+      {/* Header - シンプルで洗練されたデザイン */}
       <MotionFlex
         as="header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.3 }}
         align="center"
         justify="space-between"
         px={{ base: 4, md: 6 }}
-        py={{ base: 2, md: 3 }}
+        py={{ base: 3, md: 4 }}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.subtle}
         mb={{ base: 4, md: 6 }}
         gap={4}
         position="relative"
         zIndex={1}
-        h={{ base: "60px", md: "70px" }}
-        // シンプルで自然な背景
+        h={{ base: "70px", md: "80px" }}
         bg={DESIGN_SYSTEM.colors.bg.secondary}
-
       >
-        <Flex align="center" gap={2}>
+        <Flex align="center" gap={3}>
           <Image
             src="/manabylogo.png"
             alt="manaby logo"
-            h={{ base: 6, md: 8 }}
+            h={{ base: 7, md: 9 }}
             w="auto"
             objectFit="contain"
+            transition="all 0.2s ease"
+            _hover={{
+              transform: "scale(1.05)",
+            }}
           />
-          <Box position="relative">
+          <Box>
             <Heading
               as="h1"
-              fontSize={{ base: "lg", md: "xl" }}
-              color="secondary.400"
-              fontWeight="600"
+              fontSize={{ base: "xl", md: "2xl" }}
+              fontWeight="700"
               letterSpacing="tight"
-              fontFamily="Inter"
-              position="relative"
-              // シンプルで読みやすいテキスト
+              fontFamily={DESIGN_SYSTEM.typography.fonts.sans}
               color={DESIGN_SYSTEM.colors.accent.primary}
             >
               manaVimEditor
             </Heading>
             <Text
-              fontSize={{ base: "xs", md: "sm" }}
-              color="gray.400"
+              fontSize={{ base: "sm", md: "md" }}
+              color={DESIGN_SYSTEM.colors.text.tertiary}
               mt={1}
               fontWeight="400"
               letterSpacing="wide"
-              opacity={0.8}
             >
               コードを書きながらVimを覚える実践的エディタ
             </Text>
           </Box>
         </Flex>
-        <Flex gap={3} align="center" display={{ base: "none", md: "flex" }}>
+        <Flex
+          gap={6}
+          align="center"
+          display={{ base: "none", md: "flex" }}
+        >
           <Link
             href="https://github.com/vim/vim"
             target="_blank"
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color="gray.300"
+            color={hoveredLink === 'github' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
             fontSize="sm"
             fontWeight="500"
-            borderRadius="8px"
-            px={3}
-            py={2}
-            // シンプルなホバー効果
-            transition="all 0.2s ease"
-            _hover={{
-              color: DESIGN_SYSTEM.colors.accent.primary,
-              textDecoration: "none",
+            px={2}
+            py={1}
+            transition="all 0.3s ease"
+            outline="none"
+            textShadow={hoveredLink === 'github' ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}` : 'none'}
+            onMouseEnter={() => setHoveredLink('github')}
+            onMouseLeave={() => setHoveredLink(null)}
+            _focus={{
+              outline: "none",
+              boxShadow: "none",
             }}
           >
-            <FiGithub style={{ marginRight: "8px", fontSize: "16px" }} />
+            <Box
+              as={FiGithub}
+              mr={2}
+              fontSize="16px"
+              transition="all 0.3s ease"
+              color={hoveredLink === 'github' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
+              filter={hoveredLink === 'github' ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})` : 'none'}
+            />
             GitHub
           </Link>
           <Link
@@ -147,21 +160,30 @@ export default function Home() {
             rel="noopener noreferrer"
             display="flex"
             alignItems="center"
-            color="gray.300"
+            color={hoveredLink === 'cheatsheet' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
             fontSize="sm"
             fontWeight="500"
-            borderRadius="8px"
-            px={3}
-            py={2}
-            // シンプルなホバー効果
-            transition="all 0.2s ease"
-            _hover={{
-              color: DESIGN_SYSTEM.colors.accent.primary,
-              textDecoration: "none",
+            px={2}
+            py={1}
+            transition="all 0.3s ease"
+            outline="none"
+            textShadow={hoveredLink === 'cheatsheet' ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}` : 'none'}
+            onMouseEnter={() => setHoveredLink('cheatsheet')}
+            onMouseLeave={() => setHoveredLink(null)}
+            _focus={{
+              outline: "none",
+              boxShadow: "none",
             }}
           >
-            <FiExternalLink style={{ marginRight: "8px", fontSize: "16px" }} />
-            Vimチートシート
+            <Box
+              as={FiExternalLink}
+              mr={2}
+              fontSize="16px"
+              transition="all 0.3s ease"
+              color={hoveredLink === 'cheatsheet' ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.secondary}
+              filter={hoveredLink === 'cheatsheet' ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})` : 'none'}
+            />
+            チートシート
           </Link>
         </Flex>
       </MotionFlex>
@@ -178,13 +200,13 @@ export default function Home() {
         maxW={{ base: "100%", md: "7xl" }}
         mx="auto"
       >
-        {/* チートシート切り替えボタン */}
+        {/* チートシート切り替えボタン - シンプルで実用的 */}
         {!isCodePenMode && (
           <Flex
             direction="column"
             align="center"
-            mr={{ base: 0, md: 3 }}
-            mb={{ base: 3, md: 0 }}
+            mr={{ base: 0, md: 4 }}
+            mb={{ base: 4, md: 0 }}
           >
             <Tooltip
               content={
@@ -197,80 +219,75 @@ export default function Home() {
               openDelay={300}
               contentProps={{
                 fontSize: "sm",
-                bg: "primary.800",
-                color: "white",
-                borderRadius: "md",
-                px: 3,
-                py: 2,
+                bg: DESIGN_SYSTEM.colors.bg.quaternary,
+                color: DESIGN_SYSTEM.colors.text.primary,
+                borderRadius: "lg",
+                px: 4,
+                py: 3,
               }}
             >
-              <button
+              <Box
+                as="button"
                 onClick={() => handleCheatSheetToggle(!showCheatSheet)}
                 onMouseDown={handleToggleMouseDown}
                 onMouseUp={handleToggleMouseUp}
                 onMouseLeave={handleToggleMouseUp}
-                style={{
-                  background: showCheatSheet
-                    ? DESIGN_SYSTEM.colors.bg.quaternary
-                    : DESIGN_SYSTEM.colors.bg.tertiary,
-                  borderRadius: "12px",
-                  border: `2px solid ${showCheatSheet
-                    ? DESIGN_SYSTEM.colors.accent.primary
-                    : DESIGN_SYSTEM.colors.border.subtle
-                    }`,
-                  padding: "0",
-                  width: "48px",
-                  height: "48px",
-                  cursor: "pointer",
-                  boxShadow: isTogglePressed
-                    ? "inset 0 2px 4px rgba(0,0,0,0.2)"
-                    : showCheatSheet
-                      ? `0 0 0 2px ${DESIGN_SYSTEM.colors.accent.primary}40, 0 4px 12px rgba(0,0,0,0.3)`
-                      : "0 2px 8px rgba(0,0,0,0.3)",
-                  transition: "all 0.2s ease",
-                  transform: isTogglePressed ? "translateY(1px)" : "translateY(0)",
-                  outline: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                bg={showCheatSheet ? DESIGN_SYSTEM.colors.bg.quaternary : DESIGN_SYSTEM.colors.bg.tertiary}
+                borderRadius={DESIGN_SYSTEM.borders.radius.lg}
+                border={`2px solid ${showCheatSheet ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.borders.colors.subtle}`}
+                w="56px"
+                h="56px"
+                cursor="pointer"
+                transition="all 0.2s ease"
+                transform={isTogglePressed ? "translateY(1px)" : "translateY(0)"}
+                outline="none"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                _hover={{
+                  transform: "translateY(-1px)",
+                  boxShadow: DESIGN_SYSTEM.shadows.md,
                 }}
-                aria-label={
-                  showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
-                }
+                aria-label={showCheatSheet ? "チートシートを非表示" : "チートシートを表示"}
               >
-                <div
-                  style={{
-                    width: "24px",
-                    height: "24px",
-                    backgroundImage: "url('/manabyicon.png')",
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    filter: showCheatSheet
-                      ? "brightness(1.2) saturate(1.1)"
-                      : "brightness(0.8) saturate(0.7)",
-                    transition: "filter 0.2s ease",
-                  }}
+                <Box
+                  w="28px"
+                  h="28px"
+                  backgroundImage="url('/manabyicon.png')"
+                  backgroundSize="contain"
+                  backgroundRepeat="no-repeat"
+                  backgroundPosition="center"
+                  filter={showCheatSheet ? "brightness(1.2)" : "brightness(0.8)"}
+                  transition="filter 0.2s ease"
                 />
-              </button>
+              </Box>
             </Tooltip>
+            <Text
+              fontSize="xs"
+              color={showCheatSheet ? DESIGN_SYSTEM.colors.accent.primary : DESIGN_SYSTEM.colors.text.muted}
+              mt={2}
+              fontWeight="500"
+              transition="color 0.2s ease"
+            >
+              {showCheatSheet ? "ON" : "OFF"}
+            </Text>
           </Flex>
         )}
 
-        {/* CheatSheet - シンプルなサイズ設定 */}
+        {/* CheatSheet - シンプルなアニメーション */}
         <AnimatePresence>
           {!isCodePenMode && showCheatSheet && (
             <MotionBox
               key="cheatsheet"
               flex={{
                 base: "none",
-                md: "0 0 360px",
-                lg: "0 0 400px",
+                md: "0 0 380px",
+                lg: "0 0 420px",
               }}
               w={{
                 base: "100%",
-                md: "360px",
-                lg: "400px",
+                md: "380px",
+                lg: "420px",
               }}
               h={{
                 base: "600px",
@@ -278,7 +295,7 @@ export default function Home() {
                 lg: "750px",
               }}
               mb={{ base: 4, md: 0 }}
-              mr={{ base: 0, md: 4 }}
+              mr={{ base: 0, md: 6 }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}

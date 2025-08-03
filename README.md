@@ -1,6 +1,18 @@
-# VimApp - プロフェッショナル Vim エディタ
+# 🎯 manaVimEditor - Sophisticated Interactive Vim Learning Platform
 
-製品化レベルの品質を誇る Vim 練習アプリケーションです。CodeMirror 6 と Vim 拡張を使用した高機能な Web エディタを提供します。
+> **A human-crafted, professional-grade Vim learning experience with sophisticated UI/UX design**
+
+製品化レベルの品質を誇る Vim 練習アプリケーションです。トップティアのデザインスタジオが手がけたような洗練された UI/UX と、CodeMirror 6 による本格的な Vim 体験を提供します。
+
+## ✨ Design Philosophy - デザイン哲学
+
+**Human-Crafted Excellence**: すべてのピクセル、アニメーション、インタラクションが、AI的な汎用パターンを避け、人間の手による温かみと独創性を表現するよう細心に設計されています。
+
+- 🎨 **Rich Black & Orange Aesthetic**: 深みのあるプロフェッショナルな黒と、エネルギッシュなオレンジの組み合わせ
+- 🌟 **Sophisticated Micro-interactions**: 自然で反応性の高い、繊細なアニメーション
+- 🔥 **Creative UI Components**: 個性と魅力を持つカスタムデザイン要素
+- 💎 **Premium Visual Hierarchy**: 視線を自然に導く洗練されたタイポグラフィと余白設計
+- ⚡ **Smooth Performance**: 流れるような体験のための最適化されたアニメーションとインタラクション
 
 ## ✨ 主な機能
 
@@ -20,12 +32,15 @@
 - **Framer Motion** - 滑らかなアニメーション
 - **メモ化最適化** - React.memo/useMemo/useCallback による高速レンダリング
 
-### 🎨 UI/UX デザイン
+### 🎨 Sophisticated Design System - 洗練されたデザインシステム
 
-- **プロフェッショナルダークテーマ** - リッチブラック + オレンジアクセント
-- **レスポンシブ対応** - モバイル/タブレット/デスクトップ
-- **アクセシビリティ準拠** - WCAG 2.1 AAA 基準
-- **高コントラスト** - 優れた視認性
+- **Rich Black Palette**: 深みのあるプロフェッショナルな背景色 (#0a0a0a to #2a2a2a)
+- **Vibrant Orange Accents**: フォーカスとインタラクションのためのエネルギッシュなハイライト (#ff6b35)
+- **Premium Typography**: UI の明瞭性のための Inter、コードの真正性のための JetBrains Mono
+- **8px Grid System**: 視覚的調和のための一貫した数学的スペーシング
+- **Glass Morphism Effects**: モダンな奥行きのための繊細な透明度とブラー効果
+- **Advanced UI Components**: フローティングアクションボタン、コンテキストメニュー、トースト通知
+- **Sophisticated Animations**: Framer Motion による物理ベースの滑らかなトランジション
 
 ## 🚀 セットアップ
 

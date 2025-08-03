@@ -77,12 +77,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         lineHeight: sizeConfig.lineHeight,
         width: isFullWidth ? "100%" : "auto",
         borderRadius: sizeConfig.borderRadius || DESIGN_SYSTEM.borders.radius.md,
-        transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         opacity: disabled && !isLoading ? 0.5 : 1,
         gap: DESIGN_SYSTEM.spacing["2"],
         position: "relative" as const,
         overflow: "hidden" as const,
         backdropFilter: "blur(8px)",
+        // Enhanced sophisticated styling
+        textShadow: variant === "solid" ? "0 1px 2px rgba(0, 0, 0, 0.3)" : "none",
+        willChange: "transform, box-shadow, background",
         ...style,
       };
 

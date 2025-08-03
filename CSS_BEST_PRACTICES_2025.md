@@ -1,206 +1,516 @@
-# VimApp CSS Best Practices 2025 📚
+# 🚀 CSS Best Practices 2025 - Modern Web Standards
 
-## 🎯 核心原則
+## 🎯 2025年の核心原則
 
-### 1. **人の手によるクラフト感重視**
-- **AI感を排除** → 自然で温かみのあるデザイン
-- **リッチブラック×オレンジ** → 高級感と親しみやすさの両立
-- **手作り感のある細部** → 過度な完璧さを避け、人間らしい温かさを演出
-- 実用性とメンテナンス性を最優先
+### 1. **Container Queries時代のレスポンシブデザイン**
+- **Container Queries** → 要素ベースのレスポンシブ（IE11サポート終了により全面採用）
+- **Intrinsic Web Design** → コンテンツに基づく自然なレイアウト
+- **Fluid Typography** → clamp()とcalc()による滑らかなスケーリング
+- **Progressive Enhancement** → 基本機能から段階的に拡張
 
-### 2. **統一されたデザインシステム**
-- design-system.tsによる一元管理
-- **!important最小限使用** → 必要な場合のみCodeMirrorテーマで使用
-- Chakra UIとの適切な共存
+### 2. **CSS Cascade Layers完全対応**
+- **@layer** → 詳細度の問題を根本解決
+- **Layer優先度管理** → 予測可能なスタイル適用
+- **コンポーネント分離** → 独立したスタイルスコープ
+- **メンテナンス性向上** → 大規模プロジェクトでの保守性
 
-### 3. **レスポンシブデザイン（実用的）**
+### 3. **Modern CSS Architecture 2025**
 ```css
-/* シンプルで実用的なブレークポイント */
-@media (max-width: 768px) { /* モバイル */ }
-@media (min-width: 769px) and (max-width: 1024px) { /* タブレット */ }
-@media (min-width: 1025px) { /* デスクトップ */ }
+/* 2025年標準: Container Queries */
+@container sidebar (min-width: 400px) {
+  .card { grid-template-columns: 2fr 1fr; }
+}
+
+/* レガシー: Media Queries（補完的使用） */
+@media (min-width: 768px) { /* 必要時のみ */ }
 ```
 
-## 🎨 デザインシステム仕様（リッチブラック×オレンジ）
+### 4. **Web Components & CSS Custom Properties**
+- **CSS Custom Properties** → 動的テーマシステム
+- **:has() Selector** → 親要素の条件付きスタイリング
+- **CSS Nesting** → Sass不要のネイティブネスト
+- **View Transitions API** → ネイティブページトランジション
 
-### **デザインコンセプト**
-- **プライマリーカラー**: リッチブラック - 深み、高級感、落ち着き
-- **セカンダリーカラー**: オレンジ - 温かみ、活力、親しみやすさ
-- **AI感を排除**: 機械的な完璧さではなく、人の手による自然な美しさ
-- **製品レベル品質**: プロフェッショナルでありながら親しみやすい
+## 🎨 Modern Design System 2025
 
-### **カラーパレット（リッチブラック×オレンジ）**
+### **Design Tokens with CSS Custom Properties**
 ```css
-/* プライマリーカラー: リッチブラック - 深みと高級感 */
---color-bg-primary: #0a0a0a;      /* Pure rich black */
---color-bg-secondary: #141414;    /* Slightly lighter rich black */
---color-bg-tertiary: #1e1e1e;     /* Card/component background */
---color-bg-quaternary: #2a2a2a;   /* Elevated surfaces */
+/* 2025年標準: 動的カラーシステム */
+:root {
+  /* Color Scheme Support */
+  color-scheme: dark light;
+  
+  /* Semantic Color Tokens */
+  --color-surface-primary: light-dark(#ffffff, #0a0a0a);
+  --color-surface-secondary: light-dark(#f8f9fa, #141414);
+  --color-surface-tertiary: light-dark(#e9ecef, #1e1e1e);
+  
+  /* Brand Colors with P3 Wide Gamut Support */
+  --color-brand-primary: color(display-p3 1 0.42 0.21); /* Orange in P3 */
+  --color-brand-secondary: color(display-p3 1 0.53 0.34);
+  
+  /* Fallback for older browsers */
+  --color-brand-primary: #ff6b35;
+  --color-brand-secondary: #ff8757;
+}
 
-/* セカンダリーカラー: オレンジ - 温かみと活力 */
---color-accent-primary: #ff6b35;  /* Main orange - vibrant but professional */
---color-accent-secondary: #ff8757; /* Lighter orange for hover states */
---color-accent-tertiary: #ff4500;  /* Deeper orange for active states */
-
-/* テキストカラー: 高コントラスト階層 */
---color-text-primary: #ffffff;    /* Pure white for primary text */
---color-text-secondary: #e8e8e8;  /* High contrast secondary */
---color-text-tertiary: #c4c4c4;   /* Medium contrast */
+/* Automatic Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface-primary: #0a0a0a;
+    --color-surface-secondary: #141414;
+  }
+}
 ```
 
-### **スペーシング（8px Grid）**
+### **Fluid Typography with Modern Units**
 ```css
---space-xs: 0.5rem;  /* 8px */
---space-sm: 1rem;    /* 16px */
---space-md: 1.5rem;  /* 24px */
---space-lg: 2rem;    /* 32px */
---space-xl: 3rem;    /* 48px */
+/* 2025年標準: Container Query Units */
+.heading {
+  font-size: clamp(1.5rem, 4cqi + 1rem, 3rem);
+  line-height: 1.2;
+}
+
+/* Viewport Units for Full-Screen Elements */
+.hero {
+  height: 100dvh; /* Dynamic Viewport Height */
+  width: 100dvi;  /* Dynamic Viewport Inline */
+}
+
+/* Container Query Units */
+.card-title {
+  font-size: clamp(1rem, 5cqi, 2rem); /* Container Query Inline */
+}
 ```
 
-### **Typography（実用的サイズ）**
+### **Modern Spacing System**
 ```css
---font-size-xs: 0.75rem;  /* 12px */
---font-size-sm: 0.875rem; /* 14px */
---font-size-md: 1rem;     /* 16px */
---font-size-lg: 1.125rem; /* 18px */
---font-size-xl: 1.25rem;  /* 20px */
+/* 2025年標準: Logical Properties */
+:root {
+  --space-3xs: 0.25rem;  /* 4px */
+  --space-2xs: 0.5rem;   /* 8px */
+  --space-xs: 0.75rem;   /* 12px */
+  --space-sm: 1rem;      /* 16px */
+  --space-md: 1.5rem;    /* 24px */
+  --space-lg: 2rem;      /* 32px */
+  --space-xl: 3rem;      /* 48px */
+  --space-2xl: 4rem;     /* 64px */
+  --space-3xl: 6rem;     /* 96px */
+}
+
+/* Logical Properties for International Support */
+.component {
+  padding-inline: var(--space-md);
+  padding-block: var(--space-sm);
+  margin-block-end: var(--space-lg);
+}
 ```
 
-## 🏗️ CSS Architecture
+## 🏗️ Modern CSS Architecture 2025
 
-### **Cascade Layers（優先度順）**
+### **CSS Cascade Layers - 完全実装**
 ```css
-@layer vimapp-reset, vimapp-base, vimapp-components, vimapp-utilities;
-```
+/* 2025年標準: 詳細な Layer 構造 */
+@layer reset, base, tokens, components, utilities, overrides;
 
-### **コンポーネント分離パターン**
-```css
-/* ✅ 正しい例 */
-@layer vimapp-components {
+@layer reset {
+  /* Modern CSS Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer base {
+  /* Base styles with logical properties */
+  html {
+    block-size: 100%;
+    color-scheme: dark light;
+  }
+}
+
+@layer components {
+  /* Component-specific styles */
   .vim-editor {
-    contain: layout style;
+    container-type: inline-size;
+    contain: layout style paint;
     isolation: isolate;
   }
-}
-
-/* ❌ 間違った例 */
-.vim-editor {
-  position: absolute !important;
-  z-index: 9999 !important;
-}
-```
-
-## 📱 レスポンシブ・ガイドライン
-
-### **モバイルファースト（シンプル）**
-```css
-/* Base: モバイル */
-.container {
-  width: 100%;
-  padding: 1rem;
-}
-
-/* タブレット */
-@media (min-width: 769px) {
-  .container {
-    max-width: 768px;
-    padding: 1.5rem;
-  }
-}
-
-/* デスクトップ */
-@media (min-width: 1025px) {
-  .container {
-    max-width: 1200px;
-    padding: 2rem;
+  
+  /* Container Queries for Components */
+  @container (min-width: 400px) {
+    .vim-editor {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+    }
   }
 }
 ```
 
-## ⚡ パフォーマンス・ガイドライン
-
-### **GPU最適化（適度に）**
+### **CSS Nesting - Native Support**
 ```css
-/* ✅ 適切な使用 */
-.interactive-button {
-  transform: translateZ(0);
+/* 2025年標準: ネイティブCSS Nesting */
+.button {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  
+  /* Nested selectors */
+  &:hover {
+    background: var(--color-brand-secondary);
+    
+    /* Nested within nested */
+    & .icon {
+      transform: scale(1.1);
+    }
+  }
+  
+  /* Nested media queries */
+  @media (prefers-reduced-motion: no-preference) {
+    & {
+      transition: all 0.2s ease;
+    }
+  }
+}
+```
+
+### **Modern Containment Strategy**
+```css
+/* 2025年標準: CSS Containment */
+.component {
+  /* Layout containment for performance */
+  contain: layout style paint;
+  
+  /* Container queries support */
+  container-type: inline-size;
+  container-name: sidebar;
+}
+
+/* Style queries (experimental) */
+@container style(--theme: dark) {
+  .component {
+    background: var(--color-surface-dark);
+  }
+}
+```
+
+## 📱 Container-First Responsive Design 2025
+
+### **Container Queries - Primary Approach**
+```css
+/* 2025年標準: Container-First Design */
+.sidebar {
+  container-type: inline-size;
+  container-name: sidebar;
+}
+
+.card {
+  /* Base: Narrow container */
+  display: block;
+  
+  /* Container-based responsive */
+  @container sidebar (min-width: 300px) {
+    display: flex;
+    gap: var(--space-md);
+  }
+  
+  @container sidebar (min-width: 500px) {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+}
+```
+
+### **Hybrid Approach: Container + Media Queries**
+```css
+/* Container queries for component-level responsiveness */
+@container (min-width: 400px) {
+  .component {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Media queries for global layout changes */
+@media (min-width: 768px) {
+  .main-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+  }
+}
+
+/* Modern viewport units */
+.hero {
+  block-size: 100dvb; /* Dynamic viewport block */
+  inline-size: 100dvi; /* Dynamic viewport inline */
+}
+```
+
+### **Intrinsic Web Design Patterns**
+```css
+/* 2025年標準: Content-based sizing */
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: var(--space-md);
+}
+
+/* Fluid typography without breakpoints */
+.heading {
+  font-size: clamp(1.5rem, 4vw + 1rem, 3rem);
+  line-height: calc(1em + 0.5rem);
+}
+
+/* Aspect ratio containers */
+.video-container {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+```
+
+## ⚡ Performance & Optimization 2025
+
+### **Modern Performance Strategies**
+```css
+/* 2025年標準: CSS Containment for Performance */
+.component {
+  /* Isolate layout calculations */
+  contain: layout style paint;
+  
+  /* Optimize rendering */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 400px;
+}
+
+/* Selective GPU acceleration */
+.animated-element {
+  /* Only when actually animating */
   will-change: transform;
-}
-
-/* ❌ 過度な使用 */
-.every-element {
-  transform: translateZ(0) perspective(1000px) rotateX(1deg);
-  will-change: transform, opacity, color, background, box-shadow;
+  
+  &:not(:hover):not(:focus) {
+    will-change: auto; /* Reset when not needed */
+  }
 }
 ```
 
-### **アニメーション（控えめに）**
+### **View Transitions API**
 ```css
-/* ✅ シンプルなトランジション */
-.button {
-  transition: all 0.2s ease;
+/* 2025年標準: Native page transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
 }
 
-/* ❌ 複雑すぎるアニメーション */
-.button {
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.4s cubic-bezier(0.15, 0.85, 0.25, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+/* Custom view transition names */
+.hero-image {
+  view-transition-name: hero;
+}
+
+/* Smooth element transitions between pages */
+@keyframes slide-from-right {
+  from { transform: translateX(100%); }
+}
+
+::view-transition-new(hero) {
+  animation: slide-from-right 0.3s ease-out;
 }
 ```
 
-## 🚫 避けるべきパターン
-
-### **AI感のある機械的なデザイン**
+### **Critical CSS & Loading Optimization**
 ```css
-/* ❌ AI感のある機械的すぎるデザイン */
-.component {
-  background: linear-gradient(135deg, 
-    rgba(255,255,255,0.02) 0%, 
-    transparent 50%, 
-    rgba(232,131,58,0.01) 100%);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 
-              inset 0 1px 0 rgba(255,255,255,0.04),
-              0 0 20px rgba(232,131,58,0.15);
-  backdrop-filter: blur(12px) saturate(1.1);
-  transform: perspective(1000px) rotateX(1deg) translateZ(0);
-}
-
-/* ✅ 人の手による自然なデザイン */
-.component {
-  background: var(--color-bg-secondary); /* リッチブラック */
-  border: 1px solid rgba(255, 107, 53, 0.2); /* 控えめなオレンジボーダー */
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); /* 自然な深み */
-}
-
-/* ✅ オレンジアクセントの効果的な使用 */
-.interactive-element {
-  background: linear-gradient(135deg, #ff6b35, #ff8757);
-  color: #ffffff;
-  transition: all 0.2s ease; /* 自然な動き */
-}
-```
-
-### **Chakra UIとの適切な共存**
-```css
-/* ❌ Chakra UI上書き */
-.chakra-button {
-  position: absolute !important;
-  z-index: 9999 !important;
-}
-
-/* ✅ 独自コンポーネント作成 */
-@layer vimapp-components {
-  .custom-button {
-    /* design-system.tsの値を使用 */
-    background: var(--color-accent-primary);
+/* Above-the-fold critical styles */
+@layer critical {
+  .header, .hero {
+    /* Inline critical CSS */
+    display: flex;
+    background: var(--color-surface-primary);
   }
 }
 
-/* ✅ 例外: CodeMirrorテーマでの!important使用 */
-.cm-cursor {
-  border-left: 2px solid #ff6b35 !important;
+/* Non-critical styles loaded asynchronously */
+@layer non-critical {
+  .footer, .sidebar {
+    /* Loaded after initial render */
+  }
+}
+
+/* Resource hints in CSS */
+@import url('fonts.css') layer(fonts);
+```
+
+### **Modern Animation Patterns**
+```css
+/* Respect user preferences */
+@media (prefers-reduced-motion: no-preference) {
+  .smooth-animation {
+    animation: fadeIn 0.3s ease-out;
+    transition: transform 0.2s ease;
+  }
+}
+
+/* High refresh rate optimization */
+@media (update: fast) {
+  .high-fps-animation {
+    animation-duration: 0.15s;
+  }
+}
+
+/* Battery-conscious animations */
+@media (prefers-reduced-data: reduce) {
+  .data-heavy-animation {
+    animation: none;
+  }
+}
+```
+
+## 🚫 2025年に避けるべきアンチパターン
+
+### **レガシーCSS手法**
+```css
+/* ❌ 2025年では避けるべき古い手法 */
+.legacy-component {
+  /* Float-based layouts */
+  float: left;
+  clear: both;
+  
+  /* Vendor prefixes for modern properties */
+  -webkit-transform: translateX(10px);
+  -moz-transform: translateX(10px);
+  transform: translateX(10px);
+  
+  /* Fixed pixel values */
+  width: 320px;
+  height: 240px;
+  
+  /* !important overuse */
+  color: red !important;
+  background: blue !important;
+}
+
+/* ✅ 2025年の現代的アプローチ */
+.modern-component {
+  /* CSS Grid/Flexbox */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  
+  /* Logical properties */
+  padding-inline: var(--space-md);
+  margin-block-end: var(--space-lg);
+  
+  /* Fluid sizing */
+  inline-size: clamp(300px, 50vw, 800px);
+  block-size: max-content;
+  
+  /* CSS Layers instead of !important */
+  /* Defined in appropriate layer */
+}
+```
+
+### **過度な複雑性の回避**
+```css
+/* ❌ 不必要に複雑なCSS */
+.over-engineered {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  filter: blur(0.5px) contrast(1.1) saturate(1.2) hue-rotate(15deg);
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateZ(50px);
+}
+
+/* ✅ シンプルで効果的 */
+.clean-design {
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  
+  /* Single purposeful effect */
+  &:hover {
+    background: var(--color-surface-tertiary);
+  }
+}
+```
+
+### **アクセシビリティ違反の回避**
+```css
+/* ❌ アクセシビリティを無視したCSS */
+.bad-accessibility {
+  /* Low contrast */
+  color: #999;
+  background: #ccc;
+  
+  /* Motion without preference check */
+  animation: spin 0.5s infinite;
+  
+  /* Hidden from screen readers */
+  font-size: 0;
+  
+  /* Focus indicators removed */
+  outline: none;
+}
+
+/* ✅ アクセシブルなCSS */
+.accessible-design {
+  /* High contrast colors */
+  color: var(--color-text-primary);
+  background: var(--color-surface-primary);
+  
+  /* Respect motion preferences */
+  @media (prefers-reduced-motion: no-preference) {
+    transition: all 0.2s ease;
+  }
+  
+  /* Proper focus indicators */
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+  }
+  
+  /* Screen reader friendly */
+  &[aria-hidden="true"] {
+    display: none;
+  }
+}
+```
+
+### **Framework Integration Issues**
+```css
+/* ❌ フレームワークとの競合 */
+.framework-conflict {
+  /* Chakra UI overrides */
+  .chakra-button {
+    all: unset !important;
+    /* Breaks component functionality */
+  }
+  
+  /* Global style pollution */
+  * {
+    box-sizing: content-box !important;
+  }
+}
+
+/* ✅ 適切なフレームワーク統合 */
+@layer framework-integration {
+  /* Scoped customizations */
+  .custom-chakra-theme {
+    --chakra-colors-brand-500: var(--color-brand-primary);
+  }
+  
+  /* Component-specific overrides */
+  .vim-editor-container {
+    /* Isolated styles */
+    contain: layout style;
+    
+    /* CodeMirror specific (allowed exception) */
+    .cm-cursor {
+      border-left: 2px solid var(--color-brand-primary) !important;
+    }
+  }
 }
 ```
 
@@ -237,58 +547,164 @@
 }
 ```
 
-## 🎯 2025年の現実的なCSS
+## 🎯 2025年のCSS実装戦略
 
-### **実用的なモダンCSS**
-- **framer-motion**: 必要最小限の使用（ページレベルのみ）
-- **CSS Cascade Layers**: globals.cssで活用
-- **Custom Properties**: design-system.tsで一元管理
-- **状態管理**: React stateによるインタラクティブ効果
-
-### **現在使用中の技術**
-- framer-motion: ページトランジションとCheatSheet表示/非表示
-- React state: ボタンのホバー・プレス状態管理
-- Chakra UI: 基本UIコンポーネント
-- CodeMirror: エディター機能（!important使用許可）
-
-### **オレンジ（セカンダリーカラー）の効果的な使用法**
+### **Modern CSS Stack**
 ```css
-/* ✅ アクティブ状態・重要な要素 */
-.active-tab {
-  background: linear-gradient(135deg, #ff6b35, #ff8757);
-  color: #ffffff;
+/* 2025年の推奨技術スタック */
+@layer reset, base, tokens, components, utilities;
+
+/* CSS Custom Properties with Type Safety */
+@property --color-brand {
+  syntax: '<color>';
+  initial-value: #ff6b35;
+  inherits: true;
 }
 
-/* ✅ ホバー効果・インタラクション */
-.button:hover {
-  border: 1px solid rgba(255, 107, 53, 0.3);
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
+/* Container Queries for Component Responsiveness */
+.component {
+  container-type: inline-size;
+  
+  @container (min-width: 400px) {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
 }
 
-/* ✅ アクセント・強調 */
-.highlight {
-  color: #ff6b35;
-  text-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+/* View Transitions for Smooth Navigation */
+.page-transition {
+  view-transition-name: main-content;
+}
+```
+
+### **Integration with Modern Frameworks**
+```typescript
+// TypeScript + CSS Custom Properties
+const designTokens = {
+  colors: {
+    brand: 'var(--color-brand-primary)',
+    surface: 'var(--color-surface-primary)',
+  },
+  spacing: {
+    sm: 'var(--space-sm)',
+    md: 'var(--space-md)',
+  }
+} as const;
+
+// React + CSS Modules + Container Queries
+const Component = () => (
+  <div className={styles.container} data-theme="dark">
+    <div className={styles.responsive}>Content</div>
+  </div>
+);
+```
+
+### **Performance-First Approach**
+```css
+/* Critical CSS inlined */
+@layer critical {
+  .above-fold {
+    display: flex;
+    background: var(--color-surface-primary);
+  }
 }
 
-/* ❌ 過度な使用は避ける */
-.everything-orange {
-  background: #ff6b35;
-  border: 2px solid #ff6b35;
-  color: #ff6b35; /* 読みにくい */
+/* Non-critical CSS loaded asynchronously */
+@layer non-critical {
+  .below-fold {
+    /* Loaded after initial render */
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+}
+```
+
+### **Accessibility-First Design**
+```css
+/* 2025年標準: 包括的アクセシビリティ */
+.interactive-element {
+  /* High contrast support */
+  @media (prefers-contrast: high) {
+    border: 2px solid currentColor;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    transition: none;
+  }
+  
+  /* Focus management */
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+  }
+  
+  /* Screen reader optimization */
+  &[aria-hidden="true"] {
+    display: none;
+  }
 }
 ```
 
 ---
 
-## 💡 まとめ
+## 🚀 2025年のCSS Future-Proofing
 
-**リッチブラック×オレンジで、AI感のない人の手による自然なデザイン**を実現することが、このプロジェクトの核心です。
+### **Emerging Technologies**
+- **CSS Anchor Positioning**: ツールチップとポップオーバーの革新
+- **CSS Scroll-Driven Animations**: スクロール連動アニメーション
+- **CSS Color Level 4**: P3色域とOKLCH色空間
+- **CSS Subgrid**: より柔軟なグリッドレイアウト
 
-### 🎯 デザインの指針
-- **リッチブラック**: 深み、高級感、落ち着きを演出
-- **オレンジ**: 温かみ、活力、親しみやすさを追加
-- **自然な美しさ**: 機械的な完璧さではなく、人間らしい温かさ
-- **製品レベル品質**: プロフェッショナルでありながら親しみやすい
+### **Browser Support Strategy**
+```css
+/* Progressive Enhancement */
+.modern-feature {
+  /* Fallback */
+  background: #ff6b35;
+  
+  /* Modern browsers */
+  @supports (color: color(display-p3 1 0.42 0.21)) {
+    background: color(display-p3 1 0.42 0.21);
+  }
+  
+  /* Container queries */
+  @supports (container-type: inline-size) {
+    container-type: inline-size;
+  }
+}
+```
 
-技術的な複雑性よりも、**ユーザーが感じる温かさと使いやすさ**を最優先に考えましょう。
+### **Development Workflow**
+```json
+{
+  "css-tools-2025": {
+    "linting": "stylelint with modern rules",
+    "formatting": "prettier with CSS support",
+    "bundling": "postcss with modern plugins",
+    "testing": "visual regression testing",
+    "performance": "lighthouse CI integration"
+  }
+}
+```
+
+---
+
+## 💡 まとめ: 2025年のCSS哲学
+
+### 🎯 核心原則
+1. **Container-First**: 要素ベースのレスポンシブデザイン
+2. **Layer-Based**: CSS Cascade Layersによる予測可能なスタイル
+3. **Performance-Conscious**: Core Web Vitalsを意識した最適化
+4. **Accessibility-First**: 包括的なアクセシビリティサポート
+5. **Future-Ready**: 新しいCSS機能への段階的対応
+
+### 🌟 実装指針
+- **シンプルさ**: 複雑性よりも保守性を重視
+- **一貫性**: デザインシステムによる統一感
+- **パフォーマンス**: ユーザー体験を最優先
+- **アクセシビリティ**: すべてのユーザーに配慮
+- **将来性**: 新技術への適応性を保持
+
+**2025年のCSS**は、技術的な複雑性ではなく、**ユーザー中心の価値創造**に焦点を当てています。

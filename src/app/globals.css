@@ -6,10 +6,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /* =============================================================================
-   CSS CUSTOM PROPERTIES - Rich Black & Orange Design System
+   2025年標準 CSS CUSTOM PROPERTIES - Modern Design Tokens
    ============================================================================= */
 :root {
-  /* Rich Black Background System */
+  /* Color Scheme Support */
+  color-scheme: dark light;
+
+  /* Semantic Color Tokens */
+  --color-surface-primary: light-dark(#ffffff, #0a0a0a);
+  --color-surface-secondary: light-dark(#f8f9fa, #141414);
+  --color-surface-tertiary: light-dark(#e9ecef, #1e1e1e);
+  --color-surface-quaternary: light-dark(#dee2e6, #2a2a2a);
+
+  /* Legacy support */
   --color-bg-primary: #0a0a0a;
   --color-bg-secondary: #141414;
   --color-bg-tertiary: #1e1e1e;
@@ -43,9 +52,13 @@
   --color-interactive-focus: rgba(255, 107, 53, 0.4);
   --color-interactive-disabled: rgba(255, 255, 255, 0.1);
 
-  /* Spacing (8px grid) */
-  --space-xs: 0.5rem;
+  /* 2025年標準: Modern Spacing System */
+  --space-3xs: 0.25rem;
+  /* 4px */
+  --space-2xs: 0.5rem;
   /* 8px */
+  --space-xs: 0.75rem;
+  /* 12px */
   --space-sm: 1rem;
   /* 16px */
   --space-md: 1.5rem;
@@ -54,6 +67,10 @@
   /* 32px */
   --space-xl: 3rem;
   /* 48px */
+  --space-2xl: 4rem;
+  /* 64px */
+  --space-3xl: 6rem;
+  /* 96px */
 
   /* Typography */
   --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -226,9 +243,37 @@
 }
 
 /* =============================================================================
-   LAYER: COMPONENTS - CodeMirror and Custom Components
+   LAYER: COMPONENTS - 2025年標準 Container Queries対応
    ============================================================================= */
 @layer vimapp-components {
+
+  /* 2025年標準: Container Queries Support */
+  .main-layout {
+    container-type: inline-size;
+    container-name: main;
+  }
+
+  .sidebar {
+    container-type: inline-size;
+    container-name: sidebar;
+  }
+
+  /* Container-based responsive design */
+  @container main (min-width: 768px) {
+    .responsive-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: var(--space-lg);
+    }
+  }
+
+  @container sidebar (min-width: 400px) {
+    .sidebar-content {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+  }
 
   /* CodeMirror container isolation */
   .codemirror-isolated-container {
@@ -236,8 +281,9 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    contain: layout style;
+    contain: layout style paint;
     isolation: isolate;
+    container-type: inline-size;
   }
 
   /* CodeMirror editor styles */
@@ -315,6 +361,129 @@
     100% {
       opacity: 0.3;
     }
+  }
+
+  /* Sophisticated UI Animations */
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(255, 107, 53, 0.2);
+    }
+
+    50% {
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 30px rgba(255, 107, 53, 0.2);
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Sophisticated hover effects */
+  .sophisticated-hover {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sophisticated-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 107, 53, 0.1) 50%,
+        transparent 100%);
+    transition: left 0.5s ease;
+  }
+
+  .sophisticated-hover:hover::before {
+    left: 100%;
+  }
+
+  /* Enhanced focus states */
+  .enhanced-focus {
+    transition: all 0.2s ease;
+  }
+
+  .enhanced-focus:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(255, 107, 53, 0.4),
+      0 4px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
   }
 
   /* Enhanced active line highlight */
@@ -492,40 +661,47 @@
 }
 
 /* =============================================================================
-   RESPONSIVE DESIGN - Simple & Maintainable
+   2025年標準: Container-First + Logical Properties
    ============================================================================= */
 
-/* Mobile: Default styles above */
+/* Logical Properties Utilities */
+.logical-spacing {
+  padding-inline: var(--space-md);
+  padding-block: var(--space-sm);
+  margin-block-end: var(--space-lg);
+}
 
-/* Tablet */
+.logical-border {
+  border-inline-start: 2px solid var(--color-accent-primary);
+  border-start-start-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+}
+
+/* Fluid Typography */
+.fluid-text {
+  font-size: clamp(1rem, 4vw + 1rem, 2rem);
+  line-height: calc(1em + 0.5rem);
+}
+
+/* Intrinsic Web Design */
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: var(--space-md);
+}
+
+/* Legacy Media Queries (補完的使用) */
 @media (min-width: 769px) and (max-width: 1024px) {
   :root {
-    --space-xs: 0.625rem;
-    /* 10px */
-    --space-sm: 1.125rem;
-    /* 18px */
     --space-md: 1.75rem;
-    /* 28px */
     --space-lg: 2.25rem;
-    /* 36px */
-    --space-xl: 3.5rem;
-    /* 56px */
   }
 }
 
-/* Desktop */
 @media (min-width: 1025px) {
   :root {
-    --space-xs: 0.75rem;
-    /* 12px */
-    --space-sm: 1.25rem;
-    /* 20px */
     --space-md: 2rem;
-    /* 32px */
     --space-lg: 2.5rem;
-    /* 40px */
-    --space-xl: 4rem;
-    /* 64px */
   }
 }
 
@@ -542,10 +718,250 @@
   }
 }
 
+/* =============================================================================
+   2025年標準: 包括的アクセシビリティサポート
+   ============================================================================= */
+
 /* High contrast mode */
 @media (prefers-contrast: high) {
   :root {
-    --color-border: rgba(255, 255, 255, 0.3);
-    --color-text-tertiary: #d0d0d0;
+    --color-border: rgba(255, 255, 255, 0.5);
+    --color-text-tertiary: #e0e0e0;
+    --color-accent-primary: #ff8c00;
+    /* Higher contrast orange */
+  }
+
+  .interactive-element {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced data usage */
+@media (prefers-reduced-data: reduce) {
+  .data-heavy-animation {
+    animation: none;
+  }
+
+  .background-image {
+    background-image: none;
+  }
+}
+
+/* High refresh rate optimization */
+@media (update: fast) {
+  .high-fps-animation {
+    animation-duration: 0.15s;
+  }
+}
+
+/* Battery-conscious design */
+@media (prefers-reduced-motion: reduce) {
+  .battery-conscious {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.focus-trap {
+  &:focus-within {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Screen reader optimizations */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-accent-primary);
+  color: var(--color-text-primary);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  z-index: 1000;
+
+  &:focus {
+    top: 6px;
+  }
+}
+
+/* =============================================================================
+   SOPHISTICATED UI ENHANCEMENTS - Human-Crafted Design
+   ============================================================================= */
+
+/* Sophisticated loading spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sophisticated button ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.button-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 107, 53, 0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* Sophisticated micro-interactions */
+.micro-bounce {
+  animation: microBounce 0.4s ease-out;
+}
+
+@keyframes microBounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced glass morphism effects */
+.glass-effect {
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Sophisticated gradient text */
+.gradient-text {
+  background: linear-gradient(135deg,
+      var(--color-accent-primary) 0%,
+      var(--color-accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced interactive states */
+.interactive-element {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.interactive-element::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 107, 53, 0.1) 50%,
+      transparent 100%);
+  transition: left 0.5s ease;
+}
+
+.interactive-element:hover::before {
+  left: 100%;
+}
+
+/* Sophisticated focus ring */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(255, 107, 53, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Professional card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 107, 53, 0.1);
+}
+
+/* Sophisticated loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 107, 53, 0.1) 50%,
+      transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Enhanced typography effects */
+.text-shadow-soft {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-shadow-glow {
+  text-shadow:
+    0 0 10px rgba(255, 107, 53, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Enh
+anced typography effects */
+.text-shadow-soft {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-shadow-glow {
+  text-shadow:
+    0 0 10px rgba(255, 107, 53, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress bar animations */
+@keyframes moveStripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 20px 0;
   }
 }
