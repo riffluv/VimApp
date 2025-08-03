@@ -1,7 +1,6 @@
 "use client";
 
 import CheatSheet from "@/components/CheatSheet";
-import { Tooltip } from "@/components/Tooltip";
 import { DESIGN_SYSTEM } from "@/constants";
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -37,7 +36,6 @@ export default function Home() {
   // 状態管理 - 必要最小限
   const [isCodePenMode, setIsCodePenMode] = useState(false);
   const [showCheatSheet, setShowCheatSheet] = useState(true);
-  const [isTogglePressed, setIsTogglePressed] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   // イベントハンドラー
@@ -47,14 +45,6 @@ export default function Home() {
 
   const handleCheatSheetToggle = useCallback((showCheatSheet: boolean) => {
     setShowCheatSheet(showCheatSheet);
-  }, []);
-
-  const handleToggleMouseDown = useCallback(() => {
-    setIsTogglePressed(true);
-  }, []);
-
-  const handleToggleMouseUp = useCallback(() => {
-    setIsTogglePressed(false);
   }, []);
 
   return (
@@ -243,100 +233,6 @@ export default function Home() {
         overflow="hidden" // スクロール防止
         position="relative"
       >
-        {/* チートシート切り替えボタン - DPI Scale対応 */}
-        {!isCodePenMode && (
-          <Flex
-            direction="column"
-            align="center"
-            position="absolute"
-            left={{ base: 2, md: 3 }}
-            top={{ base: 2, md: 3 }}
-            zIndex={10}
-          >
-            <Tooltip
-              content={
-                showCheatSheet
-                  ? "チートシートを非表示に！"
-                  : "チートシートを表示する！"
-              }
-              showArrow
-              portalled
-              openDelay={300}
-              contentProps={{
-                fontSize: "sm",
-                bg: DESIGN_SYSTEM.colors.bg.quaternary,
-                color: DESIGN_SYSTEM.colors.text.primary,
-                borderRadius: "lg",
-                px: 4,
-                py: 3,
-              }}
-            >
-              <Box
-                as="button"
-                onClick={() => handleCheatSheetToggle(!showCheatSheet)}
-                onMouseDown={handleToggleMouseDown}
-                onMouseUp={handleToggleMouseUp}
-                onMouseLeave={handleToggleMouseUp}
-                bg={
-                  showCheatSheet
-                    ? DESIGN_SYSTEM.colors.bg.quaternary
-                    : DESIGN_SYSTEM.colors.bg.tertiary
-                }
-                borderRadius={DESIGN_SYSTEM.borders.radius.lg}
-                border={`2px solid ${
-                  showCheatSheet
-                    ? DESIGN_SYSTEM.colors.accent.primary
-                    : DESIGN_SYSTEM.borders.colors.subtle
-                }`}
-                w={{ base: "3rem", md: "3.5rem" }} // DPI Scale対応サイズ
-                h={{ base: "3rem", md: "3.5rem" }}
-                cursor="pointer"
-                transition="all 0.2s ease"
-                transform={
-                  isTogglePressed ? "translateY(1px)" : "translateY(0)"
-                }
-                outline="none"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                _hover={{
-                  transform: "translateY(-1px)",
-                  boxShadow: DESIGN_SYSTEM.shadows.md,
-                }}
-                aria-label={
-                  showCheatSheet ? "チートシートを非表示" : "チートシートを表示"
-                }
-              >
-                <Box
-                  w={{ base: "1.5rem", md: "1.75rem" }}
-                  h={{ base: "1.5rem", md: "1.75rem" }}
-                  backgroundImage="url('/manabyicon.png')"
-                  backgroundSize="contain"
-                  backgroundRepeat="no-repeat"
-                  backgroundPosition="center"
-                  filter={
-                    showCheatSheet ? "brightness(1.2)" : "brightness(0.8)"
-                  }
-                  transition="filter 0.2s ease"
-                />
-              </Box>
-            </Tooltip>
-            <Text
-              fontSize="xs"
-              color={
-                showCheatSheet
-                  ? DESIGN_SYSTEM.colors.accent.primary
-                  : DESIGN_SYSTEM.colors.text.muted
-              }
-              mt={1}
-              fontWeight="500"
-              transition="color 0.2s ease"
-            >
-              {showCheatSheet ? "ON" : "OFF"}
-            </Text>
-          </Flex>
-        )}
-
         {/* CheatSheet - DPI Scale対応 */}
         <AnimatePresence>
           {!isCodePenMode && showCheatSheet && (
@@ -374,15 +270,20 @@ export default function Home() {
           maxH="100%"
           ml={{
             base: 0,
-            md: showCheatSheet ? "clamp(1rem, 2vw, 1.5rem)" : 0,
-          }} // CheatSheet表示時のマージン
+            md:
+              !isCodePenMode && showCheatSheet ? "clamp(1rem, 2vw, 1.5rem)" : 0,
+          }} // CheatSheet表示時のマージン（CodePenモード時は除外）
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           overflow="hidden"
           position="relative"
         >
-          <VimEditor onCodePenModeChange={handleCodePenModeChange} />
+          <VimEditor
+            onCodePenModeChange={handleCodePenModeChange}
+            showCheatSheet={showCheatSheet}
+            onCheatSheetToggle={handleCheatSheetToggle}
+          />
         </MotionBox>
       </Flex>
     </Box>

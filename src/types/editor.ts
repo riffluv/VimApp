@@ -62,6 +62,8 @@ export interface CategoryInfo {
 // VimEditor Props
 export interface VimEditorProps {
   onCodePenModeChange?: (isCodePenMode: boolean) => void;
+  showCheatSheet?: boolean;
+  onCheatSheetToggle?: (showCheatSheet: boolean) => void;
 }
 
 // CheatSheet Props
