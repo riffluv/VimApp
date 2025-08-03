@@ -1,0 +1,53 @@
+<!--
+  Vimヒント: Vimは3つのモードを使い分けて編集します。
+  - Normalモード: 移動・編集の基本。ESCで入る。hjklで移動、ddで行削除、yyでコピーなど。
+  - Insertモード: 文字入力。iやaで入る。ESCでNormalに戻る。
+  - Visualモード: 選択。vで文字単位、Vで行単位、Ctrl+vで矩形選択。
+  
+  まずはNormal/Insert/Visualの切り替えを体で覚えましょう。
+  
+  ---
+  【初心者向け: 最初に覚えるべき操作】
+  - i: カーソル位置で挿入開始
+  - a: カーソルの次で挿入開始
+  - ESC: ノーマルモードに戻る
+  - h/j/k/l: 左/下/上/右に移動
+  - x: 1文字削除
+  - dd: 行削除
+  - yy: 行コピー
+  - p: 貼り付け
+  - u: アンドゥ
+  - :w: 保存, :q: 終了, :wq: 保存して終了
+-->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vim Sample Code</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="hero-row">
+      <img src="img/manaby-jump2.png" alt="キャラクター" class="vim-character-large" />
+      <div class="speech-bubble-large">Time to Vim!</div>
+    </div>
+    <div class="vim-description">
+      <h2>Vimは“キーボードだけ”で爆速編集できる最強のエディタ</h2>
+      <p>そのコマンドを練習しよう！</p>
+      <ul>
+        <li><b>Normalモード</b>: 移動・編集の基本（ESCで入る）</li>
+        <li><b>Insertモード</b>: 文字入力（iやaで入る）</li>
+        <li><b>Visualモード</b>: 選択（vで文字単位、Vで行単位）</li>
+      </ul>
+      <p>まずは「今どのモードか」を意識して、<br>キーボードだけで編集する感覚を体で覚えよう。</p>
+      <p class="vim-tip">最初は難しい。でも慣れれば“魔法”のように速くなる！</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

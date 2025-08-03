@@ -1,0 +1,153 @@
+.character-area {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 18px;
+}
+.vim-character {
+  width: 88px;
+  height: auto;
+  image-rendering: pixelated;
+  margin-right: 18px;
+  filter: drop-shadow(0 2px 8px #0a0a0a);
+}
+.speech-bubble {
+  position: relative;
+  background: #181818;
+  color: #ff6b35;
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-size: 1.25em;
+  font-weight: bold;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  border: 2px solid #ff6b35;
+  min-width: 120px;
+}
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  left: -18px;
+  bottom: 12px;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 18px solid #181818;
+  filter: drop-shadow(-2px 0 0 #ff6b35);
+}
+
+body {
+  background: #181818;
+  color: #fff;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 60px auto;
+  background: #232323;
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  padding: 48px 48px 40px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.hero-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 36px;
+  margin-bottom: 32px;
+}
+.vim-character-large {
+  width: 140px;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 16px #0a0a0a);
+}
+.speech-bubble-large {
+  position: relative;
+  background: #181818;
+  color: #ff6b35;
+  border-radius: 20px;
+  padding: 24px 44px;
+  font-size: 2em;
+  font-weight: bold;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  border: 3px solid #ff6b35;
+  min-width: 200px;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.speech-bubble-large::after {
+  content: "";
+  position: absolute;
+  left: -32px;
+  bottom: 24px;
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 32px solid #181818;
+  filter: drop-shadow(-3px 0 0 #ff6b35);
+}
+.vim-description {
+  margin-top: 18px;
+  font-size: 1.25em;
+  line-height: 2.1;
+  letter-spacing: 0.01em;
+  color: #fff;
+  width: 100%;
+}
+.vim-description h2 {
+  color: #ff6b35;
+  font-size: 1.6em;
+  margin: 0 0 12px 0;
+  font-weight: bold;
+}
+.vim-description ul {
+  margin: 18px 0 18px 1.5em;
+  padding: 0;
+  list-style: disc inside;
+}
+.vim-description li {
+  margin-bottom: 6px;
+}
+.vim-tip {
+  color: #ff8757;
+  font-size: 1.1em;
+  margin-top: 18px;
+  font-style: italic;
+}
+@media (max-width: 700px) {
+  .container {
+    max-width: 98vw;
+    padding: 18px 4vw 18px 4vw;
+  }
+  .hero-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .vim-character-large {
+    width: 90px;
+  }
+  .speech-bubble-large {
+    font-size: 1.1em;
+    padding: 14px 18px;
+    min-width: 100px;
+  }
+  .speech-bubble-large::after {
+    left: 0;
+    bottom: -18px;
+    border-top: 0;
+    border-bottom: 18px solid #181818;
+    border-right: 18px solid transparent;
+    border-left: 18px solid transparent;
+    filter: drop-shadow(0 2px 0 #ff6b35);
+  }
+  .vim-description {
+    font-size: 1em;
+    line-height: 1.7;
+  }
+}
