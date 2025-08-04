@@ -63,10 +63,6 @@ export default function Home() {
               h={9}
               w="auto"
               objectFit="contain"
-              transition="all 0.2s ease"
-              _hover={{
-                transform: "scale(1.05)",
-              }}
             />
             <Box>
               <Heading
@@ -108,25 +104,14 @@ export default function Home() {
                 borderRadius="md"
                 bg="transparent"
                 color={DESIGN_SYSTEM.colors.text.secondary}
-                transition="all 0.2s"
                 fontSize="sm"
                 fontWeight="500"
                 _hover={{
                   color: DESIGN_SYSTEM.colors.accent.primary,
                   bg: DESIGN_SYSTEM.colors.interactive.hover,
-                  transform: "translateY(-1px)",
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  bg: DESIGN_SYSTEM.colors.interactive.active,
                 }}
               >
-                <Box
-                  as={FiGithub}
-                  color="currentColor"
-                  transition="all 0.2s"
-                  fontSize="16px"
-                />
+                <Box as={FiGithub} color="currentColor" fontSize="16px" />
                 GitHub
               </Link>
             </Tooltip>
@@ -148,25 +133,14 @@ export default function Home() {
                 borderRadius="md"
                 bg="transparent"
                 color={DESIGN_SYSTEM.colors.text.secondary}
-                transition="all 0.2s"
                 fontSize="sm"
                 fontWeight="500"
                 _hover={{
                   color: DESIGN_SYSTEM.colors.accent.primary,
                   bg: DESIGN_SYSTEM.colors.interactive.hover,
-                  transform: "translateY(-1px)",
-                }}
-                _active={{
-                  transform: "translateY(0)",
-                  bg: DESIGN_SYSTEM.colors.interactive.active,
                 }}
               >
-                <Box
-                  as={FiExternalLink}
-                  color="currentColor"
-                  transition="all 0.2s"
-                  fontSize="16px"
-                />
+                <Box as={FiExternalLink} color="currentColor" fontSize="16px" />
                 チートシート
               </Link>
             </Tooltip>

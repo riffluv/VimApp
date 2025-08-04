@@ -342,14 +342,14 @@ const VimEditor = memo<VimEditorProps>(
               </Tooltip>
             </HStack>
 
-            {/* CheatSheet Lamp Toggle */}
+            {/* Simple CheatSheet Toggle */}
             {onCheatSheetToggle && !showCodePenMode && (
-              <Box position="relative" ml={4}>
+              <Box position="relative" ml={3}>
                 <Tooltip
                   content={
                     showCheatSheet
-                      ? "チートシートを非表示に！"
-                      : "チートシートを表示する！"
+                      ? "チートシートを非表示"
+                      : "チートシートを表示"
                   }
                   showArrow
                   openDelay={500}
@@ -358,20 +358,29 @@ const VimEditor = memo<VimEditorProps>(
                   <Box
                     as="button"
                     onClick={() => onCheatSheetToggle(!showCheatSheet)}
-                    position="relative"
-                    w={{ base: "2.5rem", md: "3rem" }}
-                    h={{ base: "2.5rem", md: "3rem" }}
+                    w="2.5rem"
+                    h="2.5rem"
                     cursor="pointer"
-                    transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                     outline="none"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    bg={
+                      showCheatSheet
+                        ? DESIGN_SYSTEM.colors.accent.primary
+                        : DESIGN_SYSTEM.colors.bg.tertiary
+                    }
+                    borderRadius={DESIGN_SYSTEM.borders.radius.md}
+                    border="1px solid"
+                    borderColor={
+                      showCheatSheet
+                        ? DESIGN_SYSTEM.colors.accent.primary
+                        : DESIGN_SYSTEM.borders.colors.subtle
+                    }
                     _hover={{
-                      transform: "translateY(-2px) scale(1.05)",
-                    }}
-                    _active={{
-                      transform: "translateY(0) scale(0.98)",
+                      bg: showCheatSheet
+                        ? DESIGN_SYSTEM.colors.accent.secondary
+                        : DESIGN_SYSTEM.colors.bg.quaternary,
                     }}
                     aria-label={
                       showCheatSheet
@@ -379,174 +388,19 @@ const VimEditor = memo<VimEditorProps>(
                         : "チートシートを表示"
                     }
                   >
-                    {/* Lamp Base */}
                     <Box
-                      position="absolute"
-                      bottom={{ base: "3px", md: "4px" }}
-                      w={{ base: "1.5rem", md: "2rem" }}
-                      h={{ base: "4px", md: "6px" }}
-                      bg={DESIGN_SYSTEM.colors.bg.tertiary}
-                      borderRadius="full"
-                      border="1px solid"
-                      borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-                      transition="all 0.3s ease"
-                    />
-
-                    {/* Lamp Stand */}
-                    <Box
-                      position="absolute"
-                      bottom={{ base: "7px", md: "10px" }}
-                      w="2px"
-                      h={{ base: "6px", md: "8px" }}
-                      bg={DESIGN_SYSTEM.colors.text.tertiary}
-                      borderRadius="full"
-                      transition="all 0.3s ease"
-                    />
-
-                    {/* Outer Glow Ring (when ON) */}
-                    {showCheatSheet && (
-                      <Box
-                        position="absolute"
-                        w={{ base: "3rem", md: "3.5rem" }}
-                        h={{ base: "3rem", md: "3.5rem" }}
-                        borderRadius="full"
-                        border="1px solid"
-                        borderColor={`${DESIGN_SYSTEM.colors.accent.primary}40`}
-                        animation="pulse 2.5s ease-in-out infinite"
-                        zIndex={0}
-                      />
-                    )}
-
-                    {/* Lamp Bulb/Icon */}
-                    <Box
-                      w={{ base: "2rem", md: "2.5rem" }}
-                      h={{ base: "2rem", md: "2.5rem" }}
-                      borderRadius="full"
-                      bg={
+                      w="1.5rem"
+                      h="1.5rem"
+                      backgroundImage="url('/manabyicon.png')"
+                      backgroundSize="contain"
+                      backgroundRepeat="no-repeat"
+                      backgroundPosition="center"
+                      filter={
                         showCheatSheet
-                          ? `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`
-                          : DESIGN_SYSTEM.colors.bg.tertiary
-                      }
-                      border="2px solid"
-                      borderColor={
-                        showCheatSheet
-                          ? DESIGN_SYSTEM.colors.accent.primary
-                          : DESIGN_SYSTEM.borders.colors.subtle
-                      }
-                      boxShadow={
-                        showCheatSheet
-                          ? `
-                          0 0 20px ${DESIGN_SYSTEM.colors.accent.primary}60,
-                          0 0 40px ${DESIGN_SYSTEM.colors.accent.primary}30,
-                          0 0 60px ${DESIGN_SYSTEM.colors.accent.primary}20,
-                          inset 0 1px 0 rgba(255, 255, 255, 0.2)
-                        `
-                          : `inset 0 2px 4px rgba(0, 0, 0, 0.1)`
-                      }
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                      position="relative"
-                      overflow="hidden"
-                      zIndex={2}
-                    >
-                      {/* Inner Glow Effect (when ON) */}
-                      {showCheatSheet && (
-                        <>
-                          <Box
-                            position="absolute"
-                            top="-20%"
-                            left="-20%"
-                            w="140%"
-                            h="140%"
-                            bg={`radial-gradient(circle at 30% 30%, ${DESIGN_SYSTEM.colors.accent.primary}30 0%, transparent 60%)`}
-                            animation="pulse 3s ease-in-out infinite"
-                            zIndex={1}
-                          />
-                          <Box
-                            position="absolute"
-                            w="100%"
-                            h="100%"
-                            bg={`radial-gradient(circle, ${DESIGN_SYSTEM.colors.accent.primary}10 0%, transparent 70%)`}
-                            animation="pulse 2s ease-in-out infinite alternate"
-                            zIndex={1}
-                          />
-                        </>
-                      )}
-
-                      {/* Icon */}
-                      <Box
-                        w={{ base: "1.25rem", md: "1.5rem" }}
-                        h={{ base: "1.25rem", md: "1.5rem" }}
-                        backgroundImage="url('/manabyicon.png')"
-                        backgroundSize="contain"
-                        backgroundRepeat="no-repeat"
-                        backgroundPosition="center"
-                        filter={
-                          showCheatSheet
-                            ? "brightness(1.6) contrast(1.3) saturate(1.2) drop-shadow(0 0 4px rgba(255,255,255,0.8))"
-                            : "brightness(0.5) opacity(0.6) grayscale(0.3)"
-                        }
-                        transition="filter 0.3s ease"
-                        position="relative"
-                        zIndex={3}
-                      />
-                    </Box>
-
-                    {/* Status Indicator Light */}
-                    <Box
-                      position="absolute"
-                      top={{ base: "1px", md: "2px" }}
-                      right={{ base: "1px", md: "2px" }}
-                      w={{ base: "5px", md: "6px" }}
-                      h={{ base: "5px", md: "6px" }}
-                      borderRadius="full"
-                      bg={
-                        showCheatSheet
-                          ? DESIGN_SYSTEM.colors.status.success
-                          : DESIGN_SYSTEM.colors.text.muted
-                      }
-                      boxShadow={
-                        showCheatSheet
-                          ? `
-                          0 0 8px ${DESIGN_SYSTEM.colors.status.success},
-                          0 0 12px ${DESIGN_SYSTEM.colors.status.success}40
-                        `
-                          : "none"
-                      }
-                      transition="all 0.3s ease"
-                      zIndex={4}
-                      animation={
-                        showCheatSheet
-                          ? "pulse 1.5s ease-in-out infinite"
-                          : "none"
+                          ? "brightness(2) contrast(1.2)"
+                          : "brightness(0.7) opacity(0.8)"
                       }
                     />
-
-                    {/* ON/OFF Label */}
-                    <Text
-                      position="absolute"
-                      bottom="-20px"
-                      fontSize={{ base: "xs", md: "xs" }}
-                      fontWeight="600"
-                      color={
-                        showCheatSheet
-                          ? DESIGN_SYSTEM.colors.accent.primary
-                          : DESIGN_SYSTEM.colors.text.muted
-                      }
-                      letterSpacing="wide"
-                      textTransform="uppercase"
-                      transition="color 0.3s ease"
-                      textShadow={
-                        showCheatSheet
-                          ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}40`
-                          : "none"
-                      }
-                      fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
-                    >
-                      {showCheatSheet ? "ON" : "OFF"}
-                    </Text>
                   </Box>
                 </Tooltip>
               </Box>

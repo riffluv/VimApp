@@ -4,7 +4,12 @@ import type { ComponentProps } from "react";
 import { forwardRef, useState } from "react";
 import { DESIGN_SYSTEM } from "../../constants";
 
-export type ButtonVariant = "solid" | "ghost" | "outline" | "editorAction" | "editorPrimary";
+export type ButtonVariant =
+  | "solid"
+  | "ghost"
+  | "outline"
+  | "editorAction"
+  | "editorPrimary";
 export type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 export interface ButtonProps extends ComponentProps<"button"> {
@@ -43,11 +48,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getButtonStyles = () => {
       const sizeConfig =
         DESIGN_SYSTEM.components.button.sizes[
-        size as keyof typeof DESIGN_SYSTEM.components.button.sizes
+          size as keyof typeof DESIGN_SYSTEM.components.button.sizes
         ];
       const variantConfig =
         DESIGN_SYSTEM.components.button.variants[
-        variant as keyof typeof DESIGN_SYSTEM.components.button.variants
+          variant as keyof typeof DESIGN_SYSTEM.components.button.variants
         ];
 
       const getPaddingValues = (padding: string) => {
@@ -60,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
       const paddingValues = getPaddingValues(sizeConfig.padding);
 
-      // Professional button styles with rich black & orange theme
+      // Clean professional button styles
       const baseStyles = {
         display: "inline-flex",
         alignItems: "center",
@@ -74,18 +79,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         fontSize: sizeConfig.fontSize,
         padding: `${paddingValues.py} ${paddingValues.px}`,
         minHeight: sizeConfig.minHeight,
-        lineHeight: sizeConfig.lineHeight,
         width: isFullWidth ? "100%" : "auto",
-        borderRadius: sizeConfig.borderRadius || DESIGN_SYSTEM.borders.radius.md,
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        borderRadius:
+          sizeConfig.borderRadius || DESIGN_SYSTEM.borders.radius.md,
+        transition: "all 0.2s ease",
         opacity: disabled && !isLoading ? 0.5 : 1,
         gap: DESIGN_SYSTEM.spacing["2"],
-        position: "relative" as const,
-        overflow: "hidden" as const,
-        backdropFilter: "blur(8px)",
-        // Enhanced sophisticated styling
-        textShadow: variant === "solid" ? "0 1px 2px rgba(0, 0, 0, 0.3)" : "none",
-        willChange: "transform, box-shadow, background",
         ...style,
       };
 
@@ -94,8 +93,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         let currentBg = variantConfig.bg;
         let currentColor = variantConfig.color;
         let currentBorder = variantConfig.border;
-        let currentBoxShadow = (variantConfig as any).boxShadow;
-        let currentTransform = "translateY(0)";
 
         // Apply hover styles
         if (isHovered && !disabled && !isLoading) {
@@ -104,8 +101,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             currentBg = hoverConfig.bg || currentBg;
             currentColor = hoverConfig.color || currentColor;
             currentBorder = hoverConfig.border || currentBorder;
-            currentBoxShadow = hoverConfig.boxShadow || currentBoxShadow;
-            currentTransform = hoverConfig.transform || "translateY(-1px)";
           }
         }
 
@@ -116,8 +111,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             currentBg = activeConfig.bg || currentBg;
             currentColor = activeConfig.color || currentColor;
             currentBorder = activeConfig.border || currentBorder;
-            currentBoxShadow = activeConfig.boxShadow || currentBoxShadow;
-            currentTransform = activeConfig.transform || "translateY(0)";
           }
         }
 
@@ -125,14 +118,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           background: currentBg,
           color: currentColor,
           border: currentBorder || "none",
-          boxShadow: currentBoxShadow,
-          transform: currentTransform,
           minHeight: (variantConfig as any).minHeight || sizeConfig.minHeight,
-          padding: (variantConfig as any).padding || `${paddingValues.py} ${paddingValues.px}`,
+          padding:
+            (variantConfig as any).padding ||
+            `${paddingValues.py} ${paddingValues.px}`,
           fontSize: (variantConfig as any).fontSize || sizeConfig.fontSize,
-          fontWeight: (variantConfig as any).fontWeight || DESIGN_SYSTEM.typography.fontWeight.medium,
-          backdropFilter: (variantConfig as any).backdropFilter || "blur(8px)",
-          borderRadius: (variantConfig as any).borderRadius || DESIGN_SYSTEM.borders.radius.md,
+          fontWeight:
+            (variantConfig as any).fontWeight ||
+            DESIGN_SYSTEM.typography.fontWeight.medium,
+          borderRadius:
+            (variantConfig as any).borderRadius ||
+            DESIGN_SYSTEM.borders.radius.md,
         };
       };
 
@@ -229,8 +225,6 @@ export const SecondaryButton = forwardRef<
 
 SecondaryButton.displayName = "SecondaryButton";
 
-
-
 export const ModeTabButton = forwardRef<
   HTMLButtonElement,
   Omit<ButtonProps, "variant"> & { isActive: boolean }
@@ -243,15 +237,12 @@ export const ModeTabButton = forwardRef<
     letterSpacing: "0.08em",
     fontFamily: DESIGN_SYSTEM.typography.fonts.mono,
     fontSize: DESIGN_SYSTEM.typography.fontSize.xs,
-    fontWeight: isActive ? "700" : "500",
+    fontWeight: isActive ? "600" : "500",
     minHeight: "2.25rem",
     maxHeight: "2.25rem",
     padding: "0.375rem 1rem",
     borderRadius: DESIGN_SYSTEM.borders.radius.md,
-    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    position: "relative" as const,
-    overflow: "hidden" as const,
-    backdropFilter: "blur(8px)",
+    transition: "all 0.2s ease",
     cursor: "pointer",
     outline: "none",
     userSelect: "none" as const,
@@ -262,42 +253,26 @@ export const ModeTabButton = forwardRef<
   };
 
   const getStateStyles = () => {
-    if (isPressed) {
+    if (isActive) {
       return {
-        background: isActive
-          ? "rgba(255, 107, 53, 0.2)"
-          : "#1a1a1a",
-        color: isActive ? "#ff6b35" : "#ffffff",
-        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.5)" : "rgba(255, 255, 255, 0.1)"}`,
-        transform: "translateY(0)",
-        boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.3)",
+        background: "rgba(255, 138, 101, 0.15)",
+        color: "#ff8a65",
+        border: "1px solid rgba(255, 138, 101, 0.3)",
       };
     }
 
     if (isHovered) {
       return {
-        background: isActive
-          ? "rgba(255, 107, 53, 0.15)"
-          : "#2a2a2a",
-        color: isActive ? "#ff6b35" : "#ffffff",
-        border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.4)" : "rgba(255, 255, 255, 0.2)"}`,
-        transform: "translateY(-1px)",
-        boxShadow: isActive
-          ? "0 4px 12px rgba(255, 107, 53, 0.3)"
-          : "0 2px 8px rgba(0, 0, 0, 0.3)",
+        background: "#2a2a2a",
+        color: "#ffffff",
+        border: "1px solid rgba(255, 255, 255, 0.2)",
       };
     }
 
     return {
-      background: isActive
-        ? "rgba(255, 107, 53, 0.1)"
-        : "#1e1e1e",
-      color: isActive ? "#ff6b35" : "#c4c4c4",
-      border: `1px solid ${isActive ? "rgba(255, 107, 53, 0.3)" : "rgba(255, 255, 255, 0.1)"}`,
-      transform: "translateY(0)",
-      boxShadow: isActive
-        ? "0 2px 8px rgba(255, 107, 53, 0.2)"
-        : "0 1px 4px rgba(0, 0, 0, 0.3)",
+      background: "#1e1e1e",
+      color: "#c4c4c4",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
     };
   };
 

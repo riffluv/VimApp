@@ -42,9 +42,9 @@ export const COLORS = {
   },
 
   interactive: {
-    hover: "rgba(255, 138, 101, 0.08)", // Subtle hover state
-    active: "rgba(255, 138, 101, 0.16)", // Active state
-    focus: "rgba(255, 138, 101, 0.24)", // Focus ring
+    hover: "rgba(255, 138, 101, 0.05)",
+    active: "rgba(255, 138, 101, 0.1)",
+    focus: "rgba(255, 138, 101, 0.15)",
   },
 
   // Special surfaces for different contexts
@@ -129,16 +129,15 @@ export const BORDERS = {
 } as const;
 
 // =============================================================================
-// SHADOW SYSTEM - Warm & Professional depth
+// SHADOW SYSTEM - Clean & Subtle depth
 // =============================================================================
 export const SHADOWS = {
-  sm: "0 1px 3px rgba(0, 0, 0, 0.6)",
-  md: "0 4px 12px rgba(0, 0, 0, 0.4)",
-  lg: "0 8px 24px rgba(0, 0, 0, 0.3)",
-  xl: "0 16px 48px rgba(0, 0, 0, 0.2)",
-  orange: "0 4px 16px rgba(255, 138, 101, 0.25)", // Updated to match new accent
-  focus: "0 0 0 3px rgba(255, 138, 101, 0.3)", // Updated focus ring
-  inner: "inset 0 1px 3px rgba(0, 0, 0, 0.4)", // Inner shadows for inputs
+  sm: "0 1px 3px rgba(0, 0, 0, 0.4)",
+  md: "0 2px 8px rgba(0, 0, 0, 0.2)",
+  lg: "0 4px 16px rgba(0, 0, 0, 0.15)",
+  xl: "0 8px 32px rgba(0, 0, 0, 0.1)",
+  focus: "0 0 0 2px rgba(255, 138, 101, 0.3)",
+  inner: "inset 0 1px 2px rgba(0, 0, 0, 0.2)",
 } as const;
 
 // =============================================================================
@@ -195,19 +194,14 @@ export const COMPONENT_STYLES = {
 
     variants: {
       solid: {
-        bg: "#ff8a65", // Updated to warm orange
+        bg: "#ff8a65",
         color: "#ffffff",
         border: "none",
-        boxShadow: "0 4px 16px rgba(255, 138, 101, 0.25)",
         _hover: {
-          bg: "#ffab91", // Lighter warm orange
-          transform: "translateY(-1px)",
-          boxShadow: "0 6px 20px rgba(255, 138, 101, 0.35)",
+          bg: "#ffab91",
         },
         _active: {
-          bg: "#ff7043", // Deeper warm orange
-          transform: "translateY(0)",
-          boxShadow: "0 2px 8px rgba(255, 138, 101, 0.4)",
+          bg: "#ff7043",
         },
       },
 
@@ -218,12 +212,10 @@ export const COMPONENT_STYLES = {
         _hover: {
           bg: "#2a2a2a",
           color: "#ffffff",
-          border: "1px solid rgba(255, 138, 101, 0.2)",
         },
         _active: {
           bg: "#333333",
           color: "#ffffff",
-          border: "1px solid rgba(255, 138, 101, 0.3)",
         },
       },
 
@@ -232,14 +224,12 @@ export const COMPONENT_STYLES = {
         color: "#ff8a65",
         border: "1px solid #ff8a65",
         _hover: {
-          bg: "rgba(255, 138, 101, 0.08)",
+          bg: "rgba(255, 138, 101, 0.05)",
           color: "#ffab91",
-          border: "1px solid #ffab91",
         },
         _active: {
-          bg: "rgba(255, 138, 101, 0.16)",
+          bg: "rgba(255, 138, 101, 0.1)",
           color: "#ff7043",
-          border: "1px solid #ff7043",
         },
       },
 
@@ -254,17 +244,15 @@ export const COMPONENT_STYLES = {
         _hover: {
           bg: "#2a2a2a",
           color: "#ffffff",
-          border: "1px solid rgba(255, 138, 101, 0.3)",
         },
         _active: {
           bg: "#333333",
           color: "#ff8a65",
-          border: "1px solid rgba(255, 138, 101, 0.5)",
         },
       },
 
       editorPrimary: {
-        bg: "rgba(255, 138, 101, 0.12)",
+        bg: "rgba(255, 138, 101, 0.1)",
         color: "#ff8a65",
         border: "1px solid rgba(255, 138, 101, 0.3)",
         fontSize: "0.75rem",
@@ -272,14 +260,12 @@ export const COMPONENT_STYLES = {
         minHeight: "1.75rem",
         borderRadius: "0.25rem",
         _hover: {
-          bg: "rgba(255, 138, 101, 0.16)",
+          bg: "rgba(255, 138, 101, 0.15)",
           color: "#ffab91",
-          border: "1px solid rgba(255, 138, 101, 0.4)",
         },
         _active: {
-          bg: "rgba(255, 138, 101, 0.24)",
+          bg: "rgba(255, 138, 101, 0.2)",
           color: "#ffffff",
-          border: "1px solid #ff8a65",
         },
       },
     },
@@ -290,7 +276,6 @@ export const COMPONENT_STYLES = {
     border: "1px solid rgba(255, 255, 255, 0.12)",
     borderRadius: "0.5rem",
     padding: "1.5rem",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
   },
 
   input: {
@@ -302,7 +287,7 @@ export const COMPONENT_STYLES = {
     fontSize: "0.875rem",
     _focus: {
       borderColor: "#ff8a65",
-      boxShadow: "0 0 0 3px rgba(255, 138, 101, 0.3)",
+      boxShadow: "0 0 0 2px rgba(255, 138, 101, 0.3)",
     },
   },
 } as const;
