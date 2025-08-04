@@ -1,49 +1,46 @@
 import { createSystem, defaultConfig } from "@chakra-ui/react";
 
-// シンプルなテーマ設定（v3対応）
+// シンプルなテーマ設定（v3対応） - Warmly Professional Dark Theme
 const customTheme = createSystem(defaultConfig, {
   theme: {
     tokens: {
       colors: {
-        // Rich Black (Primary) - Professional Rich Black System
+        // Warmly Professional Dark Background System
         primary: {
-          50: { value: "#ffffff" }, // Pure white
-          100: { value: "#f8f8f8" }, // Near white
-          200: { value: "#e8e8e8" }, // Light gray
-          300: { value: "#c4c4c4" }, // Medium light gray
-          400: { value: "#9a9a9a" }, // Medium gray
-          500: { value: "#6b6b6b" }, // Neutral gray
-          600: { value: "#4a4a4a" }, // Dark gray
-          700: { value: "#2a2a2a" }, // Darker gray
-          800: { value: "#1e1e1e" }, // Rich black tertiary
-          900: { value: "#141414" }, // Rich black secondary
-          950: { value: "#0a0a0a" }, // Rich black primary
+          50: { value: "#ffffff" }, // High emphasis text
+          100: { value: "#e6e6e6" }, // Medium emphasis text
+          200: { value: "#b3b3b3" }, // Lower emphasis text
+          300: { value: "#8a8a8a" }, // Disabled text
+          400: { value: "#666666" }, // Neutral
+          500: { value: "#4a4a4a" }, // Mid tone
+          600: { value: "#333333" }, // Highest elevation bg
+          700: { value: "#2a2a2a" }, // Higher elevation bg
+          800: { value: "#1e1e1e" }, // Elevated surface bg
+          900: { value: "#121212" }, // Primary bg (Material Design recommended)
+          950: { value: "#0d1117" }, // Editor bg (GitHub-inspired)
         },
-        // Orange (Secondary) - Professional Orange System
+        // Warm Orange Accent System
         secondary: {
-          50: { value: "#fff8f1" }, // Warm white
-          100: { value: "#feecdc" }, // Light cream
-          200: { value: "#fcd9bd" }, // Soft peach
-          300: { value: "#fdba8c" }, // Light orange
-          400: { value: "#ff8757" }, // Medium orange
-          500: { value: "#ff6b35" }, // Primary orange
-          600: { value: "#ff4500" }, // Deep orange
-          700: { value: "#e63900" }, // Darker orange
-          800: { value: "#c73100" }, // Dark orange-red
-          900: { value: "#9c2a00" }, // Deep orange-red
-          950: { value: "#7a1f00" }, // Darkest orange
+          50: { value: "#fff4f0" }, // Very light warm
+          100: { value: "#ffe6d9" }, // Light warm
+          200: { value: "#ffab91" }, // Warm orange 200 - lighter accent
+          300: { value: "#ff8a65" }, // Warm orange 300 - primary accent
+          400: { value: "#ff7043" }, // Deep warm orange 400
+          500: { value: "#ff5722" }, // Standard warm orange
+          600: { value: "#f4511e" }, // Deeper warm
+          700: { value: "#e64a19" }, // Dark warm
+          800: { value: "#d84315" }, // Darker warm
+          900: { value: "#bf360c" }, // Darkest warm
+          950: { value: "#8d2f0b" }, // Deep warm
         },
-        // アクセントカラー
+        // Status colors optimized for dark theme
         accent: {
-          purple: { value: "#8b5cf6" },
-          blue: { value: "#3b82f6" },
-          green: { value: "#10b981" },
-          red: { value: "#ef4444" },
-          yellow: { value: "#f59e0b" },
-          pink: { value: "#ec4899" },
-          cyan: { value: "#06b6d4" },
+          success: { value: "#81c784" }, // Soft green for success
+          warning: { value: "#ffb74d" }, // Warm amber for warnings
+          error: { value: "#e57373" }, // Soft red for errors
+          info: { value: "#64b5f6" }, // Soft blue for info
         },
-        bgDark: { value: "#0a0a0a" },
+        bgDark: { value: "#121212" }, // Updated to Material Design recommended
       },
       fonts: {
         mono: {
@@ -63,10 +60,12 @@ const customTheme = createSystem(defaultConfig, {
     semanticTokens: {
       colors: {
         bg: {
-          canvas: { value: "{colors.primary.900}" },
+          canvas: { value: "{colors.primary.900}" }, // Primary dark background
+          surface: { value: "{colors.primary.800}" }, // Elevated surfaces
         },
         fg: {
-          default: { value: "{colors.primary.100}" },
+          default: { value: "{colors.primary.50}" }, // High emphasis text
+          muted: { value: "{colors.primary.100}" }, // Medium emphasis text
         },
       },
     },

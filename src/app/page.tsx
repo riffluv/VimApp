@@ -2,6 +2,7 @@
 
 import CheatSheet from "@/components/CheatSheet";
 import Tooltip from "@/components/ui/Tooltip";
+import { DESIGN_SYSTEM } from "@/constants";
 import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
@@ -17,12 +18,12 @@ const VimEditor = dynamic(() => import("@/components/VimEditor"), {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bg="gray.100"
+      bg={DESIGN_SYSTEM.colors.bg.secondary}
       borderRadius="md"
       borderWidth="1px"
-      borderColor="gray.300"
+      borderColor={DESIGN_SYSTEM.borders.colors.secondary}
     >
-      <Text color="gray.600">Loading Editor...</Text>
+      <Text color={DESIGN_SYSTEM.colors.text.secondary}>Loading Editor...</Text>
     </Box>
   ),
 });
@@ -42,7 +43,7 @@ export default function Home() {
   }, []);
 
   return (
-    <Box bg="gray.50" h="100vh" w="100vw">
+    <Box bg={DESIGN_SYSTEM.colors.bg.primary} h="100vh" w="100vw">
       <Flex direction="column" h="100%">
         {/* Header */}
         <Flex
@@ -52,8 +53,8 @@ export default function Home() {
           px={4}
           py={3}
           borderBottomWidth="1px"
-          borderColor="gray.200"
-          bg="white"
+          borderColor={DESIGN_SYSTEM.borders.colors.secondary}
+          bg={DESIGN_SYSTEM.colors.bg.secondary}
         >
           <Flex align="center" gap={3}>
             <Image
@@ -73,13 +74,13 @@ export default function Home() {
                 fontSize="2xl"
                 fontWeight="700"
                 letterSpacing="tight"
-                color="orange.500"
+                color={DESIGN_SYSTEM.colors.accent.primary}
               >
                 manaVimEditor
               </Heading>
               <Text
                 fontSize="md"
-                color="gray.600"
+                color={DESIGN_SYSTEM.colors.text.secondary}
                 mt={1}
                 fontWeight="400"
                 letterSpacing="wide"
@@ -103,25 +104,21 @@ export default function Home() {
                 display="inline-flex"
                 alignItems="center"
                 gap={2}
-                p={2}
+                p={3}
                 borderRadius="md"
-                bg="gray.100"
-                borderWidth="1px"
-                borderColor="gray.300"
-                color="gray.700"
+                bg="transparent"
+                color={DESIGN_SYSTEM.colors.text.secondary}
                 transition="all 0.2s"
                 fontSize="sm"
                 fontWeight="500"
                 _hover={{
-                  borderColor: "orange.500",
-                  color: "orange.600",
-                  bg: "orange.50",
+                  color: DESIGN_SYSTEM.colors.accent.primary,
+                  bg: DESIGN_SYSTEM.colors.interactive.hover,
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                 }}
                 _active={{
                   transform: "translateY(0)",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                  bg: DESIGN_SYSTEM.colors.interactive.active,
                 }}
               >
                 <Box
@@ -147,25 +144,21 @@ export default function Home() {
                 display="inline-flex"
                 alignItems="center"
                 gap={2}
-                p={2}
+                p={3}
                 borderRadius="md"
-                bg="gray.100"
-                borderWidth="1px"
-                borderColor="gray.300"
-                color="gray.700"
+                bg="transparent"
+                color={DESIGN_SYSTEM.colors.text.secondary}
                 transition="all 0.2s"
                 fontSize="sm"
                 fontWeight="500"
                 _hover={{
-                  borderColor: "orange.500",
-                  color: "orange.600",
-                  bg: "orange.50",
+                  color: DESIGN_SYSTEM.colors.accent.primary,
+                  bg: DESIGN_SYSTEM.colors.interactive.hover,
                   transform: "translateY(-1px)",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
                 }}
                 _active={{
                   transform: "translateY(0)",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                  bg: DESIGN_SYSTEM.colors.interactive.active,
                 }}
               >
                 <Box

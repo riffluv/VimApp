@@ -218,7 +218,7 @@ const VimEditor = memo<VimEditorProps>(
               <Box>
                 <Text
                   fontSize={DESIGN_SYSTEM.typography.fontSize.base}
-                  fontWeight={DESIGN_SYSTEM.typography.fontWeight.bold}
+                  fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
                   color={DESIGN_SYSTEM.colors.text.primary}
                   letterSpacing="tight"
                 >

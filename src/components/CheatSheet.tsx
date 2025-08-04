@@ -29,25 +29,36 @@ export default function CheatSheet({}: CheatSheetProps) {
       bg={DESIGN_SYSTEM.colors.bg.primary}
       color={DESIGN_SYSTEM.colors.text.primary}
       borderRadius={DESIGN_SYSTEM.borders.radius.lg}
-      boxShadow="0 2px 8px rgba(0,0,0,0.08)"
+      boxShadow={DESIGN_SYSTEM.shadows.xl}
       display="flex"
       flexDirection="column"
       overflow="hidden"
       border="1px solid"
-      borderColor={DESIGN_SYSTEM.borders.colors.secondary}
+      borderColor={DESIGN_SYSTEM.borders.colors.primary}
       position="relative"
       h="100%"
       w="100%"
       className="cheat-sheet-container"
+      _before={{
+        content: '""',
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.primary} 0%, ${DESIGN_SYSTEM.colors.bg.secondary} 100%)`,
+        zIndex: -1,
+        borderRadius: DESIGN_SYSTEM.borders.radius.lg,
+      }}
     >
-      {/* Professional Header */}
+      {/* Elegant Header with gradient and glow */}
       <Flex
         alignItems="center"
-        px={4}
-        py={3}
+        px={5}
+        py={4}
         borderBottomWidth="1px"
-        borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}, ${DESIGN_SYSTEM.colors.bg.tertiary})`}
+        borderColor={DESIGN_SYSTEM.borders.colors.primary}
+        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary} 0%, ${DESIGN_SYSTEM.colors.bg.tertiary} 100%)`}
         justifyContent="flex-start"
         minH="var(--header-height)"
         maxH="var(--header-height)"
@@ -58,38 +69,66 @@ export default function CheatSheet({}: CheatSheetProps) {
           top: 0,
           left: 0,
           right: 0,
+          height: "2px",
+          background: `linear-gradient(90deg, transparent 0%, ${DESIGN_SYSTEM.colors.accent.primary} 50%, transparent 100%)`,
+          opacity: 0.8,
+        }}
+        _after={{
+          content: '""',
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
           height: "1px",
-          background: `linear-gradient(90deg, transparent, ${DESIGN_SYSTEM.colors.accent.primary}, transparent)`,
-          opacity: 0.6,
+          background: `linear-gradient(90deg, transparent 0%, ${DESIGN_SYSTEM.colors.accent.primary} 50%, transparent 100%)`,
+          opacity: 0.4,
         }}
       >
-        <Flex alignItems="center" gap={3}>
-          <Icon
-            as={FiBookOpen}
-            color={DESIGN_SYSTEM.colors.accent.primary}
-            fontSize="xl"
-          />
+        <Flex alignItems="center" gap={4}>
+          <Box
+            position="relative"
+            _before={{
+              content: '""',
+              position: "absolute",
+              top: "-4px",
+              left: "-4px",
+              right: "-4px",
+              bottom: "-4px",
+              background: `radial-gradient(circle, ${DESIGN_SYSTEM.colors.accent.primary}40 0%, transparent 70%)`,
+              borderRadius: "50%",
+            }}
+          >
+            <Icon
+              as={FiBookOpen}
+              color={DESIGN_SYSTEM.colors.accent.primary}
+              fontSize="2xl"
+              filter={`drop-shadow(0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}40)`}
+            />
+          </Box>
           <Box>
             <Text
-              fontSize={DESIGN_SYSTEM.typography.fontSize.base}
-              fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
+              fontSize={DESIGN_SYSTEM.typography.fontSize.lg}
+              fontWeight={DESIGN_SYSTEM.typography.fontWeight.bold}
               color={DESIGN_SYSTEM.colors.text.primary}
-              letterSpacing="tight"
+              letterSpacing="-0.02em"
+              textShadow={`0 0 20px ${DESIGN_SYSTEM.colors.accent.primary}40`}
             >
               Vim Cheat Sheet
             </Text>
             <Flex alignItems="center" gap={2} mt={1}>
               <Box
-                w="6px"
-                h="6px"
+                w="8px"
+                h="8px"
                 borderRadius="full"
                 bg={DESIGN_SYSTEM.colors.accent.primary}
-                boxShadow={`0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`}
+                boxShadow={`0 0 12px ${DESIGN_SYSTEM.colors.accent.primary}, 0 0 24px ${DESIGN_SYSTEM.colors.accent.primary}40`}
+                animation="pulse 2s ease-in-out infinite"
               />
               <Text
-                fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
+                fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
                 color={DESIGN_SYSTEM.colors.text.secondary}
                 fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+                letterSpacing="0.02em"
               >
                 vimコマンド早見表
               </Text>
@@ -98,152 +137,280 @@ export default function CheatSheet({}: CheatSheetProps) {
         </Flex>
       </Flex>
 
-      {/* Professional Command List (Accordion) */}
+      {/* Premium Command List with Seamless Accordion */}
       <Box
         overflowY="auto"
         flex={1}
-        px={3}
-        py={3}
+        px={4}
+        py={4}
         css={{
-          "&::-webkit-scrollbar": { width: "var(--scroll-width)" },
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
           "&::-webkit-scrollbar-track": {
-            background: DESIGN_SYSTEM.colors.bg.secondary,
-            borderRadius: "var(--border-radius-lg)",
-            border: `1px solid ${DESIGN_SYSTEM.colors.border.subtle}`,
+            background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`,
-            borderRadius: "var(--border-radius-lg)",
-            border: `2px solid ${DESIGN_SYSTEM.colors.bg.secondary}`,
-            boxShadow: DESIGN_SYSTEM.shadows.sm,
+            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}60, ${DESIGN_SYSTEM.colors.accent.secondary}60)`,
+            borderRadius: "4px",
+            border: "none",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.secondary}, ${DESIGN_SYSTEM.colors.accent.tertiary})`,
-            boxShadow: DESIGN_SYSTEM.shadows.md,
-            transform: "scale(1.05)",
-          },
-          "&::-webkit-scrollbar-corner": {
-            background: DESIGN_SYSTEM.colors.bg.secondary,
+            background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`,
           },
         }}
       >
-        <Accordion.Root multiple defaultValue={["0", "1"]}>
-          {Object.entries(groupedCommands).map(([category, commands], idx) => {
-            const catInfo = CATEGORY_INFO[category as CommandCategory];
-            return (
-              <Accordion.Item key={category} value={idx.toString()}>
-                <Accordion.ItemTrigger
-                  bg={DESIGN_SYSTEM.colors.bg.tertiary}
-                  borderRadius={DESIGN_SYSTEM.borders.radius.md}
-                  border="1px solid"
-                  borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-                  _hover={{
-                    bg: DESIGN_SYSTEM.colors.bg.secondary,
-                    borderColor: DESIGN_SYSTEM.borders.colors.secondary,
-                  }}
-                  py={3}
-                  px={4}
-                  transition="all 0.2s ease"
-                  mb={2}
-                >
-                  <Flex align="center" flex="1" textAlign="left">
-                    <Icon
-                      as={catInfo.icon}
-                      color={catInfo.color}
-                      mr={3}
-                      fontSize="lg"
-                    />
-                    <Text
-                      fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
-                      color={DESIGN_SYSTEM.colors.text.secondary}
-                      fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+        <Accordion.Root
+          multiple
+          defaultValue={["0", "1", "2", "3"]}
+          variant="plain"
+        >
+          <Stack gap={3}>
+            {Object.entries(groupedCommands).map(
+              ([category, commands], idx) => {
+                const catInfo = CATEGORY_INFO[category as CommandCategory];
+                return (
+                  <Accordion.Item key={category} value={idx.toString()}>
+                    <Box
+                      bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.tertiary} 0%, ${DESIGN_SYSTEM.colors.bg.quaternary} 100%)`}
+                      borderRadius={DESIGN_SYSTEM.borders.radius.lg}
+                      border="1px solid"
+                      borderColor={DESIGN_SYSTEM.borders.colors.subtle}
+                      position="relative"
+                      overflow="hidden"
+                      _hover={{
+                        borderColor: DESIGN_SYSTEM.borders.colors.primary,
+                        transform: "translateY(-1px)",
+                        boxShadow: DESIGN_SYSTEM.shadows.orange,
+                      }}
+                      transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                      _before={{
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: "1px",
+                        background: `linear-gradient(90deg, transparent 0%, ${DESIGN_SYSTEM.colors.accent.primary}20 50%, transparent 100%)`,
+                      }}
                     >
-                      {catInfo.title}
-                    </Text>
-                  </Flex>
-                  <Accordion.ItemIndicator
-                    color={DESIGN_SYSTEM.colors.text.tertiary}
-                  />
-                </Accordion.ItemTrigger>
-                <Accordion.ItemContent pb={2} pt={2} px={1}>
-                  <Stack gap={1} align="stretch">
-                    {commands.map((item, index) => (
-                      <Flex
-                        key={index}
-                        py="6px"
-                        px={3}
-                        alignItems="center"
-                        borderRadius={DESIGN_SYSTEM.borders.radius.md}
+                      <Accordion.ItemTrigger
+                        bg="transparent"
+                        border="none"
+                        py={4}
+                        px={5}
                         _hover={{
-                          bg: DESIGN_SYSTEM.colors.bg.secondary,
+                          bg: "transparent",
                         }}
-                        transition="all 0.2s ease"
+                        _focus={{
+                          bg: "transparent",
+                          outline: "none",
+                          boxShadow: "none",
+                        }}
                         cursor="pointer"
+                        w="100%"
+                      >
+                        <Flex align="center" flex="1" textAlign="left">
+                          <Box
+                            position="relative"
+                            mr={4}
+                            _before={{
+                              content: '""',
+                              position: "absolute",
+                              top: "-3px",
+                              left: "-3px",
+                              right: "-3px",
+                              bottom: "-3px",
+                              background: `radial-gradient(circle, ${catInfo.color}30 0%, transparent 70%)`,
+                              borderRadius: "50%",
+                              opacity: 0.6,
+                            }}
+                          >
+                            <Icon
+                              as={catInfo.icon}
+                              color={catInfo.color}
+                              fontSize="xl"
+                              filter={`drop-shadow(0 0 6px ${catInfo.color}40)`}
+                            />
+                          </Box>
+                          <Text
+                            fontWeight={
+                              DESIGN_SYSTEM.typography.fontWeight.bold
+                            }
+                            color={DESIGN_SYSTEM.colors.text.primary}
+                            fontSize={DESIGN_SYSTEM.typography.fontSize.base}
+                            letterSpacing="-0.01em"
+                          >
+                            {catInfo.title}
+                          </Text>
+                        </Flex>
+                        <Accordion.ItemIndicator
+                          color={DESIGN_SYSTEM.colors.accent.primary}
+                          fontSize="lg"
+                          transition="transform 0.3s ease"
+                          _open={{
+                            transform: "rotate(180deg)",
+                          }}
+                        />
+                      </Accordion.ItemTrigger>
+
+                      <Accordion.ItemContent
+                        pb={4}
+                        pt={0}
+                        px={5}
+                        bg="transparent"
                       >
                         <Box
-                          fontFamily={DESIGN_SYSTEM.typography.fonts.mono}
-                          fontWeight={
-                            DESIGN_SYSTEM.typography.fontWeight.semibold
-                          }
-                          color={DESIGN_SYSTEM.colors.accent.secondary}
-                          fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-                          mr={4}
-                          minW={14}
-                          textAlign="left"
+                          pt={2}
+                          borderTop="1px solid"
+                          borderColor={DESIGN_SYSTEM.borders.colors.subtle}
+                          position="relative"
+                          _before={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: "20%",
+                            right: "20%",
+                            height: "1px",
+                            background: `linear-gradient(90deg, transparent 0%, ${DESIGN_SYSTEM.colors.accent.primary}40 50%, transparent 100%)`,
+                          }}
                         >
-                          {item.command}
+                          <Stack gap={2} mt={3}>
+                            {commands.map((item, index) => (
+                              <Flex
+                                key={index}
+                                py={3}
+                                px={4}
+                                alignItems="center"
+                                borderRadius={DESIGN_SYSTEM.borders.radius.md}
+                                bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary}60 0%, ${DESIGN_SYSTEM.colors.bg.primary}60 100%)`}
+                                border="1px solid"
+                                borderColor="transparent"
+                                _hover={{
+                                  bg: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary} 0%, ${DESIGN_SYSTEM.colors.bg.tertiary} 100%)`,
+                                  borderColor:
+                                    DESIGN_SYSTEM.borders.colors.primary,
+                                  transform: "translateX(4px)",
+                                  boxShadow: `0 4px 12px ${DESIGN_SYSTEM.colors.accent.primary}20`,
+                                  _before: {
+                                    opacity: 1,
+                                  },
+                                }}
+                                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                                cursor="pointer"
+                                position="relative"
+                                overflow="hidden"
+                                _before={{
+                                  content: '""',
+                                  position: "absolute",
+                                  left: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  width: "3px",
+                                  background: `linear-gradient(180deg, ${DESIGN_SYSTEM.colors.accent.primary} 0%, ${DESIGN_SYSTEM.colors.accent.secondary} 100%)`,
+                                  opacity: 0,
+                                  transition: "opacity 0.2s ease",
+                                }}
+                              >
+                                <Box
+                                  fontFamily={
+                                    DESIGN_SYSTEM.typography.fonts.mono
+                                  }
+                                  fontWeight={
+                                    DESIGN_SYSTEM.typography.fontWeight.bold
+                                  }
+                                  color={DESIGN_SYSTEM.colors.accent.primary}
+                                  fontSize={
+                                    DESIGN_SYSTEM.typography.fontSize.sm
+                                  }
+                                  mr={5}
+                                  minW={16}
+                                  textAlign="left"
+                                  px={2}
+                                  py={1}
+                                  bg={`${DESIGN_SYSTEM.colors.accent.primary}10`}
+                                  borderRadius={DESIGN_SYSTEM.borders.radius.sm}
+                                  border="1px solid"
+                                  borderColor={`${DESIGN_SYSTEM.colors.accent.primary}30`}
+                                  textShadow={`0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}40`}
+                                >
+                                  {item.command}
+                                </Box>
+                                <Box
+                                  fontSize={
+                                    DESIGN_SYSTEM.typography.fontSize.sm
+                                  }
+                                  flex={1}
+                                  color={DESIGN_SYSTEM.colors.text.secondary}
+                                  textAlign="left"
+                                  lineHeight="1.5"
+                                  fontWeight={
+                                    DESIGN_SYSTEM.typography.fontWeight.medium
+                                  }
+                                >
+                                  {item.description}
+                                </Box>
+                              </Flex>
+                            ))}
+                          </Stack>
                         </Box>
-                        <Box
-                          fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
-                          flex={1}
-                          color={DESIGN_SYSTEM.colors.text.tertiary}
-                          textAlign="left"
-                          lineHeight="1.4"
-                        >
-                          {item.description}
-                        </Box>
-                      </Flex>
-                    ))}
-                  </Stack>
-                </Accordion.ItemContent>
-              </Accordion.Item>
-            );
-          })}
+                      </Accordion.ItemContent>
+                    </Box>
+                  </Accordion.Item>
+                );
+              }
+            )}
+          </Stack>
         </Accordion.Root>
       </Box>
 
-      {/* Footer */}
+      {/* Elegant Footer */}
       <Flex
-        px={4}
+        px={5}
         py={4}
-        borderTopWidth={1}
-        borderColor={DESIGN_SYSTEM.borders.colors.subtle}
-        bg={DESIGN_SYSTEM.colors.bg.secondary}
-        fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
-        color={DESIGN_SYSTEM.colors.text.muted}
+        borderTopWidth="1px"
+        borderColor={DESIGN_SYSTEM.borders.colors.primary}
+        bg={`linear-gradient(135deg, ${DESIGN_SYSTEM.colors.bg.secondary} 0%, ${DESIGN_SYSTEM.colors.bg.tertiary} 100%)`}
+        fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+        color={DESIGN_SYSTEM.colors.text.secondary}
         align="center"
         justify="center"
         minH="var(--footer-height)"
+        position="relative"
+        _before={{
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent 0%, ${DESIGN_SYSTEM.colors.accent.primary} 50%, transparent 100%)`,
+          opacity: 0.4,
+        }}
       >
         <Box
-          mr={3}
-          width="60px"
-          height="60px"
+          mr={4}
+          width="50px"
+          height="50px"
           backgroundImage="url('/manabydash.png')"
           backgroundSize="contain"
           backgroundRepeat="no-repeat"
           backgroundPosition="center"
           flexShrink={0}
+          filter="drop-shadow(0 2px 8px rgba(0,0,0,0.3))"
+          borderRadius="50%"
         />
         <Icon
           as={FiBookOpen}
-          mr={2}
-          color={DESIGN_SYSTEM.colors.accent.secondary}
-          boxSize="16px"
+          mr={3}
+          color={DESIGN_SYSTEM.colors.accent.primary}
+          boxSize="18px"
+          filter={`drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary}40)`}
         />
         <Text
-          lineHeight="1.4"
-          fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+          lineHeight="1.5"
+          fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
+          letterSpacing="0.01em"
         >
           基本操作から始めて、段階的にスキルアップしよう！
         </Text>
