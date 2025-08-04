@@ -1,13 +1,12 @@
 "use client";
 
-import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text, Tooltip } from "@chakra-ui/react";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import dynamic from "next/dynamic";
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { FiBookOpen, FiRefreshCw, FiTerminal } from "react-icons/fi";
 import { GiBroom } from "react-icons/gi";
-import { Tooltip } from "./Tooltip";
 import {
   EditorActionButton,
   EditorPrimaryButton,
@@ -252,9 +251,10 @@ const VimEditor = memo<VimEditorProps>(
           <Flex alignItems="center" gap={2} position="relative">
             <HStack gap={2}>
               <Tooltip
-                content={
-                  showPreview ? "プレビューを非表示" : "プレビューを表示"
-                }
+                label={showPreview ? "プレビューを非表示" : "プレビューを表示"}
+                hasArrow
+                openDelay={500}
+                closeDelay={100}
               >
                 {showPreview ? (
                   <EditorPrimaryButton
@@ -278,9 +278,10 @@ const VimEditor = memo<VimEditorProps>(
               </Tooltip>
 
               <Tooltip
-                content={
-                  showCodePenMode ? "通常モードに戻す" : "分割表示モード"
-                }
+                label={showCodePenMode ? "通常モードに戻す" : "分割表示モード"}
+                hasArrow
+                openDelay={500}
+                closeDelay={100}
               >
                 {showCodePenMode ? (
                   <EditorPrimaryButton
@@ -303,7 +304,12 @@ const VimEditor = memo<VimEditorProps>(
                 )}
               </Tooltip>
 
-              <Tooltip content="現在のコードをクリア">
+              <Tooltip
+                label="現在のコードをクリア"
+                hasArrow
+                openDelay={500}
+                closeDelay={100}
+              >
                 <EditorActionButton
                   onClick={() => clearDoc(mode)}
                   leftIcon={<GiBroom />}
@@ -314,7 +320,12 @@ const VimEditor = memo<VimEditorProps>(
                 </EditorActionButton>
               </Tooltip>
 
-              <Tooltip content="全てリセット">
+              <Tooltip
+                label="全てリセット"
+                hasArrow
+                openDelay={500}
+                closeDelay={100}
+              >
                 <EditorPrimaryButton
                   onClick={handleResetAllWithConfirm}
                   leftIcon={<Icon as={FiRefreshCw} />}
@@ -330,13 +341,14 @@ const VimEditor = memo<VimEditorProps>(
             {onCheatSheetToggle && !showCodePenMode && (
               <Box position="relative" ml={4}>
                 <Tooltip
-                  content={
+                  label={
                     showCheatSheet
                       ? "チートシートを非表示に！"
                       : "チートシートを表示する！"
                   }
-                  showArrow
-                  openDelay={300}
+                  hasArrow
+                  openDelay={500}
+                  closeDelay={100}
                 >
                   <Box
                     as="button"

@@ -2,7 +2,15 @@
 
 import CheatSheet from "@/components/CheatSheet";
 import { DESIGN_SYSTEM } from "@/constants";
-import { Box, Flex, Heading, Image, Link, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  Image,
+  Link,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
@@ -119,102 +127,116 @@ export default function Home() {
           </Box>
         </Flex>
         <Flex gap={6} align="center" display={{ base: "none", md: "flex" }}>
-          <Link
-            href="https://github.com/vim/vim"
-            target="_blank"
-            rel="noopener noreferrer"
-            display="flex"
-            alignItems="center"
-            color={
-              hoveredLink === "github"
-                ? DESIGN_SYSTEM.colors.accent.primary
-                : DESIGN_SYSTEM.colors.text.secondary
-            }
-            fontSize="sm"
-            fontWeight="500"
-            px={2}
-            py={1}
-            transition="all 0.3s ease"
-            outline="none"
-            textShadow={
-              hoveredLink === "github"
-                ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
-                : "none"
-            }
-            textDecoration="none"
-            onMouseEnter={() => setHoveredLink("github")}
-            onMouseLeave={() => setHoveredLink(null)}
-            _focus={{
-              outline: "none",
-              boxShadow: "none",
-            }}
+          <Tooltip
+            label="Vim公式GitHubを開く"
+            openDelay={500}
+            closeDelay={100}
+            hasArrow
           >
-            <Box
-              as={FiGithub}
-              mr={2}
-              fontSize="16px"
-              transition="all 0.3s ease"
+            <Link
+              href="https://github.com/vim/vim"
+              target="_blank"
+              rel="noopener noreferrer"
+              display="flex"
+              alignItems="center"
               color={
                 hoveredLink === "github"
                   ? DESIGN_SYSTEM.colors.accent.primary
                   : DESIGN_SYSTEM.colors.text.secondary
               }
-              filter={
+              fontSize="sm"
+              fontWeight="500"
+              px={2}
+              py={1}
+              transition="all 0.3s ease"
+              outline="none"
+              textShadow={
                 hoveredLink === "github"
-                  ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                  ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
                   : "none"
               }
-            />
-            GitHub
-          </Link>
-          <Link
-            href="https://vim.rtorr.com/lang/ja"
-            target="_blank"
-            rel="noopener noreferrer"
-            display="flex"
-            alignItems="center"
-            color={
-              hoveredLink === "cheatsheet"
-                ? DESIGN_SYSTEM.colors.accent.primary
-                : DESIGN_SYSTEM.colors.text.secondary
-            }
-            fontSize="sm"
-            fontWeight="500"
-            px={2}
-            py={1}
-            transition="all 0.3s ease"
-            outline="none"
-            textShadow={
-              hoveredLink === "cheatsheet"
-                ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
-                : "none"
-            }
-            textDecoration="none"
-            onMouseEnter={() => setHoveredLink("cheatsheet")}
-            onMouseLeave={() => setHoveredLink(null)}
-            _focus={{
-              outline: "none",
-              boxShadow: "none",
-            }}
+              textDecoration="none"
+              onMouseEnter={() => setHoveredLink("github")}
+              onMouseLeave={() => setHoveredLink(null)}
+              _focus={{
+                outline: "none",
+                boxShadow: "none",
+              }}
+            >
+              <Box
+                as={FiGithub}
+                mr={2}
+                fontSize="16px"
+                transition="all 0.3s ease"
+                color={
+                  hoveredLink === "github"
+                    ? DESIGN_SYSTEM.colors.accent.primary
+                    : DESIGN_SYSTEM.colors.text.secondary
+                }
+                filter={
+                  hoveredLink === "github"
+                    ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                    : "none"
+                }
+              />
+              GitHub
+            </Link>
+          </Tooltip>
+          <Tooltip
+            label="Vimコマンドチートシート（外部サイト）"
+            openDelay={500}
+            closeDelay={100}
+            hasArrow
           >
-            <Box
-              as={FiExternalLink}
-              mr={2}
-              fontSize="16px"
-              transition="all 0.3s ease"
+            <Link
+              href="https://vim.rtorr.com/lang/ja"
+              target="_blank"
+              rel="noopener noreferrer"
+              display="flex"
+              alignItems="center"
               color={
                 hoveredLink === "cheatsheet"
                   ? DESIGN_SYSTEM.colors.accent.primary
                   : DESIGN_SYSTEM.colors.text.secondary
               }
-              filter={
+              fontSize="sm"
+              fontWeight="500"
+              px={2}
+              py={1}
+              transition="all 0.3s ease"
+              outline="none"
+              textShadow={
                 hoveredLink === "cheatsheet"
-                  ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                  ? `0 0 8px ${DESIGN_SYSTEM.colors.accent.primary}`
                   : "none"
               }
-            />
-            チートシート
-          </Link>
+              textDecoration="none"
+              onMouseEnter={() => setHoveredLink("cheatsheet")}
+              onMouseLeave={() => setHoveredLink(null)}
+              _focus={{
+                outline: "none",
+                boxShadow: "none",
+              }}
+            >
+              <Box
+                as={FiExternalLink}
+                mr={2}
+                fontSize="16px"
+                transition="all 0.3s ease"
+                color={
+                  hoveredLink === "cheatsheet"
+                    ? DESIGN_SYSTEM.colors.accent.primary
+                    : DESIGN_SYSTEM.colors.text.secondary
+                }
+                filter={
+                  hoveredLink === "cheatsheet"
+                    ? `drop-shadow(0 0 6px ${DESIGN_SYSTEM.colors.accent.primary})`
+                    : "none"
+                }
+              />
+              チートシート
+            </Link>
+          </Tooltip>
         </Flex>
       </MotionFlex>
 
