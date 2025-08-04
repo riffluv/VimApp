@@ -33,7 +33,7 @@ export const Toast: React.FC<ToastProps> = ({
     }, duration);
 
     const progressTimer = setInterval(() => {
-      setProgress((prev) => Math.max(0, prev - (100 / (duration / 100))));
+      setProgress((prev) => Math.max(0, prev - 100 / (duration / 100)));
     }, 100);
 
     return () => {
@@ -90,7 +90,8 @@ export const Toast: React.FC<ToastProps> = ({
             padding: "16px 20px",
             minWidth: "320px",
             maxWidth: "400px",
-            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)",
+            boxShadow:
+              "0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1)",
             backdropFilter: "blur(16px)",
             overflow: "hidden",
           }}
@@ -110,7 +111,9 @@ export const Toast: React.FC<ToastProps> = ({
             transition={{ duration: 0.1, ease: "linear" }}
           />
 
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+          <div
+            style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}
+          >
             {/* Icon */}
             <motion.div
               style={{
@@ -170,34 +173,37 @@ export const Toast: React.FC<ToastProps> = ({
             </div>
 
             {/* Close button */}
-            <motion.button
-              onClick={() => {
-                setIsVisible(false);
-                setTimeout(() => onClose(id), 300);
-              }}
-              style={{
-                background: "none",
-                border: "none",
-                color: "rgba(255, 255, 255, 0.7)",
-                cursor: "pointer",
-                fontSize: "18px",
-                padding: "4px",
-                borderRadius: "4px",
-                transition: "all 0.2s ease",
-                flexShrink: 0,
-              }}
+            <motion.div
               whileHover={{
                 color: "#ffffff",
                 background: "rgba(255, 255, 255, 0.1)",
-                scale: 1.1
+                scale: 1.1,
               }}
               whileTap={{ scale: 0.9 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.25, duration: 0.3 }}
             >
-              ×
-            </motion.button>
+              <button
+                onClick={() => {
+                  setIsVisible(false);
+                  setTimeout(() => onClose(id), 300);
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "rgba(255, 255, 255, 0.7)",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  padding: "4px",
+                  borderRadius: "4px",
+                  transition: "all 0.2s ease",
+                  flexShrink: 0,
+                }}
+              >
+                ×
+              </button>
+            </motion.div>
           </div>
         </motion.div>
       )}

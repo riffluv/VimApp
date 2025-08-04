@@ -60,15 +60,7 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   };
 
   return (
-    <motion.button
-      onClick={onClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setIsPressed(false);
-      }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
+    <motion.div
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, scale: 0.8 }}
@@ -78,70 +70,91 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
         position: "fixed",
         ...getPositionStyles(),
         ...getSizeStyles(),
-        ...getVariantStyles(),
         borderRadius: "50%",
-        border: "none",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
         zIndex: 1000,
-        outline: "none",
-        backdropFilter: "blur(8px)",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        transform: isPressed ? "scale(0.95)" : isHovered ? "scale(1.05)" : "scale(1)",
-        boxShadow: isPressed
-          ? "inset 0 4px 8px rgba(0, 0, 0, 0.3)"
-          : isHovered
+      }}
+    >
+      <button
+        onClick={onClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setIsPressed(false);
+        }}
+        onMouseDown={() => setIsPressed(true)}
+        onMouseUp={() => setIsPressed(false)}
+        style={{
+          width: "100%",
+          height: "100%",
+          ...getVariantStyles(),
+          borderRadius: "50%",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          outline: "none",
+          backdropFilter: "blur(8px)",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          transform: isPressed
+            ? "scale(0.95)"
+            : isHovered
+            ? "scale(1.05)"
+            : "scale(1)",
+          boxShadow: isPressed
+            ? "inset 0 4px 8px rgba(0, 0, 0, 0.3)"
+            : isHovered
             ? variant === "primary"
               ? `0 12px 35px rgba(255, 107, 53, 0.4), 0 0 0 3px rgba(255, 107, 53, 0.2)`
               : `0 12px 35px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(255, 255, 255, 0.1)`
             : variant === "primary"
-              ? `0 8px 25px rgba(255, 107, 53, 0.3)`
-              : `0 8px 25px rgba(0, 0, 0, 0.2)`,
-      }}
-      aria-label={label}
-      title={label}
-    >
-      {/* Ripple effect background */}
-      <motion.div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          width: "100%",
-          height: "100%",
-          borderRadius: "50%",
-          background: variant === "primary"
-            ? "rgba(255, 255, 255, 0.2)"
-            : "rgba(255, 107, 53, 0.2)",
-          transform: "translate(-50%, -50%)",
-          opacity: 0,
+            ? `0 8px 25px rgba(255, 107, 53, 0.3)`
+            : `0 8px 25px rgba(0, 0, 0, 0.2)`,
         }}
-        animate={{
-          scale: isHovered ? [1, 1.2] : 1,
-          opacity: isHovered ? [0, 0.3, 0] : 0,
-        }}
-        transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0 }}
-      />
-
-      {/* Icon */}
-      <motion.div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        animate={{
-          rotate: isHovered ? [0, 10, -10, 0] : 0,
-        }}
-        transition={{ duration: 0.5 }}
+        aria-label={label}
+        title={label}
       >
-        {icon}
-      </motion.div>
-    </motion.button>
+        {/* Ripple effect background */}
+        <motion.div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "100%",
+            height: "100%",
+            borderRadius: "50%",
+            background:
+              variant === "primary"
+                ? "rgba(255, 255, 255, 0.2)"
+                : "rgba(255, 107, 53, 0.2)",
+            transform: "translate(-50%, -50%)",
+            opacity: 0,
+          }}
+          animate={{
+            scale: isHovered ? [1, 1.2] : 1,
+            opacity: isHovered ? [0, 0.3, 0] : 0,
+          }}
+          transition={{ duration: 1.5, repeat: isHovered ? Infinity : 0 }}
+        />
+
+        {/* Icon */}
+        <motion.div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          animate={{
+            rotate: isHovered ? [0, 10, -10, 0] : 0,
+          }}
+          transition={{ duration: 0.5 }}
+        >
+          {icon}
+        </motion.div>
+      </button>
+    </motion.div>
   );
 };
 

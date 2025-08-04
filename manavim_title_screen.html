@@ -15,29 +15,16 @@
         }
 
         body {
-            /* 完璧なマリオの空の色 #5C94FC */
-            background:
-                /* 空のドット絵パターン - より細かく */
-                repeating-linear-gradient(0deg,
-                    #5C94FC 0px, #5C94FC 1px,
-                    #6BA6FF 1px, #6BA6FF 2px,
-                    #5C94FC 2px, #5C94FC 3px,
-                    #4A82E8 3px, #4A82E8 4px),
-                repeating-linear-gradient(90deg,
-                    #5C94FC 0px, #5C94FC 1px,
-                    #6BA6FF 1px, #6BA6FF 2px,
-                    #5C94FC 2px, #5C94FC 3px,
-                    #4A82E8 3px, #4A82E8 4px),
-                /* 地面部分 - 正確なマリオの色 */
-                linear-gradient(180deg, #5C94FC 0%, #5C94FC 75%, #00AA00 75%, #00AA00 100%);
-            background-size: 4px 4px, 4px 4px, 100% 100%;
+            /* シンプルなグラデーション背景 */
+            background: linear-gradient(135deg, #0a0a0a 0%, #1e1e1e 50%, #2a2a2a 100%);
             min-height: 100vh;
             font-family: 'Press Start 2P', monospace;
             overflow: hidden;
             position: relative;
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
+            /* ターミナル風のドット絵効果 */
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255, 107, 53, 0.1) 1px, transparent 0);
+            background-size: 20px 20px;
         }
 
         /* 完璧なドット絵の雲 */
@@ -339,55 +326,50 @@
             text-align: center;
             position: relative;
             z-index: 10;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .title {
-            font-size: 4rem;
-            color: #FFFF00;
-            /* 完璧なマリオ風の立体文字 */
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: #ff6b35;
+            /* シンプルで読みやすいテキストシャドウ */
             text-shadow:
-                2px 0px 0px #FF0000,
-                4px 0px 0px #CC0000,
-                0px 2px 0px #FF0000,
-                2px 2px 0px #CC0000,
-                4px 2px 0px #990000,
-                0px 4px 0px #CC0000,
-                2px 4px 0px #990000,
-                4px 4px 0px #660000,
-                6px 6px 20px rgba(0, 0, 0, 0.8);
+                0 0 20px rgba(255, 107, 53, 0.6),
+                0 0 40px rgba(255, 107, 53, 0.4),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
             margin-bottom: 2rem;
-            animation: titleGlow 2s ease-in-out infinite alternate;
-            letter-spacing: 0.1em;
-            /* ドット絵風のアウトライン */
-            -webkit-text-stroke: 1px #000000;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+            letter-spacing: 0.05em;
+            font-weight: bold;
         }
 
         @keyframes titleGlow {
             0% {
                 text-shadow:
-                    2px 0px 0px #FF0000,
-                    4px 0px 0px #CC0000,
-                    0px 2px 0px #FF0000,
-                    2px 2px 0px #CC0000,
-                    4px 2px 0px #990000,
-                    0px 4px 0px #CC0000,
-                    2px 4px 0px #990000,
-                    4px 4px 0px #660000,
-                    6px 6px 20px rgba(0, 0, 0, 0.8);
+                    0 0 20px rgba(255, 107, 53, 0.6),
+                    0 0 40px rgba(255, 107, 53, 0.4),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
             }
 
             100% {
                 text-shadow:
-                    2px 0px 0px #FF4444,
-                    4px 0px 0px #FF0000,
-                    0px 2px 0px #FF4444,
-                    2px 2px 0px #FF0000,
-                    4px 2px 0px #CC0000,
-                    0px 4px 0px #FF0000,
-                    2px 4px 0px #CC0000,
-                    4px 4px 0px #990000,
-                    6px 6px 30px rgba(255, 255, 0, 0.9);
+                    0 0 30px rgba(255, 107, 53, 0.8),
+                    0 0 60px rgba(255, 107, 53, 0.6),
+                    2px 2px 4px rgba(0, 0, 0, 0.8);
             }
+        }
+
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: #e8e8e8;
+            margin-bottom: 3rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
         }
 
         .character {
@@ -446,47 +428,27 @@
         }
 
         .menu-item {
-            margin: 0.5rem 0;
+            margin: 0.75rem 0;
             cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 0.5rem 1rem;
-            border: 4px solid #000;
-            background:
-                /* ドット絵風のボタン背景 */
-                repeating-linear-gradient(0deg,
-                    #333 0px, #333 2px,
-                    #555 2px, #555 4px),
-                repeating-linear-gradient(90deg,
-                    #333 0px, #333 2px,
-                    #555 2px, #555 4px);
-            background-size: 4px 4px;
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
-            /* ピクセルボーダー */
-            box-shadow:
-                inset 2px 2px 0px #666,
-                inset -2px -2px 0px #111;
+            transition: all 0.3s ease;
+            padding: 1rem 2rem;
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
 
         .menu-item:hover {
-            color: #FFFF00;
-            background:
-                /* ホバー時のドット絵パターン */
-                repeating-linear-gradient(0deg,
-                    #FF0000 0px, #FF0000 2px,
-                    #CC0000 2px, #CC0000 4px),
-                repeating-linear-gradient(90deg,
-                    #FF0000 0px, #FF0000 2px,
-                    #CC0000 2px, #CC0000 4px);
-            background-size: 4px 4px;
-            transform: scale(1.05);
-            text-shadow: 2px 2px 0px #000, 0 0 8px #FFFF00;
+            color: #ffffff;
+            background: rgba(255, 107, 53, 0.2);
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.8);
             box-shadow:
-                inset 2px 2px 0px #FF4444,
-                inset -2px -2px 0px #990000,
-                0 0 16px rgba(255, 255, 0, 0.5);
-            border-color: #FFFF00;
+                0 8px 25px rgba(255, 107, 53, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .menu-item:active {
@@ -600,6 +562,38 @@
             }
         }
 
+        /* ターミナル風の装飾 */
+        .terminal-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 107, 53, 0.03) 2px,
+                    rgba(255, 107, 53, 0.03) 4px);
+            pointer-events: none;
+        }
+
+        .code-snippets {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: rgba(255, 107, 53, 0.4);
+            line-height: 1.6;
+            opacity: 0.6;
+        }
+
+        .code-snippets::before {
+            content: ":w\A:q\A:wq\Agg\AG\Add\Ayy\App\A/search\A:%s/old/new/g";
+            white-space: pre;
+        }
+
         /* レスポンシブ対応 */
         @media (max-width: 768px) {
             .title {
@@ -614,50 +608,22 @@
             .menu {
                 font-size: 1rem;
             }
+
+            .code-snippets {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- 雲の背景 -->
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
-
-    <!-- 背景の山と城 -->
-    <div class="mountain mountain1"></div>
-    <div class="mountain mountain2"></div>
-    <div class="castle"></div>
-
-    <!-- 完璧なドット絵ブロック -->
-    <div class="brick-block block1"></div>
-    <div class="brick-block block2"></div>
-    <div class="brick-block block3"></div>
-    <div class="brick-block block4"></div>
-    <div class="brick-block block5"></div>
-    <div class="brick-block block6"></div>
-    <div class="brick-block block7"></div>
-    <div class="brick-block block8"></div>
-    <div class="brick-block block9"></div>
-    <div class="brick-block block10"></div>
-
-    <!-- 特殊ブロック -->
-    <div class="question-block question1"></div>
-    <div class="question-block question2"></div>
-    <div class="coin-block coin1"></div>
-
-    <!-- ファイアフラワー -->
-    <div class="fire-flower flower1"></div>
-    <div class="fire-flower flower2"></div>
-
-    <!-- パイプ -->
-    <div class="pipe"></div>
-
-    <!-- 地面のパターン -->
-    <div class="ground-pattern"></div>
+    <!-- ターミナル風の装飾要素 -->
+    <div class="terminal-lines"></div>
+    <div class="code-snippets"></div>
 
     <div class="container">
         <h1 class="title">MANAVIM</h1>
+        <p class="subtitle">コードを書きながらVimを覚える実践的エディタ</p>
 
         <div class="character" id="character">
             <img src="public/manaby-jump2.png" alt="Manaby Character">
