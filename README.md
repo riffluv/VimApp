@@ -1,46 +1,53 @@
-# 🎯 manaVimEditor - Sophisticated Interactive Vim Learning Platform
+# 🎯 manaVimEditor - Professional Vim Learning Platform
 
-> **A human-crafted, professional-grade Vim learning experience with sophisticated UI/UX design**
+> **Clean, optimized Vim learning experience with professional CSS architecture**
 
-製品化レベルの品質を誇る Vim 練習アプリケーションです。トップティアのデザインスタジオが手がけたような洗練された UI/UX と、CodeMirror 6 による本格的な Vim 体験を提供します。
+プロフェッショナルな CSS 設計と Vim 練習環境を提供するアプリケーションです。2025 年の最新 CSS 標準に基づく、自然で美しい DPI スケーリング対応を実現しています。
 
-## ✨ Design Philosophy - デザイン哲学
+## ✨ 特徴
 
-**Human-Crafted Excellence**: すべてのピクセル、アニメーション、インタラクションが、AI的な汎用パターンを避け、人間の手による温かみと独創性を表現するよう細心に設計されています。
+### 🎨 **2025 年 CSS 設計ベストプラクティス**
 
-- 🎨 **Rich Black & Orange Aesthetic**: 深みのあるプロフェッショナルな黒と、エネルギッシュなオレンジの組み合わせ
-- 🌟 **Sophisticated Micro-interactions**: 自然で反応性の高い、繊細なアニメーション
-- 🔥 **Creative UI Components**: 個性と魅力を持つカスタムデザイン要素
-- 💎 **Premium Visual Hierarchy**: 視線を自然に導く洗練されたタイポグラフィと余白設計
-- ⚡ **Smooth Performance**: 流れるような体験のための最適化されたアニメーションとインタラクション
+- **rem-based Design System**: ブラウザのネイティブ DPI スケーリングを活用
+- **CSS Custom Properties**: 一貫したデザイントークン
+- **Container Queries**: モダンなレスポンシブデザイン
+- **Natural Scaling**: 100%DPI でも自然なサイズ感
 
-## ✨ 主な機能
-
-### 🎯 エディタ機能
-
-- **CodeMirror 6** + **@replit/codemirror-vim** による本格的な Vim 体験
-- **HTML/CSS/JavaScript** の 3 モード対応
-- **Emmet 補完** - CSS/HTML の高速コーディング支援
-- **ライブプレビュー** - リアルタイムコード実行結果表示
-- **Visual Line/Block モード** 対応
-
-### 🔧 技術仕様
+### 🔧 **技術仕様**
 
 - **Next.js 14.2.3** - React フレームワーク
 - **TypeScript** - 型安全な開発
-- **Chakra UI** - 洗練された UI コンポーネント
-- **Framer Motion** - 滑らかなアニメーション
-- **メモ化最適化** - React.memo/useMemo/useCallback による高速レンダリング
+- **Chakra UI** - プロフェッショナル UI コンポーネント
+- **CodeMirror 6** + **Vim Extension** - 本格的な Vim 体験
 
-### 🎨 Sophisticated Design System - 洗練されたデザインシステム
+### 🎯 **エディタ機能**
 
-- **Rich Black Palette**: 深みのあるプロフェッショナルな背景色 (#0a0a0a to #2a2a2a)
-- **Vibrant Orange Accents**: フォーカスとインタラクションのためのエネルギッシュなハイライト (#ff6b35)
-- **Premium Typography**: UI の明瞭性のための Inter、コードの真正性のための JetBrains Mono
-- **8px Grid System**: 視覚的調和のための一貫した数学的スペーシング
-- **Glass Morphism Effects**: モダンな奥行きのための繊細な透明度とブラー効果
-- **Advanced UI Components**: フローティングアクションボタン、コンテキストメニュー、トースト通知
-- **Sophisticated Animations**: Framer Motion による物理ベースの滑らかなトランジション
+- **HTML/CSS/JavaScript** モード対応
+- **Emmet 補完** - 高速コーディング支援
+- **ライブプレビュー** - リアルタイム実行結果
+- **Vim モード** - 本格的なキーバインディング
+
+## 🏗️ CSS Architecture
+
+### 設計思想
+
+```css
+/* ブラウザのネイティブDPIスケーリングを活用 */
+:root {
+  font-size: 16px; /* 固定ベース - ブラウザがDPI処理 */
+
+  /* rem-based デザイントークン */
+  --text-base: 1rem; /* 16px */
+  --space-4: 1rem; /* 16px */
+  --radius-md: 0.375rem; /* 6px */
+}
+```
+
+### パフォーマンス最適化
+
+- **CSS Custom Properties**: 高速な再計算
+- **Container Queries**: 効率的なレスポンシブ
+- **Minimal Selectors**: 軽量な CSS 構造
 
 ## 🚀 セットアップ
 

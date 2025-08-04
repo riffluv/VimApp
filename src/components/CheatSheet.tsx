@@ -83,7 +83,7 @@ export default function CheatSheet({}: CheatSheetProps) {
           <Box>
             <Text
               fontSize={DESIGN_SYSTEM.typography.fontSize.base}
-              fontWeight={DESIGN_SYSTEM.typography.fontWeight.bold}
+              fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
               color={DESIGN_SYSTEM.colors.text.primary}
               letterSpacing="tight"
             >
@@ -120,7 +120,7 @@ export default function CheatSheet({}: CheatSheetProps) {
           "&::-webkit-scrollbar-track": {
             background: DESIGN_SYSTEM.colors.bg.secondary,
             borderRadius: "var(--border-radius-lg)",
-            border: `1px solid ${DESIGN_SYSTEM.colors.border.muted}`,
+            border: `1px solid ${DESIGN_SYSTEM.colors.border.subtle}`,
           },
           "&::-webkit-scrollbar-thumb": {
             background: `linear-gradient(135deg, ${DESIGN_SYSTEM.colors.accent.primary}, ${DESIGN_SYSTEM.colors.accent.secondary})`,
