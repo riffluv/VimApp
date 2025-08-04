@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Flex, HStack, Icon, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import type { EditorState } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import dynamic from "next/dynamic";
@@ -13,6 +13,7 @@ import {
   ModeTabButton,
   SecondaryButton,
 } from "./ui/Button";
+import Tooltip from "./ui/Tooltip";
 
 import { DESIGN_SYSTEM, EDITOR_CONFIG, VIM_MODE_INFO } from "../constants";
 import {
@@ -251,8 +252,10 @@ const VimEditor = memo<VimEditorProps>(
           <Flex alignItems="center" gap={2} position="relative">
             <HStack gap={2}>
               <Tooltip
-                label={showPreview ? "プレビューを非表示" : "プレビューを表示"}
-                hasArrow
+                content={
+                  showPreview ? "プレビューを非表示" : "プレビューを表示"
+                }
+                showArrow
                 openDelay={500}
                 closeDelay={100}
               >
@@ -278,8 +281,10 @@ const VimEditor = memo<VimEditorProps>(
               </Tooltip>
 
               <Tooltip
-                label={showCodePenMode ? "通常モードに戻す" : "分割表示モード"}
-                hasArrow
+                content={
+                  showCodePenMode ? "通常モードに戻す" : "分割表示モード"
+                }
+                showArrow
                 openDelay={500}
                 closeDelay={100}
               >
@@ -305,8 +310,8 @@ const VimEditor = memo<VimEditorProps>(
               </Tooltip>
 
               <Tooltip
-                label="現在のコードをクリア"
-                hasArrow
+                content="現在のコードをクリア"
+                showArrow
                 openDelay={500}
                 closeDelay={100}
               >
@@ -321,8 +326,8 @@ const VimEditor = memo<VimEditorProps>(
               </Tooltip>
 
               <Tooltip
-                label="全てリセット"
-                hasArrow
+                content="全てリセット"
+                showArrow
                 openDelay={500}
                 closeDelay={100}
               >
@@ -341,12 +346,12 @@ const VimEditor = memo<VimEditorProps>(
             {onCheatSheetToggle && !showCodePenMode && (
               <Box position="relative" ml={4}>
                 <Tooltip
-                  label={
+                  content={
                     showCheatSheet
                       ? "チートシートを非表示に！"
                       : "チートシートを表示する！"
                   }
-                  hasArrow
+                  showArrow
                   openDelay={500}
                   closeDelay={100}
                 >

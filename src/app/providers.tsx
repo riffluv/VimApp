@@ -9,7 +9,7 @@ const USE_ENHANCED_THEME =
   process.env.NEXT_PUBLIC_USE_ENHANCED_THEME === "true";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const activeTheme = USE_ENHANCED_THEME ? enhancedTheme : customTheme;
+  const activeSystem = USE_ENHANCED_THEME ? enhancedTheme : customTheme;
 
-  return <ChakraProvider theme={activeTheme}>{children}</ChakraProvider>;
+  return <ChakraProvider value={activeSystem}>{children}</ChakraProvider>;
 }

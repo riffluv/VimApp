@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Flex,
-  Icon,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Accordion, Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
 import { FiBookOpen } from "react-icons/fi";
 
 import {
@@ -138,12 +127,12 @@ export default function CheatSheet({}: CheatSheetProps) {
           },
         }}
       >
-        <Accordion allowMultiple defaultIndex={[0, 1]}>
+        <Accordion.Root multiple defaultValue={["0", "1"]}>
           {Object.entries(groupedCommands).map(([category, commands], idx) => {
             const catInfo = CATEGORY_INFO[category as CommandCategory];
             return (
-              <AccordionItem key={category} border="none" mb={2}>
-                <AccordionButton
+              <Accordion.Item key={category} value={idx.toString()}>
+                <Accordion.ItemTrigger
                   bg={DESIGN_SYSTEM.colors.bg.tertiary}
                   borderRadius={DESIGN_SYSTEM.borders.radius.md}
                   border="1px solid"
@@ -155,6 +144,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                   py={3}
                   px={4}
                   transition="all 0.2s ease"
+                  mb={2}
                 >
                   <Flex align="center" flex="1" textAlign="left">
                     <Icon
@@ -171,9 +161,11 @@ export default function CheatSheet({}: CheatSheetProps) {
                       {catInfo.title}
                     </Text>
                   </Flex>
-                  <AccordionIcon color={DESIGN_SYSTEM.colors.text.tertiary} />
-                </AccordionButton>
-                <AccordionPanel pb={2} pt={2} px={1}>
+                  <Accordion.ItemIndicator
+                    color={DESIGN_SYSTEM.colors.text.tertiary}
+                  />
+                </Accordion.ItemTrigger>
+                <Accordion.ItemContent pb={2} pt={2} px={1}>
                   <Stack gap={1} align="stretch">
                     {commands.map((item, index) => (
                       <Flex
@@ -213,11 +205,11 @@ export default function CheatSheet({}: CheatSheetProps) {
                       </Flex>
                     ))}
                   </Stack>
-                </AccordionPanel>
-              </AccordionItem>
+                </Accordion.ItemContent>
+              </Accordion.Item>
             );
           })}
-        </Accordion>
+        </Accordion.Root>
       </Box>
 
       {/* Footer */}
