@@ -648,7 +648,7 @@ const VimEditor = memo<VimEditorProps>(
                 theme="dark"
                 height="100%"
                 style={{
-                  fontSize: "var(--font-size-sm)",
+                  fontSize: "16px",
                   height: "100%",
                   width: "100%",
                   backgroundColor: DESIGN_SYSTEM.colors.bg.editor,
@@ -693,7 +693,7 @@ const VimEditor = memo<VimEditorProps>(
               theme="dark"
               height="100%"
               style={{
-                fontSize: "var(--font-size-sm)",
+                fontSize: "16px",
                 height: "100%",
                 width: "100%",
                 backgroundColor: DESIGN_SYSTEM.colors.bg.editor,
