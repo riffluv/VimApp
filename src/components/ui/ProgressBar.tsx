@@ -109,7 +109,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           width: "100%",
           height: sizeStyles.height,
           backgroundColor,
-          borderRadius: DESIGN_SYSTEM.borders.radius.full,
+          borderRadius: DESIGN_SYSTEM.borders.radius.lg,
           overflow: "hidden",
           position: "relative",
           boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.2)",
@@ -119,7 +119,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <motion.div
           style={{
             height: "100%",
-            borderRadius: DESIGN_SYSTEM.borders.radius.full,
+            borderRadius: DESIGN_SYSTEM.borders.radius.lg,
             position: "relative",
             overflow: "hidden",
             ...variantStyles,
@@ -140,7 +140,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
                 left: "-100%",
                 width: "100%",
                 height: "100%",
-                background: "linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)",
+                background:
+                  "linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)",
               }}
               animate={{ left: ["−100%", "100%"] }}
               transition={{
@@ -163,7 +164,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
               width: `${percentage}%`,
               height: "100%",
               background: color,
-              borderRadius: DESIGN_SYSTEM.borders.radius.full,
+              borderRadius: DESIGN_SYSTEM.borders.radius.lg,
               opacity: 0.5,
             }}
             animate={{
@@ -182,17 +183,17 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 };
 
 // Specialized progress components
-export const GradientProgress: React.FC<Omit<ProgressBarProps, "variant">> = (props) => (
-  <ProgressBar variant="gradient" {...props} />
-);
+export const GradientProgress: React.FC<Omit<ProgressBarProps, "variant">> = (
+  props
+) => <ProgressBar variant="gradient" {...props} />;
 
-export const StripedProgress: React.FC<Omit<ProgressBarProps, "variant">> = (props) => (
-  <ProgressBar variant="striped" {...props} />
-);
+export const StripedProgress: React.FC<Omit<ProgressBarProps, "variant">> = (
+  props
+) => <ProgressBar variant="striped" {...props} />;
 
-export const GlowProgress: React.FC<Omit<ProgressBarProps, "variant">> = (props) => (
-  <ProgressBar variant="glow" {...props} />
-);
+export const GlowProgress: React.FC<Omit<ProgressBarProps, "variant">> = (
+  props
+) => <ProgressBar variant="glow" {...props} />;
 
 // Circular progress component
 interface CircularProgressProps {
@@ -260,7 +261,9 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           strokeLinecap="round"
           strokeDasharray={strokeDasharray}
           initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset: animated ? strokeDashoffset : strokeDashoffset }}
+          animate={{
+            strokeDashoffset: animated ? strokeDashoffset : strokeDashoffset,
+          }}
           transition={{
             duration: animated ? 1 : 0,
             ease: "easeOut",

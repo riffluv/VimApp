@@ -39,9 +39,11 @@ export interface EnhancedButtonProps
   /** Button size */
   size?: ButtonSize;
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean; // backward compat (v2)
+  loading?: boolean; // chakra v3
   /** Disabled state */
-  isDisabled?: boolean;
+  isDisabled?: boolean; // backward compat (v2)
+  disabled?: boolean; // chakra v3
   /** Full width button */
   isFullWidth?: boolean;
   /** Icon for the button */
@@ -310,8 +312,10 @@ export const Button = forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     {
       variant = "solid",
       size = "md",
-      isLoading = false,
-      isDisabled = false,
+      isLoading,
+      loading,
+      isDisabled,
+      disabled,
       isFullWidth = false,
       leftIcon,
       rightIcon,
@@ -321,26 +325,30 @@ export const Button = forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     },
     ref
   ) => {
+    const finalLoading = typeof loading === "boolean" ? loading : !!isLoading;
+    const finalDisabled =
+      typeof disabled === "boolean" ? disabled : !!isDisabled;
+
     // Combine styles
     const combinedStyles = {
       ...buttonStyles.base,
       ...buttonStyles.sizes[size],
       ...buttonStyles.variants[variant],
       ...(isFullWidth && { width: "100%" }),
-      ...style,
     };
 
     return (
       <ChakraButton
         ref={ref}
-        isLoading={isLoading}
-        isDisabled={isDisabled}
-        leftIcon={leftIcon}
-        rightIcon={rightIcon}
-        sx={combinedStyles}
+        loading={finalLoading}
+        disabled={finalDisabled}
+        {...combinedStyles}
+        style={style}
         {...props}
       >
+        {leftIcon}
         {children}
+        {rightIcon}
       </ChakraButton>
     );
   }
@@ -453,8 +461,8 @@ export const ModeTabButton = forwardRef<HTMLButtonElement, ModeTabButtonProps>(
     return (
       <ChakraButton
         ref={ref}
-        sx={tabStyles}
-        aria-pressed={isActive}
+        {...tabStyles}
+        aria-selected={isActive}
         role="tab"
         {...props}
       >
@@ -490,7 +498,11 @@ export const EnhancedIconButton = forwardRef<
     p: 0, // Remove padding for icon-only button
   };
 
-  return <IconButton ref={ref} icon={icon} sx={iconButtonStyles} {...props} />;
+  return (
+    <IconButton ref={ref} {...iconButtonStyles} {...props}>
+      {icon}
+    </IconButton>
+  );
 });
 
 EnhancedIconButton.displayName = "EnhancedIconButton";

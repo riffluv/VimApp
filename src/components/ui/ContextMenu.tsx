@@ -93,7 +93,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
             top: adjustedPosition.y,
             zIndex: 9999,
             minWidth: "200px",
-            background: DESIGN_SYSTEM.colors.bg.overlay,
+            background: DESIGN_SYSTEM.colors.surface.overlay,
             border: `1px solid ${DESIGN_SYSTEM.colors.border.primary}`,
             borderRadius: DESIGN_SYSTEM.borders.radius.lg,
             boxShadow:
@@ -164,10 +164,10 @@ const ContextMenuItem: React.FC<ContextMenuItemProps> = ({
           color: item.disabled
             ? DESIGN_SYSTEM.colors.text.muted
             : item.danger
-            ? "#ef4444"
-            : isHovered
-            ? DESIGN_SYSTEM.colors.text.primary
-            : DESIGN_SYSTEM.colors.text.secondary,
+              ? "#ef4444"
+              : isHovered
+                ? DESIGN_SYSTEM.colors.text.primary
+                : DESIGN_SYSTEM.colors.text.secondary,
           border: "none",
           borderRadius: DESIGN_SYSTEM.borders.radius.md,
           cursor: item.disabled ? "not-allowed" : "pointer",

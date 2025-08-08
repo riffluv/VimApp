@@ -85,7 +85,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
       >
         {children}
         {portalled ? (
-          <Portal containerRef={portalRef}>{tooltipContent}</Portal>
+          <Portal container={portalRef}>{tooltipContent}</Portal>
         ) : (
           tooltipContent
         )}

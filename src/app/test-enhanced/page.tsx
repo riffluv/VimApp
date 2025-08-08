@@ -3,17 +3,7 @@
 import { PerformanceDisplay } from "@/components/PerformanceDisplay";
 import VimEditorEnhanced from "@/components/VimEditor-enhanced";
 import { Loading } from "@/components/ui/Loading";
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Badge,
-  Box,
-  Heading,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Alert, Badge, Box, Heading, Text, VStack } from "@chakra-ui/react";
 import { Suspense } from "react";
 
 // 強化されたコンポーネントのテストページ
@@ -23,7 +13,7 @@ export default function TestEnhancedPage() {
       {/* パフォーマンス監視ディスプレイ */}
       <PerformanceDisplay />
 
-      <VStack spacing={6} maxW="1400px" mx="auto">
+      <VStack gap={6} maxW="1400px" mx="auto">
         {/* ヘッダー */}
         <Box textAlign="center" w="full">
           <Heading size="lg" mb={2}>
@@ -32,22 +22,22 @@ export default function TestEnhancedPage() {
           <Text fontSize="md" color="gray.400">
             強化されたコンポーネントのテスト環境
           </Text>
-          <Badge colorScheme="green" mt={2}>
+          <Badge colorPalette="green" mt={2}>
             Enhanced Theme Active
           </Badge>
         </Box>
 
         {/* 注意事項 */}
-        <Alert status="info" borderRadius="lg">
-          <AlertIcon />
+        <Alert.Root status="info" borderRadius="lg">
+          <Alert.Indicator />
           <Box>
-            <AlertTitle>テストモード</AlertTitle>
-            <AlertDescription>
+            <Alert.Title>テストモード</Alert.Title>
+            <Alert.Description>
               このページは強化されたコンポーネントのテスト用です。
               エラー境界、パフォーマンス監視、アクセシビリティ機能が有効になっています。
-            </AlertDescription>
+            </Alert.Description>
           </Box>
-        </Alert>
+        </Alert.Root>
 
         {/* 強化されたVimエディタ */}
         <Box w="full">

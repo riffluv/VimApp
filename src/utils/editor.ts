@@ -53,7 +53,9 @@ const createEmmetCompletions = (mode: EditorMode) => {
     displayLabel?: string;
     type: string;
     detail: string;
-    apply: string | ((view: any, completion: any, from: number, to: number) => void);
+    apply:
+      | string
+      | ((view: any, completion: any, from: number, to: number) => void);
     boost?: number;
   }> = [];
 
@@ -131,8 +133,9 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: "!",
         detail: "HTML5 doctype",
         apply: (view: any, completion: any, from: number, to: number) => {
-          const text = '<!DOCTYPE html>\n<html lang="ja">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Document</title>\n</head>\n<body>\n\t\n</body>\n</html>';
-          const cursorPos = from + text.indexOf('\t\n') + 1; // body内のタブの後にカーソル配置
+          const text =
+            '<!DOCTYPE html>\n<html lang="ja">\n<head>\n\t<meta charset="UTF-8">\n\t<title>Document</title>\n</head>\n<body>\n\t\n</body>\n</html>';
+          const cursorPos = from + text.indexOf("\t\n") + 1; // body内のタブの後にカーソル配置
           view.dispatch({
             changes: { from, to, insert: text },
             selection: { anchor: cursorPos },
@@ -168,7 +171,7 @@ const createEmmetCompletions = (mode: EditorMode) => {
         detail: "UL with 3 LI",
         apply: (view: any, completion: any, from: number, to: number) => {
           const text = "<ul>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ul>";
-          const cursorPos = from + text.indexOf('<li>') + 4; // 最初のli要素の中にカーソル配置
+          const cursorPos = from + text.indexOf("<li>") + 4; // 最初のli要素の中にカーソル配置
           view.dispatch({
             changes: { from, to, insert: text },
             selection: { anchor: cursorPos },
@@ -180,7 +183,7 @@ const createEmmetCompletions = (mode: EditorMode) => {
         detail: "OL with 3 LI",
         apply: (view: any, completion: any, from: number, to: number) => {
           const text = "<ol>\n\t<li></li>\n\t<li></li>\n\t<li></li>\n</ol>";
-          const cursorPos = from + text.indexOf('<li>') + 4;
+          const cursorPos = from + text.indexOf("<li>") + 4;
           view.dispatch({
             changes: { from, to, insert: text },
             selection: { anchor: cursorPos },
@@ -191,8 +194,9 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: "table>tr*3>td*3",
         detail: "Table 3x3",
         apply: (view: any, completion: any, from: number, to: number) => {
-          const text = "<table>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n</table>";
-          const cursorPos = from + text.indexOf('<td>') + 4;
+          const text =
+            "<table>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n\t<tr>\n\t\t<td></td>\n\t\t<td></td>\n\t\t<td></td>\n\t</tr>\n</table>";
+          const cursorPos = from + text.indexOf("<td>") + 4;
           view.dispatch({
             changes: { from, to, insert: text },
             selection: { anchor: cursorPos },
@@ -203,8 +207,10 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: "form>input*3",
         detail: "Form with 3 inputs",
         apply: (view: any, completion: any, from: number, to: number) => {
-          const text = '<form>\n\t<input type="text" name="" id="">\n\t<input type="text" name="" id="">\n\t<input type="submit" value="Submit">\n</form>';
-          const cursorPos = from + text.indexOf('type="text"') + 'type="'.length;
+          const text =
+            '<form>\n\t<input type="text" name="" id="">\n\t<input type="text" name="" id="">\n\t<input type="submit" value="Submit">\n</form>';
+          const cursorPos =
+            from + text.indexOf('type="text"') + 'type="'.length;
           view.dispatch({
             changes: { from, to, insert: text },
             selection: { anchor: cursorPos, head: cursorPos + 4 }, // "text"を選択
@@ -215,7 +221,8 @@ const createEmmetCompletions = (mode: EditorMode) => {
         label: "nav>ul>li*5>a",
         detail: "Navigation menu",
         apply: (view: any, completion: any, from: number, to: number) => {
-          const text = "<nav>\n\t<ul>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t\t<li><a href=\"\"></a></li>\n\t</ul>\n</nav>";
+          const text =
+            '<nav>\n\t<ul>\n\t\t<li><a href=""></a></li>\n\t\t<li><a href=""></a></li>\n\t\t<li><a href=""></a></li>\n\t\t<li><a href=""></a></li>\n\t\t<li><a href=""></a></li>\n\t</ul>\n</nav>';
           const cursorPos = from + text.indexOf('href="') + 6;
           view.dispatch({
             changes: { from, to, insert: text },
@@ -296,26 +303,58 @@ const createEmmetCompletions = (mode: EditorMode) => {
       { label: "d", detail: "display", apply: "display:;" },
       { label: "db", detail: "display: block", apply: "display: block;" },
       { label: "di", detail: "display: inline", apply: "display: inline;" },
-      { label: "dib", detail: "display: inline-block", apply: "display: inline-block;" },
+      {
+        label: "dib",
+        detail: "display: inline-block",
+        apply: "display: inline-block;",
+      },
       { label: "df", detail: "display: flex", apply: "display: flex;" },
       { label: "dg", detail: "display: grid", apply: "display: grid;" },
       { label: "dn", detail: "display: none", apply: "display: none;" },
 
       { label: "pos", detail: "position", apply: "position:;" },
-      { label: "posa", detail: "position: absolute", apply: "position: absolute;" },
-      { label: "posr", detail: "position: relative", apply: "position: relative;" },
+      {
+        label: "posa",
+        detail: "position: absolute",
+        apply: "position: absolute;",
+      },
+      {
+        label: "posr",
+        detail: "position: relative",
+        apply: "position: relative;",
+      },
       { label: "posf", detail: "position: fixed", apply: "position: fixed;" },
       { label: "poss", detail: "position: sticky", apply: "position: sticky;" },
 
       // Flexbox
       { label: "fxd", detail: "flex-direction", apply: "flex-direction:;" },
-      { label: "fxdr", detail: "flex-direction: row", apply: "flex-direction: row;" },
-      { label: "fxdc", detail: "flex-direction: column", apply: "flex-direction: column;" },
+      {
+        label: "fxdr",
+        detail: "flex-direction: row",
+        apply: "flex-direction: row;",
+      },
+      {
+        label: "fxdc",
+        detail: "flex-direction: column",
+        apply: "flex-direction: column;",
+      },
       { label: "jc", detail: "justify-content", apply: "justify-content:;" },
-      { label: "jcc", detail: "justify-content: center", apply: "justify-content: center;" },
-      { label: "jcsb", detail: "justify-content: space-between", apply: "justify-content: space-between;" },
+      {
+        label: "jcc",
+        detail: "justify-content: center",
+        apply: "justify-content: center;",
+      },
+      {
+        label: "jcsb",
+        detail: "justify-content: space-between",
+        apply: "justify-content: space-between;",
+      },
       { label: "ai", detail: "align-items", apply: "align-items:;" },
-      { label: "aic", detail: "align-items: center", apply: "align-items: center;" },
+      {
+        label: "aic",
+        detail: "align-items: center",
+        apply: "align-items: center;",
+      },
 
       // 色・背景
       { label: "c", detail: "color", apply: "color:;" },
@@ -323,7 +362,11 @@ const createEmmetCompletions = (mode: EditorMode) => {
       { label: "bgc", detail: "background-color", apply: "background-color:;" },
       { label: "bgi", detail: "background-image", apply: "background-image:;" },
       { label: "bgs", detail: "background-size", apply: "background-size:;" },
-      { label: "bgr", detail: "background-repeat", apply: "background-repeat:;" },
+      {
+        label: "bgr",
+        detail: "background-repeat",
+        apply: "background-repeat:;",
+      },
 
       // ボーダー
       { label: "bd", detail: "border", apply: "border:;" },
@@ -339,11 +382,23 @@ const createEmmetCompletions = (mode: EditorMode) => {
       { label: "ff", detail: "font-family", apply: "font-family:;" },
       { label: "lh", detail: "line-height", apply: "line-height:;" },
       { label: "ta", detail: "text-align", apply: "text-align:;" },
-      { label: "tac", detail: "text-align: center", apply: "text-align: center;" },
+      {
+        label: "tac",
+        detail: "text-align: center",
+        apply: "text-align: center;",
+      },
       { label: "tal", detail: "text-align: left", apply: "text-align: left;" },
-      { label: "tar", detail: "text-align: right", apply: "text-align: right;" },
+      {
+        label: "tar",
+        detail: "text-align: right",
+        apply: "text-align: right;",
+      },
       { label: "td", detail: "text-decoration", apply: "text-decoration:;" },
-      { label: "tdn", detail: "text-decoration: none", apply: "text-decoration: none;" },
+      {
+        label: "tdn",
+        detail: "text-decoration: none",
+        apply: "text-decoration: none;",
+      },
 
       // その他
       { label: "op", detail: "opacity", apply: "opacity:;" },
@@ -862,25 +917,26 @@ export const getEditorExtensions = (mode: EditorMode): Extension[] => {
             label: comp.label,
             type: comp.type,
             detail: comp.detail,
-            apply: typeof comp.apply === 'function'
-              ? comp.apply
-              : (view: any, completion: any, from: number, to: number) => {
-                const text = comp.apply as string;
-                // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
-                if (text.includes(":;")) {
-                  const insertText = text;
-                  const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
-                  view.dispatch({
-                    changes: { from, to, insert: insertText },
-                    selection: { anchor: cursorPos },
-                  });
-                } else {
-                  view.dispatch({
-                    changes: { from, to, insert: text },
-                    selection: { anchor: from + text.length },
-                  });
-                }
-              },
+            apply:
+              typeof comp.apply === "function"
+                ? comp.apply
+                : (view: any, completion: any, from: number, to: number) => {
+                    const text = comp.apply as string;
+                    // セミコロンが含まれている場合、セミコロンの前にカーソルを配置
+                    if (text.includes(":;")) {
+                      const insertText = text;
+                      const cursorPos = from + text.indexOf(":;") + 1; // ':' の直後にカーソル配置
+                      view.dispatch({
+                        changes: { from, to, insert: insertText },
+                        selection: { anchor: cursorPos },
+                      });
+                    } else {
+                      view.dispatch({
+                        changes: { from, to, insert: text },
+                        selection: { anchor: from + text.length },
+                      });
+                    }
+                  },
             boost: comp.boost || 0,
           })),
         };
@@ -1036,7 +1092,8 @@ export const generatePreviewHTML = (
  * @returns iframe用のsandbox属性文字列
  */
 export const getSandboxAttributes = (): string => {
-  return process.env.NODE_ENV === "development"
-    ? "allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads"
-    : "allow-scripts allow-same-origin allow-modals allow-downloads";
+  // For a learning preview, we keep sandbox strict: no same-origin to prevent access to parent cookies/localStorage.
+  // Minimal capabilities: scripts (to run user JS), modals (alert/prompt), downloads for anchor downloads.
+  // Forms/popups are disallowed to reduce abuse surface.
+  return "allow-scripts allow-modals allow-downloads";
 };

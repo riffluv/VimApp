@@ -15,20 +15,23 @@ import type {
 } from "../types/editor";
 
 // Group commands by category
-const groupedCommands = CHEAT_SHEET_COMMANDS.reduce((acc, command) => {
-  if (!acc[command.category]) {
-    acc[command.category] = [];
-  }
-  acc[command.category].push(command);
-  return acc;
-}, {} as Record<CommandCategory, Command[]>);
+const groupedCommands = CHEAT_SHEET_COMMANDS.reduce(
+  (acc, command) => {
+    if (!acc[command.category]) {
+      acc[command.category] = [];
+    }
+    acc[command.category].push(command);
+    return acc;
+  },
+  {} as Record<CommandCategory, Command[]>
+);
 
 export default function CheatSheet({}: CheatSheetProps) {
   return (
     <Box
       bg={DESIGN_SYSTEM.colors.bg.primary}
       color={DESIGN_SYSTEM.colors.text.primary}
-      borderRadius={DESIGN_SYSTEM.borders.radius.md}
+      borderRadius={DESIGN_SYSTEM.borders.radius.lg}
       border="1px solid"
       borderColor={DESIGN_SYSTEM.borders.colors.secondary}
       display="flex"
@@ -37,18 +40,21 @@ export default function CheatSheet({}: CheatSheetProps) {
       h="100%"
       w="100%"
       className="cheat-sheet-container"
+      style={{
+        backdropFilter: "saturate(110%) blur(6px)",
+      }}
     >
       {/* Simple Clean Header */}
       <Flex
         alignItems="center"
-        px={4}
-        py={3}
+        px={5}
+        py={3.5}
         borderBottomWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.secondary}
         bg={DESIGN_SYSTEM.colors.bg.secondary}
         justifyContent="flex-start"
-        minH="var(--header-height)"
-        maxH="var(--header-height)"
+        minH="calc(var(--header-height) + 4px)"
+        maxH="calc(var(--header-height) + 4px)"
       >
         <Flex alignItems="center" gap={3}>
           <Icon
@@ -58,9 +64,10 @@ export default function CheatSheet({}: CheatSheetProps) {
           />
           <Box>
             <Text
-              fontSize={DESIGN_SYSTEM.typography.fontSize.base}
+              fontSize={DESIGN_SYSTEM.typography.fontSize.lg}
               fontWeight={DESIGN_SYSTEM.typography.fontWeight.semibold}
               color={DESIGN_SYSTEM.colors.text.primary}
+              letterSpacing={"0.2px"}
             >
               Vim Cheat Sheet
             </Text>
@@ -68,6 +75,7 @@ export default function CheatSheet({}: CheatSheetProps) {
               fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
               color={DESIGN_SYSTEM.colors.text.secondary}
               fontWeight={DESIGN_SYSTEM.typography.fontWeight.medium}
+              letterSpacing={"0.15px"}
             >
               vimコマンド早見表
             </Text>
@@ -79,8 +87,8 @@ export default function CheatSheet({}: CheatSheetProps) {
       <Box
         overflowY="auto"
         flex={1}
-        px={4}
-        py={3}
+        px={5}
+        py={4}
         css={{
           "&::-webkit-scrollbar": {
             width: "6px",
@@ -89,7 +97,7 @@ export default function CheatSheet({}: CheatSheetProps) {
             background: "transparent",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: DESIGN_SYSTEM.colors.accent.primary,
+            background: DESIGN_SYSTEM.colors.accent.subtle,
             borderRadius: "3px",
           },
         }}
@@ -98,6 +106,7 @@ export default function CheatSheet({}: CheatSheetProps) {
           multiple
           defaultValue={["0", "1", "2", "3"]}
           variant="plain"
+          unmountOnExit
         >
           <Stack gap={2}>
             {Object.entries(groupedCommands).map(
@@ -115,8 +124,8 @@ export default function CheatSheet({}: CheatSheetProps) {
                       <Accordion.ItemTrigger
                         bg="transparent"
                         border="none"
-                        py={3}
-                        px={4}
+                        py={3.5}
+                        px={4.5}
                         _hover={{
                           bg: DESIGN_SYSTEM.colors.bg.tertiary,
                         }}
@@ -132,7 +141,7 @@ export default function CheatSheet({}: CheatSheetProps) {
                           <Icon
                             as={catInfo.icon}
                             color={catInfo.color}
-                            fontSize="md"
+                            fontSize="lg"
                             mr={3}
                           />
                           <Text
@@ -140,7 +149,8 @@ export default function CheatSheet({}: CheatSheetProps) {
                               DESIGN_SYSTEM.typography.fontWeight.semibold
                             }
                             color={DESIGN_SYSTEM.colors.text.primary}
-                            fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
+                            fontSize={DESIGN_SYSTEM.typography.fontSize.base}
+                            letterSpacing={"0.15px"}
                           >
                             {catInfo.title}
                           </Text>
@@ -161,16 +171,16 @@ export default function CheatSheet({}: CheatSheetProps) {
                         bg="transparent"
                       >
                         <Box
-                          pt={2}
+                          pt={2.5}
                           borderTop="1px solid"
                           borderColor={DESIGN_SYSTEM.borders.colors.subtle}
                         >
-                          <Stack gap={2} mt={2}>
+                          <Stack gap={2.5} mt={2}>
                             {commands.map((item, index) => (
                               <Flex
                                 key={index}
-                                py={2}
-                                px={3}
+                                py={2.5}
+                                px={3.5}
                                 alignItems="center"
                                 borderRadius={DESIGN_SYSTEM.borders.radius.sm}
                                 _hover={{
@@ -189,8 +199,8 @@ export default function CheatSheet({}: CheatSheetProps) {
                                   fontSize={
                                     DESIGN_SYSTEM.typography.fontSize.xs
                                   }
-                                  mr={4}
-                                  minW={14}
+                                  mr={4.5}
+                                  minW={16}
                                   textAlign="left"
                                   px={2}
                                   py={1}
@@ -226,12 +236,12 @@ export default function CheatSheet({}: CheatSheetProps) {
 
       {/* Simple Footer */}
       <Flex
-        px={4}
-        py={3}
+        px={5}
+        py={3.5}
         borderTopWidth="1px"
         borderColor={DESIGN_SYSTEM.borders.colors.secondary}
         bg={DESIGN_SYSTEM.colors.bg.secondary}
-        fontSize={DESIGN_SYSTEM.typography.fontSize.xs}
+        fontSize={DESIGN_SYSTEM.typography.fontSize.sm}
         color={DESIGN_SYSTEM.colors.text.secondary}
         align="center"
         justify="center"
@@ -254,7 +264,7 @@ export default function CheatSheet({}: CheatSheetProps) {
           color={DESIGN_SYSTEM.colors.accent.primary}
           boxSize="14px"
         />
-        <Text lineHeight="1.4">
+        <Text lineHeight="1.45" letterSpacing={"0.12px"}>
           基本操作から始めて、段階的にスキルアップしよう！
         </Text>
       </Flex>

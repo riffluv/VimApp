@@ -212,7 +212,7 @@ export const Loading: React.FC<LoadingProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: DESIGN_SYSTEM.colors.bg.overlay,
+          backgroundColor: DESIGN_SYSTEM.colors.surface.overlay,
           backdropFilter: "blur(8px)",
           zIndex: 9999,
         }}
@@ -226,21 +226,21 @@ export const Loading: React.FC<LoadingProps> = ({
 };
 
 // Specialized loading components
-export const SpinnerLoading: React.FC<Omit<LoadingProps, "variant">> = (props) => (
-  <Loading variant="spinner" {...props} />
-);
+export const SpinnerLoading: React.FC<Omit<LoadingProps, "variant">> = (
+  props
+) => <Loading variant="spinner" {...props} />;
 
 export const DotsLoading: React.FC<Omit<LoadingProps, "variant">> = (props) => (
   <Loading variant="dots" {...props} />
 );
 
-export const PulseLoading: React.FC<Omit<LoadingProps, "variant">> = (props) => (
-  <Loading variant="pulse" {...props} />
-);
+export const PulseLoading: React.FC<Omit<LoadingProps, "variant">> = (
+  props
+) => <Loading variant="pulse" {...props} />;
 
-export const SkeletonLoading: React.FC<Omit<LoadingProps, "variant">> = (props) => (
-  <Loading variant="skeleton" {...props} />
-);
+export const SkeletonLoading: React.FC<Omit<LoadingProps, "variant">> = (
+  props
+) => <Loading variant="skeleton" {...props} />;
 
 export const WaveLoading: React.FC<Omit<LoadingProps, "variant">> = (props) => (
   <Loading variant="wave" {...props} />
@@ -273,7 +273,7 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: DESIGN_SYSTEM.colors.bg.overlay,
+          backgroundColor: DESIGN_SYSTEM.colors.surface.overlay,
           backdropFilter: "blur(4px)",
           borderRadius: DESIGN_SYSTEM.borders.radius.lg,
           zIndex: 10,

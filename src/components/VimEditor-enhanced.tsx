@@ -15,7 +15,6 @@
 
 import {
   Alert,
-  AlertIcon,
   Box,
   Flex,
   HStack,
@@ -43,13 +42,13 @@ import {
 } from "../hooks/useVimEditor-enhanced";
 import type { EditorMode, VimEditorProps } from "../types/editor";
 import { generatePreviewHTML, getSandboxAttributes } from "../utils/editor";
-import { Tooltip } from "./Tooltip";
 import {
   EditorActionButton,
   EditorPrimaryButton,
   ModeTabButton,
   SecondaryButton,
 } from "./ui/Button-enhanced";
+import Tooltip from "./ui/Tooltip";
 
 // =============================================================================
 // DYNAMIC IMPORTS - Performance Optimization
@@ -89,7 +88,7 @@ interface ErrorFallbackProps {
 }
 
 const ErrorFallback = memo<ErrorFallbackProps>(({ error, resetError }) => (
-  <Alert
+  <Alert.Root
     status="error"
     variant="subtle"
     flexDirection="column"
@@ -99,7 +98,7 @@ const ErrorFallback = memo<ErrorFallbackProps>(({ error, resetError }) => (
     height="200px"
     borderRadius="lg"
   >
-    <AlertIcon boxSize="40px" mr={0} />
+    <Alert.Indicator boxSize="40px" mr={0} />
     <Text mt={4} mb={1} fontSize="lg" fontWeight="bold">
       エディタでエラーが発生しました
     </Text>
@@ -109,7 +108,7 @@ const ErrorFallback = memo<ErrorFallbackProps>(({ error, resetError }) => (
     <SecondaryButton leftIcon={<FiRefreshCw />} onClick={resetError} size="sm">
       再試行
     </SecondaryButton>
-  </Alert>
+  </Alert.Root>
 ));
 
 ErrorFallback.displayName = "ErrorFallback";
@@ -215,8 +214,8 @@ const EditorHeader = memo<EditorHeaderProps>(
                     {mode === "html"
                       ? "index.html"
                       : mode === "css"
-                      ? "style.css"
-                      : "script.js"}
+                        ? "style.css"
+                        : "script.js"}
                   </Text>
                 </Flex>
               </Box>
@@ -693,24 +692,7 @@ const VimEditor = memo<VimEditorProps>(
           </Box>
         )}
 
-        {/* Performance Debug Info (Development Only) */}
-        {process.env.NODE_ENV === "development" && (
-          <Box
-            position="absolute"
-            bottom={2}
-            right={2}
-            bg="blackAlpha.700"
-            color="white"
-            fontSize="xs"
-            px={2}
-            py={1}
-            borderRadius="sm"
-            fontFamily="mono"
-          >
-            Renders: {performanceMetrics.renderCount} | Avg:{" "}
-            {performanceMetrics.averageRenderTime.toFixed(1)}ms
-          </Box>
-        )}
+        {/* Performance debug badge removed as requested */}
       </Box>
     );
   }
